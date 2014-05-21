@@ -1,14 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block extrahead %}
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ event.title }}">
+<meta name="twitter:description" content="{{ event.description }}">
+<meta property="og:title" content="{{ event.title }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="" />
+<meta property="og:image" content="" />
+{% endblock %}
+
+{% block content %}
 
 <div itemscope itemtype="http://schema.org/Event">
-    <p itemprop="name">{{ event.title }}</p>
+    <h1 itemprop="name">{{ event.title }}</h1>
     <p itemprop="startDate" content="{{ event.start|date:'c' }}">{{ event.start }}</p>
+    <p>{{ event.description }}</p>
 </div>
 
-</body>
-</html>
+{% endblock %}

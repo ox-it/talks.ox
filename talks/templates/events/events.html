@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
 
 {% for event in events %}
 
@@ -15,5 +14,4 @@
 
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}
