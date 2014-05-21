@@ -5,5 +5,10 @@
 </head>
 <body>
 
+<div itemscope itemtype="http://schema.org/Event">
+    <p itemprop="name">{{ event.title }}</p>
+    <p itemprop="startDate" content="{{ event.start|date:'c' }}">{{ event.start }}</p>
+</div>
+
 </body>
 </html>

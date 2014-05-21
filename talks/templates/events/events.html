@@ -10,6 +10,7 @@
 <div itemscope itemtype="http://schema.org/Event">
     <p itemprop="name">{{ event.title }}</p>
     <p itemprop="startDate" content="{{ event.start|date:'c' }}">{{ event.start }}</p>
+    <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
 </div>
 
 {% endfor %}
