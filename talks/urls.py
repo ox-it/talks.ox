@@ -1,11 +1,18 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
+from rest_framework import routers
+
 from events.views import (homepage, upcoming_events, event, events_for_day,
-                          events_for_month, events_for_year)
+                          events_for_month, events_for_year, EventViewSet)
+
+router = routers.DefaultRouter()
+router.register(r'events', EventViewSet)
+
 
 
 urlpatterns = patterns('',
+    url(r'^api/', include(router.urls)),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),
