@@ -13,6 +13,13 @@ class Speaker(models.Model):
     bio = models.TextField()
 
 
+class Location(models.Model):
+    oxpoints_id = models.CharField(db_index=True,
+                                   unique=True,
+                                   max_length=50)
+    name = models.CharField(max_length=250)
+
+
 class Event(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -21,6 +28,7 @@ class Event(models.Model):
     description = models.TextField()
 
     series = models.ForeignKey(Series, null=True)
+    location = models.ForeignKey(Location, null=True)
 
 
 class Talk(models.Model):
@@ -32,3 +40,4 @@ class Talk(models.Model):
 
     event = models.ForeignKey(Event)
     speaker = models.ManyToManyField(Speaker, null=True)
+    location = models.ForeignKey(Location, null=True)
