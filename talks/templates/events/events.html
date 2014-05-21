@@ -5,5 +5,14 @@
 </head>
 <body>
 
+{% for event in events %}
+
+<div itemscope itemtype="http://schema.org/Event">
+    <p itemprop="name">{{ event.title }}</p>
+    <p itemprop="startDate" content="{{ event.start|date:'c' }}">{{ event.start }}</p>
+</div>
+
+{% endfor %}
+
 </body>
 </html>
