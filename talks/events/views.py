@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.http.response import Http404
 from django.shortcuts import render
 from rest_framework import viewsets
@@ -30,7 +28,9 @@ def events_for_month(request, year, month):
 
 
 def events_for_day(request, year, month, day):
-    events = Event.objects.filter(start=date(int(year), int(month), int(day)))
+    events = Event.objects.filter(start__year=year,
+                                  start__month=month,
+                                  start__day=day)
     return _events_list(request, events)
 
 
