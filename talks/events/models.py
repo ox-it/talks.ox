@@ -27,8 +27,8 @@ class Event(models.Model):
     slug = models.SlugField()
     description = models.TextField()
 
-    series = models.ForeignKey(Series, null=True)
-    location = models.ForeignKey(Location, null=True)
+    series = models.ForeignKey(Series, null=True, blank=True)
+    location = models.ForeignKey(Location, null=True, blank=True)
 
 
 class Talk(models.Model):
@@ -39,5 +39,5 @@ class Talk(models.Model):
     description = models.TextField()
 
     event = models.ForeignKey(Event)
-    speaker = models.ManyToManyField(Speaker, null=True)
-    location = models.ForeignKey(Location, null=True)
+    speaker = models.ManyToManyField(Speaker, null=True, blank=True)
+    location = models.ForeignKey(Location, null=True, blank=True)
