@@ -4,11 +4,20 @@
 
 {% block content %}
 
+<script type="application/ld+json">
+[{% for event in events %}{
+  "@context": "http://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title }}",
+  "startDate": "{{ event.start|date:'c' }}"
+{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
+</script>
+
 {% for event in events %}
 
-<div itemscope itemtype="http://schema.org/Event">
-    <p itemprop="name">{{ event.title }}</p>
-    <p itemprop="startDate" content="{{ event.start|date:'c' }}">{{ event.start }}</p>
+<div>
+    <p>{{ event.title }}</p>
+    <p>{{ event.start }}</p>
     <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
 </div>
 

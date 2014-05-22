@@ -14,9 +14,18 @@
 
 {% block content %}
 
-<div itemscope itemtype="http://schema.org/Event">
-    <h1 itemprop="name">{{ event.title }}</h1>
-    <p itemprop="startDate" content="{{ event.start|date:'c' }}">{{ event.start }}</p>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title }}",
+  "startDate": "{{ event.start|date:'c' }}"
+}
+</script>
+
+<div>
+    <h1>{{ event.title }}</h1>
+    <p>{{ event.start }}</p>
     <p>{{ event.description }}</p>
 </div>
 
