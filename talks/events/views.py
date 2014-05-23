@@ -1,9 +1,7 @@
 from django.http.response import Http404
 from django.shortcuts import render
-from rest_framework import viewsets
 
 from .models import Event
-from .serializers import EventSerializer
 
 
 def homepage(request):
@@ -46,10 +44,3 @@ def event(request, event_id):
     else:
         raise Http404
     return render(request, 'events/event.html', context)
-
-
-class EventViewSet(viewsets.ModelViewSet):
-    """API endpoint for events
-    """
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer

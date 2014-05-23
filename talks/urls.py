@@ -4,7 +4,8 @@ from django.contrib import admin
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
-                          events_for_month, events_for_year, EventViewSet)
+                          events_for_month, events_for_year)
+from api.views import EventViewSet
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
