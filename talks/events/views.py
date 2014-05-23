@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.http.response import Http404
 from django.shortcuts import render
 
@@ -5,13 +7,15 @@ from .models import Event
 
 
 def homepage(request):
-    return _events_list(request, [])
+    # TODO needs to clarify the difference
+    # between homepage and upcoming_events?
+    return upcoming_events(request)
 
 
 def upcoming_events(request):
-    # TODO needs to clarify the difference
-    # between homepage and upcoming_events?
-    return _events_list(request, [])
+    today = date.today()
+    events = Event.objects.filter(start__gte=today)
+    return _events_list(request, events)
 
 
 def events_for_year(request, year):
