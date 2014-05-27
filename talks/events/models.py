@@ -24,8 +24,8 @@ class Location(models.Model):
 
 
 class Event(models.Model):
-    start = models.DateTimeField()
-    end = models.DateTimeField()
+    start = models.DateTimeField(null=True, blank=True)
+    end = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
@@ -38,7 +38,7 @@ class Event(models.Model):
 
 class Talk(models.Model):
     start = models.DateTimeField()
-    end = models.DateTimeField()
+    end = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
