@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class Series(models.Model):
@@ -48,3 +50,20 @@ class Talk(models.Model):
     event = models.ForeignKey(Event)
     speaker = models.ManyToManyField(Speaker, null=True, blank=True)
     location = models.ForeignKey(Location, null=True, blank=True)
+
+
+class Tag(models.Model):
+
+    slug = models.SlugField()
+    name = models.CharField(max_length=250, unique=True)
+    description = models.TextField()
+    # TODO url?
+    # TODO categorisation? e.g. Organisation
+
+
+class TagItem(models.Model):
+
+    tag = models.ForeignKey(Tag)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    item = GenericForeignKey('content_type', 'object_id')   # atm: Talk, Event, Series
