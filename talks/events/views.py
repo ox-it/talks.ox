@@ -3,6 +3,7 @@ from datetime import date
 from django.http.response import Http404
 from django.shortcuts import render
 
+from talks.api_ox.query import get_info
 from .models import Event
 
 
@@ -45,6 +46,11 @@ def event(request, event_id):
     ev = Event.objects.get(id=event_id)
     if ev:
         context = {'event': ev}
+        if ev.location:
+            context['location_name'] = ev.location.name
+            oxpoints = get_info(ev.location.oxpoints_id)
+            if oxpoints:
+                context['location'] = oxpoints
     else:
         raise Http404
     return render(request, 'events/event.html', context)

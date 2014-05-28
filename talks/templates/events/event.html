@@ -27,6 +27,10 @@
     <h1>{{ event.title }}</h1>
     <p>{{ event.start }}</p>
     <p>{{ event.description }}</p>
+    <p>{{ location_name }}</p>
+    {% if location %}
+        <p>{{ location.address }}</p>
+    {% endif %}
 </div>
 
 {% endblock %}
