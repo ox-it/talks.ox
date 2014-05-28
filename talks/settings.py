@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'talks.events',
+    'talks.api_ox',
 )
 
 MIDDLEWARE_CLASSES = (

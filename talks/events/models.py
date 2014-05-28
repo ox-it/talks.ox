@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+from talks.api_ox.models import Location, Organisation
+
 
 class Series(models.Model):
     title = models.CharField(max_length=250)
@@ -15,16 +17,6 @@ class Speaker(models.Model):
     bio = models.TextField()
 
 
-class Location(models.Model):
-    oxpoints_id = models.CharField(db_index=True,
-                                   unique=True,
-                                   max_length=50)
-    name = models.CharField(max_length=250)
-    # TODO what should be stored here? what IS a location?
-    # (e.g. building vs actual room of the event)
-    # (e.g. additional information, accessibility etc)
-
-
 class Event(models.Model):
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
@@ -36,6 +28,8 @@ class Event(models.Model):
 
     series = models.ForeignKey(Series, null=True, blank=True)
     location = models.ForeignKey(Location, null=True, blank=True)
+    # TODO I'm guessing an event can be organised by multiple departments?
+    department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
 
 class Talk(models.Model):
@@ -50,6 +44,7 @@ class Talk(models.Model):
     event = models.ForeignKey(Event)
     speaker = models.ManyToManyField(Speaker, null=True, blank=True)
     location = models.ForeignKey(Location, null=True, blank=True)
+    department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
 
 class Tag(models.Model):
