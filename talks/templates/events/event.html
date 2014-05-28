@@ -14,24 +14,7 @@
 
 {% block content %}
 
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "Event",
-  "name": "{{ event.title }}",
-  "startDate": "{{ event.start|date:'c' }}",
-  "location": {
-      "@type": "Place",
-      "name": "{{ location_name }}",
-      "address": "{{ location.address }}",
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "{{ location.lat }}",
-        "longitude": "{{ location.lon }}"
-    }
-  }
-}
-</script>
+{% include "events/jsonld_event.html" with event=event location=location %}
 
 <div>
     <h1>{{ event.title }}</h1>

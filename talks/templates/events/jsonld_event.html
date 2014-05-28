@@ -1,0 +1,18 @@
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title }}",
+  "startDate": "{{ event.start|date:'c' }}",
+  "location": {
+      "@type": "Place",
+      "name": "{{ location.name }}",
+      "address": "{{ location.address }}",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "{{ location.lat }}",
+        "longitude": "{{ location.lon }}"
+    }
+  }
+}
+</script>
