@@ -4,6 +4,7 @@ from django.http.response import Http404
 from django.shortcuts import render
 
 from talks.api_ox.query import get_info
+from talks.api_ox.api import ApiException
 from .models import Event
 
 
@@ -48,7 +49,10 @@ def event(request, event_id):
         context = {'event': ev}
         if ev.location:
             context['location_name'] = ev.location.name
-            oxpoints = get_info(ev.location.oxpoints_id)
+            try:
+                oxpoints = get_info(ev.location.oxpoints_id)
+            except ApiException:
+                oxpoints = None
             if oxpoints:
                 context['location'] = oxpoints
     else:
