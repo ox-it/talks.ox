@@ -26,6 +26,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+API_OX_URL = 'http://api.m.ox.ac.uk'
 
 # Application definition
 
