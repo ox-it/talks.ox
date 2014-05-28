@@ -10,11 +10,17 @@ class Series(models.Model):
     slug = models.SlugField()
     description = models.TextField()
 
+    def __unicode__(self):
+        return self.title
+
 
 class Speaker(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
     bio = models.TextField()
+
+    def __unicode__(self):
+        return self.name
 
 
 class Event(models.Model):
@@ -30,6 +36,10 @@ class Event(models.Model):
     location = models.ForeignKey(Location, null=True, blank=True)
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
+
+    def __unicode__(self):
+        return "Event: {title} ({start})".format(title=self.title,
+                                          start=self.start.strftime("%Y-%m-%d %H:%M"))
 
 
 class Talk(models.Model):
@@ -47,6 +57,11 @@ class Talk(models.Model):
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
 
+    def __unicode__(self):
+        return "Talk: {title} ({start})".format(title=self.title,
+                                          start=self.start.strftime("%Y-%m-%d %H:%M"))
+
+
 class Tag(models.Model):
 
     slug = models.SlugField()
@@ -54,6 +69,9 @@ class Tag(models.Model):
     description = models.TextField()
     # TODO url?
     # TODO categorisation? e.g. Organisation
+
+    def __unicode__(self):
+        return name
 
 
 class TagItem(models.Model):

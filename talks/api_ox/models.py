@@ -7,6 +7,10 @@ class OxpointsModel(models.Model):
                                    max_length=50)
     name = models.CharField(max_length=250)
 
+    def __unicode__(self):
+        return "{name} <{ident}>".format(name=self.name,
+                                         ident=self.oxpoints_id)
+
     class Meta:
         abstract = True
 
