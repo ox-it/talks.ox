@@ -71,7 +71,7 @@ class Tag(models.Model):
     # TODO categorisation? e.g. Organisation
 
     def __unicode__(self):
-        return name
+        return self.name
 
 
 class TagItem(models.Model):
