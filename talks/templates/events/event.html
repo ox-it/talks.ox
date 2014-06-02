@@ -16,14 +16,14 @@
 
 {% include "events/jsonld_event.html" with event=event location=location %}
 
-<div>
-    <h1>{{ event.title }}</h1>
-    <p>{{ event.start }}</p>
-    <p>{{ event.description }}</p>
-    <p>{{ location_name }}</p>
-    {% if location %}
-        <p>{{ location.address }}</p>
-    {% endif %}
-</div>
+<h1>{{ event.title }}</h1>
+<p>{{ event.start }}</p>
+<p>{{ event.description }}</p>
+<p>{{ location_name }}</p>
+{% if location %}
+    <address>
+        {{ location.address }}
+    </address>
+{% endif %}
 
 {% endblock %}
