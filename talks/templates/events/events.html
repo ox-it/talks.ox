@@ -15,10 +15,15 @@
 
 {% for event in events %}
 
-<div>
-    <p>{{ event.title }}</p>
-    <p>{{ event.start }}</p>
-    <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
+<div class="panel panel-default">
+  <div class="panel-heading">
+      <h3 class="panel-title">{{ event.title }}</h3>
+      <small>{{ event.start }}</small>
+  </div>
+  <div class="panel-body">
+      <p>{{ event.description }}</p>
+      <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
+  </div>
 </div>
 
 {% endfor %}
