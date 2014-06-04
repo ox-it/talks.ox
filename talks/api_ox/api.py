@@ -38,6 +38,14 @@ class PlacesResource(ApiOxResource):
         return self._get_request('{path}{ident}/organisation-descendants'.format(path=self.PATH, ident=ident))
 
 
+class DatesResource(ApiOxResource):
+
+    def get_oxford_date(self, py_date):
+        return self._get_request('/dates/{year}-{month}-{day}'.format(year=py_date.year,
+                                                                      month=py_date.month,
+                                                                      day=py_date.day))
+
+
 class ApiException(Exception):
 
     message = "API is not available"

@@ -17,7 +17,7 @@
 {% include "events/jsonld_event.html" with event=event location=location %}
 
 <h1>{{ event.title }}</h1>
-<p>{{ event.start }}</p>
+<p>{{ event.start }} ({{ oxford_date }})</p>
 <p>{{ event.description }}</p>
 <p>{{ location_name }}</p>
 {% if location %}

@@ -3,7 +3,7 @@ from datetime import date
 from django.http.response import Http404
 from django.shortcuts import render
 
-from talks.api_ox.query import get_info
+from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
 
@@ -55,6 +55,8 @@ def event(request, event_id):
                 location = None
             if location:
                 context['location'] = location
+        oxford_date = get_oxford_date(ev.start)
+        context['oxford_date'] = oxford_date['formatted']
     else:
         raise Http404
     return render(request, 'events/event.html', context)
