@@ -38,8 +38,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd Party
+    'bootstrapform',
     'haystack',
 
+    # Oxford Talks
     'talks.events',
     'talks.api_ox',
 )

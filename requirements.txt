@@ -5,3 +5,4 @@ icalendar==3.6.2
 requests==2.3.0
 pysolr==3.2.0
 git+https://github.com/ox-it/django-haystack.git#egg=django_haystack
+django-bootstrap-form==3.1
