@@ -6,6 +6,7 @@ from django.shortcuts import render
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
+from .forms import EventForm, EventGroupForm
 
 
 def homepage(request):
@@ -64,3 +65,11 @@ def event(request, event_id):
     else:
         raise Http404
     return render(request, 'events/event.html', context)
+
+
+def create_event(request):
+    context = {
+        'event_form': EventForm(),
+        'event_group_form': EventGroupForm(),
+    }
+    return render(request, 'events/create_event.html', context)

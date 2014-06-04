@@ -8,7 +8,7 @@ from haystack.views import FacetedSearchView
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
-                          events_for_month, events_for_year)
+                          events_for_month, events_for_year, create_event)
 from api.views import EventViewSet
 
 router = routers.DefaultRouter()
@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
+    url(r'^events/new$', create_event, name='create-event'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),
     url(r'^events/date/(?P<year>\d{4})/$', events_for_year, name='events_year'),
     url(r'^events/date/(?P<year>\d{4})/(?P<month>\d{2})/$', events_for_month, name='events_month'),
