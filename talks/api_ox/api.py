@@ -14,7 +14,9 @@ class ApiOxResource(object):
 
     def _get_request(self, path, params=None):
         try:
-            r = requests.get('{base_url}{path}'.format(base_url=self.base_url, path=path), timeout=self.timeout)
+            r = requests.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
+                             timeout=self.timeout,
+                             headers={'User-Agent': 'talks.ox'})
             if r.status_code == requests.codes.ok:
                 return r.json()
             elif r.status_code == requests.codes.not_found:
