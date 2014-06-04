@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from redis import StrictRedis
 import requests
 from requests.exceptions import RequestException
@@ -17,7 +18,9 @@ class ApiOxResource(object):
 
     def _get_request(self, path, params=None):
         try:
-            redis = StrictRedis(host='localhost', port=6379, db=0)
+            redis = StrictRedis(host=settings.REQUESTS_CACHE_REDIS_HOST,
+                                port=settings.REQUESTS_CACHE_REDIS_PORT,
+                                db=settings.REQUESTS_CACHE_REDIS_DB)
             session = cachecontrol.CacheControl(requests.Session(), RedisCache(redis))
             r = session.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
                              timeout=self.timeout,
