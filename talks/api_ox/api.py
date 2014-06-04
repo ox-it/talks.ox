@@ -18,11 +18,15 @@ class ApiOxResource(object):
 
     def _get_request(self, path, params=None):
         try:
-            redis = StrictRedis(host=settings.REQUESTS_CACHE_REDIS_HOST,
-                                port=settings.REQUESTS_CACHE_REDIS_PORT,
-                                db=settings.REQUESTS_CACHE_REDIS_DB)
-            session = cachecontrol.CacheControl(requests.Session(), RedisCache(redis))
-            r = session.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
+            if hasattr(settings, 'REQUESTS_CACHE_REDIS_HOST') and hasattr(settings, 'REQUESTS_CACHE_REDIS_PORT')\
+                    and hasattr(settings, 'REQUESTS_CACHE_REDIS_DB'):
+                redis = StrictRedis(host=settings.REQUESTS_CACHE_REDIS_HOST,
+                                    port=settings.REQUESTS_CACHE_REDIS_PORT,
+                                    db=settings.REQUESTS_CACHE_REDIS_DB)
+                req = cachecontrol.CacheControl(requests.Session(), RedisCache(redis))
+            else:
+                req = requests
+            r = req.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
                              timeout=self.timeout,
                              headers={'User-Agent': 'talks.ox'})
             if r.status_code == requests.codes.ok:
