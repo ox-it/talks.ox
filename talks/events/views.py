@@ -2,11 +2,12 @@ from datetime import date
 
 from django.http.response import Http404
 from django.shortcuts import render
+from django import forms
 
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
-from .forms import EventForm, EventGroupForm
+from .forms import EventForm, EventGroupForm, EventGroupSelectForm
 
 
 def homepage(request):
@@ -71,5 +72,6 @@ def create_event(request):
     context = {
         'event_form': EventForm(),
         'event_group_form': EventGroupForm(),
+        'event_group_select': EventGroupSelectForm(),
     }
     return render(request, 'events/create_event.html', context)
