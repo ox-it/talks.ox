@@ -1,7 +1,10 @@
 import logging
 
+from redis import StrictRedis
 import requests
 from requests.exceptions import RequestException
+import cachecontrol
+from cachecontrol.caches import RedisCache
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +17,9 @@ class ApiOxResource(object):
 
     def _get_request(self, path, params=None):
         try:
-            r = requests.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
+            redis = StrictRedis(host='localhost', port=6379, db=0)
+            session = cachecontrol.CacheControl(requests.Session(), RedisCache(redis))
+            r = session.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
                              timeout=self.timeout,
                              headers={'User-Agent': 'talks.ox'})
             if r.status_code == requests.codes.ok:

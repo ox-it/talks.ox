@@ -3,3 +3,5 @@ pytz
 djangorestframework==2.3.13
 icalendar==3.6.2
 requests==2.3.0
+CacheControl==0.10.1
+redis==2.10.1
