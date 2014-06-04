@@ -50,11 +50,11 @@ def event(request, event_id):
         if ev.location:
             context['location_name'] = ev.location.name
             try:
-                oxpoints = get_info(ev.location.oxpoints_id)
+                location = get_info(ev.location.identifier)
             except ApiException:
-                oxpoints = None
-            if oxpoints:
-                context['location'] = oxpoints
+                location = None
+            if location:
+                context['location'] = location
     else:
         raise Http404
     return render(request, 'events/event.html', context)

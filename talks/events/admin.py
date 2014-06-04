@@ -16,7 +16,7 @@ class EventGroupAdmin(admin.ModelAdmin):
 
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('oxpoints_id', 'name',)
+    list_display = ('identifier', 'name',)
 
 
 admin.site.register(EventGroup, EventGroupAdmin)

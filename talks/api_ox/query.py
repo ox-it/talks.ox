@@ -3,15 +3,11 @@ from django.conf import settings
 from .api import PlacesResource
 
 
-def find_org_descendants(oxpoints_id):
+def find_org_descendants(ident):
     api = PlacesResource(settings.API_OX_URL)
-    return api.get_organisation_descendants('oxpoints:{ident}'.format(ident=oxpoints_id))
+    return api.get_organisation_descendants(ident)
 
 
-def find_spatial_descendants(oxpoints_id):
-    pass
-
-
-def get_info(oxpoints_id):
+def get_info(ident):
     api = PlacesResource(settings.API_OX_URL)
-    return api.get_by_id('oxpoints:{ident}'.format(ident=oxpoints_id))
+    return api.get_by_id(ident)
