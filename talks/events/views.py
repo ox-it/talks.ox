@@ -55,8 +55,12 @@ def event(request, event_id):
                 location = None
             if location:
                 context['location'] = location
-        oxford_date = get_oxford_date(ev.start)
-        context['oxford_date'] = oxford_date['formatted']
+        try:
+            oxford_date = get_oxford_date(ev.start)
+            formatted = oxford_date['formatted'] if 'formatted' in oxford_date else None
+        except ApiException:
+            formatted = None
+        context['oxford_date'] = formatted
     else:
         raise Http404
     return render(request, 'events/event.html', context)
