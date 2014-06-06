@@ -1,0 +1,112 @@
+- model: events.Speaker
+  pk: 1
+  fields:
+    name: James Bond
+    slug: james-bond
+    bio: JB
+- model: events.Speaker
+  pk: 2
+  fields:
+    name: Professor Kazuo Kishi
+    slug: prof-kazuo-kishi
+    bio: Professor of Department of Reconstructive & Plastic Surgery, Keio University, Tokyo
+- model: events.Speaker
+  pk: 3
+  fields:
+    name: Dr Andréa Tommasi
+    slug: dr-andrea-tommasi
+    bio: Geosciences Montpellier
+- model: events.Speaker
+  pk: 4
+  fields:
+    name: Dr Claire Conway
+    slug: dr-claire-conway
+    bio: Oxford
+- model: events.Speaker
+  pk: 5
+  fields:
+    name: David Dockrell
+    slug: david-dockrell
+    bio: University of Sheffield
+- model: events.Speaker
+  pk: 6
+  fields:
+    name: Simon Knight
+    slug: simon-knight
+    bio: test
+- model: events.Speaker
+  pk: 7
+  fields:
+    name: Jonathan Pearson-Stuttard
+    slug: jonathan-pearson-stuttard
+    bio: test
+- model: api_ox.Location
+  pk: 1
+  fields:
+    identifier: oxpoints:23233507
+    name: Sheldonian Theatre
+- model: api_ox.Location
+  pk: 2
+  fields:
+    identifier: oxpoints:23232612
+    name: Oxford Martin School
+- model: api_ox.Location
+  pk: 3
+  fields:
+    identifier: oxpoints:23232496
+    name: Global Economic Governance Programme
+- model: api_ox.Location
+  pk: 4
+  fields:
+    identifier: oxpoints:23232608
+    name: Oxford Internet Institute
+- model: api_ox.Location
+  pk: 5
+  fields:
+    identifier: oxpoints:23232670
+    name: Department of Pharmacology
+- model: events.Event
+  pk: 1
+  fields:
+    start: 2014-12-15T14:00:00.0Z
+    title: Complete Regeneration of Skin
+    slug: complete-regeneration-of-skin
+    description: Skin
+    speakers: [2,]
+    location: 1
+- model: events.Event
+  pk: 2
+  fields:
+    start: 2014-12-10T12:00:00.0Z
+    title: Feedbacks between deformation and melts in the lithosphere-asthenosphere boundary
+    slug: deformation-and-melts-litosphere-astenosphere-boundary
+    description: Geo sciences
+    speakers: [3,]
+    location: 2
+- model: events.Event
+  pk: 3
+  fields:
+    start: 2014-12-10T12:00:00.0Z
+    title: How do we know if we're making a difference? Finding solid ground in the shifting sands of conservation evaluation
+    slug: making-difference
+    description: Nature has evolved complex materials that are exquisitely designed to perform specific functions. Certain proteins and glycans self-organize in vivo into soft and dynamic, strongly hydrated gel-like matrices. Even though biological hydrogels are ubiquitous in living organisms and fulfill fundamental biological tasks, we have today a very limited understanding of their internal organization, and how they function. The main reason is that this type of assemblies is difficult to study with conventional biochemical methods. This talk will focus on peri- and extracellular matrices that are rich in large polysaccharides from the glycosaminoglycan family, in particular hyaluronan. In order to study biological hydrogels directly on the supramolecular level, we have developed an unconventional approach that draws on knowledge from several scientific disciplines. Exploiting surface science tools, we tailor-make model systems by directed self-assembly of purified components on solid supports. With a toolbox of biophysical characterization techniques, including QCM -D, ellipsometry, AFM and RICM , these model systems can be investigated quantitatively and in great detail. The experimental data, combined with polymer theory, allow us to develop a better understanding of the relationship between the supramolecular organization and dynamics of biological hydrogels, their physico-chemical properties and their biological function. To illustrate this concept, I will present a few examples, including recent works on the cross-linking of glycan-rich extracellular matrices (such as the jelly-like matrix around the mammalian egg that is crucial for fertility), and on “superselective” targeting of the cell surface through multivalent interactions between hyaluronan polymers and cell surface receptors.
+    speakers: [3,6]
+    location: 4
+- model: events.Event
+  pk: 4
+  fields:
+    start: 2014-08-22T16:00:00.0Z
+    title: Persistence in Poor Estimating in Software Engineering Whys and Hows. Cigdem Gencel (Faculty of Computer Science in Free University of Bozen-Bolzano)
+    slug: persistence-in-poor-estimating
+    description: There has been a mind shift in software engineering for how software is built and managed. The software industry has been experiencing mainly three major trends. The first is the shift towards agility and leanness in software development. Being lean and agile is reflected both in practices and in outcomes. The second shift is re-definition of business models in order to distribute the development within a country and/or across borders to get benefits such as low cost, high productivity and time shifting. The third is the increase in scale of software systems. Furthermore, there is high uncertainty in how these will change in the near future. The software industry has already been experiencing considerable challenges in project effort and cost estimating. Many projects fail or the ones delivered are with huge time and cost over-runs. Poor estimating processes and the uncertainty in requirements have been widely blamed for as major causes of the problems. In spite of the facts that considerable efforts have been put forth on improving estimations, it seems the problem continues to persist. The aim of this talk is to elaborate on the ‘fundamental issues of poor estimating’ in software engineering. In particular; issues related to lack of standard and useful measures, well designed measurement instruments, and miss-conceptions in use of measures will be discussed by comparing the practices to those of mature engineering fields.
+    speakers: [4,]
+    location: 2
+- model: events.Event
+  pk: 5
+  fields:
+    start: 2014-09-2T16:00:00.0Z
+    title: A data-driven approach to commonsense reasoning based on qualitative spatial representations from the web. Steven Schockaert (Cardiff University)
+    slug: data-driven
+    description: Conceptual spaces (sometimes also called semantic spaces) are high-dimensional geometric spaces in which entities are modelled as points and categories as convex regions. Given a relevant text corpus, conceptual spaces can be induced from data by using dimensionality reduction methods such as multi-dimensional scaling. To date, conceptual spaces are mainly used for measuring similarity. In this talk, I will argue that many aspects of semantic relatedness can be identified with qualitative spatial relations in conceptual spaces, and that this allows us to learn symbolic knowledge about categories in a purely data-driven way. As a simple example, the spatial part-of relation corresponds to the conceptual is-a relation, which is useful for automatically refining taxonomies. Second, spatial betweenness in conceptual spaces is useful for identifying “intermediary concepts”. For example, we can think of a tapas bar as being intermediate between a pub and a restaurant, and accordingly we can expect the representation of “tapas bar” to be geometrically between the representations of “restaurant” and “pub” in a conceptual space of places. Finally, relative attributes such as “more violent than” (for films) or “more tannic than” (for wines) can be associated with direction relations in a conceptual space. The aforementioned spatial relations are useful for implementing various patterns of commonsense reasoning. Betweenness, for example, can be used to implement a symbolic counterpart to numerical interpolation, e.g. from the knowledge that bars and restaurants sell drinks, we derive that tapas-bars are also likely to sell drinks. Direction relations are useful for implementing a fortiori inference (and other forms of analogical reasoning). For example, given that Die Hard has received an 18 certificate from the British Board of Film Classification and that Drive is more violent than Die Hard, we can plausibly derive that Drive has also received an 18 certificate. I will report the result of experiments that show the usefulness of the aforementioned patterns of commonsense reasoning. For example, we have found that a betweenness based classifier, using a conceptual space of place types induced from Flickr, outperforms humans in categorising places from the Foursquare and Geonames taxonomies. Similarly, by identifying qualitative direction relations in a conceptual space of films (derived from a large corpus of film reviews), we can implement a form of analogical reasoning which outperforms standard classifiers in a variety of film related categorisation tasks.
+    speakers: [1,2,3,4]
+    location: 3
