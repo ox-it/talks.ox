@@ -58,7 +58,12 @@
 
     {% for result in page.object_list %}
         <p>
-            <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+{% comment %}
+{% url 'event' result.pk %} means that we can only retrieve "events" (e.g. wouldn't work if we want to
+return Speakers as main results -- if it was something that we wanted to do.
+It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
+{% endcomment %}
+            <a href="{% url 'event' result.pk %}">{{ result.title }}</a>
         </p>
     {% empty %}
         <p>No results found.</p>
