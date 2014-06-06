@@ -14,7 +14,7 @@ from api.views import EventViewSet
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
-sqs = SearchQuerySet().facet('speakers').facet('locations').date_facet('start', date(2014,1,1), date(2015,1,1), 'month')
+sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount=1).date_facet('start', date(2014,1,1), date(2015,1,1), 'month')
 
 
 urlpatterns = patterns('',
