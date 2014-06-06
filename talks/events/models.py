@@ -42,6 +42,10 @@ class Event(models.Model):
         return "Event: {title} ({start})".format(title=self.title,
                                           start=self.start.strftime("%Y-%m-%d %H:%M"))
 
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('event', args=[str(self.id)])
+
 
 class Tag(models.Model):
 
