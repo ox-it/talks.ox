@@ -14,6 +14,7 @@ router.register(r'events', EventViewSet)
 
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
+    (r'^search/', include('haystack.urls')),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),
