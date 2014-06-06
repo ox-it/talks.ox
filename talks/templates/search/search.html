@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Search</h2>
 
 <form method="get" action=".">
     <table>
@@ -16,40 +15,46 @@
 </form>
 
 {% if query %}
-    <h2>Facets</h2>
+    <div class="container">
+    <div class="row">
 
-    <div>
-        <dl>
-            {% if facets.fields.speakers %}
-                <dt>Speaker</dt>
-                {% for speaker in facets.fields.speakers|slice:":10" %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=speakers_exact:{{ speaker.0|urlencode }}">{{ speaker.0 }}</a> ({{ speaker.1 }})</dd>
-                {% endfor %}
-            {% else %}
-                <p>No speaker facets.</p>
-            {% endif %}
-        </dl>
-        <dl>
-            {% if facets.fields.locations %}
-                <dt>Location</dt>
-                {% for location in facets.fields.locations|slice:":10" %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=locations_exact:{{ location.0|urlencode }}">{{ location.0 }}</a> ({{ location.1 }})</dd>
-                {% endfor %}
-            {% else %}
-                <p>No location facets.</p>
-            {% endif %}
-        </dl>
-        <dl>
-            {% if facets.dates.start %}
-                <dt>Start</dt>
-                {% for start, count in facets.dates.start.items %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=start_exact:{{ start|urlencode }}">{{ start }}</a> ({{ count }})</dd>
-                {% endfor %}
-            {% else %}
-                <p>No start facets.</p>
-            {% endif %}
-        </dl>
+    <div class="col-md-4">
+
+    <h2>Refine results</h2>
+
+    <dl>
+        {% if facets.fields.speakers %}
+            <dt>Speaker</dt>
+            {% for speaker in facets.fields.speakers|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=speakers_exact:{{ speaker.0|urlencode }}">{{ speaker.0 }}</a> ({{ speaker.1 }})</dd>
+            {% endfor %}
+        {% else %}
+            <p>No speaker facets.</p>
+        {% endif %}
+    </dl>
+    <dl>
+        {% if facets.fields.locations %}
+            <dt>Location</dt>
+            {% for location in facets.fields.locations|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=locations_exact:{{ location.0|urlencode }}">{{ location.0 }}</a> ({{ location.1 }})</dd>
+            {% endfor %}
+        {% else %}
+            <p>No location facets.</p>
+        {% endif %}
+    </dl>
+    <dl>
+        {% if facets.dates.start %}
+            <dt>Start</dt>
+            {% for start, count in facets.dates.start.items %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=start_exact:{{ start|urlencode }}">{{ start }}</a> ({{ count }})</dd>
+            {% endfor %}
+        {% else %}
+            <p>No start facets.</p>
+        {% endif %}
+    </dl>
     </div>
+
+    <div class="col-md-8">
 
     {% for result in page.object_list %}
         <p>
@@ -67,5 +72,8 @@
         </div>
     {% endif %}
 
+    </div>
+
+    </div></div>
 {% endif %}
 {% endblock %}
