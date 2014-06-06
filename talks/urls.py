@@ -19,7 +19,7 @@ sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount
 
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
-    url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs), name='haystack_search'),
+    url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),
