@@ -1,2 +1,5 @@
 {{ object.title }}
 {{ object.description }}
+{% for speaker in object.speakers.all %}
+{{ speaker.name }}
+{% endfor %}
