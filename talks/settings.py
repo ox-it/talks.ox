@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'haystack',
+
     'talks.events',
     'talks.api_ox',
 )
@@ -117,4 +119,11 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.XMLRenderer',
         'talks.core.renderers.ICalRenderer',
     )
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/collection1'
+    },
 }

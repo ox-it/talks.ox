@@ -3,3 +3,4 @@ pytz
 djangorestframework==2.3.13
 icalendar==3.6.2
 requests==2.3.0
+django-haystack==2.1.0
