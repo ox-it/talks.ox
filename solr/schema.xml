@@ -185,6 +185,8 @@
 
     <field name="text" type="text_en_splitting" indexed="true" stored="true" multiValued="false" />
 
+    <field name="tags" type="text_en_splitting" indexed="true" stored="true" multiValued="true" />
+
     <field name="start_exact" type="date" indexed="true" stored="true" multiValued="false" />
 
     <field name="locations" type="text_en_splitting" indexed="true" stored="true" multiValued="false" />
@@ -196,6 +198,8 @@
     <field name="departments_exact" type="string" indexed="true" stored="true" multiValued="false" />
 
     <field name="locations_exact" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <field name="tags_exact" type="string" indexed="true" stored="true" multiValued="true" />
 
   </fields>
 

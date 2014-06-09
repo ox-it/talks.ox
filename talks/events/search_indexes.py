@@ -12,6 +12,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     speakers = indexes.MultiValueField(faceted=True, null=True)
     departments = indexes.CharField(faceted=True, null=True)
     locations = indexes.CharField(faceted=True, null=True)
+    tags = indexes.CharField(faceted=True, null=True)
 
     def get_model(self):
         return Event
@@ -32,3 +33,6 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_locations(self, obj):
         return obj.location.name
+
+    def prepare_tags(self, obj):
+        return [tag.tag.name for tag in obj.tags.all()]

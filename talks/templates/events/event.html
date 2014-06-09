@@ -29,6 +29,13 @@
 {% endfor %}
 </ul>
 
+<p><strong>Tags</strong></p>
+<ul>
+{% for tag in event.tags.all %}
+<li>{{ tag.tag.name }}</li>
+{% endfor %}
+</ul>
+
 <p>{{ event.description }}</p>
 
 {% endblock %}
