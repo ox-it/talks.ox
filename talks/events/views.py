@@ -12,7 +12,7 @@ from django import forms
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
-from .forms import EventForm, EventGroupForm, EventGroupSelectForm, EnableEventGroupForm
+from .forms import EventForm, EventGroupForm
 
 logger = logging.getLogger(__name__)
 
@@ -78,16 +78,13 @@ def event(request, event_id):
 
 
 def create_event(request):
-    PrefixedEnableEventGroupForm = partial(EnableEventGroupForm, prefix='enable-group')
     PrefixedEventForm = partial(EventForm, prefix='event')
     PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group')
-    PrefixedEventGroupSelectForm = partial(EventGroupSelectForm, prefix='event-group-select')
+
     if request.method=='POST':
         context = {
-            'event_group_enabled': PrefixedEnableEventGroupForm(request.POST),
             'event_form': PrefixedEventForm(request.POST),
             'event_group_form': PrefixedEventGroupForm(request.POST),
-            'event_group_select': PrefixedEventGroupSelectForm(request.POST),
         }
         print request.POST
         if context['event_form'].is_valid():
@@ -95,9 +92,7 @@ def create_event(request):
             return HttpResponseRedirect(reverse('event', args=(event.id,)))
     else:
         context = {
-            'event_group_enabled': PrefixedEnableEventGroupForm(),
             'event_form': PrefixedEventForm(),
             'event_group_form': PrefixedEventGroupForm(),
-            'event_group_select': PrefixedEventGroupSelectForm(),
         }
     return render(request, 'events/create_event.html', context)
