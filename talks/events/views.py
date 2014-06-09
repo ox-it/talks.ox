@@ -1,3 +1,5 @@
+import logging
+
 from datetime import date
 
 from django.core.urlresolvers import reverse
@@ -10,6 +12,8 @@ from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
 from .forms import EventForm, EventGroupForm, EventGroupSelectForm
+
+logger = logging.getLogger(__name__)
 
 
 def homepage(request):
@@ -59,11 +63,13 @@ def event(request, event_id):
                 location = None
             if location:
                 context['location'] = location
-        try:
-            oxford_date = get_oxford_date(ev.start)
-            formatted = oxford_date['formatted'] if 'formatted' in oxford_date else None
-        except ApiException:
-            formatted = None
+        formatted = None
+        if ev.start:
+            try:
+                oxford_date = get_oxford_date(ev.start)
+                formatted = oxford_date['formatted'] if 'formatted' in oxford_date else None
+            except ApiException:
+                logger.warn('Unable to reach API', exc_info=True)
         context['oxford_date'] = formatted
     else:
         raise Http404
