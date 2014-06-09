@@ -1,6 +1,8 @@
 from datetime import date
 
+from django.core.urlresolvers import reverse
 from django.http.response import Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django import forms
 
@@ -74,4 +76,11 @@ def create_event(request):
         'event_group_form': EventGroupForm(),
         'event_group_select': EventGroupSelectForm(),
     }
+    if request.method=='POST':
+        event_form = EventForm(request.POST)
+        if event_form.is_valid():
+            event = event_form.save()
+            return HttpResponseRedirect(reverse('event', args=(event.id,)))
+        else:
+            context['event_form'] = event_form
     return render(request, 'events/create_event.html', context)
