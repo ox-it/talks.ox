@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 
 from talks.api_ox.models import Location, Organisation
 
@@ -65,5 +66,4 @@ class Event(models.Model):
                                           start=self.start.strftime("%Y-%m-%d %H:%M"))
 
     def get_absolute_url(self):
-        from django.core.urlresolvers import reverse
         return reverse('event', args=[str(self.id)])
