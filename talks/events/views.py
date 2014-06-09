@@ -16,7 +16,7 @@ def homepage(request):
 
 def upcoming_events(request):
     today = date.today()
-    events = Event.objects.filter(start__gte=today)
+    events = Event.objects.filter(start__gte=today).order_by('start')
     return _events_list(request, events)
 
 
