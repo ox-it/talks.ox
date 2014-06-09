@@ -18,20 +18,15 @@ class EventForm(forms.ModelForm):
             'location': forms.TextInput,
         }
 
-class EnableEventGroupForm(forms.Form):
-    enabled = forms.BooleanField(label='Add to a group?')
-
 class EventGroupForm(forms.ModelForm):
-    enabled = forms.BooleanField(required=False)
+    enabled = forms.BooleanField(label='Add to a group?')
+    form_enabled = forms.CharField(widget=forms.HiddenInput)
+    select_enabled = forms.CharField(widget=forms.HiddenInput)
+    event_group_select = forms.ModelChoiceField(
+            queryset=EventGroup.objects.all(),
+            required=False,
+            label="Existing group")
 
     class Meta:
-        fields = ('enabled', 'title', 'description')
+        fields = ('form_enabled', 'select_enabled', 'event_group_select', 'title', 'description')
         model = EventGroup
-
-class EventGroupSelectForm(forms.Form):
-    enabled = forms.BooleanField(required=False)
-    event_group = forms.ModelChoiceField(queryset=EventGroup.objects.all(),
-                                         required=False,
-                                         label="Existing group")
-    class Meta:
-        fields = ('enabled', 'event_group')
