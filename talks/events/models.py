@@ -29,8 +29,6 @@ class Tag(models.Model):
     slug = models.SlugField()
     name = models.CharField(max_length=250, unique=True)
     description = models.TextField()
-    # TODO url?
-    # TODO categorisation? e.g. Organisation
 
     def __unicode__(self):
         return self.name
