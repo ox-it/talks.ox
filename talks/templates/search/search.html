@@ -42,6 +42,16 @@
             <p>No location facets.</p>
         {% endif %}
     </dl>
+    <dl>
+        {% if facets.fields.locations %}
+            <dt>Tags</dt>
+            {% for tag in facets.fields.tags|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=tags_exact:{{ tag.0|urlencode }}">{{ tag.0 }}</a> ({{ tag.1 }})</dd>
+            {% endfor %}
+        {% else %}
+            <p>No tag facets.</p>
+        {% endif %}
+    </dl>
     {% comment %}
     TODO needs to be reworked to have ranges e.g. "Past talks", "Last week", "This week", "Next month" etc
     <dl>
