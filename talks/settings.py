@@ -28,6 +28,10 @@ ALLOWED_HOSTS = []
 
 API_OX_URL = 'http://api.m.ox.ac.uk'
 
+REQUESTS_CACHE_REDIS_HOST = 'localhost'
+REQUESTS_CACHE_REDIS_PORT = 6379
+REQUESTS_CACHE_REDIS_DB = 0
+
 # Application definition
 
 INSTALLED_APPS = (

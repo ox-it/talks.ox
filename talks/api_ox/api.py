@@ -1,7 +1,11 @@
 import logging
 
+from django.conf import settings
+from redis import StrictRedis
 import requests
 from requests.exceptions import RequestException
+import cachecontrol
+from cachecontrol.caches import RedisCache
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +18,17 @@ class ApiOxResource(object):
 
     def _get_request(self, path, params=None):
         try:
-            r = requests.get('{base_url}{path}'.format(base_url=self.base_url, path=path), timeout=self.timeout)
+            if hasattr(settings, 'REQUESTS_CACHE_REDIS_HOST') and hasattr(settings, 'REQUESTS_CACHE_REDIS_PORT')\
+                    and hasattr(settings, 'REQUESTS_CACHE_REDIS_DB'):
+                redis = StrictRedis(host=settings.REQUESTS_CACHE_REDIS_HOST,
+                                    port=settings.REQUESTS_CACHE_REDIS_PORT,
+                                    db=settings.REQUESTS_CACHE_REDIS_DB)
+                req = cachecontrol.CacheControl(requests.Session(), RedisCache(redis))
+            else:
+                req = requests
+            r = req.get('{base_url}{path}'.format(base_url=self.base_url, path=path),
+                             timeout=self.timeout,
+                             headers={'User-Agent': 'talks.ox'})
             if r.status_code == requests.codes.ok:
                 return r.json()
             elif r.status_code == requests.codes.not_found:
