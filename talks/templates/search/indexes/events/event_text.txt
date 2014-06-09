@@ -1,0 +1,8 @@
+{{ object.title }}
+{{ object.description }}
+{% for speaker in object.speakers.all %}
+{{ speaker.name }}
+{% endfor %}
+{% for tagitem in object.tags.all %}
+{{ tagitem.tag.name }}
+{% endfor %}

@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 
 from talks.api_ox.models import Location, Organisation
 
@@ -23,6 +24,24 @@ class Speaker(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+
+    slug = models.SlugField()
+    name = models.CharField(max_length=250, unique=True)
+    description = models.TextField()
+
+    def __unicode__(self):
+        return self.name
+
+
+class TagItem(models.Model):
+
+    tag = models.ForeignKey(Tag)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
+
+
 class Event(models.Model):
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
@@ -38,26 +57,11 @@ class Event(models.Model):
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
+    tags = GenericRelation(TagItem)
+
     def __unicode__(self):
         return "Event: {title} ({start})".format(title=self.title,
                                           start=self.start.strftime("%Y-%m-%d %H:%M"))
 
-
-class Tag(models.Model):
-
-    slug = models.SlugField()
-    name = models.CharField(max_length=250, unique=True)
-    description = models.TextField()
-    # TODO url?
-    # TODO categorisation? e.g. Organisation
-
-    def __unicode__(self):
-        return self.name
-
-
-class TagItem(models.Model):
-
-    tag = models.ForeignKey(Tag)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
+    def get_absolute_url(self):
+        return reverse('event', args=[str(self.id)])

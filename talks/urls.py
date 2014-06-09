@@ -1,5 +1,9 @@
+from datetime import date
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from haystack.forms import FacetedSearchForm
+from haystack.query import SearchQuerySet
+from haystack.views import FacetedSearchView
 
 from rest_framework import routers
 
@@ -10,10 +14,13 @@ from api.views import EventViewSet
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
+sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount=1).facet('tags', mincount=1)
+# .date_facet('start', date(2014,1,1), date(2015,1,1), 'month')   removed for now as we want dynamic dates and range
 
 
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
+    url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),

@@ -17,13 +17,25 @@
 {% include "events/jsonld_event.html" with event=event location=location %}
 
 <h1>{{ event.title }}</h1>
-<p>{{ event.start }} {% if oxford_date %}({{ oxford_date }}){% endif %}</p>
+<p><strong>When?</strong> {{ event.start }} {% if oxford_date %}({{ oxford_date }}){% endif %}</p>
+<p><strong>Where?</strong> {{ location_name }}
+{% if location %}, {{ location.address }}{% endif %}
+</p>
+
+<p><strong>Who?</strong></p>
+<ul>
+{% for speaker in event.speakers.all %}
+<li>{{ speaker.name }}</li>
+{% endfor %}
+</ul>
+
+<p><strong>Tags</strong></p>
+<ul>
+{% for tag in event.tags.all %}
+<li>{{ tag.tag.name }}</li>
+{% endfor %}
+</ul>
+
 <p>{{ event.description }}</p>
-<p>{{ location_name }}</p>
-{% if location %}
-    <address>
-        {{ location.address }}
-    </address>
-{% endif %}
 
 {% endblock %}
