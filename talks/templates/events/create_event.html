@@ -6,22 +6,14 @@
 {% block content %}
 
 <h1>Add Talk</h1>
-<div class="checkbox">
-    <label>
-        <input id="group_enabled" name="enabled" type="checkbox"> <span>Add to group</span>
-    </label>
-</div>
-<div class="event-group ">
-    <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
-    {{ event_group_select|bootstrap_horizontal }}
-    </form>
-    <hr>
-    <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
-        {{ event_group_form|bootstrap_horizontal }}
-    </form>
-    <hr>
-</div>
 <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
+    {{ event_group_enabled|bootstrap_horizontal }}
+    <div class="event-group ">
+        {{ event_group_select|bootstrap_horizontal }}
+        <hr>
+        {{ event_group_form|bootstrap_horizontal }}
+        <hr>
+    </div>
     {{ event_form|bootstrap_horizontal }}
     <div class="form-group">
         <div class="col-sm-2 col-lg-2">
@@ -32,12 +24,6 @@
                 <span class="glyphicon glyphicon-plus"></span>
                 Add Another Talk
             </button>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-2 col-lg-2">
-        </div>
-        <div class="col-sm-10 col-lg-10">
         </div>
     </div>
 </form>

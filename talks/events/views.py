@@ -1,6 +1,7 @@
 import logging
 
 from datetime import date
+from functools import partial
 
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -11,7 +12,7 @@ from django import forms
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
-from .forms import EventForm, EventGroupForm, EventGroupSelectForm
+from .forms import EventForm, EventGroupForm, EventGroupSelectForm, EnableEventGroupForm
 
 logger = logging.getLogger(__name__)
 
@@ -77,16 +78,26 @@ def event(request, event_id):
 
 
 def create_event(request):
-    context = {
-        'event_form': EventForm(),
-        'event_group_form': EventGroupForm(),
-        'event_group_select': EventGroupSelectForm(),
-    }
+    PrefixedEnableEventGroupForm = partial(EnableEventGroupForm, prefix='enable-group')
+    PrefixedEventForm = partial(EventForm, prefix='event')
+    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group')
+    PrefixedEventGroupSelectForm = partial(EventGroupSelectForm, prefix='event-group-select')
     if request.method=='POST':
-        event_form = EventForm(request.POST)
-        if event_form.is_valid():
-            event = event_form.save()
+        context = {
+            'event_group_enabled': PrefixedEnableEventGroupForm(request.POST),
+            'event_form': PrefixedEventForm(request.POST),
+            'event_group_form': PrefixedEventGroupForm(request.POST),
+            'event_group_select': PrefixedEventGroupSelectForm(request.POST),
+        }
+        print request.POST
+        if context['event_form'].is_valid():
+            event = ['event_form'].save()
             return HttpResponseRedirect(reverse('event', args=(event.id,)))
-        else:
-            context['event_form'] = event_form
+    else:
+        context = {
+            'event_group_enabled': PrefixedEnableEventGroupForm(),
+            'event_form': PrefixedEventForm(),
+            'event_group_form': PrefixedEventGroupForm(),
+            'event_group_select': PrefixedEventGroupSelectForm(),
+        }
     return render(request, 'events/create_event.html', context)
