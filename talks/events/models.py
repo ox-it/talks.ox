@@ -59,6 +59,12 @@ class Event(models.Model):
 
     tags = GenericRelation(TagItem)
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = slugify(self.title)
+        super(Event, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return "Event: {title} ({start})".format(title=self.title,
                                           start=self.start.strftime("%Y-%m-%d %H:%M"))
