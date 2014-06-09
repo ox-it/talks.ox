@@ -32,7 +32,10 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             return None
 
     def prepare_locations(self, obj):
-        return obj.location.name
+        if obj.location:
+            return obj.location.name
+        else:
+            return None
 
     def prepare_tags(self, obj):
         return [tag.tag.name for tag in obj.tags.all()]
