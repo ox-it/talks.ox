@@ -19,8 +19,13 @@ class EventForm(forms.ModelForm):
         }
 
 class EventGroupForm(forms.ModelForm):
+    # Does the user want to add this Event to an EventGroup
     enabled = forms.BooleanField(label='Add to a group?')
+
+    # Is the user filling in the ModelForm to create a new EventGroup
     form_enabled = forms.BooleanField(required=False)
+
+    # Is the user selecting an existing EventGroup to add the Event to
     select_enabled = forms.BooleanField(required=False)
     event_group_select = forms.ModelChoiceField(
             queryset=EventGroup.objects.all(),
