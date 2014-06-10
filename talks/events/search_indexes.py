@@ -16,7 +16,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     tags = indexes.MultiValueField(faceted=True, null=True)
 
     # suggestions: used for spellchecking
-    suggestions = indexes.MultiValueField(null=True, stored=False)
+    suggestions = indexes.SuggestionField()
 
     def get_model(self):
         return Event
