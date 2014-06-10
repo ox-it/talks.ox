@@ -63,6 +63,10 @@
 
     <div class="col-md-8">
 
+    {% if suggestion %}
+    <p>Did you mean "<a href="{% url 'haystack_search' %}?q={{ suggestion }}">{{ suggestion }}</a>"?</p>
+    {% endif %}
+
     {% for result in page.object_list %}
         <p>
 {% comment %}
