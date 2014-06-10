@@ -86,9 +86,16 @@ def create_event(request):
             'event_form': PrefixedEventForm(request.POST),
             'event_group_form': PrefixedEventGroupForm(request.POST),
         }
-        print request.POST
+        event_group = None
+        if context['event_group_form'].is_enabled():
+            event_group = context['event_group_form'].get_event_group()
+        else:
+            context['event_group_form'] = PrefixedEventGroupForm()
         if context['event_form'].is_valid():
-            event = ['event_form'].save()
+            event = context['event_form'].save(commit=False)
+            if event_group:
+                event.group = event_group
+            event.save()
             return HttpResponseRedirect(reverse('event', args=(event.id,)))
     else:
         context = {
