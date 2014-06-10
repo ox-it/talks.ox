@@ -9,8 +9,8 @@
 <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
     {{ event_group_form.enabled|bootstrap_horizontal }}
     <div class="event-group ">
-        {{ event_group_form.form_enabled }}
-        {{ event_group_form.select_enabled }}
+        {{ event_group_form.form_enabled|bootstrap_horizontal }}
+        {{ event_group_form.select_enabled|bootstrap_horizontal }}
         <div class="event-group-select">
             {{ event_group_form.event_group_select|bootstrap_horizontal }}
         </div>
