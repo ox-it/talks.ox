@@ -1,11 +1,20 @@
-from datetime import date
+import logging
 
+from datetime import date
+from functools import partial
+
+from django.core.urlresolvers import reverse
 from django.http.response import Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django import forms
 
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
 from .models import Event
+from .forms import EventForm, EventGroupForm
+
+logger = logging.getLogger(__name__)
 
 
 def homepage(request):
@@ -55,12 +64,42 @@ def event(request, event_id):
                 location = None
             if location:
                 context['location'] = location
-        try:
-            oxford_date = get_oxford_date(ev.start)
-            formatted = oxford_date['formatted'] if 'formatted' in oxford_date else None
-        except ApiException:
-            formatted = None
+        formatted = None
+        if ev.start:
+            try:
+                oxford_date = get_oxford_date(ev.start)
+                formatted = oxford_date['formatted'] if 'formatted' in oxford_date else None
+            except ApiException:
+                logger.warn('Unable to reach API', exc_info=True)
         context['oxford_date'] = formatted
     else:
         raise Http404
     return render(request, 'events/event.html', context)
+
+
+def create_event(request):
+    PrefixedEventForm = partial(EventForm, prefix='event')
+    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group')
+
+    if request.method=='POST':
+        context = {
+            'event_form': PrefixedEventForm(request.POST),
+            'event_group_form': PrefixedEventGroupForm(request.POST),
+        }
+        event_group = None
+        if context['event_group_form'].is_enabled():
+            event_group = context['event_group_form'].get_event_group()
+        else:
+            context['event_group_form'] = PrefixedEventGroupForm()
+        if context['event_form'].is_valid():
+            event = context['event_form'].save(commit=False)
+            if event_group:
+                event.group = event_group
+            event.save()
+            return HttpResponseRedirect(reverse('event', args=(event.id,)))
+    else:
+        context = {
+            'event_form': PrefixedEventForm(),
+            'event_group_form': PrefixedEventGroupForm(),
+        }
+    return render(request, 'events/create_event.html', context)

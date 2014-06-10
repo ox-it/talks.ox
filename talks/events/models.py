@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -58,6 +59,12 @@ class Event(models.Model):
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
     tags = GenericRelation(TagItem)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = slugify(self.title)
+        super(Event, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return "Event: {title} ({start})".format(title=self.title,
