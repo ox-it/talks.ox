@@ -4,6 +4,7 @@ from .models import  Event
 
 
 class EventIndex(indexes.SearchIndex, indexes.Indexable):
+    # text: multiple fields use to do full-text search
     text = indexes.CharField(document=True, use_template=True)
 
     title = indexes.CharField(model_attr='title')
@@ -12,7 +13,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     speakers = indexes.MultiValueField(faceted=True, null=True)
     departments = indexes.CharField(faceted=True, null=True)
     locations = indexes.CharField(faceted=True, null=True)
-    tags = indexes.CharField(faceted=True, null=True)
+    tags = indexes.MultiValueField(faceted=True, null=True)
 
     def get_model(self):
         return Event

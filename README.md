@@ -12,6 +12,12 @@ See requirements.txt
 Currently using Django 1.7 beta 4
 
 
+Solr schema
+-----------
+
+The schema.xml needs to be generated using ``python manage.py build_solr_schema``.
+
+
 Developers
 ----------
 
