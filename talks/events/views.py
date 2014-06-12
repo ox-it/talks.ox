@@ -94,6 +94,7 @@ def create_event(request):
         if context['event_form'].is_valid():
             event = context['event_form'].save(commit=False)
             if event_group:
+                event_group.save()
                 event.group = event_group
             event.save()
             return HttpResponseRedirect(reverse('event', args=(event.id,)))

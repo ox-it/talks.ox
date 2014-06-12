@@ -57,7 +57,7 @@ class EventGroupForm(forms.ModelForm):
         if 'enabled' in self.cleaned_data:
             # Creating a new EventGroup
             if valid and 'form_enabled' in self.cleaned_data:
-                return self.save()
+                return self.save(commit=False)
             elif 'select_enabled' in self.cleaned_data and 'event_group_select' in self.cleaned_data:
                 return self.cleaned_data['event_group_select']
         return None
