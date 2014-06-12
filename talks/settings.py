@@ -136,11 +136,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.YAMLRenderer',
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.JSONPRenderer',
         'rest_framework.renderers.XMLRenderer',
-        'talks.core.renderers.ICalRenderer',
     )
 }
 
