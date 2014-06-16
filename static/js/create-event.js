@@ -21,7 +21,7 @@ $(function() {
         }
     });
     // Trigger event
-    $('.event-group input:radio').trigger('change');
+    $('.event-group input:radio:checked').trigger('change');
 
     // Initialise datetimepicker's
     $('.js-datetimepicker').datetimepicker({
