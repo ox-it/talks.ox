@@ -16,27 +16,37 @@ class EventForm(forms.ModelForm):
         widgets = {
             'speakers': forms.TextInput,
             'location': forms.TextInput,
-            'start': forms.DateTimeInput(attrs={'class': 'js-datetimepicker'}),
-            'end': forms.DateTimeInput(attrs={'class': 'js-datetimepicker'}),
+            'start': forms.DateTimeInput(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
+            'end': forms.DateTimeInput(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
 
 class EventGroupForm(forms.ModelForm):
+    SELECT_CREATE_CHOICES = (('SEL', "Add to existing event group"),
+                             ('CRE', "Create new event group"))
+
     # Does the user want to add this Event to an EventGroup
-    enabled = forms.BooleanField(label='Add to a group?')
+    enabled = forms.BooleanField(label='Add to a group?',
+                                 widget=forms.CheckboxInput(attrs={'autocomplete': 'off'}))
+
 
     # Is the user filling in the ModelForm to create a new EventGroup
-    form_enabled = forms.BooleanField(required=False)
-
     # Is the user selecting an existing EventGroup to add the Event to
-    select_enabled = forms.BooleanField(required=False)
+    select_create = forms.ChoiceField(choices=SELECT_CREATE_CHOICES,
+                                      initial='SEL',
+                                      widget=forms.RadioSelect(attrs={'autocomplete': 'off'}))
+
     event_group_select = forms.ModelChoiceField(
             queryset=EventGroup.objects.all(),
             required=False,
             label="Existing group")
 
     class Meta:
-        fields = ('form_enabled', 'select_enabled', 'event_group_select', 'title', 'description')
+        fields = ('event_group_select', 'title', 'description')
         model = EventGroup
+        widgets = {
+            'title': forms.TextInput(attrs={'disabled': True}),
+            'description': forms.Textarea(attrs={'disabled': True}),
+        }
 
     def clean(self):
         cleaned_data = super(EventGroupForm, self).clean()
