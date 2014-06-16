@@ -1,7 +1,23 @@
 {% extends "base.html" %}
 {% load bootstrap %}
+{% load staticfiles %}
 
 {% block title %}Create Event{% endblock %}
+
+{% block extrahead %}
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+<script>
+    $(function() {
+        $('.js-datetimepicker').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            autoclose: true,
+        });
+    });
+</script>
+{% endblock extrahead %}
 
 {% block content %}
 
