@@ -21,8 +21,17 @@ class EventForm(forms.ModelForm):
         }
 
 class EventGroupForm(forms.ModelForm):
-    SELECT_CREATE_CHOICES = (('SEL', "Add to existing event group"),
-                             ('CRE', "Create new event group"))
+    """We extend this ModelForm to add the following features:
+
+      - enabled: a special boolean, if not set then the form is always valid
+                 and has no effect.
+      - event_group_select: rather than creating a new EventGroup the user can
+                            select an existing group.
+    """
+    SELECT = 'SEL'
+    CREATE = 'CRE'
+    SELECT_CREATE_CHOICES = ((SELECT, "Add to existing event group"),
+                             (CREATE, "Create new event group"))
 
     # Does the user want to add this Event to an EventGroup
     enabled = forms.BooleanField(label='Add to a group?',
@@ -48,32 +57,61 @@ class EventGroupForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'disabled': True}),
         }
 
+    def is_valid(self):
+        """Override the ModelForm is_valid so we can handle our special
+        behaviour. Our form is only valid if it is enabled. Even then it
+        depends if the user is selecting an EventGroup or creating one from
+        scratch.
+        """
+        valid = super(EventGroupForm, self).is_valid()
+        if self.is_enabled():
+            select_create = self.cleaned_data.get('select_create', None)
+            if select_create == self.CREATE:
+                return valid
+            elif select_create == self.SELECT and self.cleaned_data.get('event_group_select', None):
+                # So long as a event_group_select has been input
+                return True
+        else:
+            # Always valid if we are not enabled
+            return True
+        return False
+
     def clean(self):
+        """Used to validate the form over many fields"""
         cleaned_data = super(EventGroupForm, self).clean()
-        if 'enabled' in cleaned_data:
-            if 'form_enabled' in cleaned_data:
+        if self.is_enabled():
+            select_create = cleaned_data.get('select_create', None)
+            if select_create == self.CREATE:
                 return cleaned_data
-            elif 'select_enabled' in cleaned_data:
+            elif select_create == self.SELECT:
+                # Remove any errors in the form
                 self.errors['title'] = None
                 self.errors['description'] = None
                 if not cleaned_data.get('event_group_select', None):
-                    self.add_error('event_group_select', "Select an Event Group")
+                    # Set an error if event group is selected
+                    self.add_error('event_group_select', "This field is required.")
                 return cleaned_data
         else:
             return {}
 
 
     def get_event_group(self):
-        # Form has been completed and user has selected an event group
+        """Get the selected event group or create a new one
+
+        NOTE: if an EventGroup is created we don't commit it to the database
+              here, that is the responsibility of the view.
+        """
         valid = self.is_valid()
-        if 'enabled' in self.cleaned_data:
-            # Creating a new EventGroup
-            if valid and 'form_enabled' in self.cleaned_data:
+        if self.is_enabled():
+            select_create = self.cleaned_data.get('select_create', None)
+            if select_create == self.SELECT:
+                if 'event_group_select' in self.cleaned_data and self.cleaned_data['event_group_select']:
+                    return self.cleaned_data['event_group_select']
+                else:
+                    return None
+            elif valid and select_create == self.CREATE:
                 return self.save(commit=False)
-            elif 'select_enabled' in self.cleaned_data and 'event_group_select' in self.cleaned_data:
-                return self.cleaned_data['event_group_select']
         return None
 
     def is_enabled(self):
-        self.is_valid()
         return 'enabled' in self.cleaned_data
