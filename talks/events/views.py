@@ -11,7 +11,7 @@ from django import forms
 
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
-from .models import Event
+from .models import Event, EventGroup
 from .forms import EventForm, EventGroupForm
 
 logger = logging.getLogger(__name__)
@@ -77,9 +77,17 @@ def event(request, event_id):
     return render(request, 'events/event.html', context)
 
 
-def create_event(request):
+def create_event(request, group_id=None):
+    initial = dict()
+    if group_id:
+        try:
+            initial['event_group_select'] = EventGroup.objects.get(id=group_id)
+            initial['enabled'] = True
+        except EventGroup.DoesNotExist:
+            logger.warning("Tried to create new Event in nonexistant group ID: %s" % (group_id,))
+
     PrefixedEventForm = partial(EventForm, prefix='event')
-    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group')
+    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group', initial=initial)
 
     if request.method=='POST':
         context = {
