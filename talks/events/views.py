@@ -95,7 +95,7 @@ def create_event(request, group_id=None):
             'event_form': PrefixedEventForm(request.POST),
             'event_group_form': PrefixedEventGroupForm(request.POST),
         }
-        forms_valid = context['event_form'].is_valid and context['event_group_form'].is_valid()
+        forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
         if forms_valid:
             event_group = context['event_group_form'].get_event_group()
             event = context['event_form'].save(commit=False)
