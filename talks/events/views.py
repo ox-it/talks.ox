@@ -85,6 +85,7 @@ def create_event(request, group_id=None):
             initial['enabled'] = True
         except EventGroup.DoesNotExist:
             logger.warning("Tried to create new Event in nonexistant group ID: %s" % (group_id,))
+            raise Http404("Group does not exist")
 
     PrefixedEventForm = partial(EventForm, prefix='event')
     PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group', initial=initial)
