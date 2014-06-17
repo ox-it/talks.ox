@@ -19,7 +19,7 @@
 <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
     {{ event_group_form.enabled|bootstrap_horizontal }}
     {% with select_radio=event_group_form.select_create.0 form_radio=event_group_form.select_create.1 %}
-    <div class="event-group" style="display: none;">
+    <div class="event-group" {% if not event_group_form.show_form %}style="display: none;"{% endif %}>
         <div class="event-group-select panel panel-default">
             <div class="panel-heading">
                 <label for="{{ select_radio.id_for_label }}">
@@ -38,7 +38,7 @@
                     {{ form_radio.choice_label }}
                 </label>
             </div>
-            <div class="panel-body" style="display: none;">
+            <div class="panel-body" {% if not event_group_form.show_create_form %}style="display: none;"{% endif %}>
                 {{ event_group_form.title|bootstrap_horizontal }}
                 {{ event_group_form.description|bootstrap_horizontal }}
             </div>
