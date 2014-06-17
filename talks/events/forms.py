@@ -77,7 +77,7 @@ class EventGroupForm(forms.ModelForm):
         return False
 
     def show_form(self):
-        return bool(self.errors)
+        return bool(self.errors or self.initial)
 
     def show_create_form(self):
         if self.show_form():
