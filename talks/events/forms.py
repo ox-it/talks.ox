@@ -6,7 +6,7 @@ from .models import Event, EventGroup
 class EventForm(forms.ModelForm):
 
     class Meta:
-        fields = ('title', 'description', 'speakers', 'location', 'start', 'end')
+        fields = ('title', 'start', 'end', 'description', 'speakers', 'location')
         model = Event
         labels = {
             'description': 'Abstract',
@@ -16,6 +16,8 @@ class EventForm(forms.ModelForm):
         widgets = {
             'speakers': forms.TextInput,
             'location': forms.TextInput,
+            'start': forms.DateTimeInput(attrs={'class': 'js-datetimepicker'}),
+            'end': forms.DateTimeInput(attrs={'class': 'js-datetimepicker'}),
         }
 
 class EventGroupForm(forms.ModelForm):
