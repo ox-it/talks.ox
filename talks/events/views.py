@@ -103,7 +103,11 @@ def create_event(request, group_id=None):
                 event_group.save()
                 event.group = event_group
             event.save()
-            return HttpResponseRedirect(reverse('event', args=(event.id,)))
+            if 'another' in request.POST:
+                # Adding more events, redirect to the create event in existing group form
+                return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+            else:
+                return HttpResponseRedirect(reverse('event', args=(event.id,)))
     else:
         context = {
             'event_form': PrefixedEventForm(),
