@@ -7,8 +7,6 @@ $(function() {
             $('.event-group').slideUp(200);
         }
     });
-    // Trigger event
-    $('#id_event-group-enabled').trigger('change');
 
     // Register event to show create event group form
     $('.event-group input:radio').on('change', function(ev) {
@@ -16,12 +14,12 @@ $(function() {
         if (ev.target.value==="CRE") {
             $('.event-group-create .panel-body').slideDown(200);
             $('.event-group-create .form-control').prop("disabled", false);
+            $('.event-group-select .form-control').prop("disabled", true);
         } else {
             $('.event-group-create .form-control').prop("disabled", true);
+            $('.event-group-select .form-control').prop("disabled", false);
         }
     });
-    // Trigger event
-    $('.event-group input:radio:checked').trigger('change');
 
     // Initialise datetimepicker's
     $('.js-datetimepicker').datetimepicker({
