@@ -76,6 +76,14 @@ class EventGroupForm(forms.ModelForm):
             return True
         return False
 
+    def show_form(self):
+        return bool(self.errors)
+
+    def show_create_form(self):
+        if self.show_form():
+            return any([self.errors.get(field, None) for field in ['title', 'description']])
+        return False
+
     def clean(self):
         """Used to validate the form over many fields"""
         cleaned_data = super(EventGroupForm, self).clean()
@@ -85,8 +93,8 @@ class EventGroupForm(forms.ModelForm):
                 return cleaned_data
             elif select_create == self.SELECT:
                 # Remove any errors in the form
-                self.errors['title'] = None
-                self.errors['description'] = None
+                self.errors['title'] = self.error_class()
+                self.errors['description'] = self.error_class()
                 if not cleaned_data.get('event_group_select', None):
                     # Set an error if event group is selected
                     self.add_error('event_group_select', "This field is required.")
