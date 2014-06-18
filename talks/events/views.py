@@ -11,7 +11,7 @@ from django import forms
 
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
-from .models import Event
+from .models import Event, EventGroup
 from .forms import EventForm, EventGroupForm
 
 logger = logging.getLogger(__name__)
@@ -77,27 +77,37 @@ def event(request, event_id):
     return render(request, 'events/event.html', context)
 
 
-def create_event(request):
+def create_event(request, group_id=None):
+    initial = dict()
+    if group_id:
+        try:
+            initial['event_group_select'] = EventGroup.objects.get(id=group_id)
+            initial['enabled'] = True
+        except EventGroup.DoesNotExist:
+            logger.warning("Tried to create new Event in nonexistant group ID: %s" % (group_id,))
+            raise Http404("Group does not exist")
+
     PrefixedEventForm = partial(EventForm, prefix='event')
-    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group')
+    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group', initial=initial)
 
     if request.method=='POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
             'event_group_form': PrefixedEventGroupForm(request.POST),
         }
-        event_group = None
-        if context['event_group_form'].is_enabled():
+        forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
+        if forms_valid:
             event_group = context['event_group_form'].get_event_group()
-        else:
-            context['event_group_form'] = PrefixedEventGroupForm()
-        if context['event_form'].is_valid():
             event = context['event_form'].save(commit=False)
             if event_group:
                 event_group.save()
                 event.group = event_group
             event.save()
-            return HttpResponseRedirect(reverse('event', args=(event.id,)))
+            if 'another' in request.POST:
+                # Adding more events, redirect to the create event in existing group form
+                return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+            else:
+                return HttpResponseRedirect(reverse('event', args=(event.id,)))
     else:
         context = {
             'event_form': PrefixedEventForm(),

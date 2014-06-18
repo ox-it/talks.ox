@@ -13,6 +13,23 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
+DATETIME_INPUT_FORMATS = (
+    '%Y-%m-%d %H:%M:%S',     # '2006-10-25 14:30:59'
+    '%Y-%m-%d %H:%M:%S.%f',  # '2006-10-25 14:30:59.000200'
+    '%Y-%m-%d %H:%M',        # '2006-10-25 14:30'
+    '%Y-%m-%d',              # '2006-10-25'
+
+    # Transformed to dd/mm/yyyy for sane people
+    '%d/%m/%Y %H:%M:%S',     # '25/10/2006 14:30:59'
+    '%d/%m/%Y %H:%M:%S.%f',  # '25/10/2006 14:30:59.000200'
+    '%d/%m/%Y %H:%M',        # '25/10/2006 14:30'
+    '%d/%m/%Y',              # '25/10/2006'
+    '%d/%m/%y %H:%M:%S',     # '25/10/06 14:30:59'
+    '%d/%m/%y %H:%M:%S.%f',  # '25/10/06 14:30:59.000200'
+    '%d/%m/%y %H:%M',        # '25/10/06 14:30'
+    '%d/%m/%y',              # '25/10/06'
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
@@ -81,7 +98,8 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+# NOTE: disabled l10n to get the DATETIME_INPUT_FORMATS working
+USE_L10N = False
 
 USE_TZ = True
 

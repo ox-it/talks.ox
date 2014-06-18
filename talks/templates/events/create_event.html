@@ -5,18 +5,12 @@
 {% block title %}Create Event{% endblock %}
 
 {% block extrahead %}
+<script src="{% static "js/create-event.js"%}"></script>
+
 <!-- Date picker -->
 <link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
 
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
-<script>
-    $(function() {
-        $('.js-datetimepicker').datetimepicker({
-            format: 'yyyy-mm-dd hh:ii',
-            autoclose: true,
-        });
-    });
-</script>
 {% endblock extrahead %}
 
 {% block content %}
@@ -24,28 +18,44 @@
 <h1>Add Talk</h1>
 <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
     {{ event_group_form.enabled|bootstrap_horizontal }}
-    <div class="event-group ">
-        {{ event_group_form.form_enabled|bootstrap_horizontal }}
-        {{ event_group_form.select_enabled|bootstrap_horizontal }}
-        <div class="event-group-select">
-            {{ event_group_form.event_group_select|bootstrap_horizontal }}
+    {% with select_radio=event_group_form.select_create.0 form_radio=event_group_form.select_create.1 %}
+    <div class="event-group" {% if not event_group_form.show_form %}style="display: none;"{% endif %}>
+        <div class="event-group-select panel panel-default">
+            <div class="panel-heading">
+                <label for="{{ select_radio.id_for_label }}">
+                    {{ select_radio.tag }}
+                    {{ select_radio.choice_label }}
+                </label>
+            </div>
+            <div class="panel-body">
+                {{ event_group_form.event_group_select|bootstrap_horizontal }}
+            </div>
         </div>
-        <div class="event-group-create">
-            {{ event_group_form.title|bootstrap_horizontal }}
-            {{ event_group_form.description|bootstrap_horizontal }}
+        <div class="event-group-create panel panel-default">
+            <div class="panel-heading">
+                <label for="{{ form_radio.id_for_label }}">
+                    {{ form_radio.tag }}
+                    {{ form_radio.choice_label }}
+                </label>
+            </div>
+            <div class="panel-body" {% if not event_group_form.show_create_form %}style="display: none;"{% endif %}>
+                {{ event_group_form.title|bootstrap_horizontal }}
+                {{ event_group_form.description|bootstrap_horizontal }}
+            </div>
         </div>
         <hr>
     </div>
+    {% endwith %}
     {{ event_form|bootstrap_horizontal }}
     <div class="form-group">
         <div class="col-sm-2 col-lg-2">
         </div>
         <div class="col-sm-10 col-lg-10">
-            <button type="submit" class="btn btn-primary">Done</button>
-            <button type="button" class="btn btn-default">
+            <button type="submit" name="another" value="true" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus"></span>
-                Add Another Talk
+                Save and add another Talk
             </button>
+            <button type="submit" class="btn btn-primary">Done</button>
         </div>
     </div>
 </form>
