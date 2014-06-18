@@ -1,6 +1,18 @@
 from django import forms
+from django.utils.safestring import mark_safe
 
 from .models import Event, EventGroup
+
+
+class BootstrappedDateTimeWidget(forms.DateTimeInput):
+    def render(self, name, value, attrs=None):
+        html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs)
+        html = """<div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default js-open-calendar" type="button"><span class="glyphicon glyphicon-calendar"></span></button>
+                </span>
+        """ + html + "</div>"
+        return mark_safe(html)
 
 
 class EventForm(forms.ModelForm):
@@ -16,8 +28,8 @@ class EventForm(forms.ModelForm):
         widgets = {
             'speakers': forms.TextInput,
             'location': forms.TextInput,
-            'start': forms.DateTimeInput(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
-            'end': forms.DateTimeInput(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
+            'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
+            'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
 
 class EventGroupForm(forms.ModelForm):
