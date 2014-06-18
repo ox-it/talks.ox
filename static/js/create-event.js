@@ -1,10 +1,12 @@
+var animationTime = 200; // ms
+
 $(function() {
     // Register event to show event group forms
     $('#id_event-group-enabled').on('change', function(ev) {
         if (ev.target.checked) {
-            $('.event-group').slideDown(200);
+            $('.event-group').slideDown(animationTime);
         } else {
-            $('.event-group').slideUp(200);
+            $('.event-group').slideUp(animationTime);
         }
     });
 
@@ -12,7 +14,7 @@ $(function() {
     $('.event-group input:radio').on('change', function(ev) {
         var $target = $(ev.target);
         if (ev.target.value==="CRE") {
-            $('.event-group-create .panel-body').slideDown(200);
+            $('.event-group-create .panel-body').slideDown(animationTime);
             $('.event-group-create .form-control').prop("disabled", false);
             $('.event-group-select .form-control').prop("disabled", true);
         } else {
