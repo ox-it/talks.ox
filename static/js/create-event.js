@@ -30,7 +30,19 @@ $(function() {
     });
 
     // Set the default end-date to the start date when it is picked
-    $('.js-datetimepicker.event-start').datetimepicker().on('changeDate', function(ev){
-        $('.js-datetimepicker.event-end').datetimepicker('setDate', ev.date);
+    var startDateTimePicker = $('.js-datetimepicker.event-start');
+    startDateTimePicker.datetimepicker().on('changeDate', function(ev){
+        utcDate = startDateTimePicker.datetimepicker('getUTCDate');
+        // Set the StartDate to the current DAY -- don't specify hours
+        //
+        // Seems like the hours on start dates can cause some TZ issues
+        $('.js-datetimepicker.event-end').datetimepicker('setStartDate',
+            new Date(utcDate.getFullYear(), utcDate.getMonth(), utcDate.getDate())
+        );
     });
+
+    $('.js-open-calendar').on('click', function(ev) {
+        $(ev.target).parent().siblings('.js-datetimepicker').datetimepicker('show');
+    });
+
 });
