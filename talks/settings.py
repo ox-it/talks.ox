@@ -113,6 +113,8 @@ STATICFILES_DIRS = (
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = '/srv/talks/static/'
+
 
 TEMPLATE_DIRS = (
     (os.path.join(BASE_DIR, 'talks', 'templates')),
