@@ -21,6 +21,19 @@ class Speaker(models.Model):
     slug = models.SlugField()
     bio = models.TextField()
 
+    def to_dict(self):
+        result = {}
+        if self.id:
+            result['id'] = self.id
+        if self.name:
+            result['name'] = self.name
+        if self.slug:
+            result['slug'] = self.slug
+        if self.bio:
+            result['bio'] = self.bio
+        return result
+
+
     def __unicode__(self):
         return self.name
 
