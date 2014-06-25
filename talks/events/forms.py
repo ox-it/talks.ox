@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
-from .models import Event, EventGroup
+from .models import Event, EventGroup, Speaker
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -16,21 +16,25 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
 
 
 class EventForm(forms.ModelForm):
+    speaker_suggest = forms.CharField(
+        label="Speaker",
+        help_text="Type speakers name and select from the list."
+    )
 
     class Meta:
-        fields = ('title', 'start', 'end', 'description', 'speakers', 'location')
+        fields = ('title', 'start', 'end', 'description', 'location', 'speaker_suggest', 'speakers')
         model = Event
         labels = {
             'description': 'Abstract',
-            'speakers': 'Speaker',
             'location': 'Venue',
         }
         widgets = {
-            'speakers': forms.TextInput,
+            'speakers': forms.HiddenInput,
             'location': forms.TextInput,
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
+
 
 class EventGroupForm(forms.ModelForm):
     """We extend this ModelForm to add the following features:
@@ -135,3 +139,12 @@ class EventGroupForm(forms.ModelForm):
 
     def is_enabled(self):
         return 'enabled' in self.cleaned_data
+
+
+class SpeakerQuickAdd(forms.ModelForm):
+    class Meta:
+        fields = ('name',)
+        model = Speaker
+
+    class Media:
+        js = ('js/speaker-quick-add.js',)
