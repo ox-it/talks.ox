@@ -11,6 +11,9 @@
 <link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
 
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- form media -->
+{{ speaker_form.media }}
 {% endblock extrahead %}
 
 {% block content %}
@@ -48,9 +51,7 @@
     {% endwith %}
     {{ event_form|bootstrap_horizontal }}
     <div class="form-group">
-        <div class="col-sm-2 col-lg-2">
-        </div>
-        <div class="col-sm-10 col-lg-10">
+        <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
             <button type="submit" name="another" value="true" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus"></span>
                 Save and add another Talk
@@ -59,4 +60,24 @@
         </div>
     </div>
 </form>
+<div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+    <div class="speakers">
+        <ul class="js-speakers-list">
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Add new speaker
+        </div>
+        <div class="panel-body">
+            <div>
+            <form class="js-speaker-form form-inline">
+                {{ speaker_form|bootstrap_horizontal }}
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+            <div class="js-speaker-form-errors alert alert-danger hidden">
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
