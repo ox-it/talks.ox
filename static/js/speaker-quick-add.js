@@ -18,10 +18,15 @@ $(function() {
     }
     var csrftoken = getCookie('csrftoken');
 
+    var speakerTemplate = _.template("<li><%= name %></li>");
+    var separator = ', ';
     function addSpeaker(speaker) {
         var $speakers = $('#id_event-speakers');
-        var currentSpeakers = $speakers.val();
-        $speakers.val(currentSpeakers + " " + speaker.id);
+        var speakerIDs = $speakers.val().split(separator);
+        speakerIDs.push(speaker.id);
+        $speakers.val(speakerIDs.join(separator));
+        var $speakersList = $('.js-speakers-list');
+        $speakersList.append(speakerTemplate(speaker));
     }
 
     $speakerForm = $('.js-speaker-form');
