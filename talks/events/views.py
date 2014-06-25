@@ -91,10 +91,11 @@ def create_event(request, group_id=None):
     PrefixedEventForm = partial(EventForm, prefix='event')
     PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group', initial=initial)
 
-    if request.method=='POST':
+    if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
             'event_group_form': PrefixedEventGroupForm(request.POST),
+            'speaker_form': SpeakerQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
         if forms_valid:
@@ -104,6 +105,8 @@ def create_event(request, group_id=None):
                 event_group.save()
                 event.group = event_group
             event.save()
+            # *Now* we can save the many2many relations
+            context['event_form'].save_m2m()
             if 'another' in request.POST:
                 # Adding more events, redirect to the create event in existing group form
                 return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
@@ -131,8 +134,6 @@ def suggest_speaker(request):
 # TODO: require auth
 @require_http_methods(["POST"])
 def create_speaker(request):
-    print "create speaker"
-    print request
     request_json = json.loads(request.body)
     speaker = Speaker(**request_json)
     speaker.save()
