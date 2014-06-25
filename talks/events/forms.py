@@ -24,11 +24,17 @@ class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
         return super(ModelCommaSeparatedChoiceField, self).clean(value)
 
 
+class SpeakerTypeaheadInput(forms.TextInput):
+    class Media:
+        js = ('js/speaker-typeahead.js',)
+
+
 class EventForm(forms.ModelForm):
     speaker_suggest = forms.CharField(
         label="Speaker",
         help_text="Type speakers name and select from the list.",
         required=False,
+        widget=SpeakerTypeaheadInput,
     )
     speakers = ModelCommaSeparatedChoiceField(
         queryset=Speaker.objects.all(),
