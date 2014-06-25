@@ -101,4 +101,4 @@ def git_branch(name):
     with cd(env.remote_git_checkout):
         run('git fetch origin')
         run('git checkout origin/%s' % name)
-        return run('git rev-parse HEAD')
+        return run('git rev-parse --short HEAD')
