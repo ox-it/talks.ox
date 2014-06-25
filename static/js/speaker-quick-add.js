@@ -22,7 +22,8 @@ $(function() {
     var separator = ', ';
     function addSpeaker(speaker) {
         var $speakers = $('#id_event-speakers');
-        var speakerIDs = $speakers.val().split(separator);
+        var speakerIDs = $speakers.val();
+        speakerIDs = speakerIDs!=='' ? speakerIDs.split(separator) : [];
         speakerIDs.push(speaker.id);
         $speakers.val(speakerIDs.join(separator));
         var $speakersList = $('.js-speakers-list');
