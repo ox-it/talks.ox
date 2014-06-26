@@ -8,7 +8,7 @@ from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
                           events_for_month, events_for_year, create_event,
-                          create_speaker)
+                          create_speaker, suggest_speaker)
 from api.views import EventViewSet
 
 router = routers.DefaultRouter()
@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/speakers/new$', create_speaker, name='create-speaker'),
+    url(r'^events/speakers/suggest$', suggest_speaker, name='suggest-speaker'),
     url(r'^events/new$', create_event, name='create-event'),
     url(r'^events/groups/(?P<group_id>\d+)/new$', create_event, name='create-event-in-group'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),

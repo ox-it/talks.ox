@@ -126,9 +126,9 @@ def create_event(request, group_id=None):
 @require_http_methods(["GET"])
 def suggest_speaker(request):
     query = request.GET.get('q', '')
-    speakers = Speaker.suggestions(query)
-    return HttpResponse(json.dumps(speakers.to_dict()),
-                        content_type="application/json")
+    speakers = Speaker.objects.suggestions(query)
+    speakers = json.dumps({'speakers': [s.to_dict() for s in speakers]})
+    return HttpResponse(speakers, content_type="application/json")
 
 
 # TODO: require auth

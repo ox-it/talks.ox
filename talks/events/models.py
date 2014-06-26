@@ -16,10 +16,18 @@ class EventGroup(models.Model):
         return self.title
 
 
+class SpeakerManager(models.Manager):
+
+    def suggestions(self, query):
+        return self.filter(name__icontains=query)
+
+
 class Speaker(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
     bio = models.TextField()
+
+    objects = SpeakerManager()
 
     def to_dict(self):
         result = {}
