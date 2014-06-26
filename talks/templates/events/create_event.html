@@ -12,7 +12,11 @@
 
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
 
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
 <!-- form media -->
+{{ event_form.media }}
 {{ speaker_form.media }}
 {% endblock extrahead %}
 

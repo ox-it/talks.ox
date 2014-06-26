@@ -34,7 +34,7 @@ class EventForm(forms.ModelForm):
         label="Speaker",
         help_text="Type speakers name and select from the list.",
         required=False,
-        widget=SpeakerTypeaheadInput,
+        widget=SpeakerTypeaheadInput(attrs={'class': 'js-speakers-typeahead'}),
     )
     speakers = ModelCommaSeparatedChoiceField(
         queryset=Speaker.objects.all(),
