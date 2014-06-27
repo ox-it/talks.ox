@@ -112,6 +112,10 @@ def create_event(request, group_id=None):
                 return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
             else:
                 return HttpResponseRedirect(reverse('event', args=(event.id,)))
+        else:
+            if 'speakers' in context['event_form'].cleaned_data:
+                context['selected_speakers'] = Speaker.objects.filter(
+                    id__in=context['event_form'].cleaned_data['speakers'])
     else:
         context = {
             'event_form': PrefixedEventForm(),

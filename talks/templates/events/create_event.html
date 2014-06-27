@@ -61,6 +61,11 @@
     {{ event_form.location|bootstrap_horizontal }}
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-speakers-list">
+            {% for speaker in selected_speakers %}
+            <a href="#" data-id="{{ speaker.id }}" class="list-group-item list-group-item-info fade in">
+                <span class="badge">-</span>{{ speaker.name }}
+            </a>
+            {% endfor %}
         </div>
     </div>
     {{ event_form.speaker_suggest|bootstrap_horizontal }}
