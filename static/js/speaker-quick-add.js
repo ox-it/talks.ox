@@ -18,20 +18,62 @@ $(function() {
     }
     var csrftoken = getCookie('csrftoken');
 
-    var speakerTemplate = _.template("<li><%= name %></li>");
+    // Give a default radix of 10
+    function toInt(i) { return parseInt(i, 10); }
+
+    // Add speaker and update the UI
+    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="list-group-item list-group-item-info fade in"><span class="badge">-</span><%= name %></a>');
     var separator = ', ';
+    var $speakers = $('#id_event-speakers');
+    var $speakersList = $('.js-speakers-list');
     function addSpeaker(speaker) {
-        var $speakers = $('#id_event-speakers');
         var speakerIDs = $speakers.val();
-        speakerIDs = speakerIDs!=='' ? speakerIDs.split(separator) : [];
-        speakerIDs.push(speaker.id);
+        speakerIDs = speakerIDs!=='' ? _.map(speakerIDs.split(separator), toInt) : [];
+        if (!_.contains(speakerIDs, speaker.id)) {
+            speakerIDs.push(speaker.id);
+            $speakers.val(speakerIDs.join(separator));
+            $speakersList.append(speakerTemplate(speaker));
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Export this as it's used by speaker-typeahead.js
+    document.addSpeaker = addSpeaker;
+
+    var removalCallbacks = [];
+    function listenForRemoval(fn) {
+        removalCallbacks.push(fn);
+    }
+    // Export this as it's used by speaker-typeahead.js
+    document.listenForRemoval = listenForRemoval;
+
+    // Remove speaker and update the UI
+    function removeSpeaker(id) {
+        var speakerIDs = $speakers.val();
+        speakerIDs = speakerIDs!=='' ? _.map(speakerIDs.split(separator), toInt) : [];
+        speakerIDs = _.without(speakerIDs, id);
         $speakers.val(speakerIDs.join(separator));
-        var $speakersList = $('.js-speakers-list');
-        $speakersList.append(speakerTemplate(speaker));
+        _.each(removalCallbacks, function(cb) {
+            cb.apply(this, [id]);
+        });
     }
 
+    $speakersList.on('click', 'a', function(ev) {
+        ev.preventDefault();
+        $speaker = $(ev.target);
+        removeSpeaker($speaker.data('id'));
+        $speaker.remove();
+    });
+
+    $('.js-create-speaker').on('click', function(ev) {
+        ev.preventDefault();
+        $('.js-speaker-panel').removeClass('hidden');
+    });
+
     $speakerForm = $('.js-speaker-form');
-    $speakerForm.on('submit', function(ev) {
+    $speakerSubmit = $('.js-submit-speaker');
+    $speakerSubmit.on('click', function(ev) {
         $.ajax({
             type: 'POST',
             url: '/events/speakers/new',
