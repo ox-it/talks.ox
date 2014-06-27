@@ -16,8 +16,8 @@
 <script src="{% static "js/typeahead.bundle.js"%}"></script>
 
 <!-- form media -->
-{{ event_form.media }}
 {{ speaker_form.media }}
+{{ event_form.media }}
 {% endblock extrahead %}
 
 {% block content %}
@@ -53,35 +53,43 @@
         <hr>
     </div>
     {% endwith %}
-    {{ event_form|bootstrap_horizontal }}
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-            <button type="submit" name="another" value="true" class="btn btn-default">
-                <span class="glyphicon glyphicon-plus"></span>
-                Save and add another Talk
-            </button>
-            <button type="submit" class="btn btn-primary">Done</button>
+    {{ event_form.speakers|bootstrap_horizontal }}
+    {{ event_form.title|bootstrap_horizontal }}
+    {{ event_form.start|bootstrap_horizontal }}
+    {{ event_form.end|bootstrap_horizontal }}
+    {{ event_form.description|bootstrap_horizontal }}
+    {{ event_form.location|bootstrap_horizontal }}
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="list-group js-speakers-list">
         </div>
     </div>
-</form>
-<div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-    <div class="speakers">
-        <ul class="js-speakers-list">
-        </ul>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Add new speaker
+    {{ event_form.speaker_suggest|bootstrap_horizontal }}
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="list-group js-suggested-speakers-list">
         </div>
-        <div class="panel-body">
-            <div>
-            <form class="js-speaker-form form-inline">
-                {{ speaker_form|bootstrap_horizontal }}
-                <button type="submit" class="btn btn-primary">Add</button>
-            </form>
-            <div class="js-speaker-form-errors alert alert-danger hidden">
+    </div>
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="#" class="js-create-speaker">Create new speaker</a>
+            </div>
+            <div class="panel-body js-speaker-panel hidden">
+                <div class="js-speaker-form form-inline">
+                    {{ speaker_form|bootstrap_horizontal }}
+                    <a class="btn btn-primary js-submit-speaker">Add</a>
+                </div>
+                <div class="js-speaker-form-errors alert alert-danger hidden">
+                </div>
             </div>
         </div>
-    </div>
-</div>
-{% endblock %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+                <button type="submit" name="another" value="true" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Save and add another Talk
+                </button>
+                <button type="submit" class="btn btn-primary">Done</button>
+            </div>
+        </div>
+    </form>
+    {% endblock %}
