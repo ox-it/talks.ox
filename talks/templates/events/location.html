@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Location{% endblock %}
+
+{% block extrahead %}
+<script src="{% static "js/typeahead.bundle.js" %}"></script>
+{% endblock extrahead %}
+
+{% block content %}
+
+<script type="text/javascript">
+var engine = new Bloodhound({
+  name: 'engine',
+  remote: 'http://127.0.0.1:5000/places/suggest?q=%QUERY',
+  datumTokenizer: function(d) {
+    return Bloodhound.tokenizers.whitespace(d.val);
+  },
+  queryTokenizer: Bloodhound.tokenizers.whitespace
+});
+/*
+    var location = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+          url: 'http://127.0.0.1:5000/places/suggest?q=%QUERY',
+          filter: function (results) {
+                      return $.map(results.results, function (result) {
+                          return {
+                              value: result.name
+                          };
+                      });
+                  }
+      }
+    });
+ 
+    location.initialize();
+ */   
+ 
+ engine.initialize();
+ 
+ console.log(engine);
+ 
+    $('#suggestplaces .typeahead').typeahead(null, {
+      name: 'location',
+      displayKey: 'name',
+      source: engine.ttAdapter()
+    });
+</script>
+
+    <div class="form-group">
+        <div id="suggestplaces">
+          <input class="typeahead" type="text" placeholder="Location">
+        </div>
+    </div>
+{% endblock %}

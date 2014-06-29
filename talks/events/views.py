@@ -114,3 +114,7 @@ def create_event(request, group_id=None):
             'event_group_form': PrefixedEventGroupForm(),
         }
     return render(request, 'events/create_event.html', context)
+
+
+def location(request):
+    return render(request, 'events/location.html', dict())
