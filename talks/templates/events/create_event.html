@@ -12,6 +12,13 @@
 
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
 
+<script>
+    document.speakerConfig = {
+        suggestURL: "{% url 'suggest-speaker' %}",
+        createURL: "{% url 'create-speaker' %}",
+    };
+</script>
+
 <!-- Typeahead.js -->
 <script src="{% static "js/typeahead.bundle.js"%}"></script>
 

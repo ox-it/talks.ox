@@ -88,7 +88,7 @@ $(function() {
     $speakerSubmit.on('click', function(ev) {
         $.ajax({
             type: 'POST',
-            url: '/events/speakers/new',
+            url: document.speakerConfig.createURL,
             data: JSON.stringify({
                 name: $speakerForm.find('#id_name').val(),
                 email_address: $speakerForm.find('#id_email_address').val(),

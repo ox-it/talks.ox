@@ -3,7 +3,7 @@ $(function() {
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: '/events/speakers/suggest?q=%QUERY',
+            url: document.speakerConfig.suggestURL+"?q=%QUERY",
             filter: function(response) {
                 return response.speakers;
             },
