@@ -26,6 +26,7 @@ class Speaker(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
     bio = models.TextField()
+    email_address = models.EmailField(max_length=254)
 
     objects = SpeakerManager()
 
@@ -39,6 +40,8 @@ class Speaker(models.Model):
             result['slug'] = self.slug
         if self.bio:
             result['bio'] = self.bio
+        if self.email_address:
+            result['email'] = self.email_address
         return result
 
 
