@@ -24,13 +24,21 @@ $(function() {
             });
         });
     });
-    $suggestedSpeakers.on('click', '.js-speaker-suggestion', function(ev) {
-        ev.preventDefault();
-        var $suggestion = $(ev.target);
+    function addSpeakerElement(el) {
+        var $suggestion = $(el);
         $suggestion.addClass('disabled');
         var speakerID = $suggestion.data('id');
         var speaker = cachedSuggestions[speakerID];
         document.addSpeaker(speaker);
+    }
+    $suggestedSpeakers.on('click', '.js-speaker-suggestion', function(ev) {
+        ev.preventDefault();
+        addSpeakerElement(ev.target);
+    });
+    $suggestedSpeakers.on('click', '.js-speaker-suggestion span', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        addSpeakerElement(ev.target.parentNode);
     });
     document.listenForRemoval(function(id) {
         $suggestedSpeakers.find("[data-id='"+id+"']").removeClass('disabled');

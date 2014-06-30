@@ -59,11 +59,23 @@ $(function() {
         });
     }
 
-    $speakersList.on('click', 'a', function(ev) {
-        ev.preventDefault();
-        $speaker = $(ev.target);
+    function removeSpeakerElement(el) {
+        $speaker = $(el);
         removeSpeaker($speaker.data('id'));
         $speaker.remove();
+    }
+
+    $speakersList.on('click', 'a', function(ev) {
+        ev.preventDefault();
+        removeSpeakerElement(ev.target);
+    });
+
+    $speakersList.on('click', 'a span', function(ev) {
+        // If they don't click the <a> but click the span in the <a>
+        ev.preventDefault();
+        ev.stopPropagation();
+        // Parent node is the <a>
+        removeSpeakerElement(ev.target.parentNode);
     });
 
     $('.js-create-speaker').on('click', function(ev) {
