@@ -167,7 +167,7 @@ class EventGroupForm(forms.ModelForm):
 
 class SpeakerQuickAdd(forms.ModelForm):
     class Meta:
-        fields = ('name',)
+        fields = ('name', 'email_address')
         model = Speaker
 
     class Media:

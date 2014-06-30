@@ -11,7 +11,7 @@ $(function() {
     });
     speakersBH.initialize();
 
-    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %></a>');
+    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %> - <%= email %></a>');
     var $suggestedSpeakers = $('.js-suggested-speakers-list');
     var cachedSuggestions = {};
     $('.js-speakers-typeahead').on('keyup', function(ev) {
