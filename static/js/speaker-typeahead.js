@@ -39,15 +39,29 @@ $(function() {
     var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %> - <%= email_address %></a>');
     var suggestedSpeakers = $('.js-suggested-speakers-list');
     var typeaheadSpeakers = $('.js-speakers-typeahead');
-    var cachedSuggestions = {};
+    var cachedSpeakers = {};
     var cbSpeakerSuggest = function(suggestions) {
         suggestedSpeakers.html('');
         _.each(suggestions, function(suggestion) {
-            cachedSuggestions[suggestion.id] = suggestion;
+            cachedSpeakers[suggestion.id] = suggestion;
             suggestedSpeakers.append(speakerTemplate(suggestion));
         });
     };
 
-    new Suggester(speakerQueryUrl, suggestedSpeakers, typeaheadSpeakers, cbSpeakerSuggest, cachedSuggestions);
+    new Suggester(speakerQueryUrl, suggestedSpeakers, typeaheadSpeakers, cbSpeakerSuggest, cachedSpeakers);
 
+    var topicQueryUrl = "http://talks-dev.oucs.ox.ac.uk/topics/suggest?q=%QUERY";
+    var topicTemplate = _.template('<a href="#" data-id="<%= uri %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= prefLabel %></a>');
+    var suggestedTopics = $('.js-suggested-topics-list');
+    var typeaheadTopics = $('.js-topics-typeahead');
+    var cachedTopics = {};
+    var cbTopicSuggest = function(suggestions) {
+        suggestedSpeakers.html('');
+        _.each(suggestions[1].concepts, function(suggestion) {
+            cachedTopics[suggestion.uri] = suggestion;
+            suggestedSpeakers.append(topicTemplate(suggestion));
+        });
+    };
+
+    new Suggester(topicQueryUrl, suggestedTopics, typeaheadTopics, cbTopicSuggest, cachedTopics);
 });
