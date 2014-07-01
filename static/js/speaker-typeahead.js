@@ -23,7 +23,7 @@ $(function() {
     });
     function addSpeakerElement(el) {
         var $suggestion = $(el);
-        $suggestion.addClass('disabled');
+        $suggestion.addClass('hidden');
         var speakerID = $suggestion.data('id');
         var speaker = cachedSuggestions[speakerID];
         document.addSpeaker(speaker);
@@ -38,6 +38,6 @@ $(function() {
         addSpeakerElement(ev.target.parentNode);
     });
     document.listenForRemoval(function(id) {
-        $suggestedSpeakers.find("[data-id='"+id+"']").removeClass('disabled');
+        $suggestedSpeakers.find("[data-id='"+id+"']").removeClass('hidden');
     });
 });
