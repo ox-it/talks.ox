@@ -66,6 +66,24 @@
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.description|bootstrap_horizontal }}
     {{ event_form.location|bootstrap_horizontal }}
+
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="list-group js-topics-list">
+            {% for topic in selected_topics %}
+            <a href="#" data-id="{{ topic.url }}" class="list-group-item list-group-item-info fade in">
+                <span class="badge">-</span>{{ topic.prefLabel }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {{ event_form.topic_suggest|bootstrap_horizontal }}
+
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="list-group js-suggested-topics-list">
+        </div>
+    </div>
+
+
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-speakers-list">
             {% for speaker in selected_speakers %}
@@ -76,10 +94,12 @@
         </div>
     </div>
     {{ event_form.speaker_suggest|bootstrap_horizontal }}
+
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-suggested-speakers-list">
         </div>
     </div>
+
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="panel panel-default">
             <div class="panel-heading">

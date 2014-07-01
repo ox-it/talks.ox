@@ -2,6 +2,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 from .models import Event, EventGroup, Speaker
+from talks.events.models import Tag
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -29,6 +30,11 @@ class SpeakerTypeaheadInput(forms.TextInput):
         js = ('js/speaker-typeahead.js',)
 
 
+class TopicTypeaheadInput(forms.TextInput):
+    class Media:
+        js = ('js/speaker-typeahead.js',)
+
+
 class EventForm(forms.ModelForm):
     speaker_suggest = forms.CharField(
         label="Speaker",
@@ -40,8 +46,20 @@ class EventForm(forms.ModelForm):
         queryset=Speaker.objects.all(),
         required=False)
 
+    topic_suggest = forms.CharField(
+        label="Topic",
+        help_text="Type topic name and select from the list",
+        required=False,
+        widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
+    )
+    topics = ModelCommaSeparatedChoiceField(
+        queryset=Tag.objects.all(),
+        required=False
+    )
+
     class Meta:
-        fields = ('title', 'start', 'end', 'description', 'location', 'speaker_suggest', 'speakers')
+        fields = ('title', 'start', 'end', 'description', 'location', 'speaker_suggest', 'speakers',
+                  'topic_suggest', 'topics')
         model = Event
         labels = {
             'description': 'Abstract',
