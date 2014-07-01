@@ -22,7 +22,7 @@ $(function() {
     function toInt(i) { return parseInt(i, 10); }
 
     // Add speaker and update the UI
-    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="list-group-item list-group-item-info fade in"><span class="badge">-</span><%= name %> - <%= email %></a>');
+    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="list-group-item list-group-item-info fade in"><span class="badge">-</span><%= name %> - <%= email_address %></a>');
     var separator = ', ';
     var $speakers = $('#id_event-speakers');
     var $speakersList = $('.js-speakers-list');

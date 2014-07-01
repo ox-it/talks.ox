@@ -7,9 +7,9 @@ from haystack.views import FacetedSearchView
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
-                          events_for_month, events_for_year, create_event,
-                          create_speaker, suggest_speaker)
-from api.views import EventViewSet
+                          events_for_month, events_for_year, create_event)
+
+from api.views import EventViewSet, create_speaker, suggest_speaker
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)

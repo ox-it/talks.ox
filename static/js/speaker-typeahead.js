@@ -4,14 +4,11 @@ $(function() {
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
             url: document.speakerConfig.suggestURL+"?q=%QUERY",
-            filter: function(response) {
-                return response.speakers;
-            },
         }
     });
     speakersBH.initialize();
 
-    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %> - <%= email %></a>');
+    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %> - <%= email_address %></a>');
     var $suggestedSpeakers = $('.js-suggested-speakers-list');
     var cachedSuggestions = {};
     $('.js-speakers-typeahead').on('keyup', function(ev) {

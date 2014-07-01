@@ -1,13 +1,11 @@
 import logging
-import json
 
 from datetime import date
 from functools import partial
 
-from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from talks.api_ox.query import get_info, get_oxford_date
@@ -123,23 +121,3 @@ def create_event(request, group_id=None):
             'speaker_form': SpeakerQuickAdd(),
         }
     return render(request, 'events/create_event.html', context)
-
-
-# These views are typically used by ajax
-
-@require_http_methods(["GET"])
-def suggest_speaker(request):
-    query = request.GET.get('q', '')
-    speakers = Speaker.objects.suggestions(query)
-    speakers = json.dumps({'speakers': [s.to_dict() for s in speakers]})
-    return HttpResponse(speakers, content_type="application/json")
-
-
-# TODO: require auth
-@require_http_methods(["POST"])
-def create_speaker(request):
-    request_json = json.loads(request.body)
-    speaker = Speaker(**request_json)
-    speaker.save()
-    return HttpResponse(json.dumps(speaker.to_dict()),
-                        content_type="application/json")

@@ -30,21 +30,6 @@ class Speaker(models.Model):
 
     objects = SpeakerManager()
 
-    def to_dict(self):
-        result = {}
-        if self.id:
-            result['id'] = self.id
-        if self.name:
-            result['name'] = self.name
-        if self.slug:
-            result['slug'] = self.slug
-        if self.bio:
-            result['bio'] = self.bio
-        if self.email_address:
-            result['email'] = self.email_address
-        return result
-
-
     def __unicode__(self):
         return self.name
 
