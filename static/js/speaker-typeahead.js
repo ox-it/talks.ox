@@ -1,43 +1,53 @@
 $(function() {
-    var speakersBH = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        remote: {
-            url: document.speakerConfig.suggestURL+"?q=%QUERY",
-        }
-    });
-    speakersBH.initialize();
 
-    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %> - <%= email_address %></a>');
-    var $suggestedSpeakers = $('.js-suggested-speakers-list');
-    var cachedSuggestions = {};
-    $('.js-speakers-typeahead').on('keyup', function(ev) {
-        var query = ev.target.value;
-        speakersBH.get(query, function(suggestions) {
-            $suggestedSpeakers.html('');
-            _.each(suggestions, function(suggestion) {
-                cachedSuggestions[suggestion.id] = suggestion;
-                $suggestedSpeakers.append(speakerTemplate(suggestion));
-            });
+    function Suggester(queryUrl, targetSuggestion, typeaheadBox, callbackTypeahead, cachedSuggestions) {
+        var bh = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: queryUrl
+            }
         });
-    });
-    function addSpeakerElement(el) {
-        var $suggestion = $(el);
-        $suggestion.addClass('hidden');
-        var speakerID = $suggestion.data('id');
-        var speaker = cachedSuggestions[speakerID];
-        document.addSpeaker(speaker);
+        bh.initialize();
+
+        typeaheadBox.on('keyup', function(ev) {
+            bh.get(ev.target.value, callbackTypeahead);
+        });
+
+        function addElement(el) {
+            var $suggestion = $(el);
+            $suggestion.addClass('hidden');
+            var speakerID = $suggestion.data('id');
+            var speaker = cachedSuggestions[speakerID];
+            document.addSpeaker(speaker);
+        }
+        targetSuggestion.on('click', '.js-speaker-suggestion', function(ev) {
+            ev.preventDefault();
+            addElement(ev.target);
+        });
+        targetSuggestion.on('click', '.js-speaker-suggestion span', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            addElement(ev.target.parentNode);
+        });
+        document.listenForRemoval(function(id) {
+            targetSuggestion.find("[data-id='"+id+"']").removeClass('hidden');
+        });
     }
-    $suggestedSpeakers.on('click', '.js-speaker-suggestion', function(ev) {
-        ev.preventDefault();
-        addSpeakerElement(ev.target);
-    });
-    $suggestedSpeakers.on('click', '.js-speaker-suggestion span', function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        addSpeakerElement(ev.target.parentNode);
-    });
-    document.listenForRemoval(function(id) {
-        $suggestedSpeakers.find("[data-id='"+id+"']").removeClass('hidden');
-    });
+
+    var speakerQueryUrl = document.speakerConfig.suggestURL+"?q=%QUERY";
+    var speakerTemplate = _.template('<a href="#" data-id="<%= id %>" class="js-speaker-suggestion list-group-item"><span class="badge">+</span><%= name %> - <%= email_address %></a>');
+    var suggestedSpeakers = $('.js-suggested-speakers-list');
+    var typeaheadSpeakers = $('.js-speakers-typeahead');
+    var cachedSuggestions = {};
+    var cbSpeakerSuggest = function(suggestions) {
+        suggestedSpeakers.html('');
+        _.each(suggestions, function(suggestion) {
+            cachedSuggestions[suggestion.id] = suggestion;
+            suggestedSpeakers.append(speakerTemplate(suggestion));
+        });
+    };
+
+    new Suggester(speakerQueryUrl, suggestedSpeakers, typeaheadSpeakers, cbSpeakerSuggest, cachedSuggestions);
+
 });
