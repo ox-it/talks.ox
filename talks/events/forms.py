@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
-from .models import Event, EventGroup
+from .models import Event, EventGroup, Speaker
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -15,22 +15,44 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
         return mark_safe(html)
 
 
+class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
+    widget = forms.HiddenInput
+
+    def clean(self, value):
+        if value is not None:
+            value = [item.strip() for item in value.split(",")]
+        return super(ModelCommaSeparatedChoiceField, self).clean(value)
+
+
+class SpeakerTypeaheadInput(forms.TextInput):
+    class Media:
+        js = ('js/speaker-typeahead.js',)
+
+
 class EventForm(forms.ModelForm):
+    speaker_suggest = forms.CharField(
+        label="Speaker",
+        help_text="Type speakers name and select from the list.",
+        required=False,
+        widget=SpeakerTypeaheadInput(attrs={'class': 'js-speakers-typeahead'}),
+    )
+    speakers = ModelCommaSeparatedChoiceField(
+        queryset=Speaker.objects.all(),
+        required=False)
 
     class Meta:
-        fields = ('title', 'start', 'end', 'description', 'speakers', 'location')
+        fields = ('title', 'start', 'end', 'description', 'location', 'speaker_suggest', 'speakers')
         model = Event
         labels = {
             'description': 'Abstract',
-            'speakers': 'Speaker',
             'location': 'Venue',
         }
         widgets = {
-            'speakers': forms.TextInput,
             'location': forms.TextInput,
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
+
 
 class EventGroupForm(forms.ModelForm):
     """We extend this ModelForm to add the following features:
@@ -47,6 +69,7 @@ class EventGroupForm(forms.ModelForm):
 
     # Does the user want to add this Event to an EventGroup
     enabled = forms.BooleanField(label='Add to a group?',
+                                 required=False,
                                  widget=forms.CheckboxInput(attrs={'autocomplete': 'off'}))
 
 
@@ -88,13 +111,19 @@ class EventGroupForm(forms.ModelForm):
             return True
         return False
 
+    @property
     def show_form(self):
-        return bool(self.errors or self.initial)
+        return bool(self.is_enabled())
 
     def show_create_form(self):
         if self.show_form():
             return any([self.errors.get(field, None) for field in ['title', 'description']])
         return False
+
+    def remove_errors(self):
+        """Remove any errors in the form for when it's not enabled"""
+        self.errors['title'] = self.error_class()
+        self.errors['description'] = self.error_class()
 
     def clean(self):
         """Used to validate the form over many fields"""
@@ -104,14 +133,13 @@ class EventGroupForm(forms.ModelForm):
             if select_create == self.CREATE:
                 return cleaned_data
             elif select_create == self.SELECT:
-                # Remove any errors in the form
-                self.errors['title'] = self.error_class()
-                self.errors['description'] = self.error_class()
+                self.remove_errors()
                 if not cleaned_data.get('event_group_select', None):
                     # Set an error if event group is selected
                     self.add_error('event_group_select', "This field is required.")
                 return cleaned_data
         else:
+            self.remove_errors()
             return {}
 
 
@@ -134,4 +162,13 @@ class EventGroupForm(forms.ModelForm):
         return None
 
     def is_enabled(self):
-        return 'enabled' in self.cleaned_data
+        return 'enabled' in self.cleaned_data and self.cleaned_data['enabled']
+
+
+class SpeakerQuickAdd(forms.ModelForm):
+    class Meta:
+        fields = ('name', 'email_address')
+        model = Speaker
+
+    class Media:
+        js = ('js/speaker-quick-add.js',)

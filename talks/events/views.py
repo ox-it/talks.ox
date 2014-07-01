@@ -7,12 +7,11 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django import forms
 
 from talks.api_ox.query import get_info, get_oxford_date
 from talks.api_ox.api import ApiException
-from .models import Event, EventGroup
-from .forms import EventForm, EventGroupForm
+from .models import Event, EventGroup, Speaker
+from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 
 logger = logging.getLogger(__name__)
 
@@ -90,10 +89,11 @@ def create_event(request, group_id=None):
     PrefixedEventForm = partial(EventForm, prefix='event')
     PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group', initial=initial)
 
-    if request.method=='POST':
+    if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
             'event_group_form': PrefixedEventGroupForm(request.POST),
+            'speaker_form': SpeakerQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
         if forms_valid:
@@ -103,14 +103,21 @@ def create_event(request, group_id=None):
                 event_group.save()
                 event.group = event_group
             event.save()
+            # *Now* we can save the many2many relations
+            context['event_form'].save_m2m()
             if 'another' in request.POST:
                 # Adding more events, redirect to the create event in existing group form
                 return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
             else:
                 return HttpResponseRedirect(reverse('event', args=(event.id,)))
+        else:
+            if 'speakers' in context['event_form'].cleaned_data:
+                context['selected_speakers'] = Speaker.objects.filter(
+                    id__in=context['event_form'].cleaned_data['speakers'])
     else:
         context = {
             'event_form': PrefixedEventForm(),
             'event_group_form': PrefixedEventGroupForm(),
+            'speaker_form': SpeakerQuickAdd(),
         }
     return render(request, 'events/create_event.html', context)

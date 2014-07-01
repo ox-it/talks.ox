@@ -1,4 +1,3 @@
-from datetime import date
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from haystack.forms import FacetedSearchForm
@@ -9,7 +8,8 @@ from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
                           events_for_month, events_for_year, create_event)
-from api.views import EventViewSet
+
+from api.views import EventViewSet, create_speaker, suggest_speaker
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
+    url(r'^events/speakers/new$', create_speaker, name='create-speaker'),
+    url(r'^events/speakers/suggest$', suggest_speaker, name='suggest-speaker'),
     url(r'^events/new$', create_event, name='create-event'),
     url(r'^events/groups/(?P<group_id>\d+)/new$', create_event, name='create-event-in-group'),
     url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),
