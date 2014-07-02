@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
+from talks.api_ox.models import Location
 from .models import Event, EventGroup, Speaker
 
 
@@ -24,9 +25,28 @@ class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
         return super(ModelCommaSeparatedChoiceField, self).clean(value)
 
 
+class APIOxField(forms.ModelChoiceField):
+    widget = forms.HiddenInput
+
+    def __init__(self, *args, **kwargs):
+        self.types = kwargs.pop('types', [])
+        self.endpoint = kwargs.pop(
+            'endpoint', 'http://api.m.ox.ac.uk/places/suggest')
+        return super(APIOxField, self).__init__(*args, **kwargs)
+
+    def clean(self, value):
+        return super(APIOxField, self).clean(
+            Location.objects.get_or_create(identifier=value)[0].pk)
+
+
 class SpeakerTypeaheadInput(forms.TextInput):
     class Media:
         js = ('js/speaker-typeahead.js',)
+
+
+class LocationTypeaheadInput(forms.TextInput):
+    class Media:
+        js = ('js/location-typeahead.js',)
 
 
 class EventForm(forms.ModelForm):
@@ -40,6 +60,17 @@ class EventForm(forms.ModelForm):
         queryset=Speaker.objects.all(),
         required=False)
 
+    location_suggest = forms.CharField(
+        label="Venue",
+        required=False,
+        widget=LocationTypeaheadInput(attrs={'class': 'js-location-typeahead'}),
+    )
+    location = APIOxField(
+        queryset=Location.objects.all(),
+        required=False,
+        types=['/university/building', '/university/college'],
+    )
+
     class Meta:
         fields = ('title', 'start', 'end', 'description', 'location', 'speaker_suggest', 'speakers')
         model = Event
@@ -48,7 +79,7 @@ class EventForm(forms.ModelForm):
             'location': 'Venue',
         }
         widgets = {
-            'location': forms.TextInput,
+            'location': forms.HiddenInput(attrs={'class': 'js-location'}),
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
