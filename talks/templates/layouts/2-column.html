@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% block topcontent %}
+{% endblock %}
+<div class="row">
+    <div class="side-panel col-sm-3">{% block side %}{% endblock %}</div>
+    <div class="main-panel col-sm-9">{% block main %}{% endblock %}</div>
+</div>
+{% block bottomcontent %}
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "layouts/2-column.html" %}
+
+{% block title %}Events{% endblock %}
+
+{% block extrahead %}
+<script type="application/ld+json">
+[{% for event in events %}{
+  "@context": "http://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title }}",
+  "startDate": "{{ event.start|date:'c' }}"
+{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
+</script>
+{% endblock %}
+
+
+{% block topcontent %}
+<ul class="visible-xs nav nav-tabs nav-justified" role="tablist">
+  <li class="active"><a href="#upcoming">Upcoming</a></li>
+  <li><a href="#yourtalks">Your Talks</a></li>
+</ul>
+{% endblock %}
+
+{% block side %}
+<h2 class="hidden-xs">Your Talks</h2>
+{% endblock %}
+
+{% block main %}
+<h2 class="hidden-xs">Upcoming</h2>
+
+<ul class="list-unstyled">
+{% for event in events %}
+    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}
