@@ -16,6 +16,9 @@
     document.locationConfig = {
         suggestURL: "{{ event_form.location.field.endpoint }}?{% for type in event_form.location.field.types %}type_exact={{ type }}&{% endfor %}",
     };
+    document.organisationConfig = {
+        suggestURL: "{{ event_form.department_organiser.field.endpoint }}?{% for type in event_form.department_organiser.field.types %}type_exact={{ type }}&{% endfor %}",
+    };
     document.speakerConfig = {
         suggestURL: "{% url 'suggest-speaker' %}",
         createURL: "{% url 'create-speaker' %}",
@@ -68,11 +71,13 @@
     {% endwith %}
     {{ event_form.speakers }}
     {{ event_form.location }}
+    {{ event_form.department_organiser }}
     {{ event_form.title|bootstrap_horizontal }}
     {{ event_form.start|bootstrap_horizontal }}
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.description|bootstrap_horizontal }}
     {{ event_form.location_suggest|bootstrap_horizontal }}
+    {{ event_form.department_suggest|bootstrap_horizontal }}
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-speakers-list">
             {% for speaker in selected_speakers %}
