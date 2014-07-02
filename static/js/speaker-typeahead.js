@@ -1,6 +1,6 @@
 $(function() {
 
-    function Suggester(queryUrl, targetSuggestion, typeaheadBox, callbackTypeahead, cachedSuggestions) {
+    function Suggester(queryUrl, targetSuggestion, typeaheadBox, callbackTypeahead, cachedSuggestions, documentAdd) {
         var bh = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -19,7 +19,7 @@ $(function() {
             $suggestion.addClass('hidden');
             var speakerID = $suggestion.data('id');
             var speaker = cachedSuggestions[speakerID];
-            document.addSpeaker(speaker);
+            documentAdd(speaker);
         }
         targetSuggestion.on('click', '.js-suggestion', function(ev) {
             ev.preventDefault();
@@ -48,9 +48,9 @@ $(function() {
         });
     };
 
-    new Suggester(speakerQueryUrl, suggestedSpeakers, typeaheadSpeakers, cbSpeakerSuggest, cachedSpeakers);
+    new Suggester(speakerQueryUrl, suggestedSpeakers, typeaheadSpeakers, cbSpeakerSuggest, cachedSpeakers, document.addSpeaker);
 
-    var topicQueryUrl = "http://talks-dev.oucs.ox.ac.uk/topics/suggest?q=%QUERY";
+    var topicQueryUrl = "http://talks-dev.oucs.ox.ac.uk/topics/suggest?count=10&q=%QUERY";
     var topicTemplate = _.template('<a href="#" data-id="<%= uri %>" class="js-suggestion list-group-item"><span class="badge">+</span><%= prefLabel %></a>');
     var suggestedTopics = $('.js-suggested-topics-list');
     var typeaheadTopics = $('.js-topics-typeahead');
@@ -63,5 +63,5 @@ $(function() {
         });
     };
 
-    new Suggester(topicQueryUrl, suggestedTopics, typeaheadTopics, cbTopicSuggest, cachedTopics);
+    new Suggester(topicQueryUrl, suggestedTopics, typeaheadTopics, cbTopicSuggest, cachedTopics, document.addTopic);
 });
