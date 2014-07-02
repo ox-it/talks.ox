@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
+from talks.api_ox.models import Location, Organisation
 from .models import Event, EventGroup, Speaker
 from talks.events.models import Tag
 
@@ -23,6 +24,19 @@ class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
         if value is not None:
             value = [item.strip() for item in value.split(",")]
         return super(ModelCommaSeparatedChoiceField, self).clean(value)
+
+
+class APIOxField(forms.ModelChoiceField):
+    def __init__(self, *args, **kwargs):
+        self.Model = kwargs.pop('Model', [])
+        self.types = kwargs.pop('types', [])
+        self.endpoint = kwargs.pop(
+            'endpoint', 'http://api.m.ox.ac.uk/places/suggest')
+        return super(APIOxField, self).__init__(*args, **kwargs)
+
+    def clean(self, value):
+        return super(APIOxField, self).clean(
+            self.Model.objects.get_or_create(identifier=value)[0].pk)
 
 
 class SpeakerTypeaheadInput(forms.TextInput):
@@ -57,16 +71,42 @@ class EventForm(forms.ModelForm):
         required=False
     )
 
+    location_suggest = forms.CharField(
+        label="Venue",
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'js-location-typeahead'}),
+    )
+    location = APIOxField(
+        Model=Location,
+        queryset=Location.objects.all(),
+        required=False,
+        types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library'],
+        widget=forms.HiddenInput(attrs={'class': 'js-location'}),
+    )
+
+    department_suggest = forms.CharField(
+        label="Department",
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'js-organisation-typeahead'}),
+    )
+    department_organiser = APIOxField(
+        Model=Organisation,
+        queryset=Organisation.objects.all(),
+        required=False,
+        types=['/university/department', '/university/museum', '/university/college'],
+        widget=forms.HiddenInput(attrs={'class': 'js-organisation'}),
+    )
+
+    class Media:
+        js = ('js/location-typeahead.js',)
+
     class Meta:
-        fields = ('title', 'start', 'end', 'description', 'location', 'speaker_suggest', 'speakers',
-                  'topic_suggest', 'topics')
+        exclude = ('slug',)
         model = Event
         labels = {
             'description': 'Abstract',
-            'location': 'Venue',
         }
         widgets = {
-            'location': forms.TextInput,
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
@@ -82,11 +122,12 @@ class EventGroupForm(forms.ModelForm):
     """
     SELECT = 'SEL'
     CREATE = 'CRE'
-    SELECT_CREATE_CHOICES = ((SELECT, "Add to existing event group"),
-                             (CREATE, "Create new event group"))
+    SELECT_CREATE_CHOICES = ((SELECT, "Add to existing group of talks"),
+                             (CREATE, "Create new group of talks"))
 
     # Does the user want to add this Event to an EventGroup
-    enabled = forms.BooleanField(label='Add to a group?',
+    enabled = forms.BooleanField(label='Add to a group of talks?',
+                                 help_text="e.g. Seminar series, conference",
                                  required=False,
                                  widget=forms.CheckboxInput(attrs={'autocomplete': 'off'}))
 
