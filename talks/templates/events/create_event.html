@@ -13,6 +13,12 @@
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
 
 <script>
+    document.locationConfig = {
+        suggestURL: "{{ event_form.location.field.endpoint }}?{% for type in event_form.location.field.types %}type_exact={{ type }}&{% endfor %}",
+    };
+    document.organisationConfig = {
+        suggestURL: "{{ event_form.department_organiser.field.endpoint }}?{% for type in event_form.department_organiser.field.types %}type_exact={{ type }}&{% endfor %}",
+    };
     document.speakerConfig = {
         suggestURL: "{% url 'suggest-speaker' %}",
         createURL: "{% url 'create-speaker' %}",
@@ -21,6 +27,9 @@
 
 <!-- Typeahead.js -->
 <script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
 
 <!-- form media -->
 {{ speaker_form.media }}
@@ -61,11 +70,14 @@
     </div>
     {% endwith %}
     {{ event_form.speakers }}
+    {{ event_form.location }}
+    {{ event_form.department_organiser }}
     {{ event_form.title|bootstrap_horizontal }}
     {{ event_form.start|bootstrap_horizontal }}
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.description|bootstrap_horizontal }}
-    {{ event_form.location|bootstrap_horizontal }}
+    {{ event_form.location_suggest|bootstrap_horizontal }}
+    {{ event_form.department_suggest|bootstrap_horizontal }}
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-speakers-list">
             {% for speaker in selected_speakers %}
