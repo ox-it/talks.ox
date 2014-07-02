@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
 
 from talks.api_ox.models import Location, Organisation
@@ -68,7 +69,8 @@ class EventForm(forms.ModelForm):
     )
     topics = ModelCommaSeparatedChoiceField(
         queryset=Tag.objects.all(),
-        required=False
+        required=False,
+        widget=forms.HiddenInput(attrs={'disabled': True})      # TODO disabled to not POST it
     )
 
     location_suggest = forms.CharField(
