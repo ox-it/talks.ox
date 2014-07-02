@@ -1,6 +1,6 @@
 import logging
 
-from datetime import date
+from datetime import date, timedelta
 from functools import partial
 
 from django.core.urlresolvers import reverse
@@ -17,9 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request):
-    # TODO needs to clarify the difference
-    # between homepage and upcoming_events?
-    return upcoming_events(request)
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+    events = Event.objects.filter(start__gte=today, start__lt=tomorrow)
+    events = events.order_by('start')
+    context = {'events': events}
+    return render(request, 'front.html', context)
 
 
 def upcoming_events(request):
