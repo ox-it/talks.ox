@@ -56,10 +56,10 @@ $(function() {
     var typeaheadTopics = $('.js-topics-typeahead');
     var cachedTopics = {};
     var cbTopicSuggest = function(suggestions) {
-        suggestedSpeakers.html('');
+        suggestedTopics.html('');
         _.each(suggestions[1].concepts, function(suggestion) {
             cachedTopics[suggestion.uri] = suggestion;
-            suggestedSpeakers.append(topicTemplate(suggestion));
+            suggestedTopics.append(topicTemplate(suggestion));
         });
     };
 
