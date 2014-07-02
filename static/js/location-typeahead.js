@@ -4,7 +4,6 @@ $(function() {
     function TypeaheadListener() {
         this.listen = function(typeaheadEl, targetEl, formGroupEl) {
             var $targetEl = $(targetEl);
-            console.log($targetEl);
             var $typeaheadEl = $(typeaheadEl);
             var $typeaheadFormGroup = $(formGroupEl);
             var suggestedName = '';
