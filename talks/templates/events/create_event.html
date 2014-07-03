@@ -63,6 +63,7 @@
             </div>
             <div class="panel-body" {% if not event_group_form.show_create_form %}style="display: none;"{% endif %}>
                 {{ event_group_form.title|bootstrap_horizontal }}
+                {{ event_group_form.group_type|bootstrap_horizontal }}
                 {{ event_group_form.description|bootstrap_horizontal }}
             </div>
         </div>
