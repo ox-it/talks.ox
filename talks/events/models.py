@@ -8,9 +8,22 @@ from talks.api_ox.models import Location, Organisation
 
 
 class EventGroup(models.Model):
+    SEMINAR = 'SE'
+    CONFERENCE = 'CO'
+    EVENT_GROUP_TYPE_CHOICES = (
+        (SEMINAR, 'Seminar Series'),
+        (CONFERENCE, 'Conference'),
+    )
+
     title = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
+    group_type = models.CharField(
+        blank=True,
+        null=True,
+        max_length=2,
+        choices=EVENT_GROUP_TYPE_CHOICES
+    )
 
     def __unicode__(self):
         return self.title

@@ -127,7 +127,7 @@ class EventGroupForm(forms.ModelForm):
             label="Existing group")
 
     class Meta:
-        fields = ('event_group_select', 'title', 'description')
+        fields = ('event_group_select', 'title', 'group_type', 'description')
         model = EventGroup
         widgets = {
             'title': forms.TextInput(attrs={'disabled': True}),
