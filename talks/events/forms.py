@@ -20,7 +20,7 @@ class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
     widget = forms.HiddenInput
 
     def clean(self, value):
-        if value is not None:
+        if value:
             value = [item.strip() for item in value.split(",")]
         return super(ModelCommaSeparatedChoiceField, self).clean(value)
 
@@ -157,6 +157,7 @@ class EventGroupForm(forms.ModelForm):
     def show_form(self):
         return bool(self.is_enabled())
 
+    @property
     def show_create_form(self):
         if self.show_form():
             return any([self.errors.get(field, None) for field in ['title', 'description']])
