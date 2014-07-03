@@ -130,8 +130,8 @@ class EventGroupForm(forms.ModelForm):
         fields = ('event_group_select', 'title', 'group_type', 'description')
         model = EventGroup
         widgets = {
-            'title': forms.TextInput(attrs={'disabled': True}),
-            'description': forms.Textarea(attrs={'disabled': True}),
+            'title': forms.TextInput(),
+            'description': forms.Textarea(),
         }
 
     def is_valid(self):
@@ -153,11 +153,9 @@ class EventGroupForm(forms.ModelForm):
             return True
         return False
 
-    @property
     def show_form(self):
-        return bool(self.is_enabled())
+        return self.is_enabled()
 
-    @property
     def show_create_form(self):
         if self.show_form():
             return any([self.errors.get(field, None) for field in ['title', 'description']])
@@ -185,7 +183,6 @@ class EventGroupForm(forms.ModelForm):
             self.remove_errors()
             return {}
 
-
     def get_event_group(self):
         """Get the selected event group or create a new one
 
@@ -205,7 +202,7 @@ class EventGroupForm(forms.ModelForm):
         return None
 
     def is_enabled(self):
-        return 'enabled' in self.cleaned_data and self.cleaned_data['enabled']
+        return self.is_bound and 'enabled' in self.cleaned_data and self.cleaned_data['enabled']
 
 
 class SpeakerQuickAdd(forms.ModelForm):
