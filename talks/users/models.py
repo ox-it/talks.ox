@@ -5,17 +5,34 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 
+DEFAULT_COLLECTION_NAME = "My Collection"
+
+
 class TalksUser(models.Model):
 
     user = models.OneToOneField(User)
 
+    @property
+    def default_collection(self):
+        return self.get_or_create_default_collection()
 
-@receiver(models.signals.post_save, sender=User)
-def ensure_profile_exists(sender, instance, created, **kwargs):
-    """If the User has just been created we use a signal to also create a TalksUser
-    """
-    if created:
-        TalksUser.objects.get_or_create(user=instance)
+    def get_or_create_default_collection(self):
+        try:
+            return CollectionFollow.objects.get(user=self,
+                                                is_owner=True,
+                                                is_main=True).collection
+        except CollectionFollow.DoesNotExist:
+            default_collection = Collection.objects.create(
+                title=DEFAULT_COLLECTION_NAME)
+            # Link the collection to the user
+            CollectionFollow.objects.create(user=self,
+                                            collection=default_collection,
+                                            is_owner=True,
+                                            is_main=True)
+            return default_collection
+
+    def __unicode__(self):
+        return unicode(self.user)
 
 
 class Collection(models.Model):
@@ -56,3 +73,14 @@ class DepartmentFollow(models.Model):
 
 class LocationFollow(models.Model):
     pass
+
+
+@receiver(models.signals.post_save, sender=User)
+def ensure_profile_exists(sender, instance, created, **kwargs):
+    """If the User has just been created we use a signal to also create a TalksUser
+    """
+    if created:
+        tuser, tuser_created = TalksUser.objects.get_or_create(user=instance)
+        # Talks User has been created
+        if tuser_created:
+            tuser.get_or_create_default_collection()
