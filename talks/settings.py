@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'haystack',
 
     # Oxford Talks
+    'talks.users',
     'talks.events',
     'talks.api_ox',
 )
