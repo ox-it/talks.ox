@@ -43,6 +43,24 @@ class Collection(models.Model):
     # TODO list private or public/shared?
     # TODO qualify list? (e.g. "Talks I want to attend"?)
 
+    def _get_items_by_content_type(self, content_type):
+        items = self.collectionitem_set.filter(content_type=content_type)
+        for item in items:
+            yield item.item
+
+    def get_events(self):
+        return self._get_items_by_content_type(
+            ContentType.objects.get(app_label='events', model='event')
+        )
+
+    def get_event_groups(self):
+        return self._get_items_by_content_type(
+            ContentType.objects.get(app_label='events', model='eventgroup')
+        )
+
+    def __unicode__(self):
+        return self.title
+
 
 class CollectionFollow(models.Model):
     """User following a Collection
