@@ -73,7 +73,9 @@ class CollectionFollow(models.Model):
     is_main = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('user', 'collection')
+        # TODO: index_together ('user', 'is_main') ?
+        unique_together = [('user', 'collection'),
+                           ('user', 'is_main')]
 
 
 class CollectionItem(models.Model):
