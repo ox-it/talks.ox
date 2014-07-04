@@ -73,6 +73,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Oxford Talks
+    'talks.users.middleware.TalksUserMiddleware',
 )
 
 ROOT_URLCONF = 'talks.urls'
