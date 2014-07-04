@@ -23,6 +23,24 @@
 
 {% block side %}
 <h2 class="hidden-xs">Your Talks</h2>
+
+{% if default_collection %}
+    {% if default_collection.get_events %}
+    <ul class="list-unstyled">
+        {% for event in default_collection.get_events %}
+        <li><strong>{{ event.start|date:"D j M H:i" }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if default_collection.get_event_groups %}
+    <ul class="list-unstyled">
+        {% for evg in default_collection.get_event_groups %}
+        <li>{{ evg.title }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endif %}
+
 {% endblock %}
 
 {% block main %}
@@ -30,7 +48,7 @@
 
 <ul class="list-unstyled">
 {% for event in events %}
-    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a></li>
+    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a>{% if default_collection %} <a class="js-add-to-collection" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
 {% endfor %}
 </ul>
 

@@ -21,7 +21,13 @@ def homepage(request):
     tomorrow = today + timedelta(days=1)
     events = Event.objects.filter(start__gte=today, start__lt=tomorrow)
     events = events.order_by('start')
-    context = {'events': events}
+    context = {
+        'events': events,
+        'default_collection': None,
+    }
+    if request.tuser:
+        # Authenticated user
+        context['default_collection'] = request.tuser.default_collection
     return render(request, 'front.html', context)
 
 
