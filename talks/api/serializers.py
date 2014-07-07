@@ -5,9 +5,15 @@ from talks.users.models import CollectionItem
 
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
+    formatted_date = serializers.CharField(source='formatted_date',
+                                           read_only=True)
+    formatted_time = serializers.CharField(source='formatted_time',
+                                           read_only=True)
+
     class Meta:
         model = Event
-        fields = ('url', 'title', 'start', 'end', 'description')
+        fields = ('url', 'title', 'start', 'end', 'description',
+                  'formatted_date', 'formatted_time')
 
 
 class SpeakerSerializer(serializers.ModelSerializer):

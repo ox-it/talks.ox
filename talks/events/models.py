@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+from django.template.defaultfilters import date as date_filter
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -94,3 +96,15 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('event', args=[str(self.id)])
+
+    def formatted_date(self):
+        if self.start:
+            return date_filter(self.start, settings.EVENT_DATETIME_FORMAT)
+        else:
+            return None
+
+    def formatted_time(self):
+        if self.start:
+            return date_filter(self.start, settings.EVENT_TIME_FORMAT)
+        else:
+            return None
