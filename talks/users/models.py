@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+from talks.events.models import Event, EventGroup
+
 
 DEFAULT_COLLECTION_NAME = "My Collection"
 
@@ -50,12 +52,12 @@ class Collection(models.Model):
 
     def get_events(self):
         return self._get_items_by_content_type(
-            ContentType.objects.get(app_label='events', model='event')
+            ContentType.objects.get_for_model(Event)
         )
 
     def get_event_groups(self):
         return self._get_items_by_content_type(
-            ContentType.objects.get(app_label='events', model='eventgroup')
+            ContentType.objects.get_for_model(EventGroup)
         )
 
     def __unicode__(self):
@@ -88,6 +90,7 @@ class CollectionItem(models.Model):
 
     class Meta:
         unique_together = [('collection', 'content_type', 'object_id')]
+
 
 class DepartmentFollow(models.Model):
     pass
