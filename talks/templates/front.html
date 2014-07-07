@@ -8,6 +8,7 @@
 <script>
     document.collectionConfig = {
         saveDefault: "{% url "save-talk" %}",
+        removeDefault: "{% url "remove-talk" %}",
     };
 </script>
 <script type="application/ld+json">
@@ -35,7 +36,7 @@
     {% if default_collection.get_events %}
     <ul class="list-unstyled">
         {% for event in default_collection.get_events %}
-        <li><strong>{{ event.start|date:"D j M H:i" }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a></li>
+        <li><strong>{{ event.formatted_date }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a> <a data-event="{{ event.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>
         {% endfor %}
     </ul>
     {% endif %}
@@ -55,7 +56,7 @@
 
 <ul class="list-unstyled">
 {% for event in events %}
-    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a>{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+<li><strong>{{ event.formatted_time }}</strong> - <a href="">{{ event.title }}</a>{% if default_collection and not event in default_collection.get_events %} <a data-event="{{ event.id }}" class="js-add-to-collection" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
 {% endfor %}
 </ul>
 
