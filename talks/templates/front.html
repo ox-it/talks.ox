@@ -1,8 +1,15 @@
 {% extends "layouts/2-column.html" %}
+{% load staticfiles %}
 
 {% block title %}Events{% endblock %}
 
 {% block extrahead %}
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        saveDefault: "{% url "save-talk" %}",
+    };
+</script>
 <script type="application/ld+json">
 [{% for event in events %}{
   "@context": "http://schema.org",
@@ -48,7 +55,7 @@
 
 <ul class="list-unstyled">
 {% for event in events %}
-    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a>{% if default_collection %} <a class="js-add-to-collection" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a>{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
 {% endfor %}
 </ul>
 
