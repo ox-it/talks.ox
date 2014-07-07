@@ -86,6 +86,8 @@ class CollectionItem(models.Model):
     # Currently item can be an Event or EventGroup
     item = GenericForeignKey('content_type', 'object_id')
 
+    class Meta:
+        unique_together = [('collection', 'content_type', 'object_id')]
 
 class DepartmentFollow(models.Model):
     pass
