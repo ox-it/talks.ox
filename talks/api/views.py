@@ -46,6 +46,8 @@ def create_speaker(request):
 def save_talk(request, collection_id=None):
     """Add an event to a users default collection unless a separate
     `collection_id` is specified
+
+    Returns the CollectionItem with the Event embedded as an `item`.
     """
     user_collection = request.tuser.default_collection
     event_id = request.DATA['event']
@@ -67,6 +69,8 @@ def save_talk(request, collection_id=None):
 def remove_talk(request, collection_id=None):
     """Remove an event from a users default collection unless a separate
     `collection_id` is specified
+
+    Returns the Event removed from the collection.
     """
     user_collection = request.tuser.default_collection
     event_id = request.DATA['event']
