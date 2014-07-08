@@ -76,8 +76,8 @@ def remove_talk(request, collection_id=None):
         item = user_collection.collectionitem_set.get(content_type=ev_ct,
                                                       object_id=event.pk)
         item.delete()
-        return Response({'success': "Item removed from collection."},
-                        status=status.HTTP_200_OK)
+        serializer = EventSerializer(event)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     except CollectionItem.DoesNotExist:
         return Response({'error': "Item not found."},
                         status=status.HTTP_404_NOT_FOUND)

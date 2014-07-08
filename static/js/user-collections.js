@@ -1,6 +1,6 @@
 $(function() {
     var csrftoken = $.cookie('csrftoken');
-    $('.js-add-to-collection').on('click', function(ev) {
+    $('.js-upcoming-events').on('click', '.js-add-to-collection', function(ev) {
         var eventID = $(ev.target.parentNode).data('event');
         $.ajax({
             type: 'POST',
@@ -14,14 +14,18 @@ $(function() {
             contentType: "application/json; charset=utf-8",
             dataType: 'json',
             success: function(response) {
-                $(ev.target.parentNode).remove();
+                // Hide the <a>
+                $(ev.target.parentNode).addClass('hidden');
+                $('.js-your-events').append(
+                    document.collectionConfig.yourTalkTemplate({event: response.item})
+                );
             },
             error: function(err) {
                 console.log(err);
             },
         });
     });
-    $('.js-remove-from-collection').on('click', function(ev) {
+    $('.js-your-events').on('click', '.js-remove-from-collection', function(ev) {
         var eventID = $(ev.target.parentNode).data('event');
         $.ajax({
             type: 'POST',
@@ -35,7 +39,11 @@ $(function() {
             contentType: "application/json; charset=utf-8",
             dataType: 'json',
             success: function(response) {
-                $(ev.target.parentNode).remove();
+                // Remove the <li>
+                $(ev.target.parentNode.parentNode).remove();
+                if (response.happening_today) {
+                    $('.js-upcoming-events [data-event="'+response.id+'"].hidden').removeClass('hidden');
+                }
             },
             error: function(err) {
                 console.log(err);
