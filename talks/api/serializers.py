@@ -9,11 +9,13 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
                                            read_only=True)
     formatted_time = serializers.CharField(source='formatted_time',
                                            read_only=True)
+    happening_today = serializers.BooleanField(source='happening_today',
+                                               read_only=True)
 
     class Meta:
         model = Event
-        fields = ('url', 'title', 'start', 'end', 'description',
-                  'formatted_date', 'formatted_time')
+        fields = ('id', 'url', 'title', 'start', 'end', 'description',
+                  'formatted_date', 'formatted_time', 'happening_today')
 
 
 class SpeakerSerializer(serializers.ModelSerializer):

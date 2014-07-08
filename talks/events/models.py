@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import date as date_filter
@@ -108,3 +110,8 @@ class Event(models.Model):
             return date_filter(self.start, settings.EVENT_TIME_FORMAT)
         else:
             return None
+
+    def happening_today(self):
+        if self.start:
+            return self.start.date() == date.today()
+        return False
