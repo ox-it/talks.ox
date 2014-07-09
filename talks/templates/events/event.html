@@ -26,10 +26,11 @@
     </div>
     <!-- List group -->
     <ul class="list-group">
-        <li class="list-group-item"><strong>Venue</strong>: <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address></li>
+        <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
+        <li class="list-group-item"><strong>Venue</strong>: <address>{{ event.api_location.name }}{% if event.api_location.address %}</br>{{ event.api_location.address }}{% endif %}</address></li>
         <li class="list-group-item"><strong>Speaker{{ event.speakers.all|pluralize }}</strong>: {% for speaker in event.speakers.all %}{{ speaker.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
-        {% if event.department_organiser %}
-        <li class="list-group-item"><strong>Organiser</strong>: {{ event.department_organiser.name }}</li>
+        {% if event.api_organisation %}
+        <li class="list-group-item"><strong>Organiser</strong>: {{ event.api_organisation.name }}</li>
         {% endif %}
     </ul>
 </div>
