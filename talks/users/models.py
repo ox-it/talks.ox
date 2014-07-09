@@ -1,3 +1,5 @@
+import itertools
+
 from django.db import models
 from django.dispatch import receiver
 from django.contrib.auth.models import User
@@ -45,20 +47,17 @@ class Collection(models.Model):
     # TODO list private or public/shared?
     # TODO qualify list? (e.g. "Talks I want to attend"?)
 
-    def _get_items_by_content_type(self, content_type):
-        items = self.collectionitem_set.filter(content_type=content_type)
-        for item in items:
-            yield item.item
+    def _get_items_by_model(self, model):
+        content_type = ContentType.objects.get_for_model(Event)
+        ids = self.collectionitem_set.filter(content_type=content_type
+                                             ).values_list('object_id')
+        return model.objects.filter(id__in=itertools.chain.from_iterable(ids))
 
     def get_events(self):
-        return self._get_items_by_content_type(
-            ContentType.objects.get_for_model(Event)
-        )
+        return self._get_items_by_model(Event)
 
     def get_event_groups(self):
-        return self._get_items_by_content_type(
-            ContentType.objects.get_for_model(EventGroup)
-        )
+        return self._get_items_by_model(EventGroup)
 
     def __unicode__(self):
         return self.title
