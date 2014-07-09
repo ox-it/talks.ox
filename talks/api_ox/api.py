@@ -29,16 +29,18 @@ class ApiOxResource(object):
 
     def _get_request(self, path, params=None):
         try:
-            r = requests.get('{base_url}{path}'.format(base_url=self.base_url, path=path), timeout=self.timeout)
+            r = requests.get('{base_url}{path}'.format(
+                base_url=self.base_url, path=path), timeout=self.timeout)
             if r.status_code == requests.codes.ok:
                 self._json = r.json()
                 return r
             elif r.status_code == requests.codes.not_found:
                 raise ApiNotFound()
             else:
-                logger.error("Bad response code {code} from the API".format(code=r.status_code))
+                logger.error("Bad response code {code} from the API".format(
+                    code=r.status_code))
                 raise ApiException()
-        except RequestException as re:
+        except RequestException:
             logger.error("Unable to reach the API", exc_info=True)
             raise ApiException()
 
@@ -60,12 +62,16 @@ class PlacesResource(ApiOxResource):
         return places_resource
 
 
-class DatesResource(ApiOxResource):
+class OxfordDateResource(ApiOxResource):
 
-    def get_oxford_date(self, py_date):
-        return self._get_request('/dates/{year}-{month}-{day}'.format(year=py_date.year,
-                                                                      month=py_date.month,
-                                                                      day=py_date.day))
+    formatted = JSONAttribute('formatted')
+
+    @classmethod
+    def from_date(cls, py_date, **kwargs):
+        date_resource = cls(**kwargs)
+        date_resource._get_request('/dates/{year}-{month}-{day}'.format(
+            year=py_date.year, month=py_date.month, day=py_date.day))
+        return date_resource
 
 
 class ApiException(Exception):
