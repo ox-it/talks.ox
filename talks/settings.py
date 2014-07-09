@@ -13,6 +13,9 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
+EVENT_DATETIME_FORMAT = "D j M H:i"
+EVENT_TIME_FORMAT = "H:i"
+
 DATETIME_INPUT_FORMATS = (
     '%Y-%m-%d %H:%M:%S',     # '2006-10-25 14:30:59'
     '%Y-%m-%d %H:%M:%S.%f',  # '2006-10-25 14:30:59.000200'
@@ -61,6 +64,7 @@ INSTALLED_APPS = (
     'raven.contrib.django.raven_compat',
 
     # Oxford Talks
+    'talks.users',
     'talks.events',
     'talks.api_ox',
 )
@@ -73,6 +77,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Oxford Talks
+    'talks.users.middleware.TalksUserMiddleware',
 )
 
 ROOT_URLCONF = 'talks.urls'

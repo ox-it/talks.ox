@@ -9,7 +9,8 @@ from rest_framework import routers
 from events.views import (homepage, upcoming_events, event, events_for_day,
                           events_for_month, events_for_year, create_event)
 
-from api.views import EventViewSet, create_speaker, suggest_speaker
+from api.views import (EventViewSet, create_speaker, suggest_speaker,
+                       save_talk, remove_talk)
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
@@ -20,6 +21,8 @@ sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount
 
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
+    url(r'^api/collections/event/add$', save_talk, name="save-talk"),
+    url(r'^api/collections/event/remove$', remove_talk, name="remove-talk"),
     url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),

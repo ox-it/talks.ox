@@ -21,7 +21,16 @@ def homepage(request):
     tomorrow = today + timedelta(days=1)
     events = Event.objects.filter(start__gte=today, start__lt=tomorrow)
     events = events.order_by('start')
-    context = {'events': events}
+    context = {
+        'events': events,
+        'default_collection': None,
+    }
+    if request.tuser:
+        # Authenticated user
+        collection = request.tuser.default_collection
+        context['default_collection'] = collection
+        context['user_events'] = collection.get_events()
+        context['user_event_groups'] = collection.get_event_groups()
     return render(request, 'front.html', context)
 
 
