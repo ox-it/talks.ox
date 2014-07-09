@@ -8,7 +8,6 @@ from django.http.response import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 
@@ -63,20 +62,6 @@ def event(request, event_id):
     ev = Event.objects.get(id=event_id)
     if ev:
         context = {'event': ev}
-        if ev.location:
-            context['location_name'] = ev.location.name
-            try:
-                location = PlacesResource.from_identifier(
-                    ev.location.identifier)
-            except ApiException:
-                location = None
-            context['location'] = location
-        if ev.start:
-            try:
-                oxford_date = OxfordDateResource.from_date(ev.start)
-            except ApiException:
-                logger.warn('Unable to reach API', exc_info=True)
-        context['oxford_date'] = oxford_date.formatted
     else:
         raise Http404
     return render(request, 'events/event.html', context)
