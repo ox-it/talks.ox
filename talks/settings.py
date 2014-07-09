@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     # 3rd Party
     'bootstrapform',
     'haystack',
+    'raven.contrib.django.raven_compat',
 
     # Oxford Talks
     'talks.events',
@@ -147,5 +148,51 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://127.0.0.1:8983/solr/talks',
         'INCLUDE_SPELLING': True
+    },
+}
+
+RAVEN_CONFIG = {
+    'dsn': 'http://cc958b8c93c340c9a25dd765e1843172:f67c8030f2674d6b9c74718f2abf4c16@sentry.oucs.ox.ac.uk/27',
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['sentry'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'raven': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        },
     },
 }
