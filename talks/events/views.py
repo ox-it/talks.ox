@@ -59,9 +59,13 @@ def _events_list(request, events):
 
 
 def event(request, event_id):
-    ev = Event.objects.get(id=event_id)
+    ev = Event.objects.select_related(
+        'speakers', 'location', 'department_organiser').get(id=event_id)
     if ev:
-        context = {'event': ev}
+        context = {
+            'event': ev,
+            'speakers': ev.speakers.all(),
+        }
     else:
         raise Http404
     return render(request, 'events/event.html', context)
