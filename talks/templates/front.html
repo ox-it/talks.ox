@@ -35,12 +35,12 @@
 
 {% if default_collection %}
     <ul class="list-unstyled js-your-events">
-        {% for event in default_collection.get_events %}
+        {% for event in user_events %}
         <li><strong>{{ event.formatted_date }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a> <a data-event="{{ event.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>
         {% endfor %}
     </ul>
     <ul class="list-unstyled js-your-event-groups">
-        {% for evg in default_collection.get_event_groups %}
+        {% for evg in user_event_groups %}
         <li>{{ evg.title }}</li>
         {% endfor %}
     </ul>
@@ -53,7 +53,7 @@
 
 <ul class="list-unstyled js-upcoming-events">
 {% for event in events %}
-    <li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in default_collection.get_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+    <li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
 {% endfor %}
 </ul>
 

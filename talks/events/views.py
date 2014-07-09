@@ -27,7 +27,10 @@ def homepage(request):
     }
     if request.tuser:
         # Authenticated user
-        context['default_collection'] = request.tuser.default_collection
+        collection = request.tuser.default_collection
+        context['default_collection'] = collection
+        context['user_events'] = collection.get_events()
+        context['user_event_groups'] = collection.get_event_groups()
     return render(request, 'front.html', context)
 
 
