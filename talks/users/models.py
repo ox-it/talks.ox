@@ -48,6 +48,14 @@ class Collection(models.Model):
     # TODO qualify list? (e.g. "Talks I want to attend"?)
 
     def _get_items_by_model(self, model):
+        """Used when selecting a particular type (specified in the `model` arg)
+        of objects from our Collection.
+
+            1) Get the ContentType for that `model`
+            2) Filter to the CollectionItems of that ContentType and get all
+               `object_id`s
+            3) Select these `object_id`s from the `model`
+        """
         content_type = ContentType.objects.get_for_model(Event)
         ids = self.collectionitem_set.filter(content_type=content_type
                                              ).values_list('object_id')
