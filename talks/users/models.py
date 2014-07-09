@@ -75,7 +75,6 @@ class CollectionFollow(models.Model):
     is_main = models.BooleanField(default=False)
 
     class Meta:
-        # TODO: index_together ('user', 'is_main') ?
         unique_together = [('user', 'collection'),
                            ('user', 'is_main')]
 
