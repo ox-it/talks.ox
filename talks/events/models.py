@@ -1,4 +1,8 @@
+from datetime import date
+
+from django.conf import settings
 from django.db import models
+from django.template.defaultfilters import date as date_filter
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -8,9 +12,22 @@ from talks.api_ox.models import Location, Organisation
 
 
 class EventGroup(models.Model):
+    SEMINAR = 'SE'
+    CONFERENCE = 'CO'
+    EVENT_GROUP_TYPE_CHOICES = (
+        (SEMINAR, 'Seminar Series'),
+        (CONFERENCE, 'Conference'),
+    )
+
     title = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
+    group_type = models.CharField(
+        blank=True,
+        null=True,
+        max_length=2,
+        choices=EVENT_GROUP_TYPE_CHOICES
+    )
 
     def __unicode__(self):
         return self.title
@@ -81,3 +98,20 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('event', args=[str(self.id)])
+
+    def formatted_date(self):
+        if self.start:
+            return date_filter(self.start, settings.EVENT_DATETIME_FORMAT)
+        else:
+            return None
+
+    def formatted_time(self):
+        if self.start:
+            return date_filter(self.start, settings.EVENT_TIME_FORMAT)
+        else:
+            return None
+
+    def happening_today(self):
+        if self.start:
+            return self.start.date() == date.today()
+        return False

@@ -1,3 +1,5 @@
 django-debug-toolbar==1.2.1
 pyaml
 fabric==1.9.0
+Sphinx==1.2.2
+

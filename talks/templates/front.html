@@ -1,8 +1,17 @@
 {% extends "layouts/2-column.html" %}
+{% load staticfiles %}
 
 {% block title %}Events{% endblock %}
 
 {% block extrahead %}
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        yourTalkTemplate: _.template('<li><strong><%= event.formatted_date %></strong> - <a href="<%= event.url %>"><%= event.title %></a> <a data-event="<%= event.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
+        saveDefault: "{% url "save-talk" %}",
+        removeDefault: "{% url "remove-talk" %}",
+    };
+</script>
 <script type="application/ld+json">
 [{% for event in events %}{
   "@context": "http://schema.org",
@@ -23,14 +32,28 @@
 
 {% block side %}
 <h2 class="hidden-xs">Your Talks</h2>
+
+{% if default_collection %}
+    <ul class="list-unstyled js-your-events">
+        {% for event in user_events %}
+        <li><strong>{{ event.formatted_date }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a> <a data-event="{{ event.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>
+        {% endfor %}
+    </ul>
+    <ul class="list-unstyled js-your-event-groups">
+        {% for evg in user_event_groups %}
+        <li>{{ evg.title }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {% endblock %}
 
 {% block main %}
 <h2 class="hidden-xs">Upcoming</h2>
 
-<ul class="list-unstyled">
+<ul class="list-unstyled js-upcoming-events">
 {% for event in events %}
-    <li><strong>{{ event.start|date:"H:i" }}</strong> - <a href="">{{ event.title }}</a></li>
+    <li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
 {% endfor %}
 </ul>
 

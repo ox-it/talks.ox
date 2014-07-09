@@ -21,7 +21,16 @@ def homepage(request):
     tomorrow = today + timedelta(days=1)
     events = Event.objects.filter(start__gte=today, start__lt=tomorrow)
     events = events.order_by('start')
-    context = {'events': events}
+    context = {
+        'events': events,
+        'default_collection': None,
+    }
+    if request.tuser:
+        # Authenticated user
+        collection = request.tuser.default_collection
+        context['default_collection'] = collection
+        context['user_events'] = collection.get_events()
+        context['user_event_groups'] = collection.get_event_groups()
     return render(request, 'front.html', context)
 
 
@@ -80,17 +89,20 @@ def event(request, event_id):
 
 
 def create_event(request, group_id=None):
-    initial = dict()
+    initial = None
     if group_id:
         try:
-            initial['event_group_select'] = EventGroup.objects.get(id=group_id)
-            initial['enabled'] = True
+            initial = {
+                'event_group_select': EventGroup.objects.get(id=group_id),
+                'enabled': True,
+            }
         except EventGroup.DoesNotExist:
             logger.warning("Tried to create new Event in nonexistant group ID: %s" % (group_id,))
             raise Http404("Group does not exist")
 
     PrefixedEventForm = partial(EventForm, prefix='event')
-    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group', initial=initial)
+    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group',
+                                     initial=initial)
 
     if request.method == 'POST':
         context = {
