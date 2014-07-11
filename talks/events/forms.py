@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 
 from talks.api_ox.models import Location, Organisation
 from .models import Event, EventGroup, Speaker
-from talks.events.models import Tag
+from talks.events.models import Topic
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -68,7 +68,7 @@ class EventForm(forms.ModelForm):
         widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
     )
     topics = ModelCommaSeparatedChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Topic.objects.all(),
         required=False,
         widget=forms.HiddenInput(attrs={'disabled': True})      # TODO disabled to not POST it
     )

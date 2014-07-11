@@ -2,6 +2,7 @@ from datetime import date
 
 from django.conf import settings
 from django.db import models
+from django.dispatch.dispatcher import receiver
 from django.template.defaultfilters import date as date_filter
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -51,19 +52,18 @@ class Speaker(models.Model):
         return self.name
 
 
-class Tag(models.Model):
+class Topic(models.Model):
 
-    slug = models.SlugField()
     name = models.CharField(max_length=250, unique=True)
-    description = models.TextField()
+    uri = models.URLField(unique=True, db_index=True)
 
     def __unicode__(self):
         return self.name
 
 
-class TagItem(models.Model):
+class TopicItem(models.Model):
 
-    tag = models.ForeignKey(Tag)
+    tag = models.ForeignKey(Topic)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
@@ -84,7 +84,7 @@ class Event(models.Model):
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
-    tags = GenericRelation(TagItem)
+    topics = GenericRelation(TopicItem)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -115,3 +115,25 @@ class Event(models.Model):
         if self.start:
             return self.start.date() == date.today()
         return False
+
+
+@receiver(models.signals.post_save, sender=Event)
+def index_event(sender, instance, created, **kwargs):
+    """If the User has just been created we use a signal to also create a TalksUser
+    """
+    if created:
+        tuser, tuser_created = TalksUser.objects.get_or_create(user=instance)
+        # Talks User has been created
+        if tuser_created:
+            tuser.get_or_create_default_collection()
+
+
+@receiver(models.signals.post_save, sender=Event)
+def fetch_topics(sender, instance, created, **kwargs):
+    """If the User has just been created we use a signal to also create a TalksUser
+    """
+    if created:
+        tuser, tuser_created = TalksUser.objects.get_or_create(user=instance)
+        # Talks User has been created
+        if tuser_created:
+            tuser.get_or_create_default_collection()
