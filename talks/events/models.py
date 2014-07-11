@@ -1,3 +1,6 @@
+import logging
+import functools
+
 from datetime import date
 
 from django.conf import settings
@@ -9,8 +12,11 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
+from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource
 from talks.api_ox.models import Location, Organisation
 
+
+logger = logging.getLogger(__name__)
 
 class EventGroup(models.Model):
     SEMINAR = 'SE'
@@ -85,6 +91,47 @@ class Event(models.Model):
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
     topics = GenericRelation(TopicItem)
+
+    _cached_resources = {}
+
+    def fetch_resource(self, key, func):
+        """Fetch a resource from the API.
+
+        If we have `key` in a cache then pull from there, otherwise call `func`
+        """
+        if key in self._cached_resources:
+            return self._cached_resources[key]
+        else:
+            try:
+                res = func()
+                self._cached_resources[key] = res
+                return res
+            except ApiException:
+                logger.warn('Unable to reach API', exc_info=True)
+                return None
+
+    @property
+    def api_location(self):
+        if not self.location:
+            return None
+        func = functools.partial(PlacesResource.from_identifier,
+                                 self.location.identifier)
+        return self.fetch_resource(self.location.identifier, func)
+
+    @property
+    def api_organisation(self):
+        if not self.department_organiser:
+            return None
+        func = functools.partial(PlacesResource.from_identifier,
+                                 self.department_organiser.identifier)
+        return self.fetch_resource(self.department_organiser.identifier, func)
+
+    @property
+    def oxford_date(self):
+        if not self.start:
+            return None
+        func = functools.partial(OxfordDateResource.from_date, self.start)
+        return self.fetch_resource(self.start, func)
 
     def save(self, *args, **kwargs):
         if not self.id:
