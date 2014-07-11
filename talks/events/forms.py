@@ -70,7 +70,7 @@ class EventForm(forms.ModelForm):
     topics = ModelCommaSeparatedChoiceField(
         queryset=Topic.objects.all(),
         required=False,
-        widget=forms.HiddenInput(attrs={'disabled': True})      # TODO disabled to not POST it
+        #widget=forms.HiddenInput(attrs={'disabled': True})      # TODO disabled to not POST it
     )
 
     location_suggest = forms.CharField(

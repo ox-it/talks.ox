@@ -12,7 +12,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
-from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource
+from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
 from talks.api_ox.models import Location, Organisation
 
 
@@ -168,19 +168,13 @@ class Event(models.Model):
 def index_event(sender, instance, created, **kwargs):
     """If the User has just been created we use a signal to also create a TalksUser
     """
-    if created:
-        tuser, tuser_created = TalksUser.objects.get_or_create(user=instance)
-        # Talks User has been created
-        if tuser_created:
-            tuser.get_or_create_default_collection()
+    pass
 
 
 @receiver(models.signals.post_save, sender=Event)
 def fetch_topics(sender, instance, created, **kwargs):
     """If the User has just been created we use a signal to also create a TalksUser
     """
-    if created:
-        tuser, tuser_created = TalksUser.objects.get_or_create(user=instance)
-        # Talks User has been created
-        if tuser_created:
-            tuser.get_or_create_default_collection()
+    uris = [tag.uri for tag in instance.topics.tag]
+    topics = TopicsResource.get(uris)
+    print topics
