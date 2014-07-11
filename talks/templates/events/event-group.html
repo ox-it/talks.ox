@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event_group.title }}{% endblock %}
+
+{% block content %}
+
+{% include "events/jsonld_event.html" with event=event location=location %}
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ event_group.title }}</h3>
+    </div>
+    <div class="panel-body">
+        <p>{{ event_group.description }}</p>
+    </div>
+    <!-- List group -->
+    <ul class="list-group">
+        {% for event in event_group.event_set.all %}
+        <li class="list-group-item"><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> ({{ event.start }})</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

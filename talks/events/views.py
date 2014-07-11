@@ -127,3 +127,14 @@ def create_event(request, group_id=None):
             'speaker_form': SpeakerQuickAdd(),
         }
     return render(request, 'events/create_event.html', context)
+
+
+def event_group(request, event_group_id):
+    try:
+        evg = EventGroup.objects.get(id=event_group_id)
+    except EventGroup.DoesNotExist:
+        raise Http404
+    context = {
+        'event_group': evg,
+    }
+    return render(request, 'events/event-group.html', context)
