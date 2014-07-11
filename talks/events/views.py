@@ -1,6 +1,6 @@
 import logging
 
-from datetime import date, timedelta
+from datetime import date
 from functools import partial
 
 from django.core.urlresolvers import reverse
@@ -15,14 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request):
-    today = date.today()
-    tomorrow = today + timedelta(days=1)
-    events = Event.objects.filter(start__gte=today, start__lt=tomorrow
-                                  ).select_related('group')
-    event_groups = set([e.group for e in events])
-    conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE, event_groups)
-    series = filter(lambda eg: eg.group_type == EventGroup.SEMINAR, event_groups)
-    events = events.order_by('start')
+    events = Event.objects.todays_events()
+    event_groups = EventGroup.objects.for_events(events)
+    conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
+                         event_groups)
+    series = filter(lambda eg: eg.group_type == EventGroup.SEMINAR,
+                    event_groups)
     context = {
         'events': events,
         'event_groups': event_groups,
