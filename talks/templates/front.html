@@ -57,4 +57,22 @@
 {% endfor %}
 </ul>
 
+{% if conferences %}
+<h3>Conferences</h3>
+<ul class="list-unstyled">
+{% for conf in conferences %}
+    <li>{{ conf.title }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if series %}
+<h3>Seminar Series</h3>
+{% endif %}
+<ul class="list-unstyled">
+{% for serie in series %}
+    <li>{{ serie.title }}</li>
+{% endfor %}
+</ul>
+
 {% endblock %}
