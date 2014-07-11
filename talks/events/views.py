@@ -17,10 +17,17 @@ logger = logging.getLogger(__name__)
 def homepage(request):
     today = date.today()
     tomorrow = today + timedelta(days=1)
-    events = Event.objects.filter(start__gte=today, start__lt=tomorrow)
+    events = Event.objects.filter(start__gte=today, start__lt=tomorrow
+                                  ).select_related('group')
+    event_groups = set([e.group for e in events])
+    conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE, event_groups)
+    series = filter(lambda eg: eg.group_type == EventGroup.SEMINAR, event_groups)
     events = events.order_by('start')
     context = {
         'events': events,
+        'event_groups': event_groups,
+        'conferences': conferences,
+        'series': series,
         'default_collection': None,
     }
     if request.tuser:
