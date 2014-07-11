@@ -74,6 +74,48 @@ class OxfordDateResource(ApiOxResource):
         return date_resource
 
 
+class Topic(object):
+
+    _json = {}
+
+    def __init__(self, json):
+        self._json = json
+
+    def __unicode__(self):
+        return 'Topic <{uri}>'.format(uri=self.uri)
+
+    def __str__(self):
+        return self.__unicode__()
+
+    uri = JSONAttribute('uri')
+    name = JSONAttribute('prefLabel')
+    altNames = JSONAttribute('altLabels')
+
+
+class TopicsResource(ApiOxResource):
+
+    PATH = '/topics/'
+
+    uri = JSONAttribute('')
+
+    def __init__(self, base_url='http://talks-dev.oucs.ox.ac.uk/topics/', timeout=1):
+        self.base_url = base_url
+        self.timeout = timeout
+
+    @classmethod
+    def get(cls, uris, **kwargs):
+        """
+        Get topics by URIs
+        :param uris: list of URIs
+        :return: list of Topic
+        """
+        topics_resource = cls(**kwargs)
+        parameters = ["uri={uri}".format(uri=u) for u in uris]
+        response = topics_resource._get_request('/get?{uris}'.format(uris='&'.join(parameters)))
+        topics = response.json()['_embedded']['concepts']
+        return [Topic(t) for t in topics]
+
+
 class ApiException(Exception):
 
     message = "API is not available"
