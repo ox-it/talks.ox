@@ -16,24 +16,22 @@
 
 {% include "events/jsonld_event.html" with event=event location=location %}
 
-<h1>{{ event.title }}</h1>
-<p>{{ event.start }} {% if oxford_date %}({{ oxford_date }}){% endif %}</p>
-<p>{{ location.name }}{% if location.address %}, {{ location.address }}{% endif %}</p>
-
-<p><strong>Speaker</strong></p>
-<ul>
-{% for speaker in event.speakers.all %}
-<li>{{ speaker.name }}</li>
-{% endfor %}
-</ul>
-
-{# <p><strong>Tags</strong></p> #}
-{# <ul> #}
-{# {% for tag in event.tags.all %} #}
-{# <li>{{ tag.tag.name }}</li> #}
-{# {% endfor %} #}
-{# </ul> #}
-{#  #}
-<p>{{ event.description }}</p>
-
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ event.title }}</h3>
+    </div>
+    <div class="panel-body">
+        <p>{{ event.description }}</p>
+    </div>
+    <!-- List group -->
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
+        <li class="list-group-item"><strong>Venue</strong>: <address>{{ event.api_location.name }}{% if event.api_location.address %}</br>{{ event.api_location.address }}{% endif %}</address></li>
+        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}{{ speaker.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        {% if event.api_organisation %}
+        <li class="list-group-item"><strong>Organiser</strong>: {{ event.api_organisation.name }}</li>
+        {% endif %}
+    </ul>
+</div>
 {% endblock %}
