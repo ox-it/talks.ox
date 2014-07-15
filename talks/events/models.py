@@ -96,7 +96,6 @@ class EventManager(models.Manager):
 
     def todays_events(self):
         today = date.today()
-        today = date.today()
         tomorrow = today + timedelta(days=1)
         return self.filter(start__gte=today, start__lt=tomorrow
                            ).order_by('start')
@@ -112,7 +111,8 @@ class Event(models.Model):
     # TODO audience should it be free text
     # TODO booking information; structure?
 
-    group = models.ForeignKey(EventGroup, null=True, blank=True)
+    group = models.ForeignKey(EventGroup, null=True, blank=True,
+                              related_name='events')
     location = models.ForeignKey(Location, null=True, blank=True)
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
