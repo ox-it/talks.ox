@@ -27,7 +27,7 @@ class EventGroupManager(models.Manager):
         """
         events = events.select_related('group')
         # NOTE: execs the query
-        return set([e.group for e in events])
+        return set([e.group for e in events if e.group])
 
 
 class EventGroup(models.Model):
