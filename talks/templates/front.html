@@ -41,7 +41,7 @@
     </ul>
     <ul class="list-unstyled js-your-event-groups">
         {% for evg in user_event_groups %}
-        <li>{{ evg.title }}</li>
+        <li><a href="{{ evg.get_absolute_url }}">{{ evg.title }}</a></li>
         {% endfor %}
     </ul>
 {% endif %}
@@ -53,7 +53,25 @@
 
 <ul class="list-unstyled js-upcoming-events">
 {% for event in events %}
-    <li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+<li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if event.group %} - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>{% endif %}{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+{% endfor %}
+</ul>
+
+{% if conferences %}
+<h3>Conferences</h3>
+<ul class="list-unstyled">
+{% for conf in conferences %}
+    <li><a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if series %}
+<h3>Seminar Series</h3>
+{% endif %}
+<ul class="list-unstyled">
+{% for serie in series %}
+    <li><a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a></li>
 {% endfor %}
 </ul>
 

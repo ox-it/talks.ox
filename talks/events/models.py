@@ -1,7 +1,7 @@
 import logging
 import functools
 
-from datetime import date
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.db import models
@@ -16,6 +16,19 @@ from talks.api_ox.models import Location, Organisation
 
 
 logger = logging.getLogger(__name__)
+
+
+class EventGroupManager(models.Manager):
+    def for_events(self, events):
+        """Given a QuerySet of `Event`s return all the `EventGroup` related to
+        that QuerySet. This function will evaluate the QuerySet `events`.
+
+        Returns a list() of `EventGroup` NOT a QuerySet.
+        """
+        events = events.select_related('group')
+        # NOTE: execs the query
+        return set([e.group for e in events if e.group])
+
 
 class EventGroup(models.Model):
     SEMINAR = 'SE'
@@ -35,9 +48,13 @@ class EventGroup(models.Model):
         choices=EVENT_GROUP_TYPE_CHOICES
     )
 
+    objects = EventGroupManager()
+
     def __unicode__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('event-group', args=[self.id])
 
 class SpeakerManager(models.Manager):
 
@@ -75,6 +92,15 @@ class TagItem(models.Model):
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
 
 
+class EventManager(models.Manager):
+
+    def todays_events(self):
+        today = date.today()
+        tomorrow = today + timedelta(days=1)
+        return self.filter(start__gte=today, start__lt=tomorrow
+                           ).order_by('start')
+
+
 class Event(models.Model):
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
@@ -85,12 +111,15 @@ class Event(models.Model):
     # TODO audience should it be free text
     # TODO booking information; structure?
 
-    group = models.ForeignKey(EventGroup, null=True, blank=True)
+    group = models.ForeignKey(EventGroup, null=True, blank=True,
+                              related_name='events')
     location = models.ForeignKey(Location, null=True, blank=True)
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
     tags = GenericRelation(TagItem)
+
+    objects = EventManager()
 
     _cached_resources = {}
 
