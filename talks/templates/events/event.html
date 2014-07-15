@@ -32,6 +32,9 @@
         {% if event.api_organisation %}
         <li class="list-group-item"><strong>Organiser</strong>: {{ event.api_organisation.name }}</li>
         {% endif %}
+        {% if event.group %}
+        <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
+        {% endif %}
     </ul>
 </div>
 {% endblock %}

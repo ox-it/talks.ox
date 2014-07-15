@@ -69,7 +69,10 @@ def _events_list(request, events):
 def event(request, event_id):
     try:
         ev = Event.objects.select_related(
-            'speakers', 'location', 'department_organiser').get(id=event_id)
+            'speakers',
+            'location',
+            'group',
+            'department_organiser').get(id=event_id)
     except Event.DoesNotExist:
         raise Http404
     context = {
