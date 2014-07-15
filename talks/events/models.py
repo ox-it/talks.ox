@@ -69,7 +69,7 @@ class Topic(models.Model):
 
 class TopicItem(models.Model):
 
-    tag = models.ForeignKey(Topic)
+    topic = models.ForeignKey(Topic)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
