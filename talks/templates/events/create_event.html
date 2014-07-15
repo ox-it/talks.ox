@@ -19,6 +19,9 @@
     document.organisationConfig = {
         suggestURL: "{{ event_form.department_organiser.field.endpoint }}?{% for type in event_form.department_organiser.field.types %}type_exact={{ type }}&{% endfor %}",
     };
+    document.topicConfig = {
+        suggestURL: "{{ event_form.topics.field.endpoint }}"
+    }
     document.speakerConfig = {
         suggestURL: "{% url 'suggest-speaker' %}",
         createURL: "{% url 'create-speaker' %}",

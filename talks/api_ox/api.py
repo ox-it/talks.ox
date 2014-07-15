@@ -94,12 +94,8 @@ class Topic(object):
 
 class TopicsResource(ApiOxResource):
 
-    PATH = '/topics/'
-
-    uri = JSONAttribute('')
-
-    def __init__(self, base_url='https://talks-dev.oucs.ox.ac.uk/topics/', timeout=1):
-        self.base_url = base_url
+    def __init__(self, base_url=None, timeout=1):
+        self.base_url = base_url or settings.TOPICS_URL
         self.timeout = timeout
 
     @classmethod

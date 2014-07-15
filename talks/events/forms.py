@@ -1,6 +1,7 @@
 from django import forms
 from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
 from talks.api_ox.models import Location, Organisation
 from .models import Event, EventGroup, Speaker
@@ -40,9 +41,16 @@ class APIOxField(forms.ModelChoiceField):
             self.Model.objects.get_or_create(identifier=value)[0].pk)
 
 
-class TopicsField(forms.ModelMultipleChoiceField):
-
-
+class TopicsField(ModelCommaSeparatedChoiceField):
+    def __init__(self, *args, **kwargs):
+        self.endpoint = kwargs.pop('endpoint', settings.TOPICS_URL)
+        return super(TopicsField, self).__init__(*args, **kwargs)
+    
+    def clean(self, value):
+        if value:
+            value = [item.strip() for item in value.split(",")]
+        return super(TopicsField, self).clean([Topic.objects.get_or_create(uri=v)[0].pk
+                                               for v in value])
 
 
 class SpeakerTypeaheadInput(forms.TextInput):
@@ -72,10 +80,9 @@ class EventForm(forms.ModelForm):
         required=False,
         widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
     )
-    topics = ModelCommaSeparatedChoiceField(
+    topics = TopicsField(
         queryset=Topic.objects.all(),
         required=False,
-        #widget=forms.HiddenInput(attrs={'disabled': True})      # TODO disabled to not POST it
     )
 
     location_suggest = forms.CharField(

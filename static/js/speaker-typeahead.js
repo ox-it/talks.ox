@@ -50,7 +50,7 @@ $(function() {
 
     new Suggester(speakerQueryUrl, suggestedSpeakers, typeaheadSpeakers, cbSpeakerSuggest, cachedSpeakers, document.addSpeaker);
 
-    var topicQueryUrl = "https://talks-dev.oucs.ox.ac.uk/topics/suggest?count=10&q=%QUERY";
+    var topicQueryUrl = document.topicConfig.suggestURL + "/suggest?count=10&q=%QUERY";
     var topicTemplate = _.template('<a href="#" data-id="<%= uri %>" class="js-suggestion list-group-item"><span class="badge">+</span><%= prefLabel %></a>');
     var suggestedTopics = $('.js-suggested-topics-list');
     var typeaheadTopics = $('.js-topics-typeahead');
