@@ -175,6 +175,11 @@ def index_event(sender, instance, created, **kwargs):
 def fetch_topics(sender, instance, created, **kwargs):
     """If the User has just been created we use a signal to also create a TalksUser
     """
-    uris = [tag.uri for tag in instance.topics.tag]
-    topics = TopicsResource.get(uris)
-    print topics
+    uris = [topic.uri for topic in instance.topics.all()]
+    cached_topics = Topic.objects.filter(uri__in=uris)
+    cached_topics_uris = [topic.uri for topic in cached_topics]
+    missing_topics_uris = set(uris) - set(cached_topics_uris)
+    logger.info("Fetching missing topics {uris}".format(uris=missing_topics_uris))
+    topics = TopicsResource.get(missing_topics_uris)
+    for topic in topics:
+        Topic.objects.create(name=topic.name, uri=topic.uri)

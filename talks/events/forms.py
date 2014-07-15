@@ -40,6 +40,11 @@ class APIOxField(forms.ModelChoiceField):
             self.Model.objects.get_or_create(identifier=value)[0].pk)
 
 
+class TopicsField(forms.ModelMultipleChoiceField):
+
+
+
+
 class SpeakerTypeaheadInput(forms.TextInput):
     class Media:
         js = ('js/speaker-typeahead.js',)
