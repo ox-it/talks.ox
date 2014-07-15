@@ -131,7 +131,9 @@ def create_event(request, group_id=None):
 
 def event_group(request, event_group_id):
     try:
-        evg = EventGroup.objects.get(id=event_group_id)
+        # Cache the 'events' objects on the EventGroup
+        evg = EventGroup.objects.prefetch_related('events'
+                                                  ).get(id=event_group_id)
     except EventGroup.DoesNotExist:
         raise Http404
     context = {
