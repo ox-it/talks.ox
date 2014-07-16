@@ -212,3 +212,15 @@ def fetch_topics(sender, instance, created, **kwargs):
     topics = TopicsResource.get(missing_topics_uris)
     for topic in topics:
         Topic.objects.create(name=topic.name, uri=topic.uri)
+
+
+@receiver(models.signals.post_save, sender=Topic)
+def fetch_topic(sender, instance, created, **kwargs):
+    """Populate the topic name if it is empty by fetching
+    it from the API.
+    """
+    if created and not instance.name:
+        topic = TopicsResource.get([instance.uri])
+        topic = topic[0]
+        instance.name = topic.name
+        instance.save()
