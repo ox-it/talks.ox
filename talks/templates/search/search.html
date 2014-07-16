@@ -39,10 +39,10 @@
         {% endif %}
     </dl>
     <dl>
-        {% if facets.fields.locations %}
-            <dt>Tags</dt>
-            {% for tag in facets.fields.tags|slice:":10" %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=tags_exact:{{ tag.0|urlencode }}">{{ tag.0 }}</a> ({{ tag.1 }})</dd>
+        {% if facets.fields.topics %}
+            <dt>Topics</dt>
+            {% for topic in facets.fields.topics|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=topics_exact:{{ topic.0|urlencode }}">{{ topic.0 }}</a> ({{ topic.1 }})</dd>
             {% endfor %}
         {% endif %}
     </dl>
