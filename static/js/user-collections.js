@@ -1,13 +1,19 @@
 $(function() {
+    function dataFromEl(el) {
+        var data = {};
+        var eventID = $(el).data('event');
+        var groupID = $(el).data('group');
+        if (eventID) { data.event = eventID; }
+        if (groupID) { data.group = groupID; }
+        return data;
+    }
     var csrftoken = $.cookie('csrftoken');
     $('.js-upcoming-events').on('click', '.js-add-to-collection', function(ev) {
-        var eventID = $(ev.target.parentNode).data('event');
+        var data = dataFromEl(ev.target.parentNode);
         $.ajax({
             type: 'POST',
-            url: document.collectionConfig.saveDefault,
-            data: JSON.stringify({
-                event: eventID,
-            }),
+            url: document.collectionConfig.saveItemDefault,
+            data: JSON.stringify(data),
             headers: {
                 "X-CSRFToken": csrftoken,
             },
@@ -25,14 +31,12 @@ $(function() {
             },
         });
     });
-    $('.js-your-events').on('click', '.js-remove-from-collection', function(ev) {
-        var eventID = $(ev.target.parentNode).data('event');
+    $('.js-your-talks').on('click', '.js-remove-from-collection', function(ev) {
+        var data = dataFromEl(ev.target.parentNode);
         $.ajax({
             type: 'POST',
-            url: document.collectionConfig.removeDefault,
-            data: JSON.stringify({
-                event: eventID,
-            }),
+            url: document.collectionConfig.removeItemDefault,
+            data: JSON.stringify(data),
             headers: {
                 "X-CSRFToken": csrftoken,
             },
@@ -41,8 +45,9 @@ $(function() {
             success: function(response) {
                 // Remove the <li>
                 $(ev.target.parentNode.parentNode).remove();
-                if (response.happening_today) {
+                if (response.id) {
                     $('.js-upcoming-events [data-event="'+response.id+'"].hidden').removeClass('hidden');
+                    $('.js-upcoming-events [data-group="'+response.id+'"].hidden').removeClass('hidden');
                 }
             },
             error: function(err) {
