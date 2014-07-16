@@ -56,7 +56,7 @@ class Collection(models.Model):
                `object_id`s
             3) Select these `object_id`s from the `model`
         """
-        content_type = ContentType.objects.get_for_model(Event)
+        content_type = ContentType.objects.get_for_model(model)
         ids = self.collectionitem_set.filter(content_type=content_type
                                              ).values_list('object_id')
         return model.objects.filter(id__in=itertools.chain.from_iterable(ids))
@@ -83,6 +83,21 @@ class Collection(models.Model):
         except CollectionItem.DoesNotExist:
             item = self.collectionitem_set.create(item=item)
             return item
+
+    def remove_item(self, item):
+        if isinstance(item, Event):
+            content_type = ContentType.objects.get_for_model(Event)
+        elif isinstance(item, EventGroup):
+            content_type = ContentType.objects.get_for_model(EventGroup)
+        else:
+            raise self.InvalidItemType()
+        try:
+            item = self.collectionitem_set.get(content_type=content_type,
+                                               object_id=item.id)
+            item.delete()
+            return True
+        except CollectionItem.DoesNotExist:
+            return False
 
     def get_events(self):
         return self._get_items_by_model(Event)
