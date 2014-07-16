@@ -47,13 +47,13 @@ $(function() {
     var separator = ', ';
     var topics = $('#id_event-topics');
     var topicsList = $('.js-topics-list');
-    function addTopic(speaker) {
+    function addTopic(topic) {
         var topicsURIs = topics.val();
         topicsURIs = topicsURIs!=='' ? _.map(topicsURIs.split(separator), function(val) { return val; } ) : [];
-        if (!_.contains(topicsURIs, speaker.id)) {
-            topicsURIs.push(speaker.id);
+        if (!_.contains(topicsURIs, topic.uri)) {
+            topicsURIs.push(topic.uri);
             topics.val(topicsURIs.join(separator));
-            topicsList.append(topicTemplate(speaker));
+            topicsList.append(topicTemplate(topic));
             return true;
         } else {
             return false;

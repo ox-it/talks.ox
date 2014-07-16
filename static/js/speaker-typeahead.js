@@ -17,9 +17,9 @@ $(function() {
         function addElement(el) {
             var $suggestion = $(el);
             $suggestion.addClass('hidden');
-            var speakerID = $suggestion.data('id');
-            var speaker = cachedSuggestions[speakerID];
-            documentAdd(speaker);
+            var elementID = $suggestion.data('id');
+            var element = cachedSuggestions[elementID];
+            documentAdd(element);
         }
         targetSuggestion.on('click', '.js-suggestion', function(ev) {
             ev.preventDefault();
