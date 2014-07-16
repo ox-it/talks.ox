@@ -204,6 +204,7 @@ def index_event(sender, instance, created, **kwargs):
 def fetch_topics(sender, instance, created, **kwargs):
     """If the User has just been created we use a signal to also create a TalksUser
     """
+    return      # TODO to be discussed
     uris = [topic.uri for topic in instance.topics.all()]
     cached_topics = Topic.objects.filter(uri__in=uris)
     cached_topics_uris = [topic.uri for topic in cached_topics]
