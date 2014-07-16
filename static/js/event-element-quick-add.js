@@ -38,7 +38,7 @@ $(function() {
             return false;
         }
     }
-    // Export this as it's used by speaker-typeahead.js
+    // Export this as it's used by element-typeahead.js
     document.addSpeaker = addSpeaker;
 
 
@@ -59,7 +59,7 @@ $(function() {
             return false;
         }
     }
-    // Export this as it's used by speaker-typeahead.js
+    // Export this as it's used by element-typeahead.js
     document.addTopic = addTopic;
 
 
@@ -67,7 +67,7 @@ $(function() {
     function listenForRemoval(fn) {
         removalCallbacks.push(fn);
     }
-    // Export this as it's used by speaker-typeahead.js
+    // Export this as it's used by element-typeahead.js
     document.listenForRemoval = listenForRemoval;
 
     // Remove speaker and update the UI

@@ -58,12 +58,12 @@ class TopicsField(forms.ModelMultipleChoiceField):
 
 class SpeakerTypeaheadInput(forms.TextInput):
     class Media:
-        js = ('js/speaker-typeahead.js',)
+        js = ('js/element-typeahead.js',)
 
 
 class TopicTypeaheadInput(forms.TextInput):
     class Media:
-        js = ('js/speaker-typeahead.js',)
+        js = ('js/element-typeahead.js',)
 
 
 class EventForm(forms.ModelForm):
@@ -245,4 +245,4 @@ class SpeakerQuickAdd(forms.ModelForm):
         model = Speaker
 
     class Media:
-        js = ('js/speaker-quick-add.js',)
+        js = ('js/event-element-quick-add.js',)
