@@ -3,6 +3,6 @@
 {% for speaker in object.speakers.all %}
 {{ speaker.name }}
 {% endfor %}
-{% for tagitem in object.tags.all %}
-{{ tagitem.tag.name }}
+{% for topicitem in object.topics.all %}
+{{ topicitem.topic.name }}
 {% endfor %}

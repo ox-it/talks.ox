@@ -31,7 +31,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         suggest.append(obj.title)
         if obj.description:
             suggest.append(obj.description)
-        suggest.extend([tag.tag.name for tag in obj.tags.all()])
+        suggest.extend([topic.topic.name for topic in obj.topics.all()])
         suggest.extend([speaker.name for speaker in obj.speakers.all()])
         return suggest
 
