@@ -77,7 +77,7 @@ class Speaker(models.Model):
 
 class Topic(models.Model):
 
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250)
     uri = models.URLField(unique=True, db_index=True)
 
     def __unicode__(self):
