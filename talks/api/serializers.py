@@ -18,6 +18,13 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
                   'formatted_date', 'formatted_time', 'happening_today')
 
 
+class EventGroupSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = EventGroup
+        fields = ('id', 'title', 'description')
+
+
 class SpeakerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Speaker
@@ -36,7 +43,7 @@ class CollectionItemRelatedField(serializers.RelatedField):
         if isinstance(value, Event):
             serializer = EventSerializer(value)
         elif isinstance(value, EventGroup):
-            raise NotImplemented("TODO")
+            serializer = EventGroupSerializer(value)
         else:
             raise Exception('Unexpected type of tagged object')
         return serializer.data
