@@ -41,7 +41,10 @@ class APIOxField(forms.ModelChoiceField):
             self.Model.objects.get_or_create(identifier=value)[0].pk)
 
 
-class TopicsField(ModelCommaSeparatedChoiceField):
+class TopicsField(forms.ModelMultipleChoiceField):
+
+    widget = forms.HiddenInput
+
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.pop('endpoint', settings.TOPICS_URL)
         return super(TopicsField, self).__init__(*args, **kwargs)
@@ -49,8 +52,8 @@ class TopicsField(ModelCommaSeparatedChoiceField):
     def clean(self, value):
         if value:
             value = [item.strip() for item in value.split(",")]
-        return super(TopicsField, self).clean([Topic.objects.get_or_create(uri=v)[0].pk
-                                               for v in value])
+            ids = [Topic.objects.get_or_create(uri=v)[0].pk for v in value]
+        return super(TopicsField, self).clean(ids)
 
 
 class SpeakerTypeaheadInput(forms.TextInput):
