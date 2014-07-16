@@ -61,6 +61,29 @@ class Collection(models.Model):
                                              ).values_list('object_id')
         return model.objects.filter(id__in=itertools.chain.from_iterable(ids))
 
+    class ItemAlreadyInCollection(Exception):
+        pass
+
+    class InvalidItemType(Exception):
+        pass
+
+    def add_item(self, item):
+        if isinstance(item, Event):
+            # Adding an event
+            content_type = ContentType.objects.get_for_model(Event)
+        elif isinstance(item, EventGroup):
+            # Adding event group
+            content_type = ContentType.objects.get_for_model(EventGroup)
+        else:
+            raise self.InvalidItemType()
+        try:
+            self.collectionitem_set.get(content_type=content_type,
+                                        object_id=item.id)
+            raise self.ItemAlreadyInCollection()
+        except CollectionItem.DoesNotExist:
+            item = self.collectionitem_set.create(item=item)
+            return item
+
     def get_events(self):
         return self._get_items_by_model(Event)
 
