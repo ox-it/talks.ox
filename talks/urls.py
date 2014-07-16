@@ -3,6 +3,7 @@ from django.contrib import admin
 from haystack.forms import FacetedSearchForm
 from haystack.query import SearchQuerySet
 from haystack.views import FacetedSearchView
+from haystack.inputs import AltParser
 
 from rest_framework import routers
 
@@ -16,7 +17,14 @@ from api.views import (EventViewSet, create_speaker, suggest_speaker,
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
-sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount=1).facet('tags', mincount=1)
+parser = AltParser('edismax', timediff='ms(start,NOW/HOUR)',
+                   future='sum($timediff,abs($timediff))',
+                   futureboost='recip($timediff,1,36000000,36000000)',
+                   pastboost='recip($timediff,1,3600000,3600000)',
+                   finalboost='if($future,$futureboost,$pastboost)',
+                   bf='$finalboost')
+
+sqs = SearchQuerySet().filter(content=parser).facet('speakers', mincount=1).facet('locations', mincount=1).facet('tags', mincount=1)
 # .date_facet('start', date(2014,1,1), date(2015,1,1), 'month')   removed for now as we want dynamic dates and range
 
 
