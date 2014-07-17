@@ -1,17 +1,15 @@
 import logging
 
-from django.shortcuts import get_object_or_404
-from django.contrib.contenttypes.models import ContentType
-
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Speaker
-from talks.users.models import CollectionItem, Collection
+from talks.users.models import Collection
 from talks.api.serializers import (EventSerializer, SpeakerSerializer,
-                                   CollectionItemSerializer)
+                                   CollectionItemSerializer,
+                                   get_item_serializer)
 from talks.core.renderers import ICalRenderer
 
 logger = logging.getLogger(__name__)
@@ -81,9 +79,8 @@ def remove_item(request, collection_id=None):
     item = item_from_request(request)
     deleted = user_collection.remove_item(item)
     if deleted:
-        return Response({'success': "Deleted!",
-                         'id': item.id},
-                        status=status.HTTP_200_OK)
+        serializer = get_item_serializer(item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response({'error': "Item not found."},
                         status=status.HTTP_404_NOT_FOUND)
