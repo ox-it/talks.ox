@@ -8,6 +8,7 @@
 <script>
     document.collectionConfig = {
         yourTalkTemplate: _.template('<li><strong><%= event.formatted_date %></strong> - <a href="<%= event.url %>"><%= event.title %></a> <a data-event="<%= event.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
+        yourGroupTemplate: _.template('<li><a href="<%= group.url %>"><%= group.title %></a> <a data-group="<%= group.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
         saveItemDefault: "{% url "save-item" %}",
         removeItemDefault: "{% url "remove-item" %}",
     };
@@ -34,13 +35,13 @@
 <h2 class="hidden-xs">Your Talks</h2>
 
 {% if default_collection %}
-<div class="js-your-talks">
-    <ul class="list-unstyled">
+<div class="js-your-collection">
+    <ul class="list-unstyled js-your-talks">
         {% for event in user_events %}
         <li><strong>{{ event.formatted_date }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a> <a data-event="{{ event.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>
         {% endfor %}
     </ul>
-    <ul class="list-unstyled">
+    <ul class="list-unstyled js-your-groups">
         {% for evg in user_event_groups %}
         <li><a href="{{ evg.get_absolute_url }}">{{ evg.title }}</a><a data-group="{{ evg.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a>
         {% endfor %}
