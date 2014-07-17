@@ -87,8 +87,8 @@
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-topics-list">
             {% for topic in selected_topics %}
-            <a href="#" data-id="{{ topic.url }}" class="list-group-item list-group-item-info fade in">
-                <span class="badge">-</span>{{ topic.prefLabel }}
+            <a href="#" data-id="{{ topic.uri }}" class="list-group-item list-group-item-info fade in">
+                <span class="badge">-</span>{{ topic.name }}
             </a>
             {% endfor %}
         </div>

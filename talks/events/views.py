@@ -11,7 +11,7 @@ from django.shortcuts import render
 
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
-from talks.events.models import TopicItem
+from talks.events.models import TopicItem, Topic
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +134,9 @@ def create_event(request, group_id=None):
             if 'speakers' in context['event_form'].cleaned_data:
                 context['selected_speakers'] = Speaker.objects.filter(
                     id__in=context['event_form'].cleaned_data['speakers'])
+            if 'topics' in context['event_form'].cleaned_data:
+                context['selected_topics'] = Topic.objects.filter(
+                    id__in=context['event_form'].cleaned_data['topics'])
     else:
         context = {
             'event_form': PrefixedEventForm(),
