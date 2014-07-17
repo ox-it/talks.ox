@@ -22,16 +22,25 @@ $(function() {
             success: function(response) {
                 // Hide the <a>
                 $(ev.target.parentNode).addClass('hidden');
-                $('.js-your-events').append(
-                    document.collectionConfig.yourTalkTemplate({event: response.item})
-                );
+                switch (response.item.class_name) {
+                    case 'Event':
+                        $('.js-your-talks').append(
+                            document.collectionConfig.yourTalkTemplate({event: response.item})
+                        );
+                        break;
+                    case 'EventGroup':
+                        $('.js-your-groups').append(
+                            document.collectionConfig.yourGroupTemplate({group: response.item})
+                        );
+                        break;
+                }
             },
             error: function(err) {
                 console.log(err);
             },
         });
     });
-    $('.js-your-talks').on('click', '.js-remove-from-collection', function(ev) {
+    $('.js-your-collection').on('click', '.js-remove-from-collection', function(ev) {
         var data = dataFromEl(ev.target.parentNode);
         $.ajax({
             type: 'POST',
@@ -45,9 +54,13 @@ $(function() {
             success: function(response) {
                 // Remove the <li>
                 $(ev.target.parentNode.parentNode).remove();
-                if (response.id) {
-                    $('.js-upcoming-events [data-event="'+response.id+'"].hidden').removeClass('hidden');
-                    $('.js-upcoming-events [data-group="'+response.id+'"].hidden').removeClass('hidden');
+                switch (response.class_name) {
+                    case 'Event':
+                        $('.js-upcoming-events [data-event="'+response.id+'"].hidden').removeClass('hidden');
+                        break;
+                    case 'EventGroup':
+                        $('.js-upcoming-events [data-group="'+response.id+'"].hidden').removeClass('hidden');
+                        break;
                 }
             },
             error: function(err) {
