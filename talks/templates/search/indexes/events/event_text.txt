@@ -1,8 +1,0 @@
-{{ object.title }}
-{{ object.description }}
-{% for speaker in object.speakers.all %}
-{{ speaker.name }}
-{% endfor %}
-{% for topicitem in object.topics.all %}
-{{ topicitem.topic.name }}
-{% endfor %}

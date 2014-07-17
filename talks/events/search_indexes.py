@@ -5,7 +5,7 @@ from .models import  Event
 
 class EventIndex(indexes.SearchIndex, indexes.Indexable):
     # text: multiple fields use to do full-text search
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.MultiValueField(document=True, stored=False)
 
     title = indexes.CharField(model_attr='title')
     description = indexes.CharField(model_attr='description', null=True)
@@ -52,3 +52,13 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_topics(self, obj):
         return [topic.topic.name for topic in obj.topics.all()]
+
+    def prepare_text(self, obj):
+        text = []
+        text.append(obj.title)
+        text.append(obj.description)
+        for speaker in obj.speakers.all():
+            text.append(speaker.name)
+        for topicitem in obj.topics.all():
+            text.append(topicitem.topic.name)
+        return text
