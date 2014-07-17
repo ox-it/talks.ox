@@ -4,13 +4,13 @@ from django.contrib.contenttypes.admin import GenericStackedInline
 from .models import Event, EventGroup, Speaker, Location, Topic, TopicItem
 
 
-class TagItemInlineAdmin(GenericStackedInline):
+class TopicItemInlineAdmin(GenericStackedInline):
     model = TopicItem
 
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'start', 'end')
-    inlines = [TagItemInlineAdmin,]
+    inlines = [TopicItemInlineAdmin]
 
 
 class SpeakerAdmin(admin.ModelAdmin):
