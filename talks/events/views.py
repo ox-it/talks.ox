@@ -21,10 +21,13 @@ def homepage(request):
                          event_groups)
     series = filter(lambda eg: eg.group_type == EventGroup.SEMINAR,
                     event_groups)
+    group_no_type = filter(lambda eg: not eg.group_type,
+                           event_groups)
     context = {
         'events': events,
         'event_groups': event_groups,
         'conferences': conferences,
+        'group_no_type': group_no_type,
         'series': series,
         'default_collection': None,
     }

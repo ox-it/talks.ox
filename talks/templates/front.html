@@ -71,12 +71,21 @@
 
     {% if series %}
     <h3>Seminar Series</h3>
-    {% endif %}
     <ul class="list-unstyled">
         {% for serie in series %}
         <li><a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a>{% if default_collection %} <a data-group="{{ serie.id }}" class="js-add-to-collection{% if serie in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
         {% endfor %}
     </ul>
+    {% endif %}
+
+    {% if group_no_type %}
+    <h3>Other events</h3>
+    <ul class="list-unstyled">
+        {% for group in group_no_type %}
+        <li><a href="{{ group.get_absolute_url }}">{{ group.title }}</a>{% if default_collection %} <a data-group="{{ group.id }}" class="js-add-to-collection{% if group in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </div>
 
 {% endblock %}
