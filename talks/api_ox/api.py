@@ -76,6 +76,10 @@ class OxfordDateResource(ApiOxResource):
 
 class Topic(object):
 
+    uri = JSONAttribute('uri')
+    name = JSONAttribute('prefLabel')
+    altNames = JSONAttribute('altLabels')
+
     _json = {}
 
     def __init__(self, json):
@@ -86,10 +90,6 @@ class Topic(object):
 
     def __str__(self):
         return self.__unicode__()
-
-    uri = JSONAttribute('uri')
-    name = JSONAttribute('prefLabel')
-    altNames = JSONAttribute('altLabels')
 
 
 class TopicsResource(ApiOxResource):
