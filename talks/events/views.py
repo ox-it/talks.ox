@@ -1,6 +1,6 @@
 import logging
 
-from datetime import date
+from datetime import date, timedelta
 from functools import partial
 
 from django.core.urlresolvers import reverse
@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request):
-    events = Event.objects.todays_events()
+    next_days = request.GET.get('next_days', 1)
+    events = Event.objects.future_events(timedelta(days=int(next_days)))
     event_groups = EventGroup.objects.for_events(events)
     conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
                          event_groups)

@@ -95,10 +95,16 @@ class TagItem(models.Model):
 class EventManager(models.Manager):
 
     def todays_events(self):
+        return self.future_events(timedelta(days=1))
+
+    def future_events(self, td):
+        """Fetch future events from today for the next X delta
+        :param td: timedelta object
+        :return: QuerySet
+        """
         today = date.today()
-        tomorrow = today + timedelta(days=1)
-        return self.filter(start__gte=today, start__lt=tomorrow
-                           ).order_by('start')
+        to = today + td
+        return self.filter(start__gte=today, start__lt=to).order_by('start')
 
 
 class Event(models.Model):
