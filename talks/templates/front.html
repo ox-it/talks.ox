@@ -8,8 +8,9 @@
 <script>
     document.collectionConfig = {
         yourTalkTemplate: _.template('<li><strong><%= event.formatted_date %></strong> - <a href="<%= event.url %>"><%= event.title %></a> <a data-event="<%= event.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
-        saveDefault: "{% url "save-talk" %}",
-        removeDefault: "{% url "remove-talk" %}",
+        yourGroupTemplate: _.template('<li><a href="<%= group.url %>"><%= group.title %></a> <a data-group="<%= group.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
+        saveItemDefault: "{% url "save-item" %}",
+        removeItemDefault: "{% url "remove-item" %}",
     };
 </script>
 <script type="application/ld+json">
@@ -34,16 +35,18 @@
 <h2 class="hidden-xs">Your Talks</h2>
 
 {% if default_collection %}
-    <ul class="list-unstyled js-your-events">
+<div class="js-your-collection">
+    <ul class="list-unstyled js-your-talks">
         {% for event in user_events %}
         <li><strong>{{ event.formatted_date }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a> <a data-event="{{ event.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>
         {% endfor %}
     </ul>
-    <ul class="list-unstyled js-your-event-groups">
+    <ul class="list-unstyled js-your-groups">
         {% for evg in user_event_groups %}
-        <li><a href="{{ evg.get_absolute_url }}">{{ evg.title }}</a></li>
+        <li><a href="{{ evg.get_absolute_url }}">{{ evg.title }}</a><a data-group="{{ evg.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a>
         {% endfor %}
     </ul>
+</div>
 {% endif %}
 
 {% endblock %}
@@ -51,28 +54,39 @@
 {% block main %}
 <h2 class="hidden-xs">Upcoming</h2>
 
-<ul class="list-unstyled js-upcoming-events">
-{% for event in events %}
-<li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if event.group %} - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>{% endif %}{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
-{% endfor %}
-</ul>
+<div class="js-upcoming-events">
+    <ul class="list-unstyled">
+        {% for event in events %}
+        <li><strong>{{ event.formatted_time }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>{% if event.group %} - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>{% endif %}{% if default_collection %} <a data-event="{{ event.id }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+        {% endfor %}
+    </ul>
 
-{% if conferences %}
-<h3>Conferences</h3>
-<ul class="list-unstyled">
-{% for conf in conferences %}
-    <li><a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a></li>
-{% endfor %}
-</ul>
-{% endif %}
+    {% if conferences %}
+    <h3>Conferences</h3>
+    <ul class="list-unstyled">
+        {% for conf in conferences %}
+        <li><a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a>{% if default_collection %} <a data-group="{{ conf.id }}" class="js-add-to-collection{% if conf in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-{% if series %}
-<h3>Seminar Series</h3>
-{% endif %}
-<ul class="list-unstyled">
-{% for serie in series %}
-    <li><a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a></li>
-{% endfor %}
-</ul>
+    {% if series %}
+    <h3>Seminar Series</h3>
+    <ul class="list-unstyled">
+        {% for serie in series %}
+        <li><a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a>{% if default_collection %} <a data-group="{{ serie.id }}" class="js-add-to-collection{% if serie in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if group_no_type %}
+    <h3>Other events</h3>
+    <ul class="list-unstyled">
+        {% for group in group_no_type %}
+        <li><a href="{{ group.get_absolute_url }}">{{ group.title }}</a>{% if default_collection %} <a data-group="{{ group.id }}" class="js-add-to-collection{% if group in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
 
 {% endblock %}
