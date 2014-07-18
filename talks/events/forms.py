@@ -33,7 +33,7 @@ class APIOxField(forms.ModelChoiceField):
         self.Model = kwargs.pop('Model', [])
         self.types = kwargs.pop('types', [])
         self.endpoint = kwargs.pop(
-            'endpoint', 'http://api.m.ox.ac.uk/places/suggest')
+            'endpoint', '//api.m.ox.ac.uk/places/suggest')
         return super(APIOxField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
