@@ -13,7 +13,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     speakers = indexes.MultiValueField(faceted=True, null=True)
     departments = indexes.CharField(faceted=True, null=True)
     locations = indexes.CharField(faceted=True, null=True)
-    tags = indexes.MultiValueField(faceted=True, null=True)
+    topics = indexes.MultiValueField(faceted=True, null=True)
 
     # suggestions: used for spellchecking
     suggestions = indexes.SuggestionField()
@@ -31,7 +31,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         suggest.append(obj.title)
         if obj.description:
             suggest.append(obj.description)
-        suggest.extend([tag.tag.name for tag in obj.tags.all()])
+        suggest.extend([topic.topic.name for topic in obj.topics.all()])
         suggest.extend([speaker.name for speaker in obj.speakers.all()])
         return suggest
 
@@ -50,8 +50,8 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         else:
             return None
 
-    def prepare_tags(self, obj):
-        return [tag.tag.name for tag in obj.tags.all()]
+    def prepare_topics(self, obj):
+        return [topic.topic.name for topic in obj.topics.all()]
 
     def prepare_text(self, obj):
         text = []
@@ -59,6 +59,6 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         text.append(obj.description)
         for speaker in obj.speakers.all():
             text.append(speaker.name)
-        for topicitem in object.topics.all():
+        for topicitem in obj.topics.all():
             text.append(topicitem.topic.name)
         return text

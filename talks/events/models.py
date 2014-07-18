@@ -5,13 +5,14 @@ from datetime import date, timedelta
 
 from django.conf import settings
 from django.db import models
+from django.dispatch.dispatcher import receiver
 from django.template.defaultfilters import date as date_filter
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
-from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource
+from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
 from talks.api_ox.models import Location, Organisation
 
 
@@ -74,19 +75,18 @@ class Speaker(models.Model):
         return self.name
 
 
-class Tag(models.Model):
+class Topic(models.Model):
 
-    slug = models.SlugField()
-    name = models.CharField(max_length=250, unique=True)
-    description = models.TextField()
+    name = models.CharField(max_length=250)
+    uri = models.URLField(unique=True, db_index=True)
 
     def __unicode__(self):
         return self.name
 
 
-class TagItem(models.Model):
+class TopicItem(models.Model):
 
-    tag = models.ForeignKey(Tag)
+    topic = models.ForeignKey(Topic)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
@@ -123,7 +123,7 @@ class Event(models.Model):
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
-    tags = GenericRelation(TagItem)
+    topics = GenericRelation(TopicItem)
 
     objects = EventManager()
 
@@ -197,3 +197,37 @@ class Event(models.Model):
         if self.start:
             return self.start.date() == date.today()
         return False
+
+
+@receiver(models.signals.post_save, sender=Event)
+def index_event(sender, instance, created, **kwargs):
+    """If the User has just been created we use a signal to also create a TalksUser
+    """
+    pass
+
+
+@receiver(models.signals.post_save, sender=Event)
+def fetch_topics(sender, instance, created, **kwargs):
+    """If the User has just been created we use a signal to also create a TalksUser
+    """
+    return      # TODO to be discussed
+    uris = [topic.uri for topic in instance.topics.all()]
+    cached_topics = Topic.objects.filter(uri__in=uris)
+    cached_topics_uris = [topic.uri for topic in cached_topics]
+    missing_topics_uris = set(uris) - set(cached_topics_uris)
+    logger.info("Fetching missing topics {uris}".format(uris=missing_topics_uris))
+    topics = TopicsResource.get(missing_topics_uris)
+    for topic in topics:
+        Topic.objects.create(name=topic.name, uri=topic.uri)
+
+
+@receiver(models.signals.post_save, sender=Topic)
+def fetch_topic(sender, instance, created, **kwargs):
+    """Populate the topic name if it is empty by fetching
+    it from the API.
+    """
+    if created and not instance.name:
+        topic = TopicsResource.get([instance.uri])
+        topic = topic[0]
+        instance.name = topic.name
+        instance.save()
