@@ -20,6 +20,10 @@
   "startDate": "{{ event.start|date:'c' }}"
 {% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
 </script>
+
+    <link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+    <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
 {% endblock %}
 
 
@@ -53,6 +57,7 @@
 
     <a href="/">Today</a>
     <a href="/?next_days=7">Next 7 days</a>
+    <a class="js-datetimepicker" id="js-calendar">Calendar</a>
 
 <ul class="list-unstyled js-upcoming-events">
 {% for event in events %}
@@ -77,5 +82,35 @@
     <li><a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a></li>
 {% endfor %}
 </ul>
+
+
+    <script type="application/javascript">
+
+    var JS_CALENDAR = '#js-calendar';
+
+    $(JS_CALENDAR).datetimepicker({
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        minView: 2,
+        maxView: 3,
+        todayHighlight: true
+    });
+
+    var datepicker = $(JS_CALENDAR);
+    datepicker.datetimepicker().on('changeDate', function(ev){
+        var d = datepicker.datetimepicker('getUTCDate');
+        // month is 0-11
+        var month = d.getMonth() + 1;
+        month = month.toString();
+        if (month.length == 1) {
+            month = '0' + month;
+        }
+        window.location = '/events/date/'+d.getFullYear()+'/'+month+'/'+d.getDate()+'/';
+    });
+
+    $(JS_CALENDAR).on('click', function(ev) {
+        $(JS_CALENDAR).datetimepicker('show');
+    });
+    </script>
 
 {% endblock %}
