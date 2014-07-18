@@ -48,11 +48,10 @@ def create_speaker(request):
 def item_from_request(request):
     event_id = request.DATA.get('event', None)
     group_id = request.DATA.get('group', None)
+    # Our JS doesn't support sending both
+    assert not(event_id and group_id)
     try:
-        if event_id and group_id:
-            # bad shit
-            raise Exception("Multiple items in JSON")
-        elif event_id:
+        if event_id:
             return Event.objects.get(id=event_id)
         elif group_id:
             return EventGroup.objects.get(id=group_id)
