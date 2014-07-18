@@ -1,5 +1,7 @@
 import logging
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
@@ -54,7 +56,7 @@ def item_from_request(request):
             return Event.objects.get(id=event_id)
         elif group_id:
             return EventGroup.objects.get(id=group_id)
-    except (Event.DoesNotExist, EventGroup.DoesNotExist):
+    except ObjectDoesNotExist:
         logger.warn("Attempt to add thing to event that doesn't exist")
 
 
@@ -63,13 +65,17 @@ def item_from_request(request):
 def save_item(request, collection_id=None):
     user_collection = request.tuser.default_collection
     item = item_from_request(request)
-    try:
-        item = user_collection.add_item(item)
-    except Collection.ItemAlreadyInCollection:
-        return Response({'error': "That Event is already in your collection"},
-                        status=status.HTTP_409_CONFLICT)
-    serializer = CollectionItemSerializer(item)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if item:
+        try:
+            item = user_collection.add_item(item)
+        except Collection.ItemAlreadyInCollection:
+            return Response({'error': "Item already in user collection"},
+                            status=status.HTTP_409_CONFLICT)
+        serializer = CollectionItemSerializer(item)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
 
 
 # TODO: require auth
