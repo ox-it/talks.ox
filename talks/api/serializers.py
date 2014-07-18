@@ -12,7 +12,9 @@ class ClassNameField(serializers.Field):
         return obj.__class__.__name__
 
 
-class EventSerializer(serializers.HyperlinkedModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(source='get_absolute_url',
+                                read_only=True)
     formatted_date = serializers.CharField(source='formatted_date',
                                            read_only=True)
     formatted_time = serializers.CharField(source='formatted_time',
@@ -28,12 +30,14 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
                   'class_name')
 
 
-class EventGroupSerializer(serializers.HyperlinkedModelSerializer):
+class EventGroupSerializer(serializers.ModelSerializer):
     class_name = ClassNameField()
+    url = serializers.CharField(source='get_absolute_url',
+                                read_only=True)
 
     class Meta:
         model = EventGroup
-        fields = ('id', 'title', 'description', 'class_name')
+        fields = ('id', 'url', 'title', 'description', 'class_name')
 
 
 class SpeakerSerializer(serializers.ModelSerializer):
