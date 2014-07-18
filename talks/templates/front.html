@@ -105,7 +105,11 @@
         if (month.length == 1) {
             month = '0' + month;
         }
-        window.location = '/events/date/'+d.getFullYear()+'/'+month+'/'+d.getDate()+'/';
+        var day = d.getDate().toString();
+        if (day.length == 1) {
+            day = '0' + day;
+        }
+        window.location = '/events/date/'+d.getFullYear()+'/'+month+'/'+day+'/';
     });
 
     $(JS_CALENDAR).on('click', function(ev) {
