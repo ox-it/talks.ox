@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from haystack.views import FacetedSearchView
 
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
@@ -157,3 +158,27 @@ def event_group(request, event_group_id):
         'event_group': evg,
     }
     return render(request, 'events/event-group.html', context)
+
+
+class SearchView(FacetedSearchView):
+
+    def __init__(self, *args, **kwargs):
+        super(SearchView, self).__init__(*args, **kwargs)
+
+    def extra_context(self):
+        from talks.urls import FACET_START_DATE
+
+        extra = super(SearchView, self).extra_context()
+
+        if 'facets' in extra:
+            facets = extra['facets']
+            queries = facets['queries']
+            facet_date = {}
+            for key, count in queries.iteritems():
+                _, _, prep_key = key.partition('start_exact:')
+                if prep_key in FACET_START_DATE:
+                    facet_date[FACET_START_DATE[prep_key]] = count
+
+            extra['facet_date'] = facet_date
+
+        return extra

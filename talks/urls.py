@@ -2,13 +2,12 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from haystack.forms import FacetedSearchForm
 from haystack.query import SearchQuerySet
-from haystack.views import FacetedSearchView
 
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
                           events_for_month, events_for_year, create_event,
-                          event_group)
+                          event_group, SearchView)
 
 from api.views import (EventViewSet, create_speaker, suggest_speaker,
                        save_talk, remove_talk)
@@ -33,7 +32,7 @@ urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
     url(r'^api/collections/event/add$', save_talk, name="save-talk"),
     url(r'^api/collections/event/remove$', remove_talk, name="remove-talk"),
-    url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
+    url(r'^search/', SearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/speakers/new$', create_speaker, name='create-speaker'),

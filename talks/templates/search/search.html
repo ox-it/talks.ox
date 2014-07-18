@@ -47,9 +47,9 @@
         {% endif %}
     </dl>
     <dl>
-        {% if facets.queries %}
+        {% if facet_date %}
             <dt>Start</dt>
-            {% for k, v in facets.queries.iteritems %}
+            {% for k, v in facet_date.iteritems %}
                 <dd><a href="{{ request.get_full_path }}&amp;selected_facets={{ k|urlencode }}">{{ k }}</a> ({{ v }})</dd>
             {% endfor %}
         {% endif %}
