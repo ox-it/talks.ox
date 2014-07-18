@@ -38,22 +38,44 @@ $(function() {
             return false;
         }
     }
-    // Export this as it's used by speaker-typeahead.js
+    // Export this as it's used by element-typeahead.js
     document.addSpeaker = addSpeaker;
+
+
+    // Add topic and update the UI
+    var topicTemplate = _.template('<a href="#" data-id="<%= uri %>" class="list-group-item list-group-item-info fade in"><span class="badge">-</span><%= prefLabel %></a>');
+    var separator = ', ';
+    var topics = $('#id_event-topics');
+    var topicsList = $('.js-topics-list');
+    function addTopic(topic) {
+        var topicsURIs = topics.val();
+        topicsURIs = topicsURIs!=='' ? _.map(topicsURIs.split(separator), function(val) { return val; } ) : [];
+        if (!_.contains(topicsURIs, topic.uri)) {
+            topicsURIs.push(topic.uri);
+            topics.val(topicsURIs.join(separator));
+            topicsList.append(topicTemplate(topic));
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Export this as it's used by element-typeahead.js
+    document.addTopic = addTopic;
+
 
     var removalCallbacks = [];
     function listenForRemoval(fn) {
         removalCallbacks.push(fn);
     }
-    // Export this as it's used by speaker-typeahead.js
+    // Export this as it's used by element-typeahead.js
     document.listenForRemoval = listenForRemoval;
 
     // Remove speaker and update the UI
     function removeSpeaker(id) {
-        var speakerIDs = $speakers.val();
+        var speakerIDs = topics.val();
         speakerIDs = speakerIDs!=='' ? _.map(speakerIDs.split(separator), toInt) : [];
         speakerIDs = _.without(speakerIDs, id);
-        $speakers.val(speakerIDs.join(separator));
+        topics.val(speakerIDs.join(separator));
         _.each(removalCallbacks, function(cb) {
             cb.apply(this, [id]);
         });
@@ -65,12 +87,12 @@ $(function() {
         $speaker.remove();
     }
 
-    $speakersList.on('click', 'a', function(ev) {
+    topicsList.on('click', 'a', function(ev) {
         ev.preventDefault();
         removeSpeakerElement(ev.target);
     });
 
-    $speakersList.on('click', 'a span', function(ev) {
+    topicsList.on('click', 'a span', function(ev) {
         // If they don't click the <a> but click the span in the <a>
         ev.preventDefault();
         ev.stopPropagation();

@@ -2,6 +2,7 @@ import logging
 
 from datetime import date
 from functools import partial
+from django.contrib.contenttypes.models import ContentType
 
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -10,6 +11,7 @@ from django.shortcuts import render
 
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
+from talks.events.models import TopicItem, Topic
 
 logger = logging.getLogger(__name__)
 
@@ -112,6 +114,15 @@ def create_event(request, group_id=None):
                 event_group.save()
                 event.group = event_group
             event.save()
+
+            # saving topics
+            event_topics = context['event_form'].cleaned_data['topics']
+            event_ct = ContentType.objects.get_for_model(Event)
+            for topic in event_topics:
+                TopicItem.objects.create(topic=topic,
+                                         content_type=event_ct,
+                                         object_id=event.id)
+
             # *Now* we can save the many2many relations
             context['event_form'].save_m2m()
             if 'another' in request.POST:
@@ -123,6 +134,9 @@ def create_event(request, group_id=None):
             if 'speakers' in context['event_form'].cleaned_data:
                 context['selected_speakers'] = Speaker.objects.filter(
                     id__in=context['event_form'].cleaned_data['speakers'])
+            if 'topics' in context['event_form'].cleaned_data:
+                context['selected_topics'] = Topic.objects.filter(
+                    id__in=context['event_form'].cleaned_data['topics'])
     else:
         context = {
             'event_form': PrefixedEventForm(),

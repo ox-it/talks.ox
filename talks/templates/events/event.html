@@ -35,6 +35,7 @@
         {% if event.group %}
         <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
         {% endif %}
+        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.topics.all %}{{ topic.topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
     </ul>
 </div>
 {% endblock %}

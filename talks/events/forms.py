@@ -1,8 +1,11 @@
 from django import forms
+from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
 from talks.api_ox.models import Location, Organisation
 from .models import Event, EventGroup, Speaker
+from talks.events.models import Topic
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -38,9 +41,29 @@ class APIOxField(forms.ModelChoiceField):
             self.Model.objects.get_or_create(identifier=value)[0].pk)
 
 
+class TopicsField(forms.ModelMultipleChoiceField):
+
+    widget = forms.HiddenInput
+
+    def __init__(self, *args, **kwargs):
+        self.endpoint = kwargs.pop('endpoint', settings.TOPICS_URL)
+        return super(TopicsField, self).__init__(*args, **kwargs)
+    
+    def clean(self, value):
+        if value:
+            value = [item.strip() for item in value.split(",")]
+            ids = [Topic.objects.get_or_create(uri=v)[0].pk for v in value]
+        return super(TopicsField, self).clean(ids)
+
+
 class SpeakerTypeaheadInput(forms.TextInput):
     class Media:
-        js = ('js/speaker-typeahead.js',)
+        js = ('js/element-typeahead.js',)
+
+
+class TopicTypeaheadInput(forms.TextInput):
+    class Media:
+        js = ('js/element-typeahead.js',)
 
 
 class EventForm(forms.ModelForm):
@@ -53,6 +76,17 @@ class EventForm(forms.ModelForm):
     speakers = ModelCommaSeparatedChoiceField(
         queryset=Speaker.objects.all(),
         required=False)
+
+    topic_suggest = forms.CharField(
+        label="Topic",
+        help_text="Type topic name and select from the list",
+        required=False,
+        widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
+    )
+    topics = TopicsField(
+        queryset=Topic.objects.all(),
+        required=False,
+    )
 
     location_suggest = forms.CharField(
         label="Venue",
@@ -84,7 +118,7 @@ class EventForm(forms.ModelForm):
         js = ('js/location-typeahead.js',)
 
     class Meta:
-        exclude = ('slug',)
+        exclude = ('slug','topics')
         model = Event
         labels = {
             'description': 'Abstract',
@@ -211,4 +245,4 @@ class SpeakerQuickAdd(forms.ModelForm):
         model = Speaker
 
     class Media:
-        js = ('js/speaker-quick-add.js',)
+        js = ('js/event-element-quick-add.js',)
