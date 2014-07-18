@@ -16,7 +16,9 @@ from api.views import (EventViewSet, create_speaker, suggest_speaker,
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
-sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount=1).facet('topics', mincount=1)
+sqs = (SearchQuerySet()
+       .facet('speakers', mincount=1).facet('locations', mincount=1).facet('topics', mincount=1)
+       .query_facet('start', '[* TO NOW]').query_facet('start', '[NOW TO NOW/DAY+7DAY]').query_facet('start', '[NOW/DAY+7DAY TO *]'))
 # .date_facet('start', date(2014,1,1), date(2015,1,1), 'month')   removed for now as we want dynamic dates and range
 
 

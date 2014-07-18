@@ -46,19 +46,14 @@
             {% endfor %}
         {% endif %}
     </dl>
-    {% comment %}
-    TODO needs to be reworked to have ranges e.g. "Past talks", "Last week", "This week", "Next month" etc
     <dl>
-        {% if facets.dates.start %}
+        {% if facets.queries %}
             <dt>Start</dt>
-            {% for start, count in facets.dates.start.items %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=start_exact:{{ start|urlencode }}">{{ start }}</a> ({{ count }})</dd>
+            {% for k, v in facets.queries.iteritems %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets={{ k|urlencode }}">{{ k }}</a> ({{ v }})</dd>
             {% endfor %}
-        {% else %}
-            <p>No start facets.</p>
         {% endif %}
     </dl>
-    {% endcomment %}
     </div>
 
     <div class="col-md-8">
