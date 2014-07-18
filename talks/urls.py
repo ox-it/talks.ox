@@ -16,11 +16,18 @@ from api.views import (EventViewSet, create_speaker, suggest_speaker,
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
-sqs = (SearchQuerySet()
-       .facet('speakers', mincount=1).facet('locations', mincount=1).facet('topics', mincount=1)
-       .query_facet('start', '[* TO NOW]').query_facet('start', '[NOW TO NOW/DAY+7DAY]').query_facet('start', '[NOW/DAY+7DAY TO *]'))
-# .date_facet('start', date(2014,1,1), date(2015,1,1), 'month')   removed for now as we want dynamic dates and range
+# TODO OrderedDict?
+FACET_START_DATE = {
+    '[* TO NOW]': 'Past talks',
+    '[NOW TO NOW/DAY+7DAY]': 'Next 7 days',
+    '[NOW/DAY+7DAY TO *]': 'Future talks'
+}
 
+sqs = (SearchQuerySet()
+       .facet('speakers', mincount=1).facet('locations', mincount=1).facet('topics', mincount=1))
+
+for key in FACET_START_DATE.iterkeys():
+    sqs = sqs.query_facet('start', key)
 
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
