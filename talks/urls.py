@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+
+from django_webauth.views import LoginView, LogoutView
+
 from haystack.forms import FacetedSearchForm
 from haystack.query import SearchQuerySet
 from haystack.views import FacetedSearchView
@@ -21,7 +24,10 @@ sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount
 
 
 urlpatterns = patterns('',
-    url(r'^webauth/', include('django_webauth.urls', 'webauth')),
+    # WebAuth login/logout
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), name='logout'),
+
     url(r'^api/', include(router.urls)),
     url(r'^api/collections/event/add$', save_talk, name="save-talk"),
     url(r'^api/collections/event/remove$', remove_talk, name="remove-talk"),
