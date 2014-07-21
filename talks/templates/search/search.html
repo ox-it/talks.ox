@@ -49,8 +49,8 @@
     <dl>
         {% if facet_date %}
             <dt>Start</dt>
-            {% for k, v in facet_date.iteritems %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets={{ k|urlencode }}">{{ k }}</a> ({{ v }})</dd>
+            {% for item in facet_date %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets={{ item.url_param|urlencode }}">{{ item.name }}</a> ({{ item.count }})</dd>
             {% endfor %}
         {% endif %}
     </dl>

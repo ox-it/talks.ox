@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import logging
 
 from datetime import date
@@ -163,25 +164,47 @@ def event_group(request, event_group_id):
     return render(request, 'events/event-group.html', context)
 
 
+class StartDateFacetItem(object):
+    """Represents a facet item in the view
+    """
+
+    def __init__(self, name, url_param, count):
+        """
+        Initiate a facet item
+        :param name: "user-friendly" name for the item
+        :param url_param: parameter that will be passed in the URL
+        :param count: number of occurences for that item
+        """
+        self.name = name
+        self.url_param = url_param
+        self.count = count
+
+
 class SearchView(FacetedSearchView):
 
     def __init__(self, *args, **kwargs):
         super(SearchView, self).__init__(*args, **kwargs)
 
     def extra_context(self):
-        from talks.urls import FACET_START_DATE
+        from talks.urls import FACET_START_DATE, SOLR_TO_NAME
 
         extra = super(SearchView, self).extra_context()
 
-        if 'facets' in extra:
-            facets = extra['facets']
-            queries = facets['queries']
+        if 'facets' in extra and 'queries' in extra['facets']:
+            queries = extra['facets']['queries']
             facet_date = {}
+
             for key, count in queries.iteritems():
                 _, _, prep_key = key.partition('start_exact:')
-                if prep_key in FACET_START_DATE:
-                    facet_date[FACET_START_DATE[prep_key]] = count
+                if prep_key in SOLR_TO_NAME:
+                    facet_date[SOLR_TO_NAME[prep_key]] = count
 
-            extra['facet_date'] = facet_date
+            # need custom ordering
+            ordered_dates = list()
+            for key, values in FACET_START_DATE.iteritems():
+                if key in facet_date:
+                    ordered_dates.append(StartDateFacetItem(key, values['url_param'], facet_date[key]))
+
+            extra['facet_date'] = ordered_dates
 
         return extra
