@@ -21,6 +21,7 @@ sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount
 
 
 urlpatterns = patterns('',
+    url(r'^webauth/', include('django_webauth.urls', 'webauth')),
     url(r'^api/', include(router.urls)),
     url(r'^api/collections/event/add$', save_talk, name="save-talk"),
     url(r'^api/collections/event/remove$', remove_talk, name="remove-talk"),
