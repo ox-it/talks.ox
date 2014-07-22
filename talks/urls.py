@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+
+from django_webauth.views import LoginView
+
 from haystack.forms import FacetedSearchForm
 from haystack.query import SearchQuerySet
 from haystack.views import FacetedSearchView
@@ -13,6 +16,8 @@ from events.views import (homepage, upcoming_events, event, events_for_day,
 from api.views import (EventViewSet, create_speaker, suggest_speaker,
                        save_item, remove_item)
 
+from users.views import webauth_logout
+
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
@@ -21,6 +26,10 @@ sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount
 
 
 urlpatterns = patterns('',
+    # WebAuth login/logout
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', webauth_logout, name='logout'),
+
     url(r'^api/', include(router.urls)),
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),

@@ -46,6 +46,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/'
 API_OX_URL = 'http://api.m.ox.ac.uk'
 TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics'
 
@@ -64,6 +65,9 @@ INSTALLED_APPS = (
     'haystack',
     'raven.contrib.django.raven_compat',
 
+    # WebAuth
+    'django_webauth',
+
     # Oxford Talks
     'talks.users',
     'talks.events',
@@ -81,6 +85,11 @@ MIDDLEWARE_CLASSES = (
 
     # Oxford Talks
     'talks.users.middleware.TalksUserMiddleware',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django_webauth.backends.webauth_ldap.WebauthLDAPBackend',
+    'django.contrib.auth.backends.ModelBackend'
 )
 
 ROOT_URLCONF = 'talks.urls'

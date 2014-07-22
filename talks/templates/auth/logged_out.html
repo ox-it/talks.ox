@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Logged out{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>Logged out</h1>
+    <p>You are now logged out of this site.</p>
+    {% if was_webauth %}
+    <p>You may still be logged in to WebAuth. Either close your browser or <a href="https://webauth.ox.ac.uk/logout">log out explicitly</a>.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
