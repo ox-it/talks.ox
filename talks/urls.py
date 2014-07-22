@@ -1,7 +1,6 @@
 from collections import OrderedDict
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from haystack.forms import FacetedSearchForm
 from haystack.query import SearchQuerySet
 
 from rest_framework import routers
@@ -12,6 +11,7 @@ from events.views import (homepage, upcoming_events, event, events_for_day,
 
 from api.views import (EventViewSet, create_speaker, suggest_speaker,
                        save_item, remove_item)
+from talks.events.forms import DateFacetedSearchForm
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
@@ -37,7 +37,7 @@ for v in FACET_START_DATE.itervalues():
 
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
-    url(r'^search/', SearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
+    url(r'^search/', SearchView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
     url(r'^$', homepage, name='homepage'),

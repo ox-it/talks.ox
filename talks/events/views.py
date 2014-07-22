@@ -185,6 +185,14 @@ class SearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
         super(SearchView, self).__init__(*args, **kwargs)
 
+    def build_form(self, form_kwargs=None):
+        if form_kwargs is None:
+            form_kwargs = {}
+
+        form_kwargs['filtered_date'] = self.request.GET.get("filtered_date")
+
+        return super(SearchView, self).build_form(form_kwargs)
+
     def extra_context(self):
         from talks.urls import FACET_START_DATE, SOLR_TO_NAME
 

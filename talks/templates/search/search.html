@@ -50,7 +50,7 @@
         {% if facet_date %}
             <dt>Start</dt>
             {% for item in facet_date %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets={{ item.url_param|urlencode }}">{{ item.name }}</a> ({{ item.count }})</dd>
+                <dd><a href="{{ request.get_full_path }}&amp;filtered_date={{ item.url_param|urlencode }}">{{ item.name }}</a> ({{ item.count }})</dd>
             {% endfor %}
         {% endif %}
     </dl>

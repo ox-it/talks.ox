@@ -1,7 +1,7 @@
 from django import forms
-from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
 from django.conf import settings
+from haystack.forms import FacetedSearchForm
 
 from talks.api_ox.models import Location, Organisation
 from .models import Event, EventGroup, Speaker
@@ -246,3 +246,21 @@ class SpeakerQuickAdd(forms.ModelForm):
 
     class Media:
         js = ('js/event-element-quick-add.js',)
+
+
+class DateFacetedSearchForm(FacetedSearchForm):
+    def __init__(self, *args, **kwargs):
+        self.filtered_date = kwargs.pop("filtered_date", None)
+        super(DateFacetedSearchForm, self).__init__(*args, **kwargs)
+
+    def search(self):
+        from talks.urls import URL_TO_SOLR
+
+        sqs = super(DateFacetedSearchForm, self).search()
+
+        if self.filtered_date:
+            solr_query = URL_TO_SOLR.get(self.filtered_date, None)
+            if solr_query:
+                sqs = sqs.narrow(u'%s:"%s"' % ('start', sqs.query.clean(solr_query)))
+
+        return sqs
