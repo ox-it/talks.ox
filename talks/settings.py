@@ -88,7 +88,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django_webauth.backends.webauth_ldap.WebauthLDAPBackend',
+    'django_webauth.backends.WebauthLDAP',
     'django.contrib.auth.backends.ModelBackend'
 )
 
