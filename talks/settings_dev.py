@@ -10,6 +10,6 @@ DATABASES = {
     }
 }
 
-RAVEN_CONFIG = None
+RAVEN_CONFIG = {}
 
 LOGGING = None
