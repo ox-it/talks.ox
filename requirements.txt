@@ -1,4 +1,4 @@
-https://www.djangoproject.com/download/1.7c1/tarball/
+Django==1.7
 pytz
 djangorestframework==2.3.13
 icalendar==3.6.2
