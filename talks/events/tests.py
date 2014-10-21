@@ -76,7 +76,6 @@ class TestEventGroupForm(TestCase):
             'event_group_select': 'this is not a valid pk of event group',
             'select_create': 'definitely invalid choice'
         })
-        errors = form.errors.as_data()
         self.assertEquals(form.is_valid(), {}, "if enabled is set the form should accept anything")
 
     def test_all_fields_blanked(self):
@@ -98,7 +97,7 @@ class TestEventGroupForm(TestCase):
         form = forms.EventGroupForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
-        #self.assertEquals(len(errors), 2)
-        #self.assertIn('title', errors)
-        #self.assertIn('description', errors)
+        self.assertEquals(len(errors), 2)
+        self.assertIn('title', errors)
+        self.assertIn('description', errors)
 
