@@ -115,7 +115,6 @@ def create_event(request, group_id=None):
             event = context['event_form'].save(commit=False)
             if event_group:
                 event_group.save()
-                event.group = event_group
             event.save()
 
             # saving topics
@@ -129,8 +128,13 @@ def create_event(request, group_id=None):
             # *Now* we can save the many2many relations
             context['event_form'].save_m2m()
             if 'another' in request.POST:
-                # Adding more events, redirect to the create event in existing group form
-                return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                if event_group:
+                    logger.debug("redirecting to create-event-in-group")
+                    # Adding more events, redirect to the create event in existing group form
+                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                else:
+                    logger.debug("redirecting to create-event")
+                    return HttpResponseRedirect(reverse('create-event'))
             else:
                 return HttpResponseRedirect(reverse('event', args=(event.id,)))
         else:
