@@ -170,8 +170,7 @@ class Event(models.Model):
         super(Event, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return "Event: {title} ({start})".format(title=self.title,
-                                          start=self.start.strftime("%Y-%m-%d %H:%M"))
+        return "Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
         return reverse('event', args=[str(self.id)])
