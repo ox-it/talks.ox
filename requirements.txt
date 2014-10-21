@@ -10,3 +10,4 @@ psycopg2==2.5.3
 raven==5.0.0
 git+https://github.com/ox-it/django-webauth.git@0.3.4#egg=django-webauth
 python-ldap==2.4.15
+factory-boy==2.4.1
