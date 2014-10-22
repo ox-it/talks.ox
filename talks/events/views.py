@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
@@ -89,15 +89,14 @@ def event(request, event_id):
 
 def create_event(request, group_id=None):
     initial = None
+    group = None
+    logger.debug("group_id:%s", group_id)
     if group_id:
-        try:
-            initial = {
-                'event_group_select': EventGroup.objects.get(id=group_id),
-                'enabled': True,
-            }
-        except EventGroup.DoesNotExist:
-            logger.warning("Tried to create new Event in nonexistant group ID: %s" % (group_id,))
-            raise Http404("Group does not exist")
+        group = get_object_or_404(EventGroup, pk=group_id)
+        initial = {
+            'event_group_select': group,
+            'enabled': True,
+        }
 
     PrefixedEventForm = partial(EventForm, prefix='event')
     PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group',
@@ -111,7 +110,7 @@ def create_event(request, group_id=None):
         }
         forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
         if forms_valid:
-            event_group = context['event_group_form'].get_event_group()
+            event_group = context['event_group_form'].get_event_group() or group
             event = context['event_form'].save(commit=False)
             if event_group:
                 event_group.save()
@@ -129,8 +128,13 @@ def create_event(request, group_id=None):
             # *Now* we can save the many2many relations
             context['event_form'].save_m2m()
             if 'another' in request.POST:
-                # Adding more events, redirect to the create event in existing group form
-                return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                if event_group:
+                    logger.debug("redirecting to create-event-in-group")
+                    # Adding more events, redirect to the create event in existing group form
+                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                else:
+                    logger.debug("redirecting to create-event")
+                    return HttpResponseRedirect(reverse('create-event'))
             else:
                 return HttpResponseRedirect(reverse('event', args=(event.id,)))
         else:

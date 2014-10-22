@@ -37,8 +37,10 @@ class APIOxField(forms.ModelChoiceField):
         return super(APIOxField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
-        return super(APIOxField, self).clean(
-            self.Model.objects.get_or_create(identifier=value)[0].pk)
+        if not value:
+            return None  # FIXME
+        instance, _created = self.Model.objects.get_or_create(identifier=value)
+        return super(APIOxField, self).clean(instance.pk)
 
 
 class TopicsField(forms.ModelMultipleChoiceField):
@@ -48,8 +50,9 @@ class TopicsField(forms.ModelMultipleChoiceField):
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.pop('endpoint', settings.TOPICS_URL)
         return super(TopicsField, self).__init__(*args, **kwargs)
-    
+
     def clean(self, value):
+        ids = []
         if value:
             value = [item.strip() for item in value.split(",")]
             ids = [Topic.objects.get_or_create(uri=v)[0].pk for v in value]
@@ -118,7 +121,7 @@ class EventForm(forms.ModelForm):
         js = ('js/location-typeahead.js',)
 
     class Meta:
-        exclude = ('slug','topics')
+        exclude = ('slug', 'topics')
         model = Event
         labels = {
             'description': 'Abstract',
@@ -170,7 +173,7 @@ class EventGroupForm(forms.ModelForm):
 
     def is_valid(self):
         """Override the ModelForm is_valid so we can handle our special
-        behaviour. Our form is only valid if it is enabled. Even then it
+        behaviour. Our form is only validated if it is enabled. Even then it
         depends if the user is selecting an EventGroup or creating one from
         scratch.
         """
