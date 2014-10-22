@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
