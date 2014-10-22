@@ -89,15 +89,14 @@ def event(request, event_id):
 
 def create_event(request, group_id=None):
     initial = None
+    group = None
+    logger.debug("group_id:%s", group_id)
     if group_id:
-        try:
-            initial = {
-                'event_group_select': EventGroup.objects.get(id=group_id),
-                'enabled': True,
-            }
-        except EventGroup.DoesNotExist:
-            logger.warning("Tried to create new Event in nonexistant group ID: %s" % (group_id,))
-            raise Http404("Group does not exist")
+        group = get_object_or_404(EventGroup, pk=group_id)
+        initial = {
+            'event_group_select': group,
+            'enabled': True,
+        }
 
     PrefixedEventForm = partial(EventForm, prefix='event')
     PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group',
