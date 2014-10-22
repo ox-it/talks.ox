@@ -1,5 +1,5 @@
 import unittest
-from operator import attrgetter
+import logging
 
 from django.test import TestCase
 
@@ -101,8 +101,6 @@ class TestEventGroupForm(TestCase):
         self.assertEquals(len(errors), 2)
         self.assertIn('title', errors)
         self.assertIn('description', errors)
-
-
 
 
 class TestCreateEventView(TestCase):
