@@ -159,7 +159,6 @@ class TestCreateEventView(TestCase):
         count = models.Event.objects.filter(title=title, description=description).count()
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
-    @unittest.skip("EventGroupForm cleanup required")
     def test_post_valid_save_and_continue_with_group_id(self):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'

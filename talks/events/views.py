@@ -110,10 +110,11 @@ def create_event(request, group_id=None):
         }
         forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
         if forms_valid:
-            event_group = context['event_group_form'].get_event_group()
+            event_group = context['event_group_form'].get_event_group() or group
             event = context['event_form'].save(commit=False)
             if event_group:
                 event_group.save()
+                event.group = event_group
             event.save()
 
             # saving topics
