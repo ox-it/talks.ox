@@ -56,51 +56,34 @@ class TestEventForm(TestCase):
         form = forms.EventForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
-        self.assertEquals(len(errors), 3)
         self.assertIn('title', errors)
         self.assertIn('description', errors)
         self.assertIn('start', errors)
+        self.assertEquals(len(errors), 3)
 
 
 class TestEventGroupForm(TestCase):
 
     def test_empty(self):
         form = forms.EventGroupForm({})
-        self.assertEquals(form.is_valid(), True, "empty form should validate")
-
-    @unittest.skip("not actually true")
-    def test_enabled(self):
-        form = forms.EventGroupForm({
-            'enabled': False,
-            'foo': 'fldsjhfdsff',
-            'title': 32434,
-            'event_group_select': 'this is not a valid pk of event group',
-            'select_create': 'definitely invalid choice'
-        })
-        self.assertEquals(form.is_valid(), {}, "if enabled is set the form should accept anything")
+        self.assertEquals(form.is_valid(), False, "empty form should not validate")
+        errors = form.errors.as_data()
+        self.assertIn('title', errors)
+        self.assertIn('description', errors)
+        self.assertEquals(len(errors), 2)
 
     def test_all_fields_blanked(self):
-        return
         data = {
             'description': u'',
             'title': u'',
-            'location': u'',
-            'department_suggest': u'',
-            'start': u'',
-            'topics': u'',
-            'speaker_suggest': u'',
-            'location_suggest': u'',
-            'department_organiser': u'',
-            'speakers': u'',
-            'topic_suggest': u'',
-            'end': u'',
+            'group_type': u'',
         }
         form = forms.EventGroupForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
-        self.assertEquals(len(errors), 2)
         self.assertIn('title', errors)
         self.assertIn('description', errors)
+        self.assertEquals(len(errors), 2)
 
 
 class TestCreateEventView(TestCase):
@@ -112,7 +95,6 @@ class TestCreateEventView(TestCase):
         self.assertContains(response, "Oxford Talks")
         self.assertContains(response, "Add Talk")
         self.assertIn('event_form', response.context)
-        self.assertIn('event_group_form', response.context)
         self.assertIn('speaker_form', response.context)
 
     def test_get_nonexistent_group(self):
@@ -124,8 +106,8 @@ class TestCreateEventView(TestCase):
         group = factories.EventGroupFactory.create()
         response = self.client.get('/events/groups/%s/new' % group.pk)
         self.assertEquals(response.status_code, 200)
-        self.assertIn('event_group_form', response.context)
-        self.assertEquals(response.context['event_group_form']['event_group_select'].value(), group.pk)
+        self.assertIn('event_form', response.context)
+        self.assertEquals(response.context['event_form']['group'].value(), group.pk)
 
     def test_post_valid_save_and_continue_no_group_id(self):
         title = u'cjwnf887y98fw'
@@ -174,17 +156,13 @@ class TestCreateEventView(TestCase):
             'event-start': u'',
             'event-topics ': u'',
             'event-speaker_suggest ': u'',
-            'event-group-description': u'',
             'event-location_suggest ': u'',
             'event-department_organiser ': u'',
-            'event-group-event_group_select ': u'',
             'event-speakers ': u'',
-            'event-group-group_type ': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-group-select_create ': u'SEL',
             'event-topic_suggest': u'',
             'event-end ': u'',
-            'event-group-title ': u'',
+            'event-group': unicode(group_id),
             'name ': u'',
         }
 
@@ -200,23 +178,19 @@ class TestCreateEventView(TestCase):
         data = {
             'event-description ': description,
             'event-title': title,
+            'event-group': u'',
             'event-location ': u'',
             'event-department_suggest ': u'',
             'email_address ': u'',
             'event-start': u'',
             'event-topics ': u'',
             'event-speaker_suggest ': u'',
-            'event-group-description': u'',
             'event-location_suggest ': u'',
             'event-department_organiser ': u'',
-            'event-group-event_group_select ': u'',
             'event-speakers ': u'',
-            'event-group-group_type ': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-group-select_create ': u'CRE',
             'event-topic_suggest': u'',
             'event-end ': u'',
-            'event-group-title ': u'',
             'name ': u'',
         }
         response = self.client.post('/events/new', data)
