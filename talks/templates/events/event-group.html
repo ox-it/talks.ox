@@ -21,6 +21,7 @@
         <h3 class="panel-title">{{ event_group.title }}</h3>
     </div>
     <div class="panel-body">
+        <a class="pull-right btn btn-default" role="button" href="{% url 'edit-event-group' event_group.id %}">edit</a>
         <p>{{ event_group.description }}</p>
     </div>
     <!-- List group -->
