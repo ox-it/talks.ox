@@ -43,41 +43,26 @@
 
 <h1>Add Talk</h1>
 <form class="form-horizontal" action="{% url 'create-event' %}" method="post">{% csrf_token %}
-    {{ event_group_form.enabled|bootstrap_horizontal }}
-    {% with select_radio=event_group_form.select_create.0 form_radio=event_group_form.select_create.1 %}
-    <div class="event-group" {% if not event_group_form.show_form %}style="display: none;"{% endif %}>
-        <div class="event-group-select panel panel-default">
-            <div class="panel-heading">
-                <label for="{{ select_radio.id_for_label }}">
-                    {{ select_radio.tag }}
-                    {{ select_radio.choice_label }}
-                </label>
-            </div>
-            <div class="panel-body">
-                {{ event_group_form.event_group_select|bootstrap_horizontal }}
-            </div>
-        </div>
-        <div class="event-group-create panel panel-default">
-            <div class="panel-heading">
-                <label for="{{ form_radio.id_for_label }}">
-                    {{ form_radio.tag }}
-                    {{ form_radio.choice_label }}
-                </label>
-            </div>
-            <div class="panel-body" {% if not event_group_form.show_create_form %}style="display: none;"{% endif %}>
-                {{ event_group_form.title|bootstrap_horizontal }}
-                {{ event_group_form.group_type|bootstrap_horizontal }}
-                {{ event_group_form.description|bootstrap_horizontal }}
-            </div>
-        </div>
-        <hr>
-    </div>
-    {% endwith %}
     {{ event_form.speakers }}
     {{ event_form.location }}
     {{ event_form.topics }}
     {{ event_form.department_organiser }}
     {{ event_form.title|bootstrap_horizontal }}
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Group</label>
+        <div class="col-sm-10">
+            <div class="checkbox">
+                    <label>
+                        <input autocomplete="off" id="id_event-group-enabled" name="event-group-enabled" type="checkbox"> <span>This talk is part of seminar series or conference</span>
+                    </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group event-group" style="display:none;">
+        <div class="col-sm-offset-2 col-sm-10">
+            {{ event_form.group }}
+        </div>
+    </div>
     {{ event_form.start|bootstrap_horizontal }}
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.description|bootstrap_horizontal }}

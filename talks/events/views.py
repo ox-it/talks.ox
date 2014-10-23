@@ -89,32 +89,24 @@ def event(request, event_id):
 
 def create_event(request, group_id=None):
     initial = None
-    group = None
+    event_group = None
     logger.debug("group_id:%s", group_id)
     if group_id:
-        group = get_object_or_404(EventGroup, pk=group_id)
+        event_group = get_object_or_404(EventGroup, pk=group_id)
         initial = {
-            'event_group_select': group,
-            'enabled': True,
+            'group': event_group,
         }
 
-    PrefixedEventForm = partial(EventForm, prefix='event')
-    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group',
-                                     initial=initial)
+    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial)
 
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
-            'event_group_form': PrefixedEventGroupForm(request.POST),
             'speaker_form': SpeakerQuickAdd(),
         }
-        forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
+        forms_valid = context['event_form'].is_valid()
         if forms_valid:
-            event_group = context['event_group_form'].get_event_group() or group
             event = context['event_form'].save(commit=False)
-            if event_group:
-                event_group.save()
-                event.group = event_group
             event.save()
 
             # saving topics
@@ -147,7 +139,6 @@ def create_event(request, group_id=None):
     else:
         context = {
             'event_form': PrefixedEventForm(),
-            'event_group_form': PrefixedEventGroupForm(),
             'speaker_form': SpeakerQuickAdd(),
         }
     return render(request, 'events/create_event.html', context)

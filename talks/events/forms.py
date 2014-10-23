@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import TextInput
+from django.forms.widgets import TextInput, Select
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
@@ -129,6 +129,7 @@ class EventForm(forms.ModelForm):
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
+            'group': Select(attrs={'class': 'form-control'}),
         }
 
 
