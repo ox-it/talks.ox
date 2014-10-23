@@ -71,7 +71,7 @@ def _events_list(request, events):
     return render(request, 'events/events.html', context)
 
 
-def event(request, event_id):
+def show_event(request, event_id):
     try:
         ev = Event.objects.select_related(
             'speakers',
@@ -128,7 +128,7 @@ def create_event(request, group_id=None):
                     logger.debug("redirecting to create-event")
                     return HttpResponseRedirect(reverse('create-event'))
             else:
-                return HttpResponseRedirect(reverse('event', args=(event.id,)))
+                return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
         else:
             if 'speakers' in context['event_form'].cleaned_data:
                 context['selected_speakers'] = Speaker.objects.filter(
