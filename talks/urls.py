@@ -10,7 +10,7 @@ from haystack.views import FacetedSearchView
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, event, events_for_day,
-                          events_for_month, events_for_year, create_event,
+                          events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group)
 
 from api.views import (EventViewSet, create_speaker, suggest_speaker,
@@ -44,6 +44,7 @@ urlpatterns = patterns('',
     url(r'^events/date/(?P<year>\d{4})/$', events_for_year, name='events_year'),
     url(r'^events/date/(?P<year>\d{4})/(?P<month>\d{2})/$', events_for_month, name='events_month'),
     url(r'^events/date/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$', events_for_day, name='events_day'),
+    url(r'^events/groups/$', list_event_groups, name='list-event-groups'),
     url(r'^events/groups/new$', create_event_group, name='create-event-group'),
     url(r'^events/groups/id/(?P<event_group_id>\d+)$', show_event_group, name='show-event-group'),
     url(r'^events/groups/id/(?P<event_group_id>\d+)/edit$', edit_event_group, name='edit-event-group'),
