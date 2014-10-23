@@ -141,7 +141,7 @@ def create_event(request, group_id=None):
             'event_form': PrefixedEventForm(),
             'speaker_form': SpeakerQuickAdd(),
         }
-    return render(request, 'events/create_event.html', context)
+    return render(request, 'events/event_form.html', context)
 
 
 def list_event_groups(request):
