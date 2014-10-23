@@ -87,6 +87,22 @@ def show_event(request, event_id):
     return render(request, 'events/event.html', context)
 
 
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    form = EventForm(request.POST or None, instance=event)
+    print request.POST
+    if request.method == 'POST':
+        print form.errors
+        if form.is_valid():
+            event = form.save()
+            return redirect(event.get_absolute_url())
+    context = {
+        'event': event,
+        'event_form': form,
+    }
+    return render(request, "events/event_form.html", context)
+
+
 def create_event(request, group_id=None):
     initial = None
     event_group = None
