@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
@@ -89,32 +89,24 @@ def event(request, event_id):
 
 def create_event(request, group_id=None):
     initial = None
-    group = None
+    event_group = None
     logger.debug("group_id:%s", group_id)
     if group_id:
-        group = get_object_or_404(EventGroup, pk=group_id)
+        event_group = get_object_or_404(EventGroup, pk=group_id)
         initial = {
-            'event_group_select': group,
-            'enabled': True,
+            'group': event_group,
         }
 
-    PrefixedEventForm = partial(EventForm, prefix='event')
-    PrefixedEventGroupForm = partial(EventGroupForm, prefix='event-group',
-                                     initial=initial)
+    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial)
 
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
-            'event_group_form': PrefixedEventGroupForm(request.POST),
             'speaker_form': SpeakerQuickAdd(),
         }
-        forms_valid = context['event_form'].is_valid() and context['event_group_form'].is_valid()
+        forms_valid = context['event_form'].is_valid()
         if forms_valid:
-            event_group = context['event_group_form'].get_event_group() or group
             event = context['event_form'].save(commit=False)
-            if event_group:
-                event_group.save()
-                event.group = event_group
             event.save()
 
             # saving topics
@@ -147,20 +139,51 @@ def create_event(request, group_id=None):
     else:
         context = {
             'event_form': PrefixedEventForm(),
-            'event_group_form': PrefixedEventGroupForm(),
             'speaker_form': SpeakerQuickAdd(),
         }
     return render(request, 'events/create_event.html', context)
 
 
-def event_group(request, event_group_id):
-    try:
-        # Cache the 'events' objects on the EventGroup
-        evg = EventGroup.objects.prefetch_related('events'
-                                                  ).get(id=event_group_id)
-    except EventGroup.DoesNotExist:
-        raise Http404
+def list_event_groups(request):
+    object_list = EventGroup.objects.all()
     context = {
-        'event_group': evg,
+        'object_list': object_list,
+    }
+    return render(request, "events/event_group_list.html", context)
+
+
+def show_event_group(request, event_group_id):
+    group = get_object_or_404(EventGroup, pk=event_group_id)
+    context = {
+        'event_group': group,
     }
     return render(request, 'events/event-group.html', context)
+
+
+def edit_event_group(request, event_group_id):
+    group = get_object_or_404(EventGroup, pk=event_group_id)
+    form = EventGroupForm(request.POST or None, instance=group)
+    if request.method == 'POST':
+        logging.debug("incoming post: %s", request.POST)
+        if form.is_valid():
+            event_group = form.save()
+            return redirect(event_group.get_absolute_url())
+
+    context = {
+        'form': form,
+        'event_group': group,
+    }
+    return render(request, 'events/event_group_form.html', context)
+
+
+def create_event_group(request):
+    form = EventGroupForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            event_group = form.save()
+            return redirect(event_group.get_absolute_url())
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'events/event_group_form.html', context)

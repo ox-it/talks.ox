@@ -55,7 +55,7 @@ class EventGroup(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('event-group', args=[self.id])
+        return reverse('show-event-group', args=[self.id])
 
 
 class SpeakerManager(models.Manager):

@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import TextInput
+from django.forms.widgets import TextInput, Select
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
@@ -129,117 +129,19 @@ class EventForm(forms.ModelForm):
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
+            'group': Select(attrs={'class': 'form-control'}),
         }
 
 
 class EventGroupForm(forms.ModelForm):
-    """We extend this ModelForm to add the following features:
-
-      - enabled: a special boolean, if not set then the form is always valid
-                 and has no effect.
-      - event_group_select: rather than creating a new EventGroup the user can
-                            select an existing group.
-    """
-    SELECT = 'SEL'
-    CREATE = 'CRE'
-    SELECT_CREATE_CHOICES = ((SELECT, "Add to existing group of talks"),
-                             (CREATE, "Create new group of talks"))
-
-    # Does the user want to add this Event to an EventGroup
-    enabled = forms.BooleanField(label='Add to a group of talks?',
-                                 help_text="e.g. Seminar series, conference",
-                                 required=False,
-                                 widget=forms.CheckboxInput(attrs={'autocomplete': 'off'}))
-
-
-    # Is the user filling in the ModelForm to create a new EventGroup
-    # Is the user selecting an existing EventGroup to add the Event to
-    select_create = forms.ChoiceField(choices=SELECT_CREATE_CHOICES,
-                                      initial='SEL',
-                                      widget=forms.RadioSelect(attrs={'autocomplete': 'off'}))
-
-    event_group_select = forms.ModelChoiceField(
-            queryset=EventGroup.objects.all(),
-            required=False,
-            label="Existing group")
 
     class Meta:
-        fields = ('event_group_select', 'title', 'group_type', 'description')
+        fields = ('title', 'group_type', 'description')
         model = EventGroup
         widgets = {
             'title': forms.TextInput(),
             'description': forms.Textarea(),
         }
-
-    def is_valid(self):
-        """Override the ModelForm is_valid so we can handle our special
-        behaviour. Our form is only validated if it is enabled. Even then it
-        depends if the user is selecting an EventGroup or creating one from
-        scratch.
-        """
-        valid = super(EventGroupForm, self).is_valid()
-        if self.is_enabled():
-            select_create = self.cleaned_data.get('select_create', None)
-            if select_create == self.CREATE:
-                return valid
-            elif select_create == self.SELECT and self.cleaned_data.get('event_group_select', None):
-                # So long as a event_group_select has been input
-                return True
-        else:
-            # Always valid if we are not enabled
-            return True
-        return False
-
-    def show_form(self):
-        return self.is_enabled()
-
-    def show_create_form(self):
-        if self.show_form():
-            return any([self.errors.get(field, None) for field in ['title', 'description']])
-        return False
-
-    def remove_errors(self):
-        """Remove any errors in the form for when it's not enabled"""
-        self.errors['title'] = self.error_class()
-        self.errors['description'] = self.error_class()
-
-    def clean(self):
-        """Used to validate the form over many fields"""
-        cleaned_data = super(EventGroupForm, self).clean()
-        if self.is_enabled():
-            select_create = cleaned_data.get('select_create', None)
-            if select_create == self.CREATE:
-                return cleaned_data
-            elif select_create == self.SELECT:
-                self.remove_errors()
-                if not cleaned_data.get('event_group_select', None):
-                    # Set an error if event group is selected
-                    self.add_error('event_group_select', "This field is required.")
-                return cleaned_data
-        else:
-            self.remove_errors()
-            return {}
-
-    def get_event_group(self):
-        """Get the selected event group or create a new one
-
-        NOTE: if an EventGroup is created we don't commit it to the database
-              here, that is the responsibility of the view.
-        """
-        valid = self.is_valid()
-        if self.is_enabled():
-            select_create = self.cleaned_data.get('select_create', None)
-            if select_create == self.SELECT:
-                if 'event_group_select' in self.cleaned_data and self.cleaned_data['event_group_select']:
-                    return self.cleaned_data['event_group_select']
-                else:
-                    return None
-            elif valid and select_create == self.CREATE:
-                return self.save(commit=False)
-        return None
-
-    def is_enabled(self):
-        return self.is_bound and 'enabled' in self.cleaned_data and self.cleaned_data['enabled']
 
 
 class SpeakerQuickAdd(forms.ModelForm):
