@@ -3,7 +3,7 @@ import logging
 from datetime import date
 from functools import partial
 from django.contrib.contenttypes.models import ContentType
-
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
@@ -95,7 +95,10 @@ def edit_event(request, event_id):
         print form.errors
         if form.is_valid():
             event = form.save()
+            messages.success(request, "Event was updated")
             return redirect(event.get_absolute_url())
+        else:
+            messages.warning(request, "Please correct errors below")
     context = {
         'event': event,
         'event_form': form,
@@ -135,6 +138,7 @@ def create_event(request, group_id=None):
 
             # *Now* we can save the many2many relations
             context['event_form'].save_m2m()
+            messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
@@ -146,6 +150,7 @@ def create_event(request, group_id=None):
             else:
                 return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
         else:
+            messages.warning(request, "Please correct errors below")
             if 'speakers' in context['event_form'].cleaned_data:
                 context['selected_speakers'] = Speaker.objects.filter(
                     id__in=context['event_form'].cleaned_data['speakers'])
@@ -183,8 +188,10 @@ def edit_event_group(request, event_group_id):
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
+            messages.success(request, "Event group was updated")
             return redirect(event_group.get_absolute_url())
-
+        else:
+            messages.warning(request, "Please correct errors below")
     context = {
         'form': form,
         'event_group': group,
@@ -197,7 +204,10 @@ def create_event_group(request):
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
+            messages.success(request, "Event group was created")
             return redirect(event_group.get_absolute_url())
+        else:
+            messages.warning(request, "Please correct errors below")
 
     context = {
         'form': form,
