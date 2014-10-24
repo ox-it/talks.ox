@@ -202,7 +202,7 @@ class TestCreateEventView(TestCase):
     def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'events/create_event.html')
+        self.assertTemplateUsed(response, 'events/event_form.html')
         self.assertContains(response, "Oxford Talks")
         self.assertContains(response, "Add Talk")
         self.assertIn('event_form', response.context)
@@ -211,7 +211,7 @@ class TestCreateEventView(TestCase):
     def test_get_nonexistent_group(self):
         response = self.client.get('/events/groups/8475623/new')
         self.assertEquals(response.status_code, 404)
-        self.assertTemplateNotUsed(response, 'events/create_event.html')
+        self.assertTemplateNotUsed(response, 'events/event_form.html')
 
     def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()

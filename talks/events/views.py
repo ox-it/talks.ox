@@ -102,6 +102,7 @@ def edit_event(request, event_id):
     context = {
         'event': event,
         'event_form': form,
+        'speaker_form': SpeakerQuickAdd(),
     }
     return render(request, "events/event_form.html", context)
 

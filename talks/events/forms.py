@@ -116,6 +116,12 @@ class EventForm(forms.ModelForm):
         types=['/university/department', '/university/museum', '/university/college'],
         widget=forms.HiddenInput(attrs={'class': 'js-organisation'}),
     )
+    group = forms.ModelChoiceField(
+        EventGroup.objects.all(),
+        empty_label="-- select a group --",
+        widget=Select(attrs={'class': 'form-control'}),
+        required=False,
+    )
 
     class Media:
         js = ('js/location-typeahead.js',)
@@ -129,7 +135,6 @@ class EventForm(forms.ModelForm):
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
-            'group': Select(attrs={'class': 'form-control'}),
         }
 
 
