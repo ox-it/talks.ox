@@ -2,7 +2,7 @@
 {% load bootstrap %}
 {% load staticfiles %}
 
-{% block title %}Create Event{% endblock %}
+{% block title %}{% if event %}Edit talk{% else %}Add talk{% endif %}{% endblock %}
 
 {% block extrahead %}
 <script src="{% static "js/event-form.js"%}"></script>

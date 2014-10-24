@@ -1,6 +1,9 @@
 {% extends base_template|default:"base.html" %}
 
 {% load bootstrap %}
+
+{% block title %}{% if event %}Edit talk group{% else %}Add talk group{% endif %}{% endblock %}
+
 {% block content %}
 {% if event_group %}
 <h3>Editing "{{ event_group.title }}"</h3>
