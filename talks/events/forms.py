@@ -27,6 +27,13 @@ class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
             value = [item.strip() for item in value.split(",")]
         return super(ModelCommaSeparatedChoiceField, self).clean(value)
 
+    def prepare_value(self, value):
+        if (hasattr(value, '__iter__')):
+            return ",".join(map(str, map(super(ModelCommaSeparatedChoiceField, self).prepare_value, value)))
+        else:
+            super(ModelCommaSeparatedChoiceField, self).prepare_value(value)
+
+
 
 class APIOxField(forms.ModelChoiceField):
     def __init__(self, *args, **kwargs):
@@ -55,8 +62,14 @@ class TopicsField(forms.ModelMultipleChoiceField):
         ids = []
         if value:
             value = [item.strip() for item in value.split(",")]
-            ids = [Topic.objects.get_or_create(uri=v)[0].pk for v in value]
+            ids = [Topic.objects.get_or_create(uri=v)[0].pk for v in value]  # FIXME
         return super(TopicsField, self).clean(ids)
+
+    def prepare_value(self, value):
+        if (hasattr(value, '__iter__')):
+            return ",".join(map(str, map(super(TopicsField, self).prepare_value, value)))
+        else:
+            super(TopicsField, self).prepare_value(value)
 
 
 class SpeakerTypeaheadInput(forms.TextInput):

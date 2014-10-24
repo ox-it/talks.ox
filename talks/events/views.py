@@ -90,20 +90,24 @@ def show_event(request, event_id):
 def edit_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     form = EventForm(request.POST or None, instance=event)
-    print request.POST
+    context = {
+        'event': event,
+        'event_form': form,
+        'speaker_form': SpeakerQuickAdd(),
+    }
     if request.method == 'POST':
-        print form.errors
         if form.is_valid():
             event = form.save()
             messages.success(request, "Event was updated")
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
-    context = {
-        'event': event,
-        'event_form': form,
-        'speaker_form': SpeakerQuickAdd(),
-    }
+            if 'speakers' in form.cleaned_data:
+                context['selected_speakers'] = Speaker.objects.filter(
+                    id__in=form.cleaned_data['speakers'])
+            if 'topics' in form.cleaned_data:
+                context['selected_topics'] = Topic.objects.filter(
+                    id__in=form.cleaned_data['topics'])
     return render(request, "events/event_form.html", context)
 
 
