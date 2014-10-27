@@ -3,7 +3,7 @@ $(function () {
     $(document.body).append($modal);
     var successCallback;
 
-    onComplete = function (jqXHR) {
+    onComplete = function (jqXHR, statusText) {
         hideThrobber();
         if (jqXHR.status === 200 || jqXHR.status === 201) {
             $modal.modal('hide');
@@ -11,8 +11,12 @@ $(function () {
                 successCallback(jqXHR.responseJSON);
             }
         } else {
-            $('.modal-content', $modal).html(jqXHR.responseText);
-            interceptForm.call($modal);
+            if (jqXHR.status > 0 ) {
+                $('.modal-content', $modal).html(jqXHR.responseText);
+                interceptForm.call($modal);
+            } else {
+                $('.modal-body', $modal).prepend($('<div class="alert alert-danger">Network error...</div>'));
+            }
         }
     }
     showThrobber = function() { $modal.addClass('throbber'); }
