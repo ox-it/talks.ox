@@ -193,6 +193,26 @@ class Event(models.Model):
             return self.start.date() == date.today()
         return False
 
+    def as_old_talks(self):
+        """Provide event data in old talks format
+        :return:
+        """
+        data = [("talk[organiser_email]", "apiuser")]
+        if self.title:
+            data.append(("talk[title]", self.title))
+        if self.description:
+            data.append(("talk[abstract]", self.description))
+        if self.start:
+            data.append(("talk[date_string]", self.start.strftime("%Y/%m/%d")))
+            data.append(("talk[start_time_string]", self.start.strftime("%H:%M")))
+        if self.end:
+            data.append(("talk[end_time_string]", self.end.strftime("%H:%M")))
+        if self.location:
+            data.append(("talk[venue_name]", self.location.identifier))
+        if len(self.speakers.all()) > 0:
+            data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in self.speakers.all()])))
+        return data
+
 
 @receiver(models.signals.post_save, sender=Event)
 def index_event(sender, instance, created, **kwargs):
@@ -231,15 +251,7 @@ def fetch_topic(sender, instance, created, **kwargs):
 @receiver(models.signals.post_save, sender=Event)
 def update_old_talks(sender, instance, created, **kwargs):
     if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
-        data = [("talk[title]", instance.title),
-                ("talk[abstract]", instance.description),
-                ("talk[name_of_speaker]", ", ".join([speaker.name for speaker in instance.speakers.all()])),
-                ("talk[start_time_string]", instance.start.strftime("%H:%M")),
-                ("talk[end_time_string]", instance.end.strftime("%H:%M")),
-                ("talk[date_string]", instance.start.strftime("%Y/%m/%d")),
-                ("talk[organiser_email]", "apiuser")]
-        if instance.location:
-            data.append(("talk[venue_name]", instance.location.identifier))
+        data = instance.as_old_talks()
 
         url = "{server}/talk/update/".format(server=settings.OLD_TALKS_SERVER)
 
