@@ -223,6 +223,7 @@ def create_event_group(request):
 
     context = {
         'form': form,
+        'modal_title': "Add a new event group",
     }
 
     if is_modal:
