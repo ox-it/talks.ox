@@ -2,10 +2,15 @@ $(function() {
     var $modal = $('<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>');
     $(document.body).append($modal)
     
+    var successCallback;
+
     onComplete = function(jqXHR) {
         hideThrobber()
         if(jqXHR.status == 200 || jqXHR.status == 201)  {
             $modal.modal('hide')
+        
+            if(successCallback && jqXHR.responseJSON)
+                successCallback(jqXHR.responseJSON)
         } else {
             $('.modal-content', $modal).html(jqXHR.responseText)
             interceptForm.call($modal)
@@ -30,6 +35,7 @@ $(function() {
 
     onShow = function(e) {
         var url = $(e.relatedTarget).data('url')
+        successCallback = $(e.relatedTarget).data('successCallback')
         $('.modal-content', $modal).load(url, interceptForm)
     }
 
