@@ -173,7 +173,7 @@ class Event(models.Model):
         return "Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
-        return reverse('event', args=[str(self.id)])
+        return reverse('show-event', args=[str(self.id)])
 
     def formatted_date(self):
         if self.start:

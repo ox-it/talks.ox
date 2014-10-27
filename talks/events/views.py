@@ -3,7 +3,7 @@ import logging
 from datetime import date
 from functools import partial
 from django.contrib.contenttypes.models import ContentType
-
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponseRedirect
@@ -71,7 +71,7 @@ def _events_list(request, events):
     return render(request, 'events/events.html', context)
 
 
-def event(request, event_id):
+def show_event(request, event_id):
     try:
         ev = Event.objects.select_related(
             'speakers',
@@ -85,6 +85,30 @@ def event(request, event_id):
         'speakers': ev.speakers.all(),
     }
     return render(request, 'events/event.html', context)
+
+
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    form = EventForm(request.POST or None, instance=event)
+    context = {
+        'event': event,
+        'event_form': form,
+        'speaker_form': SpeakerQuickAdd(),
+    }
+    if request.method == 'POST':
+        if form.is_valid():
+            event = form.save()
+            messages.success(request, "Event was updated")
+            return redirect(event.get_absolute_url())
+        else:
+            messages.warning(request, "Please correct errors below")
+            if 'speakers' in form.cleaned_data:
+                context['selected_speakers'] = Speaker.objects.filter(
+                    id__in=form.cleaned_data['speakers'])
+            if 'topics' in form.cleaned_data:
+                context['selected_topics'] = Topic.objects.filter(
+                    id__in=form.cleaned_data['topics'])
+    return render(request, "events/event_form.html", context)
 
 
 def create_event(request, group_id=None):
@@ -119,6 +143,7 @@ def create_event(request, group_id=None):
 
             # *Now* we can save the many2many relations
             context['event_form'].save_m2m()
+            messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
@@ -128,8 +153,9 @@ def create_event(request, group_id=None):
                     logger.debug("redirecting to create-event")
                     return HttpResponseRedirect(reverse('create-event'))
             else:
-                return HttpResponseRedirect(reverse('event', args=(event.id,)))
+                return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
         else:
+            messages.warning(request, "Please correct errors below")
             if 'speakers' in context['event_form'].cleaned_data:
                 context['selected_speakers'] = Speaker.objects.filter(
                     id__in=context['event_form'].cleaned_data['speakers'])
@@ -141,7 +167,7 @@ def create_event(request, group_id=None):
             'event_form': PrefixedEventForm(),
             'speaker_form': SpeakerQuickAdd(),
         }
-    return render(request, 'events/create_event.html', context)
+    return render(request, 'events/event_form.html', context)
 
 
 def list_event_groups(request):
@@ -167,8 +193,10 @@ def edit_event_group(request, event_group_id):
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
+            messages.success(request, "Event group was updated")
             return redirect(event_group.get_absolute_url())
-
+        else:
+            messages.warning(request, "Please correct errors below")
     context = {
         'form': form,
         'event_group': group,
@@ -181,7 +209,10 @@ def create_event_group(request):
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
+            messages.success(request, "Event group was created")
             return redirect(event_group.get_absolute_url())
+        else:
+            messages.warning(request, "Please correct errors below")
 
     context = {
         'form': form,

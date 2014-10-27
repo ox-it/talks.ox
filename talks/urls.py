@@ -9,7 +9,7 @@ from haystack.views import FacetedSearchView
 
 from rest_framework import routers
 
-from events.views import (homepage, upcoming_events, event, events_for_day,
+from events.views import (homepage, upcoming_events, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group)
 
@@ -39,8 +39,9 @@ urlpatterns = patterns('',
     url(r'^events/speakers/new$', create_speaker, name='create-speaker'),
     url(r'^events/speakers/suggest$', suggest_speaker, name='suggest-speaker'),
     url(r'^events/new$', create_event, name='create-event'),
+    url(r'^events/id/(?P<event_id>\d+)$', show_event, name='show-event'),
+    url(r'^events/id/(?P<event_id>\d+)/edit$', edit_event, name='edit-event'),
     url(r'^events/groups/(?P<group_id>\d+)/new$', create_event, name='create-event-in-group'),
-    url(r'^events/id/(?P<event_id>\d+)$', event, name='event'),
     url(r'^events/date/(?P<year>\d{4})/$', events_for_year, name='events_year'),
     url(r'^events/date/(?P<year>\d{4})/(?P<month>\d{2})/$', events_for_month, name='events_month'),
     url(r'^events/date/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$', events_for_day, name='events_day'),

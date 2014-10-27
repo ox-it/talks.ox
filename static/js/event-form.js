@@ -4,22 +4,11 @@ $(function() {
     // Register event to show event group forms
     $('#id_event-group-enabled').on('change', function(ev) {
         if (ev.target.checked) {
+            $('#id_group').prop('disabled', false)
             $('.event-group').slideDown(animationTime);
         } else {
             $('.event-group').slideUp(animationTime);
-        }
-    });
-
-    // Register event to show create event group form
-    $('.event-group input:radio').on('change', function(ev) {
-        var $target = $(ev.target);
-        if (ev.target.value==="CRE") {
-            $('.event-group-create .panel-body').slideDown(animationTime);
-            $('.event-group-create .form-control').prop("disabled", false);
-            $('.event-group-select .form-control').prop("disabled", true);
-        } else {
-            $('.event-group-create .form-control').prop("disabled", true);
-            $('.event-group-select .form-control').prop("disabled", false);
+            $('#id_group').prop('disabled', true)
         }
     });
 

@@ -27,7 +27,7 @@ $(function() {
     var $speakers = $('#id_event-speakers');
     var $speakersList = $('.js-speakers-list');
     function addSpeaker(speaker) {
-        var speakerIDs = $speakers.val();
+        var speakerIDs = $speakers.val() || '';
         speakerIDs = speakerIDs!=='' ? _.map(speakerIDs.split(separator), toInt) : [];
         if (!_.contains(speakerIDs, speaker.id)) {
             speakerIDs.push(speaker.id);
@@ -48,7 +48,7 @@ $(function() {
     var topics = $('#id_event-topics');
     var topicsList = $('.js-topics-list');
     function addTopic(topic) {
-        var topicsURIs = topics.val();
+        var topicsURIs = topics.val() || '';
         topicsURIs = topicsURIs!=='' ? _.map(topicsURIs.split(separator), function(val) { return val; } ) : [];
         if (!_.contains(topicsURIs, topic.uri)) {
             topicsURIs.push(topic.uri);

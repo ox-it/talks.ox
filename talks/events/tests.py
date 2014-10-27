@@ -202,7 +202,7 @@ class TestCreateEventView(TestCase):
     def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'events/create_event.html')
+        self.assertTemplateUsed(response, 'events/event_form.html')
         self.assertContains(response, "Oxford Talks")
         self.assertContains(response, "Add Talk")
         self.assertIn('event_form', response.context)
@@ -211,7 +211,7 @@ class TestCreateEventView(TestCase):
     def test_get_nonexistent_group(self):
         response = self.client.get('/events/groups/8475623/new')
         self.assertEquals(response.status_code, 404)
-        self.assertTemplateNotUsed(response, 'events/create_event.html')
+        self.assertTemplateNotUsed(response, 'events/event_form.html')
 
     def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()
@@ -310,3 +310,53 @@ class TestCreateEventView(TestCase):
         except models.Event.DoesNotExist:
             self.fail("Event instance was not saved")
         self.assertRedirects(response, event.get_absolute_url())
+
+
+class TestEditEventView(TestCase):
+    def test_edit_event_404(self):
+        response = self.client.get("/events/id/1/edit")
+        self.assertEquals(response.status_code, 404)
+        self.assertTemplateNotUsed(response, "events/event_form.html")
+
+    def test_edit_event_200(self):
+        event = factories.EventFactory.create()
+        response = self.client.get("/events/id/%s/edit" % event.id)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, event.title)
+        self.assertContains(response, event.description)
+        self.assertTemplateUsed(response, "events/event_form.html")
+
+    def test_edit_event_post_happy(self):
+        event = factories.EventFactory.create()
+        data = {
+            'title': 'lkfjlfkds',
+            'description': 'dflksfoingf',
+            'group_type': '',
+        }
+
+        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        self.assertRedirects(response, "/events/id/%s" % event.id)
+        saved_event = models.Event.objects.get(pk=event.id)
+        self.assertEquals(saved_event.title, data['title'])
+        self.assertEquals(saved_event.description, data['description'])
+        self.assertTemplateNotUsed(response, "events/event_form.html")
+
+    def test_edit_event_post_invalid(self):
+        old_title = u'some_old_title'
+        old_description = u'old_description'
+        event = factories.EventFactory.create(
+            title=old_title,
+            description=old_description
+        )
+        data = {
+            'title': '',
+            'description': 'dflksfoingf',
+        }
+
+        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        saved_event = models.Event.objects.get(pk=event.id)
+        self.assertEquals(response.status_code, 200)
+        self.assertFormError(response, 'event_form', 'title', ['This field is required.'])
+        self.assertEquals(saved_event.title, old_title)
+        self.assertEquals(saved_event.description, old_description)
+        self.assertTemplateUsed(response, "events/event_form.html")
