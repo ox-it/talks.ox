@@ -13,6 +13,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Event, EventGroup, Speaker
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.events.models import TopicItem, Topic
+from talks.api import serializers
 
 logger = logging.getLogger(__name__)
 
@@ -213,7 +214,7 @@ def create_event_group(request):
         if form.is_valid():
             event_group = form.save()
             if is_modal:
-                response = json.dumps({"id": event_group.id, "label": event_group.title})
+                response = json.dumps(serializers.EventGroupSerializer(event_group).data)
                 return HttpResponse(response, status=201, content_type='application/json')
             messages.success(request, "Event group was created")
             return redirect(event_group.get_absolute_url())

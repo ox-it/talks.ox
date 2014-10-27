@@ -35,6 +35,6 @@ $(function() {
     });
 
     $('#create-group-button').data('successCallback', function(newGroup) {
-           $('option').attr('value', newGroup.id).text(newGroup.label).appendTo('#id_group').prop('selected')
+           $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_group').prop('selected', true)
     })
 });
