@@ -1,26 +1,25 @@
-$(function() {
+$(function () {
     var $modal = $('<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>');
-    $(document.body).append($modal)
-    
+    $(document.body).append($modal);
     var successCallback;
 
-    onComplete = function(jqXHR) {
-        hideThrobber()
-        if(jqXHR.status == 200 || jqXHR.status == 201)  {
-            $modal.modal('hide')
-        
-            if(successCallback && jqXHR.responseJSON)
-                successCallback(jqXHR.responseJSON)
+    onComplete = function (jqXHR) {
+        hideThrobber();
+        if (jqXHR.status === 200 || jqXHR.status === 201) {
+            $modal.modal('hide');
+            if (successCallback && jqXHR.responseJSON) {
+                successCallback(jqXHR.responseJSON);
+            }
         } else {
-            $('.modal-content', $modal).html(jqXHR.responseText)
-            interceptForm.call($modal)
+            $('.modal-content', $modal).html(jqXHR.responseText);
+            interceptForm.call($modal);
         }
     }
     showThrobber = function() { $modal.addClass('throbber'); }
     hideThrobber = function() { $modal.removeClass('throbber'); }
     submitForm = function(e) {
-        e.preventDefault()
-        showThrobber()
+        e.preventDefault();
+        showThrobber();
         $.ajax({
             method: 'POST',
             url: $(this).prop('action'), 
@@ -30,16 +29,16 @@ $(function() {
     }
     
     interceptForm = function(e) {
-        $('form', this).on('submit', submitForm)
+        $('form', this).on('submit', submitForm);
     }
 
     onShow = function(e) {
-        var url = $(e.relatedTarget).data('url')
-        successCallback = $(e.relatedTarget).data('successCallback')
-        $('.modal-content', $modal).load(url, interceptForm)
+        var url = $(e.relatedTarget).data('url');
+        successCallback = $(e.relatedTarget).data('successCallback');
+        $('.modal-content', $modal).load(url, interceptForm);
     }
 
-    $modal.on('show.bs.modal', onShow)
+    $modal.on('show.bs.modal', onShow);
 
 
 })
