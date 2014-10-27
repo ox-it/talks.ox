@@ -11,6 +11,7 @@ from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+import requests
 
 from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
 from talks.api_ox.models import Location, Organisation
@@ -225,3 +226,25 @@ def fetch_topic(sender, instance, created, **kwargs):
         topic = topic[0]
         instance.name = topic.name
         instance.save()
+
+
+@receiver(models.signals.post_save, sender=Event)
+def update_old_talks(sender, instance, created, **kwargs):
+    data = [("talk[title]", instance.title),
+            ("talk[abstract]", instance.description),
+            ("talk[name_of_speaker]", ", ".join([speaker.name for speaker in instance.speakers.all()])),
+            ("talk[venue_name]", instance.location.identifier),
+            ("talk[start_time_string]", instance.start.strftime("%H:%M")),
+            ("talk[end_time_string]", instance.end.strftime("%H:%M")),
+            ("talk[date_string]", instance.start.strftime("%Y/%m/%d")),
+            ("talk[organiser_email]", "apiuser")]
+
+    url = "{server}/talk/update/".format(server=settings.OLD_TALKS_SERVER)
+
+    logger.debug("POSTing {data} to {url}".format(data=data, url=url))
+
+    response = requests.post(url, data, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
+                             allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+
+    if response.status_code != 200:
+        raise Exception(response.status_code)
