@@ -16,8 +16,6 @@ def update_old_talks(sender, instance, created, **kwargs):
     if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
         data = event_to_old_talk(instance)
 
-        print data
-
         url = "{server}/talk/update/".format(server=settings.OLD_TALKS_SERVER)
 
         logger.debug("POSTing {data} to {url}".format(data=data, url=url))
