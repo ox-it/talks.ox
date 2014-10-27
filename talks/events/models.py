@@ -11,7 +11,6 @@ from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-import requests
 
 from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
 from talks.api_ox.models import Location, Organisation
@@ -193,26 +192,6 @@ class Event(models.Model):
             return self.start.date() == date.today()
         return False
 
-    def as_old_talks(self):
-        """Provide event data in old talks format
-        :return:
-        """
-        data = [("talk[organiser_email]", "apiuser")]
-        if self.title:
-            data.append(("talk[title]", self.title))
-        if self.description:
-            data.append(("talk[abstract]", self.description))
-        if self.start:
-            data.append(("talk[date_string]", self.start.strftime("%Y/%m/%d")))
-            data.append(("talk[start_time_string]", self.start.strftime("%H:%M")))
-        if self.end:
-            data.append(("talk[end_time_string]", self.end.strftime("%H:%M")))
-        if self.location:
-            data.append(("talk[venue_name]", self.location.identifier))
-        if len(self.speakers.all()) > 0:
-            data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in self.speakers.all()])))
-        return data
-
 
 @receiver(models.signals.post_save, sender=Event)
 def index_event(sender, instance, created, **kwargs):
@@ -246,19 +225,3 @@ def fetch_topic(sender, instance, created, **kwargs):
         topic = topic[0]
         instance.name = topic.name
         instance.save()
-
-
-@receiver(models.signals.post_save, sender=Event)
-def update_old_talks(sender, instance, created, **kwargs):
-    if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
-        data = instance.as_old_talks()
-
-        url = "{server}/talk/update/".format(server=settings.OLD_TALKS_SERVER)
-
-        logger.debug("POSTing {data} to {url}".format(data=data, url=url))
-
-        response = requests.post(url, data, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                 allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
-
-        if response.status_code != 200:
-            raise Exception(response.status_code)
