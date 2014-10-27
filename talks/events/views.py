@@ -1,4 +1,5 @@
 import logging
+import json
 
 from datetime import date
 from functools import partial
@@ -6,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Event, EventGroup, Speaker
@@ -206,15 +207,25 @@ def edit_event_group(request, event_group_id):
 
 def create_event_group(request):
     form = EventGroupForm(request.POST or None)
+    is_modal = request.GET.get('modal')
+    status_code = 200
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
+            if is_modal:
+                response = json.dumps({"id": event_group.id, "label": event_group.title})
+                return HttpResponse(response, status=201, content_type='application/json')
             messages.success(request, "Event group was created")
             return redirect(event_group.get_absolute_url())
         else:
+            status_code = 400
             messages.warning(request, "Please correct errors below")
 
     context = {
         'form': form,
     }
-    return render(request, 'events/event_group_form.html', context)
+
+    if is_modal:
+        return render(request, 'modal_form.html', context, status=status_code)
+    else:
+        return render(request, 'events/event_group_form.html', context, status=status_code)
