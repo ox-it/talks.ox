@@ -144,6 +144,14 @@ class Event(models.Model):
     def speakers(self):
         return self.person_set.filter(personevent__role=ROLES_SPEAKER)
 
+    @property
+    def organizers(self):
+        return self.person_set.filter(personevent__role=ROLES_ORGANIZER)
+
+    @property
+    def hosts(self):
+        return self.person_set.filter(personevent__role=ROLES_HOST)
+
     def fetch_resource(self, key, func):
         """Fetch a resource from the API.
 
