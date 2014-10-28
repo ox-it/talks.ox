@@ -13,7 +13,7 @@ from events.views import (homepage, upcoming_events, show_event, edit_event, eve
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group)
 
-from api.views import (EventViewSet, create_speaker, suggest_speaker,
+from api.views import (EventViewSet, create_person, suggest_person,
                        save_item, remove_item)
 
 from users.views import webauth_logout
@@ -36,8 +36,8 @@ urlpatterns = patterns('',
     url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
-    url(r'^events/speakers/new$', create_speaker, name='create-speaker'),
-    url(r'^events/speakers/suggest$', suggest_speaker, name='suggest-speaker'),
+    url(r'^events/persons/new$', create_person, name='create-person'),
+    url(r'^events/persons/suggest$', suggest_person, name='suggest-person'),
     url(r'^events/new$', create_event, name='create-event'),
     url(r'^events/id/(?P<event_id>\d+)$', show_event, name='show-event'),
     url(r'^events/id/(?P<event_id>\d+)/edit$', edit_event, name='edit-event'),

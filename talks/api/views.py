@@ -28,16 +28,16 @@ class EventViewSet(viewsets.ModelViewSet):
 # These views are typically used by ajax
 
 @api_view(["GET"])
-def suggest_speaker(request):
+def suggest_person(request):
     query = request.GET.get('q', '')
-    speakers = Person.objects.suggestions(query)
-    serializer = PersonSerializer(speakers, many=True)
+    persons = Person.objects.suggestions(query)
+    serializer = PersonSerializer(persons, many=True)
     return Response(serializer.data)
 
 
 # TODO: require auth
 @api_view(["POST"])
-def create_speaker(request):
+def create_person(request):
     serializer = PersonSerializer(data=request.DATA)
     if serializer.is_valid():
         serializer.save()
