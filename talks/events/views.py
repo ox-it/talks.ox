@@ -10,7 +10,7 @@ from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Event, EventGroup, Speaker
+from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.events.models import TopicItem, Topic
 from talks.api import serializers
@@ -105,7 +105,7 @@ def edit_event(request, event_id):
         else:
             messages.warning(request, "Please correct errors below")
             if 'speakers' in form.cleaned_data:
-                context['selected_speakers'] = Speaker.objects.filter(
+                context['selected_speakers'] = Person.objects.filter(
                     id__in=form.cleaned_data['speakers'])
             if 'topics' in form.cleaned_data:
                 context['selected_topics'] = Topic.objects.filter(
@@ -132,19 +132,8 @@ def create_event(request, group_id=None):
         }
         forms_valid = context['event_form'].is_valid()
         if forms_valid:
-            event = context['event_form'].save(commit=False)
-            event.save()
-
-            # saving topics
-            event_topics = context['event_form'].cleaned_data['topics']
-            event_ct = ContentType.objects.get_for_model(Event)
-            for topic in event_topics:
-                TopicItem.objects.create(topic=topic,
-                                         content_type=event_ct,
-                                         object_id=event.id)
-
-            # *Now* we can save the many2many relations
-            context['event_form'].save_m2m()
+            logging.debug("form is valid")
+            event = context['event_form'].save()
             messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:
@@ -157,9 +146,10 @@ def create_event(request, group_id=None):
             else:
                 return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
         else:
+            logging.debug("form is NOT valid")
             messages.warning(request, "Please correct errors below")
             if 'speakers' in context['event_form'].cleaned_data:
-                context['selected_speakers'] = Speaker.objects.filter(
+                context['selected_speakers'] = Person.objects.filter(
                     id__in=context['event_form'].cleaned_data['speakers'])
             if 'topics' in context['event_form'].cleaned_data:
                 context['selected_topics'] = Topic.objects.filter(

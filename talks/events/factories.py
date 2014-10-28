@@ -11,3 +11,9 @@ class EventGroupFactory(factory.django.DjangoModelFactory):
 class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Event
+
+
+class PersonFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Person
+

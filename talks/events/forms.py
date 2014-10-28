@@ -1,11 +1,11 @@
 from django import forms
-from django.forms.widgets import TextInput, Select
+from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 from talks.api_ox.models import Location, Organisation
-from .models import Event, EventGroup, Speaker
-from talks.events.models import Topic
+from . import models
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -62,7 +62,7 @@ class TopicsField(forms.ModelMultipleChoiceField):
         ids = []
         if value:
             value = [item.strip() for item in value.split(",")]
-            ids = [Topic.objects.get_or_create(uri=v)[0].pk for v in value]  # FIXME
+            ids = [models.Topic.objects.get_or_create(uri=v)[0].pk for v in value]  # FIXME
         return super(TopicsField, self).clean(ids)
 
     def prepare_value(self, value):
@@ -90,7 +90,7 @@ class EventForm(forms.ModelForm):
         widget=SpeakerTypeaheadInput(attrs={'class': 'js-speakers-typeahead'}),
     )
     speakers = ModelCommaSeparatedChoiceField(
-        queryset=Speaker.objects.all(),
+        queryset=models.Person.objects.all(),
         required=False)
 
     topic_suggest = forms.CharField(
@@ -100,7 +100,7 @@ class EventForm(forms.ModelForm):
         widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
     )
     topics = TopicsField(
-        queryset=Topic.objects.all(),
+        queryset=models.Topic.objects.all(),
         required=False,
     )
 
@@ -130,7 +130,7 @@ class EventForm(forms.ModelForm):
         widget=forms.HiddenInput(attrs={'class': 'js-organisation'}),
     )
     group = forms.ModelChoiceField(
-        EventGroup.objects.all(),
+        models.EventGroup.objects.all(),
         empty_label="-- select a group --",
         widget=Select(attrs={'class': 'form-control'}),
         required=False,
@@ -141,7 +141,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         exclude = ('slug', 'topics')
-        model = Event
+        model = models.Event
         labels = {
             'description': 'Abstract',
         }
@@ -150,12 +150,25 @@ class EventForm(forms.ModelForm):
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
         }
 
+    def save(self):
+        event = super(EventForm, self).save(commit=False)
+        event.save()
+        for person in self.cleaned_data['speakers']:
+            models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
+        event_topics = self.cleaned_data['topics']
+        event_ct = ContentType.objects.get_for_model(models.Event)
+        for topic in event_topics:
+            models.TopicItem.objects.create(topic=topic,
+                                            content_type=event_ct,
+                                            object_id=event.id)
+        return event
+
 
 class EventGroupForm(forms.ModelForm):
 
     class Meta:
         fields = ('title', 'group_type', 'description')
-        model = EventGroup
+        model = models.EventGroup
         widgets = {
             'title': forms.TextInput(),
             'description': forms.Textarea(),
@@ -165,7 +178,7 @@ class EventGroupForm(forms.ModelForm):
 class SpeakerQuickAdd(forms.ModelForm):
     class Meta:
         fields = ('name', 'email_address')
-        model = Speaker
+        model = models.Person
 
     class Media:
         js = ('js/event-element-quick-add.js',)
