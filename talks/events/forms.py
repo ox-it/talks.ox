@@ -154,7 +154,7 @@ class EventForm(forms.ModelForm):
         event = super(EventForm, self).save(commit=False)
         event.save()
         for person in self.cleaned_data['speakers']:
-            models.PersonEvent.objects.create(person=person, event=event)
+            models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
         event_topics = self.cleaned_data['topics']
         event_ct = ContentType.objects.get_for_model(models.Event)
         for topic in event_topics:
