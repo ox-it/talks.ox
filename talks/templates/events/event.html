@@ -27,8 +27,21 @@
     <!-- List group -->
     <ul class="list-group">
         <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
-        <li class="list-group-item"><strong>Venue</strong>: <address>{{ event.api_location.name }}{% if event.api_location.address %}</br>{{ event.api_location.address }}{% endif %}</address></li>
-        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}{{ speaker.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
+            {% if event.api_location %}
+            <address>{{ event.api_location.name }}{% if event.api_location.address %}</br>{{ event.api_location.address }}{% endif %}</address>
+            {% else %}
+            Venue to be announced
+            {% endif %}
+        {% endspaceless %}</li>
+        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% spaceless %} 
+        {% for speaker in speakers %}
+            {{ speaker.name}}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+            Speaker to be announced
+        {% endfor %}
+        </li>
+        {% endspaceless %}
         {% if event.api_organisation %}
         <li class="list-group-item"><strong>Organiser</strong>: {{ event.api_organisation.name }}</li>
         {% endif %}
