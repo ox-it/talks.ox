@@ -7,9 +7,9 @@ from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
-from talks.events.models import Event, EventGroup, Speaker
+from talks.events.models import Event, EventGroup, Person
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, SpeakerSerializer,
+from talks.api.serializers import (EventSerializer, PersonSerializer,
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
@@ -30,15 +30,15 @@ class EventViewSet(viewsets.ModelViewSet):
 @api_view(["GET"])
 def suggest_speaker(request):
     query = request.GET.get('q', '')
-    speakers = Speaker.objects.suggestions(query)
-    serializer = SpeakerSerializer(speakers, many=True)
+    speakers = Person.objects.suggestions(query)
+    serializer = PersonSerializer(speakers, many=True)
     return Response(serializer.data)
 
 
 # TODO: require auth
 @api_view(["POST"])
 def create_speaker(request):
-    serializer = SpeakerSerializer(data=request.DATA)
+    serializer = PersonSerializer(data=request.DATA)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

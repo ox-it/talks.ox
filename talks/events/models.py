@@ -58,19 +58,19 @@ class EventGroup(models.Model):
         return reverse('show-event-group', args=[self.id])
 
 
-class SpeakerManager(models.Manager):
+class PersonManager(models.Manager):
 
     def suggestions(self, query):
         return self.filter(name__icontains=query)
 
 
-class Speaker(models.Model):
+class Person(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
     bio = models.TextField()
     email_address = models.EmailField(max_length=254)
 
-    objects = SpeakerManager()
+    objects = PersonManager()
 
     def __unicode__(self):
         return self.name
@@ -93,6 +93,20 @@ class TopicItem(models.Model):
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
 
 
+ROLES = (
+    ('speaker', 'Speaker'),
+    ('host', 'Host'),
+    ('organizer', 'Organizer'),
+)
+
+
+class PersonEvent(models.Model):
+    person = models.ForeignKey(Person)
+    event = models.ForeignKey("Event")
+    affiliation = models.TextField(blank=True)
+    role = models.TextField(choices=ROLES, default='speaker')
+    url = models.URLField(blank=True)
+
 class EventManager(models.Manager):
 
     def todays_events(self):
@@ -108,7 +122,8 @@ class Event(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
-    speakers = models.ManyToManyField(Speaker, null=True, blank=True)
+    person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
+
     # TODO audience should it be free text
     # TODO booking information; structure?
 
@@ -121,8 +136,11 @@ class Event(models.Model):
     topics = GenericRelation(TopicItem)
 
     objects = EventManager()
-
     _cached_resources = {}
+
+    @property
+    def speakers(self):
+        return self.person_set.filter(personevent__role='speaker')  # FIXME: use constant
 
     def fetch_resource(self, key, func):
         """Fetch a resource from the API.
@@ -191,7 +209,6 @@ class Event(models.Model):
         if self.start:
             return self.start.date() == date.today()
         return False
-
 
 @receiver(models.signals.post_save, sender=Event)
 def index_event(sender, instance, created, **kwargs):
