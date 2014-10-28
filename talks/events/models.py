@@ -27,6 +27,22 @@ ROLES = (
     (ROLES_ORGANIZER, 'Organizer'),
 )
 
+BOOKING_NOT_REQUIRED = 'nr'
+BOOKING_REQUIRED = 're'
+BOOKIND_RECOMMENDED = 'rc'
+
+BOOKING_CHOICES = (
+    (BOOKING_NOT_REQUIRED, 'not required'),
+    (BOOKING_REQUIRED, 'required'),
+    (BOOKIND_RECOMMENDED, 'recommended'),
+)
+
+AUDIENCE_PUBLIC = 'public'
+AUDIENCE_OXFORD = 'oxonly'
+AUDIENCE_CHOICES = (
+    (AUDIENCE_PUBLIC, 'Public'),
+    (AUDIENCE_OXFORD, 'Members of the University only'),
+)
 
 class EventGroupManager(models.Manager):
     def for_events(self, events):
@@ -121,14 +137,24 @@ class EventManager(models.Manager):
 class Event(models.Model):
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=250, blank=True)
+    title_not_announced = models.BooleanField(default=False, verbose_name="Title to be announced")
     slug = models.SlugField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
-
-    # TODO audience should it be free text
-    # TODO booking information; structure?
-
+    audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
+    booking_type = models.TextField(verbose_name="Booking required",
+                                    choices=BOOKING_CHOICES,
+                                    default=BOOKING_NOT_REQUIRED)
+    booking_url = models.URLField(blank=True, default='',
+                                  verbose_name="Web address for booking")
+    cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
+    special_message = models.TextField(
+        blank=True,
+        default='',
+        verbose_name="Special message",
+        help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue."
+    )
     group = models.ForeignKey(EventGroup, null=True, blank=True,
                               related_name='events')
     location = models.ForeignKey(Location, null=True, blank=True)
@@ -194,7 +220,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.title)  # FIXME max_length, empty title
         super(Event, self).save(*args, **kwargs)
 
     def __unicode__(self):
