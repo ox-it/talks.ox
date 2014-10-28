@@ -163,6 +163,10 @@ class EventForm(forms.ModelForm):
                                             object_id=event.id)
         return event
 
+    def clean(self):
+        if not self.cleaned_data['title'] and not self.cleaned_data['title_not_announced']:
+            raise forms.ValidationError("Either provide title or mark it as not announced")
+        return self.cleaned_data
 
 class EventGroupForm(forms.ModelForm):
 
