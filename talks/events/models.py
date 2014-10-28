@@ -18,6 +18,15 @@ from talks.api_ox.models import Location, Organisation
 
 logger = logging.getLogger(__name__)
 
+ROLES_SPEAKER = 'speaker'
+ROLES_HOST = 'host'
+ROLES_ORGANIZER = 'organizer'
+ROLES = (
+    (ROLES_SPEAKER, 'Speaker'),
+    (ROLES_HOST, 'Host'),
+    (ROLES_ORGANIZER, 'Organizer'),
+)
+
 
 class EventGroupManager(models.Manager):
     def for_events(self, events):
@@ -93,18 +102,11 @@ class TopicItem(models.Model):
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
 
 
-ROLES = (
-    ('speaker', 'Speaker'),
-    ('host', 'Host'),
-    ('organizer', 'Organizer'),
-)
-
-
 class PersonEvent(models.Model):
     person = models.ForeignKey(Person)
     event = models.ForeignKey("Event")
     affiliation = models.TextField(blank=True)
-    role = models.TextField(choices=ROLES, default='speaker')
+    role = models.TextField(choices=ROLES, default=ROLES_SPEAKER)
     url = models.URLField(blank=True)
 
 class EventManager(models.Manager):
@@ -140,7 +142,7 @@ class Event(models.Model):
 
     @property
     def speakers(self):
-        return self.person_set.filter(personevent__role='speaker')  # FIXME: use constant
+        return self.person_set.filter(personevent__role=ROLES_SPEAKER)
 
     def fetch_resource(self, key, func):
         """Fetch a resource from the API.
