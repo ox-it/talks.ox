@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import TextInput, Select
+from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
