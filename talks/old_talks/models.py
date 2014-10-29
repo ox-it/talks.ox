@@ -51,7 +51,7 @@ def event_to_old_talk(event):
     """Provide event data in old talks format
     :return:
     """
-    data = [("talk[organiser_email]", "apiuser")]
+    data = [("talk[organiser_email]", "apiuser")]   # TODO pending extension of data model will need to be updated
     if event.title:
         data.append(("talk[title]", event.title))
     if event.description:
