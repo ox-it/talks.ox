@@ -90,6 +90,54 @@ class TestEventForm(TestCase):
         logging.info("form errors: %s", errors)
         self.assertTrue(form.is_valid(), "form should validate")
 
+    def test_title_blank(self):
+        data = {
+            'title': '',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertIn('__all__', form.errors)
+        self.assertIn("Either provide title or mark it as not announced", form.errors['__all__'])
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
+    def test_title_not_announced_false(self):
+        data = {
+            'title': 'something',
+            'title_not_announced': 'false',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
+    def test_title_not_announced_true_title_not_blank(self):
+        data = {
+            'title': 'something',
+            'title_not_announced': 'true',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
+    def test_title_not_announced_true_title_blank(self):
+        data = {
+            'title': '',
+            'title_not_announced': 'true',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
 
 class TestEventGroupForm(TestCase):
 
