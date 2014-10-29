@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from talks.events.models import Event, Speaker
+from talks.events.models import Event, Person, PersonEvent, ROLES_SPEAKER
 from .models import event_to_old_talk
 
 
@@ -11,16 +11,18 @@ class TestOldTalks(TestCase):
         event.title = u"TITLE"
         event.save()
 
-        s1 = Speaker()
+        s1 = Person()
         s1.name = "A"
         s1.save()
 
-        s2 = Speaker()
+        s2 = Person()
         s2.name = "B"
         s2.save()
 
-        event.speakers.add(s1, s2)
         event.save()
+
+        PersonEvent.objects.create(person=s1, event=event, role=ROLES_SPEAKER)
+        PersonEvent.objects.create(person=s2, event=event, role=ROLES_SPEAKER)
 
         data = event_to_old_talk(event)
         d = dict(data)
