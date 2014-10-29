@@ -151,6 +151,7 @@ class EventForm(forms.ModelForm):
             'booking_type': forms.RadioSelect,
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
+            'location_details': forms.TextInput,
         }
 
     def save(self):

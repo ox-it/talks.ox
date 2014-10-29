@@ -158,6 +158,10 @@ class Event(models.Model):
     group = models.ForeignKey(EventGroup, null=True, blank=True,
                               related_name='events')
     location = models.ForeignKey(Location, null=True, blank=True)
+    location_details = models.TextField(blank=True,
+                                        default='',
+                                        verbose_name='Additional details',
+                                        help_text='e.g.: room number or accessibility information')
     # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
 
