@@ -13,9 +13,10 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "empty form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertEquals(len(errors), 2)
-        self.assertIn('title', errors)
-        self.assertIn('description', errors)
+        self.assertEquals(len(errors), 3)
+        self.assertIn('booking_type', errors)
+        self.assertIn('audience', errors)
+        self.assertIn('__all__', errors)
 
     def test_all_fields_blanked(self):
         data = {
@@ -36,14 +37,16 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertEquals(len(errors), 2)
-        self.assertIn('title', errors)
-        self.assertIn('description', errors)
+        self.assertEquals(len(errors), 3)
+        self.assertIn('booking_type', errors)
+        self.assertIn('audience', errors)
+        self.assertIn('__all__', errors)
 
     def test_invalid_date(self):
         data = {
             'description': u'',
             'title': u'',
+            'title_not_announced': u'1',
             'location': u'',
             'department_suggest': u'',
             'start': u'94872394',
@@ -52,6 +55,8 @@ class TestEventForm(TestCase):
             'location_suggest': u'',
             'department_organiser': u'',
             'speakers': u'',
+            'booking_type': u'nr',
+            'audience': u'public',
             'topic_suggest': u'',
             'end': u'',
         }
@@ -59,10 +64,79 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertIn('title', errors)
-        self.assertIn('description', errors)
         self.assertIn('start', errors)
-        self.assertEquals(len(errors), 3)
+        self.assertEquals(len(errors), 1)
+
+    def test_happy(self):
+        data = {
+            'description': u'',
+            'title': u'',
+            'title_not_announced': u'1',
+            'location': u'',
+            'department_suggest': u'',
+            'start': u'',
+            'topics': u'',
+            'speaker_suggest': u'',
+            'location_suggest': u'',
+            'department_organiser': u'',
+            'speakers': u'',
+            'booking_type': u'nr',
+            'audience': u'public',
+            'topic_suggest': u'',
+            'end': u'',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertTrue(form.is_valid(), "form should validate")
+
+    def test_title_blank(self):
+        data = {
+            'title': '',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertIn('__all__', form.errors)
+        self.assertIn("Either provide title or mark it as not announced", form.errors['__all__'])
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
+    def test_title_not_announced_false(self):
+        data = {
+            'title': 'something',
+            'title_not_announced': 'false',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
+    def test_title_not_announced_true_title_not_blank(self):
+        data = {
+            'title': 'something',
+            'title_not_announced': 'true',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
+
+    def test_title_not_announced_true_title_blank(self):
+        data = {
+            'title': '',
+            'title_not_announced': 'true',
+        }
+        form = forms.EventForm(data)
+        errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
+        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn('title', form.errors)
+        self.assertNotIn('title_not_announced', form.errors)
 
 
 class TestEventGroupForm(TestCase):
@@ -229,27 +303,29 @@ class TestCreateEventView(TestCase):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         data = {
-            'event-description ': description,
+            'event-description': description,
             'another': u'true',
             'event-title': title,
-            'event-location ': u'',
-            'event-department_suggest ': u'',
-            'email_address ': u'',
+            'event-location': u'',
+            'event-department_suggest': u'',
+            'email_address': u'',
             'event-start': u'',
-            'event-topics ': u'',
-            'event-speaker_suggest ': u'',
+            'event-topics': u'',
+            'event-speaker_suggest': u'',
             'event-group-description': u'',
-            'event-location_suggest ': u'',
-            'event-department_organiser ': u'',
-            'event-group-event_group_select ': u'',
-            'event-speakers ': u'',
-            'event-group-group_type ': u'',
+            'event-location_suggest': u'',
+            'event-department_organiser': u'',
+            'event-group-event_group_select': u'',
+            'event-speakers': u'',
+            'event-group-group_type': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-group-select_create ': u'CRE',
+            'event-group-select_create': u'CRE',
             'event-topic_suggest': u'',
-            'event-end ': u'',
-            'event-group-title ': u'',
-            'name ': u'',
+            'event-end': u'',
+            'event-group-title': u'',
+            'name': u'',
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
         }
 
         response = self.client.post('/events/new', data)
@@ -265,23 +341,25 @@ class TestCreateEventView(TestCase):
         group = factories.EventGroupFactory.create()
         group_id = group.pk
         data = {
-            'event-description ': description,
+            'event-description': description,
             'another': u'true',
             'event-title': title,
-            'event-location ': u'',
-            'event-department_suggest ': u'',
-            'email_address ': u'',
+            'event-location': u'',
+            'event-department_suggest': u'',
+            'email_address': u'',
             'event-start': u'',
-            'event-topics ': u'',
-            'event-speaker_suggest ': u'',
-            'event-location_suggest ': u'',
-            'event-department_organiser ': u'',
-            'event-speakers ': u'',
+            'event-topics': u'',
+            'event-speaker_suggest': u'',
+            'event-location_suggest': u'',
+            'event-department_organiser': u'',
+            'event-speakers': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
-            'event-end ': u'',
+            'event-end': u'',
             'event-group': unicode(group_id),
-            'name ': u'',
+            'name': u'',
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
         }
 
         response = self.client.post('/events/groups/%s/new' % group_id, data)
@@ -296,53 +374,61 @@ class TestCreateEventView(TestCase):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         data = {
-            'event-description ': description,
+            'event-description': description,
             'event-title': title,
             'event-group': u'',
-            'event-location ': u'',
-            'event-department_suggest ': u'',
-            'email_address ': u'',
+            'event-location': u'',
+            'event-department_suggest': u'',
+            'email_address': u'',
             'event-start': u'',
-            'event-topics ': u'',
-            'event-speaker_suggest ': u'',
-            'event-location_suggest ': u'',
-            'event-department_organiser ': u'',
-            'event-speakers ': u'',
+            'event-topics': u'',
+            'event-speaker_suggest': u'',
+            'event-location_suggest': u'',
+            'event-department_organiser': u'',
+            'event-speakers': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
-            'event-end ': u'',
-            'name ': u'',
+            'event-end': u'',
+            'name': u'',
+            'event-booking_type': models.BOOKING_REQUIRED,
+            'event-audience': models.AUDIENCE_OXFORD,
         }
         response = self.client.post('/events/new', data)
         if response.context:
-            logging.info("Form errors: %s", response.context['event_form'].errors)
+            logging.info("Form errors: %s", response.context['event_form'].errors.as_data())
         try:
             event = models.Event.objects.get(title=title, description=description)
         except models.Event.DoesNotExist:
             self.fail("Event instance was not saved")
         self.assertRedirects(response, event.get_absolute_url())
+        self.assertEquals(event.title, data['event-title'])
+        self.assertEquals(event.description, data['event-description'])
+        self.assertEquals(event.booking_type, data['event-booking_type'])
+        self.assertEquals(event.audience, data['event-audience'])
 
     def test_post_valid_with_speakers(self):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         speakers = factories.PersonFactory.create_batch(3)
         data = {
-            'event-description ': description,
+            'event-description': description,
             'event-title': title,
             'event-group': u'',
-            'event-location ': u'',
-            'event-department_suggest ': u'',
-            'email_address ': u'',
+            'event-location': u'',
+            'event-department_suggest': u'',
+            'email_address': u'',
             'event-start': u'',
-            'event-topics ': u'',
-            'event-speaker_suggest ': u'some junk',
-            'event-location_suggest ': u'',
-            'event-department_organiser ': u'',
-            'event-speakers ': u','.join([str(s.pk) for s in speakers]),
+            'event-topics': u'',
+            'event-speaker_suggest': u'some junk',
+            'event-location_suggest': u'',
+            'event-department_organiser': u'',
+            'event-speakers': u','.join([str(s.pk) for s in speakers]),
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
-            'event-end ': u'',
-            'name ': u'',
+            'event-end': u'',
+            'name': u'',
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
         }
         response = self.client.post('/events/new', data)
         if response.context:
@@ -373,9 +459,11 @@ class TestEditEventView(TestCase):
     def test_edit_event_post_happy(self):
         event = factories.EventFactory.create()
         data = {
-            'title': 'lkfjlfkds',
-            'description': 'dflksfoingf',
-            'group_type': '',
+            'event-title': 'lkfjlfkds',
+            'event-description': 'dflksfoingf',
+            'event-group_type': '',
+            'event-booking_type': models.BOOKING_REQUIRED,
+            'event-audience': models.AUDIENCE_OXFORD,
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
@@ -383,8 +471,10 @@ class TestEditEventView(TestCase):
             logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertRedirects(response, "/events/id/%s" % event.id)
         saved_event = models.Event.objects.get(pk=event.id)
-        self.assertEquals(saved_event.title, data['title'])
-        self.assertEquals(saved_event.description, data['description'])
+        self.assertEquals(saved_event.title, data['event-title'])
+        self.assertEquals(saved_event.description, data['event-description'])
+        self.assertEquals(saved_event.booking_type, data['event-booking_type'])
+        self.assertEquals(saved_event.audience, data['event-audience'])
         self.assertTemplateNotUsed(response, "events/event_form.html")
 
     def test_edit_event_post_invalid(self):
@@ -395,14 +485,16 @@ class TestEditEventView(TestCase):
             description=old_description
         )
         data = {
-            'title': '',
-            'description': 'dflksfoingf',
+            'event-title': '',
+            'event-description': 'dflksfoingf',
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
         saved_event = models.Event.objects.get(pk=event.id)
         self.assertEquals(response.status_code, 200)
-        self.assertFormError(response, 'event_form', 'title', ['This field is required.'])
+        logging.info("form errors: %s", response.context['event_form'].errors.as_data())
+        self.assertFormError(response, 'event_form', 'booking_type', ['This field is required.'])
+        self.assertFormError(response, 'event_form', 'audience', ['This field is required.'])
         self.assertEquals(saved_event.title, old_title)
         self.assertEquals(saved_event.description, old_description)
         self.assertTemplateUsed(response, "events/event_form.html")

@@ -148,6 +148,10 @@ class EventForm(forms.ModelForm):
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
+            'booking_type': forms.RadioSelect,
+            'cost': forms.TextInput,
+            'audience': forms.RadioSelect,
+            'location_details': forms.TextInput,
         }
 
     def save(self):
@@ -163,6 +167,10 @@ class EventForm(forms.ModelForm):
                                             object_id=event.id)
         return event
 
+    def clean(self):
+        if not self.cleaned_data['title'] and not self.cleaned_data['title_not_announced']:
+            raise forms.ValidationError("Either provide title or mark it as not announced")
+        return self.cleaned_data
 
 class EventGroupForm(forms.ModelForm):
 
