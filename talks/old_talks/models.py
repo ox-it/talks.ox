@@ -54,8 +54,12 @@ def event_to_old_talk(event):
     data = [("talk[organiser_email]", "apiuser")]   # TODO pending extension of data model will need to be updated
     if event.title:
         data.append(("talk[title]", event.title))
+    else:
+        data.append(("talk[title]", "To be announced"))
     if event.description:
         data.append(("talk[abstract]", event.description))
+    else:
+        data.append(("talk[abstract]", ""))
     if event.start:
         data.append(("talk[date_string]", event.start.strftime("%Y/%m/%d")))
         data.append(("talk[start_time_string]", event.start.strftime("%H:%M")))

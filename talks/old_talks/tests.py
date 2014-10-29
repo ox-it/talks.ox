@@ -6,7 +6,7 @@ from .models import event_to_old_talk
 
 class TestOldTalks(TestCase):
 
-    def test_talk(self):
+    def test_event_to_old_talk(self):
         event = Event()
         event.title = u"TITLE"
         event.save()
@@ -27,6 +27,7 @@ class TestOldTalks(TestCase):
         data = event_to_old_talk(event)
         d = dict(data)
 
-        self.assertEquals(len(data), 3)
+        self.assertEquals(len(data), 4)
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[name_of_speaker]"], "A, B")
+        self.assertEquals(d["talk[abstract]"], "")
