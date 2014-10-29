@@ -459,11 +459,11 @@ class TestEditEventView(TestCase):
     def test_edit_event_post_happy(self):
         event = factories.EventFactory.create()
         data = {
-            'title': 'lkfjlfkds',
-            'description': 'dflksfoingf',
-            'group_type': '',
-            'booking_type': models.BOOKING_REQUIRED,
-            'audience': models.AUDIENCE_OXFORD,
+            'event-title': 'lkfjlfkds',
+            'event-description': 'dflksfoingf',
+            'event-group_type': '',
+            'event-booking_type': models.BOOKING_REQUIRED,
+            'event-audience': models.AUDIENCE_OXFORD,
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
@@ -471,10 +471,10 @@ class TestEditEventView(TestCase):
             logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertRedirects(response, "/events/id/%s" % event.id)
         saved_event = models.Event.objects.get(pk=event.id)
-        self.assertEquals(saved_event.title, data['title'])
-        self.assertEquals(saved_event.description, data['description'])
-        self.assertEquals(saved_event.booking_type, data['booking_type'])
-        self.assertEquals(saved_event.audience, data['audience'])
+        self.assertEquals(saved_event.title, data['event-title'])
+        self.assertEquals(saved_event.description, data['event-description'])
+        self.assertEquals(saved_event.booking_type, data['event-booking_type'])
+        self.assertEquals(saved_event.audience, data['event-audience'])
         self.assertTemplateNotUsed(response, "events/event_form.html")
 
     def test_edit_event_post_invalid(self):
@@ -485,8 +485,8 @@ class TestEditEventView(TestCase):
             description=old_description
         )
         data = {
-            'title': '',
-            'description': 'dflksfoingf',
+            'event-title': '',
+            'event-description': 'dflksfoingf',
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
