@@ -91,7 +91,7 @@ def show_event(request, event_id):
 
 def edit_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-    form = EventForm(request.POST or None, instance=event)
+    form = EventForm(request.POST or None, instance=event, prefix='event')
     context = {
         'event': event,
         'event_form': form,
