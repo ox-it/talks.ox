@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from talks.events.models import Event, Speaker, EventGroup
+from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem
 
 
@@ -40,9 +40,9 @@ class EventGroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'url', 'title', 'description', 'class_name')
 
 
-class SpeakerSerializer(serializers.ModelSerializer):
+class PersonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Speaker
+        model = Person
         fields = ('id', 'name', 'email_address')
 
 

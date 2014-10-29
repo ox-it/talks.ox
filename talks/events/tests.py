@@ -12,6 +12,7 @@ class TestEventForm(TestCase):
         form = forms.EventForm({})
         self.assertEquals(form.is_valid(), False, "empty form should not validate")
         errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
         self.assertEquals(len(errors), 2)
         self.assertIn('title', errors)
         self.assertIn('description', errors)
@@ -34,6 +35,7 @@ class TestEventForm(TestCase):
         form = forms.EventForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
         self.assertEquals(len(errors), 2)
         self.assertIn('title', errors)
         self.assertIn('description', errors)
@@ -56,6 +58,7 @@ class TestEventForm(TestCase):
         form = forms.EventForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
+        logging.info("form errors: %s", errors)
         self.assertIn('title', errors)
         self.assertIn('description', errors)
         self.assertIn('start', errors)
@@ -201,6 +204,7 @@ class TestCreateEventView(TestCase):
 
     def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
+        logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'events/event_form.html')
         self.assertContains(response, "Oxford Talks")
@@ -216,6 +220,7 @@ class TestCreateEventView(TestCase):
     def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()
         response = self.client.get('/events/groups/%s/new' % group.pk)
+        logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
         self.assertIn('event_form', response.context)
         self.assertEquals(response.context['event_form']['group'].value(), group.pk)
@@ -248,6 +253,8 @@ class TestCreateEventView(TestCase):
         }
 
         response = self.client.post('/events/new', data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertRedirects(response, '/events/new')
         count = models.Event.objects.filter(title=title, description=description).count()
         self.assertEquals(count, 1, msg="Event instance was not saved")
@@ -278,6 +285,8 @@ class TestCreateEventView(TestCase):
         }
 
         response = self.client.post('/events/groups/%s/new' % group_id, data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertRedirects(response, '/events/groups/%s/new' % group_id)
         count = models.Event.objects.filter(title=title, description=description, group_id=group_id).count()
         logging.info("events:%s", models.Event.objects.all())
@@ -305,10 +314,45 @@ class TestCreateEventView(TestCase):
             'name ': u'',
         }
         response = self.client.post('/events/new', data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
         try:
             event = models.Event.objects.get(title=title, description=description)
         except models.Event.DoesNotExist:
             self.fail("Event instance was not saved")
+        self.assertRedirects(response, event.get_absolute_url())
+
+    def test_post_valid_with_speakers(self):
+        title = u'cjwnf887y98fw'
+        description = u'kfjdnsf'
+        speakers = factories.PersonFactory.create_batch(3)
+        data = {
+            'event-description ': description,
+            'event-title': title,
+            'event-group': u'',
+            'event-location ': u'',
+            'event-department_suggest ': u'',
+            'email_address ': u'',
+            'event-start': u'',
+            'event-topics ': u'',
+            'event-speaker_suggest ': u'some junk',
+            'event-location_suggest ': u'',
+            'event-department_organiser ': u'',
+            'event-speakers ': u','.join([str(s.pk) for s in speakers]),
+            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'event-topic_suggest': u'',
+            'event-end ': u'',
+            'name ': u'',
+        }
+        response = self.client.post('/events/new', data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
+        try:
+            event = models.Event.objects.get(title=title, description=description)
+        except models.Event.DoesNotExist:
+            self.fail("Event instance was not saved")
+        logging.info("event.speakers: %s", event.speakers)
+        self.assertEquals(set(speakers), set(event.speakers), "speakers were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
 
@@ -335,6 +379,8 @@ class TestEditEventView(TestCase):
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertRedirects(response, "/events/id/%s" % event.id)
         saved_event = models.Event.objects.get(pk=event.id)
         self.assertEquals(saved_event.title, data['title'])

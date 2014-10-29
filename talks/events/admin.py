@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
 
-from .models import Event, EventGroup, Speaker, Location, Topic, TopicItem
+from .models import Event, EventGroup, Person, Location, Topic, TopicItem
 
 
 class TopicItemInlineAdmin(GenericStackedInline):
@@ -13,7 +13,7 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [TopicItemInlineAdmin]
 
 
-class SpeakerAdmin(admin.ModelAdmin):
+class PersonAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
@@ -31,6 +31,6 @@ class TopicAdmin(admin.ModelAdmin):
 
 admin.site.register(EventGroup, EventGroupAdmin)
 admin.site.register(Event, EventAdmin)
-admin.site.register(Speaker, SpeakerAdmin)
+admin.site.register(Person, PersonAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Topic, TopicAdmin)
