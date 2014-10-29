@@ -48,12 +48,24 @@
 {% else %}
 <h3>Add Talk</h3>
 {% endif %}
+{% for error in event_form.non_field_errors %}
+    <div class="alert alert-warning" role="alert">{{ error }}</div>
+{% endfor %}
 <form class="form-horizontal" method="post" action="{{ request.get_full_path }}">{% csrf_token %}
     {{ event_form.speakers }}
     {{ event_form.location }}
     {{ event_form.topics }}
     {{ event_form.department_organiser }}
     {{ event_form.title|bootstrap_horizontal }}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                    <label>
+                        <input autocomplete="off" id="id_event-title_not_announced" name="event-title_not_announced" type="checkbox" {% if event_form.title_not_announced.value %}checked{% endif %}> Title to be announced
+                    </label>
+            </div>
+        </div>
+    </div>
     <div class="form-group">
         <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Group</label>
         <div class="col-sm-10">
@@ -130,6 +142,11 @@
             </div>
         </div>
     </div>
+    {{ event_form.booking_type|bootstrap_horizontal }}
+    {{ event_form.booking_url|bootstrap_horizontal }}
+    {{ event_form.cost|bootstrap_horizontal }}
+    {{ event_form.audience|bootstrap_horizontal }}
+    {{ event_form.special_message|bootstrap_horizontal }}
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="form-group">
             <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">

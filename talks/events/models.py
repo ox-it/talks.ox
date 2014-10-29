@@ -32,9 +32,9 @@ BOOKING_REQUIRED = 're'
 BOOKIND_RECOMMENDED = 'rc'
 
 BOOKING_CHOICES = (
-    (BOOKING_NOT_REQUIRED, 'not required'),
-    (BOOKING_REQUIRED, 'required'),
-    (BOOKIND_RECOMMENDED, 'recommended'),
+    (BOOKING_NOT_REQUIRED, 'Not required'),
+    (BOOKING_REQUIRED, 'Required'),
+    (BOOKIND_RECOMMENDED, 'Recommended'),
 )
 
 AUDIENCE_PUBLIC = 'public'

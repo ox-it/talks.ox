@@ -148,6 +148,9 @@ class EventForm(forms.ModelForm):
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
+            'booking_type': forms.RadioSelect,
+            'cost': forms.TextInput,
+            'audience': forms.RadioSelect,
         }
 
     def save(self):
