@@ -4,7 +4,7 @@ unittest:
 	@python manage.py test --settings=talks.settings_test
 
 functest:
-	@PYTHONPATH=tests/ BROWSER=firefox DJANGO_SETTINGS_MODULE=talks.settings_test pybot -i todo tests/
+	@PYTHONPATH=tests/ BROWSER=firefox DJANGO_SETTINGS_MODULE=talks.settings_test pybot -e todo tests/
 
 local:
 	@python manage.py runserver --settings=talks.local_settings
