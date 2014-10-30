@@ -6,6 +6,7 @@ install:
     - pip install -r requirements_dev.txt
 script:
     - python manage.py test --settings=talks.settings_test
+    - PYTHONPATH=tests/ BROWSER=firefox DJANGO_SETTINGS_MODULE=talks.settings_test pybot -i todo tests/
 notifications:
     irc:
         channels:
