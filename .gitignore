@@ -65,3 +65,7 @@ talks/local_settings.py
 # Vim
 .*.swp
 
+# pybot test
+report.html
+output.xml
+log.html
