@@ -73,6 +73,15 @@ class EventGroup(models.Model):
         max_length=2,
         choices=EVENT_GROUP_TYPE_CHOICES
     )
+    organizer = models.ForeignKey("Person", null=True, blank=True)
+    occurence = models.TextField(
+        blank=True,
+        default='',
+        verbose_name='Timing',
+        help_text='e.g.: Mondays at 10 or September 19th to 20th.'
+    )
+    web_address = models.URLField(blank=True, default='', verbose_name='Web address')
+    department = models.ForeignKey(Organisation, null=True, blank=True)
 
     objects = EventGroupManager()
 

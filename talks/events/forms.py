@@ -175,11 +175,12 @@ class EventForm(forms.ModelForm):
 class EventGroupForm(forms.ModelForm):
 
     class Meta:
-        fields = ('title', 'group_type', 'description')
+        fields = ('title', 'group_type', 'description', 'organizer', 'occurence', 'web_address', 'department')
         model = models.EventGroup
         widgets = {
             'title': forms.TextInput(),
             'description': forms.Textarea(),
+            'occurence': forms.TextInput(),
         }
 
 
