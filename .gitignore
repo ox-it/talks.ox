@@ -69,3 +69,4 @@ talks/local_settings.py
 report.html
 output.xml
 log.html
+selenium-screenshot-*
