@@ -26,13 +26,34 @@ class TestOldTalks(TestCase):
         PersonEvent.objects.create(person=s1, event=event, role=ROLES_SPEAKER)
         PersonEvent.objects.create(person=s2, event=event, role=ROLES_SPEAKER)
 
-        data = event_to_old_talk(event)
+        data = event_to_old_talk(event, None)
         d = dict(data)
 
         self.assertEquals(len(data), 4)
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[name_of_speaker]"], "A, B")
         self.assertEquals(d["talk[abstract]"], "")
+
+    def test_event_with_group_to_old_talk(self):
+        event = Event()
+        event.title = u"TITLE 2"
+        event.description = "description"
+        event.save()
+
+        s = Person()
+        s.name = "Personne"
+        s.save()
+
+        PersonEvent.objects.create(person=s, event=event, role=ROLES_SPEAKER)
+
+        data = event_to_old_talk(event, "22")
+        d = dict(data)
+
+        self.assertEquals(len(data), 5)
+        self.assertEquals(d["talk[title]"], event.title)
+        self.assertEquals(d["talk[series_id_string]"], "22")
+        self.assertEquals(d["talk[abstract]"], event.description)
+        self.assertEquals(d["talk[name_of_speaker]"], s.name)
 
     def test_group_to_old_series(self):
         group = EventGroup()

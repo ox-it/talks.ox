@@ -24,8 +24,9 @@ def update_old_talks(event):
                     old_series.save()
                 else:
                     raise Exception(response.status_code)
-
-        data = event_to_old_talk(event)
+            data = event_to_old_talk(event, old_series.old_series_id)
+        else:
+            data = event_to_old_talk(event, None)
 
         old_talk, is_new = OldTalk.objects.get_or_create(event=event)
 

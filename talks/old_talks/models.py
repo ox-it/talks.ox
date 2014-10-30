@@ -34,7 +34,7 @@ def get_list_id(string):
     return doc.find("id").text
 
 
-def event_to_old_talk(event):
+def event_to_old_talk(event, series_id):
     """Provide event data in old talks format
     :param event: django model Event
     :return: list of tuples
@@ -55,6 +55,8 @@ def event_to_old_talk(event):
         data.append(("talk[end_time_string]", event.end.strftime("%H:%M")))
     if event.location:
         data.append(("talk[venue_name]", event.location.identifier))
+    if series_id:
+        data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
         data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in event.speakers.all()])))
     return data
