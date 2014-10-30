@@ -6,7 +6,7 @@ from django.dispatch.dispatcher import receiver
 from django.db import models
 from django.conf import settings
 
-from talks.events.models import Event
+from talks.events.models import Event, EventGroup
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +14,11 @@ logger = logging.getLogger(__name__)
 class OldTalk(models.Model):
     event = models.ForeignKey(Event, null=False)
     old_talk_id = models.CharField(max_length=20, null=False, blank=False)
+
+
+class OldSeries(models.Model):
+    group = models.ForeignKey(EventGroup, null=False)
+    old_series_id = models.CharField(max_length=20, null=False, blank=False)
 
 
 @receiver(models.signals.post_save, sender=Event)
