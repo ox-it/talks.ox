@@ -79,7 +79,7 @@
     <div class="form-group event-group" {% if not event_form.group.value %}style="display:none;"{% endif %}>
         <div class="col-sm-offset-2 col-sm-8">
             <input name="group" type="hidden" value=""/>
-            <select class="form-control" id="id_group" name="group" {% if not event_form.group.value %}disabled{% endif %}>
+            <select class="form-control" id="id_group" name="event-group" {% if not event_form.group.value %}disabled{% endif %}>
                 {% for value, label in event_form.fields.group.choices %}
                 <option value="{{ value }}"{% ifequal event_form.group.value value|stringformat:"s" %}selected{% endifequal %}>{{ label }}</option>
                 {% endfor %}
