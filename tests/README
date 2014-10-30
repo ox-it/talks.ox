@@ -1,0 +1,12 @@
+To run the tests:
+
+$ PYTHONPATH=tests/ DJANGO_SETTINGS_MODULE=talks.settings_test pybot -i todo tests/
+
+This will run tests using firefox. You can use another browser passing BROWSER env variable. See Selenium docs for details.
+Open report.html to see the results
+
+Documentation:
+https://code.google.com/p/selenium/
+http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html
+http://rtomac.github.io/robotframework-selenium2library/doc/Selenium2Library.html
+
