@@ -1,6 +1,7 @@
 *** Keywords ***
 Suite setup
     Open browser  ${HOST}  browser=${BROWSER}
+    Set window size  ${1024}  ${768}
     server_command  migrate
 
 Suite teardown
