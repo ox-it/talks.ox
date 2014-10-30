@@ -13,7 +13,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
 from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
-from talks.api_ox.models import Location, Organisation
 
 
 logger = logging.getLogger(__name__)
@@ -101,22 +100,15 @@ class Person(models.Model):
         return self.name
 
 
-class Topic(models.Model):
-
-    name = models.CharField(max_length=250)
-    uri = models.URLField(unique=True, db_index=True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class TopicItem(models.Model):
 
-    topic = models.ForeignKey(Topic)
+    uri = models.URLField(db_index=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
 
+    class Meta:
+        unique_together = ('uri', 'content_type', 'object_id')
 
 class PersonEvent(models.Model):
     person = models.ForeignKey(Person)
@@ -157,13 +149,13 @@ class Event(models.Model):
     )
     group = models.ForeignKey(EventGroup, null=True, blank=True,
                               related_name='events')
-    location = models.ForeignKey(Location, null=True, blank=True)
+    location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
                                         default='',
                                         verbose_name='Additional details',
                                         help_text='e.g.: room number or accessibility information')
     # TODO I'm guessing an event can be organised by multiple departments?
-    department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
+    department_organiser = models.TextField(default='', blank=True)
 
     topics = GenericRelation(TopicItem)
 
@@ -270,15 +262,3 @@ def fetch_topics(sender, instance, created, **kwargs):
     topics = TopicsResource.get(missing_topics_uris)
     for topic in topics:
         Topic.objects.create(name=topic.name, uri=topic.uri)
-
-
-@receiver(models.signals.post_save, sender=Topic)
-def fetch_topic(sender, instance, created, **kwargs):
-    """Populate the topic name if it is empty by fetching
-    it from the API.
-    """
-    if created and not instance.name:
-        topic = TopicsResource.get([instance.uri])
-        topic = topic[0]
-        instance.name = topic.name
-        instance.save()
