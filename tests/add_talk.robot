@@ -64,7 +64,6 @@ Scenario: Create new group on the go
     ${group field} selected item should be "new group"
 
 Scenario: Lookup venue
-    [Tags]  todo
     go to ${add_talk_page}
     type "oucs" into ${venue field}
     ${suggestion popup} should appear
@@ -75,7 +74,6 @@ Scenario: Lookup department
 Scenario: Lookup topic
     [Tags]  todo
 Scenario: Lookup speaker
-    [Tags]  todo
     create  person  name=James Bond
     go to ${add_talk_page}
     type "bon" into ${speaker field}
