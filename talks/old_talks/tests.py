@@ -3,7 +3,7 @@ from django.test import TestCase
 from talks.events.models import (Event, Person, PersonEvent,
                                  ROLES_SPEAKER, EventGroup)
 from .models import (event_to_old_talk, group_to_old_series,
-                        get_list_id)
+                     get_list_id)
 
 
 class TestOldTalks(TestCase):

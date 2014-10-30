@@ -1,11 +1,8 @@
 import logging
 from xml.etree import ElementTree
 
-import requests
-
-from django.dispatch.dispatcher import receiver
 from django.db import models
-from django.conf import settings
+from django.dispatch.dispatcher import receiver
 
 from talks.events.models import Event, EventGroup
 
@@ -23,48 +20,9 @@ class OldSeries(models.Model):
 
 
 @receiver(models.signals.post_save, sender=Event)
-def update_old_talks(sender, instance, created, **kwargs):
-    if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
-        if instance.group:
-            old_series, new_group = OldSeries.objects.get_or_create(group=instance.group)
-            if new_group:
-                group = group_to_old_series(instance.group)
-
-                group_url = "{server}/list/api_create".format(server=settings.OLD_TALKS_SERVER)
-                response = requests.post(group_url, group, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                         allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
-                if response.status_code == 200:
-                    old_series.old_series_id = get_list_id(response.content)
-                    old_series.save()
-                else:
-                    raise Exception(response.status_code)
-
-        data = event_to_old_talk(instance)
-
-        old_talk, is_new = OldTalk.objects.get_or_create(event=instance)
-
-        if is_new:
-            url = "{server}/talk/update/".format(server=settings.OLD_TALKS_SERVER)
-        else:
-            url = "{server}/talk/update/{id}".format(server=settings.OLD_TALKS_SERVER,
-                                                     id=old_talk.old_talk_id)
-
-        logger.debug("POSTing {data} to {url}".format(data=data, url=url))
-
-        response = requests.post(url, data, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                 allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
-
-        if response.status_code == 200:
-            if is_new:
-                if 'location' in response.headers:
-                    talk_url = response.headers['location']
-                    talk_id = talk_url.split("/")[-1]
-                    old_talk.old_talk_id = talk_id
-                    old_talk.save()
-                else:
-                    raise Exception("Didn't got the location header so cannot say which talk this is")
-        else:
-            raise Exception(response.status_code)
+def publish_to_old_talks(sender, instance, created, **kwargs):
+    from .tasks import update_old_talks
+    update_old_talks(instance)
 
 
 def get_list_id(string):
