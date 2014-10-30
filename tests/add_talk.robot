@@ -32,7 +32,7 @@ Scenario: Add talk to existing group of talks
     ${create group button} should be displayed
     Select from list  ${group field.locator}  foo
     click on ${button done}
-    ${success message} should be displayed
+    ${success message} should appear
     ${success message} should contain text "New event has been created"
     page should contain text "something"
     page should contain text "Part of: foo" 
@@ -41,6 +41,7 @@ Scenario: Title not announced
     go to ${add talk page}
     click on ${button done}
     current page should be ${add talk page}
+    ${error message} should appear
     ${error message[0]} should be displayed
     ${error message[1]} should be displayed
     ${error message[0]} should contain text "Please correct errors below"
