@@ -1,7 +1,9 @@
 from django.test import TestCase
 
-from talks.events.models import Event, Person, PersonEvent, ROLES_SPEAKER
-from .models import event_to_old_talk
+from talks.events.models import (Event, Person, PersonEvent,
+                                 ROLES_SPEAKER, EventGroup)
+from .models import (event_to_old_talk, group_to_old_series,
+                        get_list_id)
 
 
 class TestOldTalks(TestCase):
@@ -31,3 +33,25 @@ class TestOldTalks(TestCase):
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[name_of_speaker]"], "A, B")
         self.assertEquals(d["talk[abstract]"], "")
+
+    def test_group_to_old_series(self):
+        group = EventGroup()
+        group.title = "Group"
+        group.save()
+
+        data = group_to_old_series(group)
+        d = dict(data)
+
+        self.assertEquals(len(data), 1)
+        self.assertEquals(d["list[name]"], group.title)
+
+    def test_get_list_id(self):
+        doc = """<?xml version="1.0" encoding="UTF-8"?>
+                    <list>
+                      <id>32</id>
+                      <name>oOo</name>
+                      <details></details>
+                      <list_type></list_type>
+                    </list>"""
+        ident = get_list_id(doc)
+        self.assertEquals(ident, "32")

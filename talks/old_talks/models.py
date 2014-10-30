@@ -1,4 +1,5 @@
 import logging
+from xml.etree import ElementTree
 
 import requests
 
@@ -24,6 +25,20 @@ class OldSeries(models.Model):
 @receiver(models.signals.post_save, sender=Event)
 def update_old_talks(sender, instance, created, **kwargs):
     if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
+        if instance.group:
+            old_series, new_group = OldSeries.objects.get_or_create(group=instance.group)
+            if new_group:
+                group = group_to_old_series(instance.group)
+
+                group_url = "{server}/list/api_create".format(server=settings.OLD_TALKS_SERVER)
+                response = requests.post(group_url, group, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
+                                         allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+                if response.status_code == 200:
+                    old_series.old_series_id = get_list_id(response.content)
+                    old_series.save()
+                else:
+                    raise Exception(response.status_code)
+
         data = event_to_old_talk(instance)
 
         old_talk, is_new = OldTalk.objects.get_or_create(event=instance)
@@ -52,9 +67,19 @@ def update_old_talks(sender, instance, created, **kwargs):
             raise Exception(response.status_code)
 
 
+def get_list_id(string):
+    """Get the list ID from the response (as a string)
+    :param string: response content
+    :return: list identifier
+    """
+    doc = ElementTree.fromstring(string)
+    return doc.find("id").text
+
+
 def event_to_old_talk(event):
     """Provide event data in old talks format
-    :return:
+    :param event: django model Event
+    :return: list of tuples
     """
     data = [("talk[organiser_email]", "apiuser")]   # TODO pending extension of data model will need to be updated
     if event.title:
@@ -74,4 +99,14 @@ def event_to_old_talk(event):
         data.append(("talk[venue_name]", event.location.identifier))
     if len(event.speakers.all()) > 0:
         data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in event.speakers.all()])))
+    return data
+
+
+def group_to_old_series(group):
+    """Provide list data in old talks format
+    :param group: django model EventGroup
+    :return: list of tuples
+    """
+    data = []
+    data.append(('list[name]', group.title))
     return data
