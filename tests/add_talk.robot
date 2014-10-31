@@ -14,6 +14,8 @@ Scenario: Add the simplest talk
     go to ${add_talk_page}
     type "something" into ${title field}
     type "something else" into ${abstract field}
+    type "2014-12-08 12:32" into ${start field}
+    type "2014-12-08 12:32" into ${end field}
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed

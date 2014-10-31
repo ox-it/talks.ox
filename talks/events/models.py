@@ -127,8 +127,8 @@ class EventManager(models.Manager):
 
 
 class Event(models.Model):
-    start = models.DateTimeField(null=True, blank=True)
-    end = models.DateTimeField(null=True, blank=True)
+    start = models.DateTimeField(null=False, blank=False)
+    end = models.DateTimeField(null=False, blank=False)
     title = models.CharField(max_length=250, blank=True)
     title_not_announced = models.BooleanField(default=False, verbose_name="Title to be announced")
     slug = models.SlugField()

@@ -47,6 +47,8 @@ talk_page = Page('/events/id/\d+')
 
 abstract_field = Element('css=#id_event-description')
 title_field = Element('css=#id_event-title')
+start_field = Element('css=#id_event-start')
+end_field = Element('css=#id_event-end')
 group_field = Element('css=#id_group')
 venue_field = Element('css=#id_event-location_suggest')
 speaker_field = Element('css=#id_event-speaker_suggest')
