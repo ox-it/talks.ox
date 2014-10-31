@@ -84,6 +84,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    # reversion (audit)
+    'reversion.middleware.RevisionMiddleware',
+
     # Oxford Talks
     'talks.users.middleware.TalksUserMiddleware',
 )
