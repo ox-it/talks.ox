@@ -64,6 +64,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'haystack',
     'raven.contrib.django.raven_compat',
+    'reversion',
 
     # WebAuth
     'django_webauth',
