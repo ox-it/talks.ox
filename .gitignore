@@ -69,4 +69,5 @@ talks/local_settings.py
 report.html
 output.xml
 log.html
+ghostdriver.log
 selenium-screenshot-*

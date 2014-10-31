@@ -14,3 +14,4 @@ cleantests:
 	@rm -f output.xml
 	@rm -f report.html
 	@rm -f selenium-screenshot-*
+	@rm -f ghostdriver.log
