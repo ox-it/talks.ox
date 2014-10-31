@@ -8,6 +8,20 @@ from talks.api_ox.models import Location, Organisation
 from . import models
 
 
+class Typeahead(forms.HiddenInput):
+    class Media:
+        js = ('js/element-typeahead.js',)
+
+    def __init__(self, source, attrs=None):
+        self.source = source
+        if attrs is None:
+            attrs = {}
+        class_names = attrs.pop('class', '').split()
+        class_names.append("ftypeahead")
+        attrs['class'] = " ".join(class_names)
+        super(Typeahead, self).__init__(attrs)
+
+
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None):
         html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs)
