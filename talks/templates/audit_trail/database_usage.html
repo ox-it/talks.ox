@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section id="fluidGridSystem">
+    <header class="page-header">
+    <h1>Audit trail</h1>
+    </header>
+      <div class="row">
+          <div class="span12">
+            <form method="get" action="{% url 'audit:list' %}" class="well">
+              {{ form }}
+            </form>
+          </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+
+        <table class="table table-striped table-bordered table-condensed">
+          <tr>
+            <th>Comment</th>
+            <th>User</th>
+            <th>Date/Time</th>
+          </tr>
+          {% for revision in revisions %}
+            <tr>
+            <td><a href="{% url 'audit:details' revision_id=revision.id %}">
+                {% if revision.comment %}
+                    {{ revision.comment }}
+                {% else %}
+                    System
+                {% endif %}
+                </a>
+            </td>
+            <td>
+              {% if revision.user %}
+                {{ revision.user.appuser.full_name }} ({{ revision.user.appuser.trust }})
+              {% else %}
+                System user
+              {% endif %}
+            </td>
+            <td>
+              {{ revision.date_created|date:"SHORT_DATETIME_FORMAT" }}
+             </td>
+          </tr>
+          {% endfor %}
+        </table>
+
+        <div>
+            <ul class="pager">
+                {% if revisions.has_previous %}
+                      <li class="previous"><a href="?{{ form.as_url_args }}&page={{ revisions.previous_page_number }}&count={{ pagination_count }}">&larr; previous</a></li>
+                {% else %}
+                      <li class="previous disabled"><a href="#">&larr; previous</a></li>
+                {% endif %}
+                <li>page {{ revisions.number }} of {{ revisions.paginator.num_pages }}</li>
+                {% if revisions.has_next %}
+                      <li class="next"><a href="?{{ form.as_url_args }}&page={{ revisions.next_page_number }}&count={{ pagination_count }}">next &rarr;</a></li>
+                {% else %}
+                      <li class="next disabled"><a href="#">next &rarr;</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        </div>
+      </div>
+
+  </section>
+{% endblock %}
