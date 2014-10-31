@@ -127,7 +127,7 @@ class EventForm(forms.ModelForm):
         js = ('js/location-typeahead.js',)
 
     class Meta:
-        exclude = ('slug', 'topics')
+        exclude = ('slug', 'topics', 'embargo')
         model = models.Event
         labels = {
             'description': 'Abstract',
@@ -139,6 +139,7 @@ class EventForm(forms.ModelForm):
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
             'location_details': forms.TextInput,
+            'status': forms.RadioSelect
         }
 
     def save(self):
