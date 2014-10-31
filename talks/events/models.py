@@ -11,6 +11,7 @@ from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from haystack.forms import model_choices
 
 from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
 
@@ -42,6 +43,14 @@ AUDIENCE_CHOICES = (
     (AUDIENCE_PUBLIC, 'Public'),
     (AUDIENCE_OXFORD, 'Members of the University only'),
 )
+
+EVENT_PUBLISHED = 'PUB'
+EVENT_IN_PREPARATION = 'PREP'
+EVENT_STATUS_CHOICES = (
+    (EVENT_PUBLISHED, 'Published'),
+    (EVENT_IN_PREPARATION, 'In preparation'),
+)
+
 
 class EventGroupManager(models.Manager):
     def for_events(self, events):
@@ -110,6 +119,7 @@ class TopicItem(models.Model):
     class Meta:
         unique_together = ('uri', 'content_type', 'object_id')
 
+
 class PersonEvent(models.Model):
     person = models.ForeignKey(Person)
     event = models.ForeignKey("Event")
@@ -117,7 +127,15 @@ class PersonEvent(models.Model):
     role = models.TextField(choices=ROLES, default=ROLES_SPEAKER)
     url = models.URLField(blank=True)
 
+
+class EventQuerySet(models.QuerySet):
+    pass
+
+
 class EventManager(models.Manager):
+
+    def get_query_set(self):
+        return EventQuerySet(self.model).filter(embargo=False)
 
     def todays_events(self):
         today = date.today()
@@ -141,6 +159,12 @@ class Event(models.Model):
     booking_url = models.URLField(blank=True, default='',
                                   verbose_name="Web address for booking")
     cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
+    status = models.TextField(verbose_name="Status",
+                              choices=EVENT_STATUS_CHOICES,
+                              default=EVENT_IN_PREPARATION)
+    # embargo: used by administrators to block a talk from being published
+    embargo = models.BooleanField(default=False,
+                                  verbose_name="Embargo")
     special_message = models.TextField(
         blank=True,
         default='',
