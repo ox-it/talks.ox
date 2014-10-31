@@ -3,7 +3,6 @@ import json
 
 from datetime import date
 from functools import partial
-from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -12,7 +11,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
-from talks.events.models import TopicItem, Topic
+from talks.events.models import TopicItem
 from talks.api import serializers
 
 logger = logging.getLogger(__name__)
@@ -108,7 +107,7 @@ def edit_event(request, event_id):
                 context['selected_speakers'] = Person.objects.filter(
                     id__in=form.cleaned_data['speakers'])
             if 'topics' in form.cleaned_data:
-                context['selected_topics'] = Topic.objects.filter(
+                context['selected_topics'] = TopicItem.objects.filter(
                     id__in=form.cleaned_data['topics'])
     return render(request, "events/event_form.html", context)
 
@@ -152,7 +151,7 @@ def create_event(request, group_id=None):
                 context['selected_speakers'] = Person.objects.filter(
                     id__in=context['event_form'].cleaned_data['speakers'])
             if 'topics' in context['event_form'].cleaned_data:
-                context['selected_topics'] = Topic.objects.filter(
+                context['selected_topics'] = TopicItem.objects.filter(
                     id__in=context['event_form'].cleaned_data['topics'])
     else:
         context = {

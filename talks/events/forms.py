@@ -4,7 +4,6 @@ from django.utils.safestring import mark_safe
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
-from talks.api_ox.models import Location, Organisation
 from . import models
 
 
@@ -35,22 +34,15 @@ class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
 
 
 
-class APIOxField(forms.ModelChoiceField):
+class APIOxField(forms.CharField):
     def __init__(self, *args, **kwargs):
-        self.Model = kwargs.pop('Model', [])
         self.types = kwargs.pop('types', [])
         self.endpoint = kwargs.pop(
             'endpoint', '//api.m.ox.ac.uk/places/suggest')
         return super(APIOxField, self).__init__(*args, **kwargs)
 
-    def clean(self, value):
-        if not value:
-            return None  # FIXME
-        instance, _created = self.Model.objects.get_or_create(identifier=value)
-        return super(APIOxField, self).clean(instance.pk)
 
-
-class TopicsField(forms.ModelMultipleChoiceField):
+class TopicsField(forms.MultipleChoiceField):
 
     widget = forms.HiddenInput
 
@@ -100,7 +92,6 @@ class EventForm(forms.ModelForm):
         widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
     )
     topics = TopicsField(
-        queryset=models.Topic.objects.all(),
         required=False,
     )
 
@@ -110,8 +101,6 @@ class EventForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'js-location-typeahead'}),
     )
     location = APIOxField(
-        Model=Location,
-        queryset=Location.objects.all(),
         required=False,
         types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library'],
         widget=forms.HiddenInput(attrs={'class': 'js-location'}),
@@ -123,8 +112,6 @@ class EventForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'js-organisation-typeahead'}),
     )
     department_organiser = APIOxField(
-        Model=Organisation,
-        queryset=Organisation.objects.all(),
         required=False,
         types=['/university/department', '/university/museum', '/university/college'],
         widget=forms.HiddenInput(attrs={'class': 'js-organisation'}),

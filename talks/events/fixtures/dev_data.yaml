@@ -57,7 +57,7 @@
   model: events.person
   pk: 8
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Skin
     end: null
     group: null
@@ -68,7 +68,7 @@
   model: events.event
   pk: 1
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Geo sciences
     end: null
     group: null
@@ -80,7 +80,7 @@
   model: events.event
   pk: 2
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Nature has evolved complex materials that are exquisitely designed
       to perform specific functions. Certain proteins and glycans self-organize in
       vivo into soft and dynamic, strongly hydrated gel-like matrices. Even though
@@ -114,7 +114,7 @@
   model: events.event
   pk: 3
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "There has been a mind shift in software engineering for how software\
       \ is built and managed. The software industry has been experiencing mainly three\
       \ major trends. The first is the shift towards agility and leanness in software\
@@ -143,7 +143,7 @@
   model: events.event
   pk: 4
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Conceptual spaces (sometimes also called semantic spaces) are high-dimensional
       geometric spaces in which entities are modelled as points and categories as
       convex regions. Given a relevant text corpus, conceptual spaces can be induced
@@ -187,7 +187,7 @@
   model: events.event
   pk: 5
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "The European Central Bank\u2019s comprehensive assessment of the\
       \ bulk of Europe\u2019s banking system, started in 2013 and expected to be completed\
       \ in October 2014, is a critical opportunity to restore Europe\u2019s financial\
@@ -203,7 +203,7 @@
   model: events.event
   pk: 6
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "OxTET is happy to welcome Riva-Melissa Tez \u2013 lecturer at the\
       \ DAB university in Berlin, founder of the Berlin Singularity, Associate Director\
       \ of Longevity Intelligence Communications, and co-runner of Kardashev Communications.\
@@ -219,7 +219,7 @@
   model: events.event
   pk: 7
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Globalisation and Regional Development in an Age of Economic Volatility
     end: null
     group: null
@@ -230,7 +230,7 @@
   model: events.event
   pk: 8
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "Much social science still sees rootedness and boundedness as the\
       \ norm while mobility and connection are the exception. But because more and\
       \ more people live transnational lives, we need new concepts and methods for\
@@ -252,11 +252,11 @@
   model: events.event
   pk: 9
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: ddsad
     end: null
     group: null
-    location: null
+    location: ''
     slug: dsadd
     start: null
     title: dsadd
@@ -382,29 +382,3 @@
     url: ''
   model: events.personevent
   pk: 15
-- fields:
-    identifier: oxpoints:23233507
-    name: Sheldonian Theatre
-  model: api_ox.location
-  pk: 1
-- fields:
-    identifier: oxpoints:23232612
-    name: Oxford Martin School
-  model: api_ox.location
-  pk: 2
-- fields:
-    identifier: oxpoints:23232496
-    name: Global Economic Governance Programme
-  model: api_ox.location
-  pk: 3
-- fields:
-    identifier: oxpoints:23232608
-    name: Oxford Internet Institute
-  model: api_ox.location
-  pk: 4
-- fields:
-    identifier: oxpoints:23232670
-    name: Department of Pharmacology
-  model: api_ox.location
-  pk: 5
-
