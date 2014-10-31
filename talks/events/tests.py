@@ -4,7 +4,6 @@ import logging
 from django.test import TestCase
 
 from . import forms, models, factories
-from talks.events.models import Event, EVENT_PUBLISHED, EVENT_IN_PREPARATION
 
 
 class TestEventForm(TestCase):
@@ -62,7 +61,7 @@ class TestEventForm(TestCase):
             'audience': u'public',
             'topic_suggest': u'',
             'end': u'',
-            'status': EVENT_IN_PREPARATION,
+            'status': models.EVENT_IN_PREPARATION,
         }
         form = forms.EventForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
@@ -88,7 +87,7 @@ class TestEventForm(TestCase):
             'audience': u'public',
             'topic_suggest': u'',
             'end': u'',
-            'status': EVENT_IN_PREPARATION,
+            'status': models.EVENT_IN_PREPARATION,
         }
         form = forms.EventForm(data)
         errors = form.errors.as_data()
@@ -331,7 +330,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
-            'event-status': EVENT_IN_PREPARATION,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
 
         response = self.client.post('/events/new', data)
@@ -366,7 +365,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
-            'event-status': EVENT_IN_PREPARATION,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
 
         response = self.client.post('/events/groups/%s/new' % group_id, data)
@@ -399,7 +398,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_REQUIRED,
             'event-audience': models.AUDIENCE_OXFORD,
-            'event-status': EVENT_IN_PREPARATION,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         response = self.client.post('/events/new', data)
         if response.context:
@@ -437,7 +436,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
-            'event-status': EVENT_IN_PREPARATION,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         response = self.client.post('/events/new', data)
         if response.context:
@@ -473,7 +472,7 @@ class TestEditEventView(TestCase):
             'event-group_type': '',
             'event-booking_type': models.BOOKING_REQUIRED,
             'event-audience': models.AUDIENCE_OXFORD,
-            'event-status': EVENT_IN_PREPARATION,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
@@ -513,23 +512,23 @@ class TestEditEventView(TestCase):
 class TestEventPublishWorkflow(TestCase):
 
     def setUp(self):
-        self.published = Event()
-        self.published.status = EVENT_PUBLISHED
+        self.published = models.Event()
+        self.published.status = models.EVENT_PUBLISHED
         self.published.save()
-        self.draft = Event()
-        self.draft.status = EVENT_IN_PREPARATION
+        self.draft = models.Event()
+        self.draft.status = models.EVENT_IN_PREPARATION
         self.draft.save()
-        self.embargo = Event()
-        self.embargo.status = EVENT_IN_PREPARATION
+        self.embargo = models.Event()
+        self.embargo.status = models.EVENT_IN_PREPARATION
         self.embargo.embargo = True
         self.embargo.save()
 
     def test_get_no_embargo(self):
-        events = Event.objects.all()
+        events = models.Event.objects.all()
         self.assertEqual(len(events), 2)
         self.assertEqual(set(events), set([self.draft, self.published]))
 
     def test_published(self):
-        events = Event.objects.published()
+        events = models.Event.objects.published()
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0], self.published)
