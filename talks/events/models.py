@@ -129,7 +129,15 @@ class PersonEvent(models.Model):
 
 
 class EventQuerySet(models.QuerySet):
-    pass
+
+    def published(self):
+        return self.filter(status=EVENT_PUBLISHED)
+
+    def todays_events(self):
+        today = date.today()
+        tomorrow = today + timedelta(days=1)
+        return self.filter(start__gte=today, start__lt=tomorrow
+                           ).order_by('start')
 
 
 class EventManager(models.Manager):
@@ -137,11 +145,11 @@ class EventManager(models.Manager):
     def get_query_set(self):
         return EventQuerySet(self.model).filter(embargo=False)
 
+    def published(self):
+        return self.get_query_set().published()
+
     def todays_events(self):
-        today = date.today()
-        tomorrow = today + timedelta(days=1)
-        return self.filter(start__gte=today, start__lt=tomorrow
-                           ).order_by('start')
+        return self.get_query_set().todays_events()
 
 
 class Event(models.Model):

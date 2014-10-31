@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request):
-    events = Event.objects.todays_events()
+    events = Event.objects.published().todays_events()
     event_groups = EventGroup.objects.for_events(events)
     conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
                          event_groups)
@@ -45,25 +45,25 @@ def homepage(request):
 
 def upcoming_events(request):
     today = date.today()
-    events = Event.objects.filter(start__gte=today).order_by('start')
+    events = Event.objects.published().filter(start__gte=today).order_by('start')
     return _events_list(request, events)
 
 
 def events_for_year(request, year):
-    events = Event.objects.filter(start__year=year)
+    events = Event.objects.published().filter(start__year=year)
     return _events_list(request, events)
 
 
 def events_for_month(request, year, month):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month)
+    events = Event.objects.published().filter(start__year=year,
+                                              start__month=month)
     return _events_list(request, events)
 
 
 def events_for_day(request, year, month, day):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month,
-                                  start__day=day)
+    events = Event.objects.published().filter(start__year=year,
+                                              start__month=month,
+                                              start__day=day)
     return _events_list(request, events)
 
 

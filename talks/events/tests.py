@@ -528,3 +528,8 @@ class TestEventPublishWorkflow(TestCase):
         events = Event.objects.all()
         self.assertEqual(len(events), 2)
         self.assertEqual(set(events), set([self.draft, self.published]))
+
+    def test_published(self):
+        events = Event.objects.published()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0], self.published)
