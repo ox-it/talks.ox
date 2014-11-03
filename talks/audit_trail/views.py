@@ -95,11 +95,9 @@ def revision_details(request, revision_id):
             previous_version = all_versions[all_versions.index(version)+1]
             diff['has_previous'] = True
             if previous_version.revision.user:
-                diff['previous_user'] = previous_version.revision.user.appuser.full_name
-                diff['previous_trust'] = previous_version.revision.user.appuser.trust.name
+                diff['previous_user'] = previous_version.revision.user.email
             else:
                 diff['previous_user'] = 'System'
-                diff['previous_trust'] = ''
             diff['previous_date'] = previous_version.revision.date_created
             diff['previous_comment'] = previous_version.revision.comment
             compared = compare_dicts(version.field_dict, previous_version.field_dict)

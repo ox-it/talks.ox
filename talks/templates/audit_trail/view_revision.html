@@ -7,14 +7,14 @@
 
     <div class="row">
         <div class="span12">
-            <p><strong>Who?</strong> {{ revision.user.appuser.full_name }} ({{ revision.user.appuser.trust.name }})</p>
+            <p><strong>Who?</strong> {{ revision.user.email }}</p>
             <p><strong>When?</strong> {{ revision.date_created }}</p>
             <p><strong>What?</strong> {{ revision.comment }}</p>
             {% for diff, compared in diffs %}
             <h3>{{ diff.object_name }}</h3>
             {% if diff.has_previous %}
                 <p>The previous version of this object has been made by <strong>{{ diff.previous_user }}
-                ({{ diff.previous_trust }})</strong> on <strong>{{ diff.previous_date }}</strong>.</p>
+                </strong> on <strong>{{ diff.previous_date }}</strong>.</p>
                 <p>Comment was "{{ diff.previous_comment }}".</p>
             {% else %}
                 <p>This object is <strong>new</strong> and does not have a previous version.</p>
