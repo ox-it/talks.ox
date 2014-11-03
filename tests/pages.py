@@ -62,6 +62,10 @@ suggestion_popup = Element('css=.tt-dropdown-menu')
 modal_dialog = Element('//*[@id="form-modal"]')
 modal_dialog_title = Element('//*[@id="form-modal-label"]')
 modal_dialog_submit_button = Element('//*[@id="form-modal"]//input[@type="submit"]')
+modal_datetime_select = Element('//div[contains(@class,"datetimepicker") and contains(@style,"display: block;")]')
+modal_datetime_active_day = Element('//div[contains(@class,"datetimepicker") and contains(@style,"display: block;")]//div[contains(@style,"display: block;") and contains(@class, "datetimepicker-days")]//td[contains(@class,"active")]')
+modal_datetime_active_hour = Element('//div[contains(@class,"datetimepicker") and contains(@style,"display: block;")]//div[contains(@style,"display: block;") and contains(@class, "datetimepicker-hours")]//span[contains(@class,"active")]')
+modal_datetime_active_minute = Element('//div[contains(@class,"datetimepicker") and contains(@style,"display: block;")]//div[contains(@style,"display: block;") and contains(@class, "datetimepicker-minutes")]//span[contains(@class,"active")]')
 
 # dynamic elements
 

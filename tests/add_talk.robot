@@ -3,6 +3,7 @@ Library  fixtures
 Library  Selenium2Library
 Library  server
 Resource  keywords.robot
+Resource  datetimepicker.robot
 Variables  pages.py
 Suite Setup  suite setup
 Suite teardown  suite teardown
@@ -14,8 +15,10 @@ Scenario: Add the simplest talk
     go to ${add_talk_page}
     type "something" into ${title field}
     type "something else" into ${abstract field}
-    type "2014-12-08 12:32" into ${start field}
-    type "2014-12-08 12:32" into ${end field}
+    click on ${start field}
+    Datetimepicker current values
+    click on ${end field}
+    Datetimepicker current values
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
