@@ -33,7 +33,7 @@
             </td>
             <td>
               {% if revision.user %}
-                {{ revision.user.appuser.full_name }} ({{ revision.user.appuser.trust }})
+                {{ revision.user.email }}
               {% else %}
                 System user
               {% endif %}
