@@ -1,7 +1,8 @@
 import logging
 import functools
-
 from datetime import date, timedelta
+
+import reversion
 
 from django.conf import settings
 from django.db import models
@@ -42,6 +43,7 @@ AUDIENCE_CHOICES = (
     (AUDIENCE_PUBLIC, 'Public'),
     (AUDIENCE_OXFORD, 'Members of the University only'),
 )
+
 
 class EventGroupManager(models.Manager):
     def for_events(self, events):
@@ -110,12 +112,14 @@ class TopicItem(models.Model):
     class Meta:
         unique_together = ('uri', 'content_type', 'object_id')
 
+
 class PersonEvent(models.Model):
     person = models.ForeignKey(Person)
     event = models.ForeignKey("Event")
     affiliation = models.TextField(blank=True)
     role = models.TextField(choices=ROLES, default=ROLES_SPEAKER)
     url = models.URLField(blank=True)
+
 
 class EventManager(models.Manager):
 
@@ -262,3 +266,10 @@ def fetch_topics(sender, instance, created, **kwargs):
     topics = TopicsResource.get(missing_topics_uris)
     for topic in topics:
         Topic.objects.create(name=topic.name, uri=topic.uri)
+
+
+reversion.register(Event)
+reversion.register(EventGroup)
+reversion.register(Person)
+reversion.register(PersonEvent)
+reversion.register(TopicItem)
