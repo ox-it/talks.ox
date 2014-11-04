@@ -1,6 +1,6 @@
 import django
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
 from reversion.models import Revision
 import reversion
@@ -42,12 +42,8 @@ def database_usage(request):
 
     try:
         revisions = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        revisions = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        revisions = paginator.page(paginator.num_pages)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('audit:list')
 
     context = RequestContext(request, {
         'revisions': revisions,
