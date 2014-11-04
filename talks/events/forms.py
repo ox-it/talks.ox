@@ -1,31 +1,58 @@
+from urllib import urlencode
+
 from django import forms
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 
-from . import models
+from talks.api import serializers
+
+from . import models, typeahead
 
 
-class Typeahead(forms.HiddenInput):
-    class Media:
-        js = ('js/element-typeahead.js',)
+class OxPointDataSource(typeahead.DataSource):
+    def __init__(self, **kwargs):
+        _types = kwargs.pop('types', [])
+        url = settings.API_OX_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
+        super(OxPointDataSource, self).__init__(
+            url=url,
+            response_expression='response._embedded.pois',
+            prefetch_response_expression='response',
+            get_prefetch_url=lambda values: settings.API_OX_URL + ",".join(values),
+        )
 
-    def __init__(self, source, attrs=None):
-        self.source = source
-        if attrs is None:
-            attrs = {}
-        class_names = attrs.pop('class', '').split()
-        class_names.append("ftypeahead")
-        attrs['class'] = " ".join(class_names)
-        super(Typeahead, self).__init__(attrs)
+LOCATION_DATA_SOURCE = OxPointDataSource(
+    types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
+)
+DEPARTMENT_DATA_SOURCE = OxPointDataSource(
+    types=['/university/department', '/university/museum', '/university/college']
+)
+TOPICS_DATA_SOURCE = typeahead.DataSource(
+    url=settings.TOPICS_URL + "suggest?count=10&q=%QUERY",
+    get_prefetch_url=lambda values: ("%sget?%s" % (settings.TOPICS_URL, urlencode({'uri': values}, doseq=True))),
+    display_key='prefLabel',
+    id_key='uri',
+    response_expression='response._embedded.concepts',
+)
+SPEAKERS_DATA_SOURCE = typeahead.DataSource(
+    url='/events/persons/suggest?q=%QUERY',
+    display_key='name',
+    get_data_by_id=lambda id: serializers.PersonSerializer(get_object_or_404(models.Person, pk=id)).data,
+)
 
 
-class MultipleTypeahead(Typeahead):
-    def value_from_datadict(self, data, files, name):
-        if hasattr(data, 'getlist'):
-            return data.getlist(name)
-        return data.get(name, None)
+class OxPointField(forms.CharField):
+    def __init__(self, source, *args, **kwargs):
+        self.widget = typeahead.Typeahead(source)
+        return super(OxPointField, self).__init__(*args, **kwargs)
+
+
+class TopicsField(forms.MultipleChoiceField):
+    def valid_value(self, value):
+        return True
+
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None):
@@ -38,70 +65,24 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
         return mark_safe(html)
 
 
-class DataSource(object):
-
-    def __init__(self, query_url):
-        self.query_url = query_url
-
-
-from urllib import urlencode
-
-
-class DjangoInternalDataSource(object):
-    def __init__(self, view):
-        self._view = view
-
-    @property
-    def query_url(self):
-        from django.core.urlresolvers import reverse
-        return reverse(self.view)
-
-
-class OxPointDataSource(DataSource):
-    def __init__(self, **kwargs):
-        self._types = kwargs.pop('types', [])
-        self._endpoint = kwargs.pop('endpoint', '//api.m.ox.ac.uk/places/suggest')
-
-    @property
-    def query_url(self):
-        return self._endpoint + "?" + urlencode({'type_exact': self._types}, doseq=True)
-
-
-LOCATION_DATA_SOURCE = OxPointDataSource(types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library'])
-DEPARTMENT_DATA_SOURCE = OxPointDataSource(types=['/university/department', '/university/museum', '/university/college'])
-TOPICS_DATA_SOURCE = DataSource(settings.TOPICS_URL)
-SPEAKERS_DATA_SOURCE = DjangoInternalDataSource('suggest-speaker')
-
-
-class OxPointField(forms.CharField):
-    def __init__(self, source, *args, **kwargs):
-        self.widget = Typeahead(source)
-        return super(OxPointField, self).__init__(*args, **kwargs)
-
-
-class TopicsField(forms.MultipleChoiceField):
-    def valid_value(self, value):
-        return True
-
-
 class EventForm(forms.ModelForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
         label="Speaker",
         help_text="Type speakers name and select from the list.",
         required=False,
-        widget=MultipleTypeahead(None),
+        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
 
     topics = TopicsField(
         label="Topic",
         help_text="Type topic name and select from the list",
         required=False,
-        widget=MultipleTypeahead(TOPICS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
     )
 
     location = OxPointField(LOCATION_DATA_SOURCE, label="Venue", required=False)
-    department_organiser = OxPointField(LOCATION_DATA_SOURCE, required=False, label="Department")
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Department")
 
     group = forms.ModelChoiceField(
         models.EventGroup.objects.all(),
@@ -109,9 +90,6 @@ class EventForm(forms.ModelForm):
         widget=Select(attrs={'class': 'form-control'}),
         required=False,
     )
-
-    class Media:
-        js = ('js/location-typeahead.js',)
 
     class Meta:
         exclude = ('slug',)
@@ -162,6 +140,3 @@ class SpeakerQuickAdd(forms.ModelForm):
     class Meta:
         fields = ('name', 'email_address')
         model = models.Person
-
-    class Media:
-        js = ('js/event-element-quick-add.js',)

@@ -52,10 +52,6 @@
     <div class="alert alert-warning" role="alert">{{ error }}</div>
 {% endfor %}
 <form class="form-horizontal" method="post" action="{{ request.get_full_path }}">{% csrf_token %}
-    {{ event_form.speakers }}
-    {{ event_form.location }}
-    {{ event_form.topics }}
-    {{ event_form.department_organiser }}
     {{ event_form.title|bootstrap_horizontal }}
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
@@ -92,9 +88,9 @@
     {{ event_form.start|bootstrap_horizontal }}
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.description|bootstrap_horizontal }}
-    {{ event_form.location_suggest|bootstrap_horizontal }}
+    {{ event_form.location|bootstrap_horizontal }}
     {{ event_form.location_details|bootstrap_horizontal }}
-    {{ event_form.department_suggest|bootstrap_horizontal }}
+    {{ event_form.department_organiser|bootstrap_horizontal }}
 
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-topics-list">
@@ -105,7 +101,7 @@
             {% endfor %}
         </div>
     </div>
-    {{ event_form.topic_suggest|bootstrap_horizontal }}
+    {{ event_form.topics|bootstrap_horizontal }}
 
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-suggested-topics-list">
@@ -121,7 +117,7 @@
             {% endfor %}
         </div>
     </div>
-    {{ event_form.speaker_suggest|bootstrap_horizontal }}
+    {{ event_form.speakers|bootstrap_horizontal }}
 
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="list-group js-suggested-speakers-list">
