@@ -65,7 +65,6 @@ Scenario: Create new group on the go
     ${group field} selected item should be "new group"
 
 Scenario: Lookup venue
-    [Documentation]  Note: depends on external API. Should be changed to use fixtures.
     go to ${add_talk_page}
     fill in required fields
     type "oucs" into ${field('Venue')}
@@ -78,9 +77,7 @@ Scenario: Lookup venue
     ${success message} should contain text "New event has been created"
     page should contain text "Venue: 7-19 Banbury Road"
     
-
 Scenario: Lookup department
-    [Documentation]  Note: depends on external API. Should be changed to use fixtures.
     go to ${add_talk_page}
     fill in required fields
     type "biol" into ${field('Department')}
@@ -94,13 +91,12 @@ Scenario: Lookup department
     page should contain text "Organiser: Chemical Biology"
     
 Scenario: Lookup topic
-    [Documentation]  Note: depends on external API. Should be changed to use fixtures.
     go to ${add_talk_page}
     fill in required fields
     type "biodiv" into ${field('Topic')}
-    ${suggestion list} should appear
-    ${suggestion list} should contain text "Biodiversity"
-    click on ${suggested item('Biodiversity')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Biodiversity"
+    click on ${suggestion popup item('Biodiversity')}
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
@@ -109,12 +105,17 @@ Scenario: Lookup topic
 
 Scenario: Lookup speaker
     create  person  name=James Bond
+    create  person  name=Napoleon Solo
     go to ${add_talk_page}
     fill in required fields
-    type "bon" into ${speaker field}
-    ${suggestion list} should appear
-    ${suggestion list} should contain text "James Bond"
-    click on ${suggested item('James Bond')}
+    type "bon" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "James Bond"
+    click on ${suggestion popup item('James Bond')}
+    type "apo" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Napoleon Solo"
+    click on ${suggestion popup item('Napoleon Solo')}
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
@@ -125,8 +126,46 @@ Scenario: Create speaker on the go
     [Tags]  todo
 Scenario: Save and add another
     [Tags]  todo
+
 Scenario: Preserve form data after validation
-    [Tags]  todo
+    create  person  name=James Bond
+    create  person  name=Napoleon Solo
+    go to ${add_talk_page}
+    type "oucs" into ${field('Venue')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "7-19 Banbury Road"
+    click on ${suggestion popup item('Banbury Road')}
+    type "biol" into ${field('Department')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Chemical Biology"
+    click on ${suggestion popup item('Chemical Biology')}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Biodiversity"
+    click on ${suggestion popup item('Biodiversity')}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Animal diversity"
+    click on ${suggestion popup item('Animal diversity')}
+    type "bon" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "James Bond"
+    click on ${suggestion popup item('James Bond')}
+    type "apo" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Napoleon Solo"
+    click on ${suggestion popup item('Napoleon Solo')}
+    click on ${button done}
+    current page should be ${add talk page}
+    ${error message} should appear
+    ${error message} should contain text "Please correct errors below"
+    ${list group item("7-19 Banbury Road")} should be displayed
+    ${list group item("Chemical Biology")} should be displayed
+    ${list group item("Biodiversity")} should be displayed
+    ${list group item("Animal diversity")} should be displayed
+    ${list group item("James Bond")} should be displayed
+    ${list group item("Napoleon Solo")} should be displayed
+
 
 *** Keywords ***
 Fill in required fields
