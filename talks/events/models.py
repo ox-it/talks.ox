@@ -3,6 +3,7 @@ import functools
 from datetime import date, timedelta
 
 import reversion
+from textile import textile
 
 from django.conf import settings
 from django.db import models
@@ -137,6 +138,7 @@ class Event(models.Model):
     title_not_announced = models.BooleanField(default=False, verbose_name="Title to be announced")
     slug = models.SlugField()
     description = models.TextField(blank=True)
+    description_html = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
     audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
     booking_type = models.TextField(verbose_name="Booking required",
@@ -221,6 +223,7 @@ class Event(models.Model):
         if not self.id:
             # Newly created object, so set slug
             self.slug = slugify(self.title)  # FIXME max_length, empty title
+        self.description_html = textile(self.description)
         super(Event, self).save(*args, **kwargs)
 
     def __unicode__(self):

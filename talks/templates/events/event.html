@@ -22,7 +22,7 @@
         <h3 class="panel-title">{{ event.title }}</h3>
     </div>
     <div class="panel-body">
-        <p>{{ event.description }}</p>
+        <p>{{ event.description_html | safe }}</p>
     </div>
     <!-- List group -->
     <ul class="list-group">

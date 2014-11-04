@@ -127,7 +127,7 @@ class EventForm(forms.ModelForm):
         js = ('js/location-typeahead.js',)
 
     class Meta:
-        exclude = ('slug', 'topics')
+        exclude = ('slug', 'topics', 'description_html')
         model = models.Event
         labels = {
             'description': 'Abstract',
