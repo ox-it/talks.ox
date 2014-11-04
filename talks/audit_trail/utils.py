@@ -14,12 +14,9 @@ def compare_dicts(new, old):
     if old:
         for k, v in old.iteritems():
             if k not in IGNORE_FIELDS:
-                if k in diff:
-                    new_value = diff[k]
-                    changed = new_value != v
-                    diff[k] = (new_value, v, changed)
-                else:
-                    diff[k] = (None, v, False)
+                new_value = diff.get(k)
+                changed = new_value != v
+                diff[k] = (new_value, v, changed)
     else:
         for k, v in diff.iteritems():
             diff[k] = (v, None, False)
