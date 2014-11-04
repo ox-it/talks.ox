@@ -101,6 +101,8 @@ def _get_version_diff(version):
             foreign_keys[field.name] = field
         elif type(field) is django.db.models.fields.CharField and field.choices:
             choices_display[field.name] = field
+        elif type(field) is django.db.models.fields.TextField and field.choices:
+            choices_display[field.name] = field
     for field in model._meta.many_to_many:
         fields[field.name] = field
         if type(field) is django.db.models.fields.related.ManyToManyField:
