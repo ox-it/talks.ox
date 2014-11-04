@@ -108,7 +108,8 @@ Scenario: Lookup speaker
     click on ${suggestion popup item('Napoleon Solo')}
     ${list group item("Napoleon Solo")} should be displayed
 
-Scenario: Properly save typeahead fields
+Scenario: Properly display typeahead fields in newly created event
+    [Tags]  todo
     create  person  name=James Bond
     create  person  name=Napoleon Solo
     go to ${add_talk_page}
