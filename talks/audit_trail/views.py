@@ -67,69 +67,7 @@ def revision_details(request, revision_id):
     current_versions = revision.version_set.all()
     diffs = []
     for version in current_versions:
-        ident = version.field_dict['id']
-        model = version.content_type.model_class()
-        # uses the class rather than the instance so that we can also work with deleted objects
-        all_versions = reversion.get_for_object_reference(model, ident).select_related('revision__user')
-        all_versions = list(all_versions)
-        diff = {}
-        diff['object_name'] = model.__name__
-
-        fields = {}
-        foreign_keys = {}
-        many_to_manys = {}
-        choices_display = {}    # CharField having a list of choices
-
-        for field in model._meta.fields:
-            fields[field.name] = field
-            if type(field) is django.db.models.fields.related.ForeignKey:
-                foreign_keys[field.name] = field
-            elif type(field) is django.db.models.fields.CharField and field.choices:
-                choices_display[field.name] = field
-        for field in model._meta.many_to_many:
-            fields[field.name] = field
-            if type(field) is django.db.models.fields.related.ManyToManyField:
-                many_to_manys[field.name] = field
-
-        try:
-            previous_version = all_versions[all_versions.index(version)+1]
-            diff['has_previous'] = True
-            if previous_version.revision.user:
-                diff['previous_user'] = previous_version.revision.user.email
-            else:
-                diff['previous_user'] = 'System'
-            diff['previous_date'] = previous_version.revision.date_created
-            diff['previous_comment'] = previous_version.revision.comment
-            compared = compare_dicts(version.field_dict, previous_version.field_dict)
-        except IndexError:
-            diff['has_previous'] = False
-            compared = compare_dicts(version.field_dict, None)
-
-        compared_values = {}
-
-        for field_name, values in compared.items():
-            # attempt to follow foreign keys and many-to-manys to
-            # retrieve user-friendly values...
-            if field_name in foreign_keys:
-                new_text = find_user_friendly_rel(foreign_keys[field_name], values[0])
-                old_text = find_user_friendly_rel(foreign_keys[field_name], values[1])
-                values = (new_text, old_text, values[2])
-            elif field_name in many_to_manys:
-                new_text = find_user_friendly_many(many_to_manys[field_name], values[0])
-                old_text = find_user_friendly_many(many_to_manys[field_name], values[1])
-                values = (new_text, old_text, values[2])
-            elif field_name in choices_display:
-                new_text = find_user_friendly_display_name(choices_display[field_name], values[0])
-                old_text = find_user_friendly_display_name(choices_display[field_name], values[1])
-                values = (new_text, old_text, values[2])
-
-            # try to replace by verbose name if there is one
-            if field_name in fields and hasattr(fields[field_name], 'verbose_name'):
-                verbose_name = fields[field_name].verbose_name
-                compared_values[verbose_name] = values
-            else:
-                compared_values[field_name] = values
-
+        diff, compared_values = _get_version_diff(version)
         diffs.append((diff, compared_values))
 
     context = RequestContext(request, {
@@ -137,3 +75,85 @@ def revision_details(request, revision_id):
         'diffs': diffs,
     })
     return render_to_response('audit_trail/view_revision.html', context)
+
+
+def _get_version_diff(version):
+    """Get the difference betwee
+    :param version: reversion.Version object
+    :return: tuple (metadata as dict, compared values as dict)
+    """
+    ident = version.field_dict['id']
+    model = version.content_type.model_class()
+    # uses the class rather than the instance so that we can also work with deleted objects
+    all_versions = reversion.get_for_object_reference(model, ident).select_related('revision__user')
+    all_versions = list(all_versions)
+    diff = {}
+    diff['object_name'] = model.__name__
+
+    fields = {}
+    foreign_keys = {}
+    many_to_manys = {}
+    choices_display = {}    # CharField having a list of choices
+
+    for field in model._meta.fields:
+        fields[field.name] = field
+        if type(field) is django.db.models.fields.related.ForeignKey:
+            foreign_keys[field.name] = field
+        elif type(field) is django.db.models.fields.CharField and field.choices:
+            choices_display[field.name] = field
+    for field in model._meta.many_to_many:
+        fields[field.name] = field
+        if type(field) is django.db.models.fields.related.ManyToManyField:
+            many_to_manys[field.name] = field
+
+    try:
+        previous_version = all_versions[all_versions.index(version)+1]
+        diff['has_previous'] = True
+        if previous_version.revision.user:
+            diff['previous_user'] = previous_version.revision.user.email
+        else:
+            diff['previous_user'] = 'System'
+        diff['previous_date'] = previous_version.revision.date_created
+        diff['previous_comment'] = previous_version.revision.comment
+        compared = compare_dicts(version.field_dict, previous_version.field_dict)
+    except IndexError:
+        diff['has_previous'] = False
+        compared = compare_dicts(version.field_dict, None)
+
+    # stores an association between the type of fields
+    # available and the function to transform the value
+    transform_fields = [
+        (foreign_keys, find_user_friendly_rel),
+        (many_to_manys, find_user_friendly_many),
+        (choices_display, find_user_friendly_display_name)]
+
+    compared_values = _build_compared_values(compared, fields, transform_fields)
+    return diff, compared_values
+
+
+def _build_compared_values(compared, fields, transformations):
+    """Build a dictionary containing the compared values
+    augmented to be user-friendly
+    :param compared: dictionary of compared values
+    :param fields: dictionary of fields available
+    :param transformations: list of tuples containing functions to transform content
+    :return: dictionary of compared values
+    """
+    compared_values = {}
+    for field_name, values in compared.items():
+        # attempt to follow foreign keys and many-to-manys to
+        # retrieve user-friendly values...
+        for type_of_field, transform_func in transformations:
+            if field_name in type_of_field:
+                new_text = transform_func(type_of_field[field_name], values[0])
+                old_text = transform_func(type_of_field[field_name], values[1])
+                values = (new_text, old_text, values[2])
+                break
+
+        # try to replace by verbose name if there is one
+        if field_name in fields and hasattr(fields[field_name], 'verbose_name'):
+            verbose_name = fields[field_name].verbose_name
+            compared_values[verbose_name] = values
+        else:
+            compared_values[field_name] = values
+    return compared_values
