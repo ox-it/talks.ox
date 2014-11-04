@@ -1,7 +1,6 @@
 *** Keywords ***
-Datetimepicker current values
-    click on ${modal datetime active day}
-    ${modal datetime active hour} should appear
-    click on ${modal datetime active hour}
-    ${modal datetime active minute} should appear
-    click on ${modal datetime active minute}
+Select current values for ${widget}
+    ${widget} should appear
+    click on ${datetimepicker current day.in_('widget')}
+    click on ${datetimepicker current hour.in_('widget')}
+    click on ${datetimepicker current minute.in_('widget')}
