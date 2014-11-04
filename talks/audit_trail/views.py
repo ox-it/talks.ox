@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import django
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render_to_response
@@ -33,8 +31,6 @@ def database_usage(request):
         if from_date:
             all_revisions = all_revisions.filter(date_created__gte=from_date)
         if to_date:
-            # search for full day, change hour to midnight
-            to_date = datetime(to_date.year, to_date.month, to_date.day, 23, 59, 59)
             all_revisions = all_revisions.filter(date_created__lte=to_date)
     else:
         form = RevisionsFilteringForm()
