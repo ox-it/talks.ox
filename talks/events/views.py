@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import user_passes_test
 
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
@@ -15,6 +16,16 @@ from talks.events.models import TopicItem
 from talks.api import serializers
 
 logger = logging.getLogger(__name__)
+
+GROUP_EDIT_EVENTS = 'Contributors'
+
+
+def user_in_group_or_super(user):
+    if user.is_superuser:
+        return True
+    elif user.groups.filter(name=GROUP_EDIT_EVENTS).exists():
+        return True
+    return False
 
 
 def homepage(request):
@@ -88,6 +99,7 @@ def show_event(request, event_id):
     return render(request, 'events/event.html', context)
 
 
+@user_passes_test(user_in_group_or_super)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     form = EventForm(request.POST or None, instance=event, prefix='event')
@@ -112,6 +124,7 @@ def edit_event(request, event_id):
     return render(request, "events/event_form.html", context)
 
 
+@user_passes_test(user_in_group_or_super)
 def create_event(request, group_id=None):
     initial = None
     event_group = None
@@ -177,6 +190,7 @@ def show_event_group(request, event_group_id):
     return render(request, 'events/event-group.html', context)
 
 
+@user_passes_test(user_in_group_or_super)
 def edit_event_group(request, event_group_id):
     group = get_object_or_404(EventGroup, pk=event_group_id)
     form = EventGroupForm(request.POST or None, instance=group)
@@ -195,6 +209,7 @@ def edit_event_group(request, event_group_id):
     return render(request, 'events/event_group_form.html', context)
 
 
+@user_passes_test(user_in_group_or_super)
 def create_event_group(request):
     form = EventGroupForm(request.POST or None)
     is_modal = request.GET.get('modal')

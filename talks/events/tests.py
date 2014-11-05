@@ -2,8 +2,10 @@ import unittest
 import logging
 
 from django.test import TestCase
+from django.contrib.auth.models import User, Group
 
-from . import forms, models, factories
+from . import forms, models, factories, views
+from django.test.client import Client
 
 VALID_DATE_STRING = "2014-05-12 12:18"
 
@@ -179,6 +181,18 @@ class TestEventGroupForm(TestCase):
 
 
 class TestEventGroupViews(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        group = Group(name=views.GROUP_EDIT_EVENTS)
+        group.save()
+        username = 'test'
+        password = 'test'
+        user = User.objects.create_user(username, password=password)
+        user.groups.add(group)
+        user.save()
+        self.client.login(username=username, password=password)
+
     def test_show_event_group_404(self):
         response = self.client.get("/events/groups/1")
         self.assertEquals(response.status_code, 404)
@@ -281,6 +295,17 @@ class TestEventGroupViews(TestCase):
 
 
 class TestCreateEventView(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        group = Group(name=views.GROUP_EDIT_EVENTS)
+        group.save()
+        username = 'test'
+        password = 'test'
+        user = User.objects.create_user(username, password=password)
+        user.groups.add(group)
+        user.save()
+        self.client.login(username=username, password=password)
 
     def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
@@ -449,6 +474,18 @@ class TestCreateEventView(TestCase):
 
 
 class TestEditEventView(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        group = Group(name=views.GROUP_EDIT_EVENTS)
+        group.save()
+        username = 'test'
+        password = 'test'
+        user = User.objects.create_user(username, password=password)
+        user.groups.add(group)
+        user.save()
+        self.client.login(username=username, password=password)
+
     def test_edit_event_404(self):
         response = self.client.get("/events/id/1/edit")
         self.assertEquals(response.status_code, 404)
