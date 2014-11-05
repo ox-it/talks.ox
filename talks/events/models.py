@@ -1,7 +1,8 @@
 import logging
 import functools
-
 from datetime import date, timedelta
+
+import reversion
 
 from django.conf import settings
 from django.db import models
@@ -133,12 +134,6 @@ class EventQuerySet(models.QuerySet):
     def published(self):
         return self.filter(status=EVENT_PUBLISHED)
 
-    def todays_events(self):
-        today = date.today()
-        tomorrow = today + timedelta(days=1)
-        return self.filter(start__gte=today, start__lt=tomorrow
-                           ).order_by('start')
-
 
 class EventManager(models.Manager):
 
@@ -153,8 +148,8 @@ class EventManager(models.Manager):
 
 
 class Event(models.Model):
-    start = models.DateTimeField(null=True, blank=True)
-    end = models.DateTimeField(null=True, blank=True)
+    start = models.DateTimeField(null=False, blank=False)
+    end = models.DateTimeField(null=False, blank=False)
     title = models.CharField(max_length=250, blank=True)
     title_not_announced = models.BooleanField(default=False, verbose_name="Title to be announced")
     slug = models.SlugField()
@@ -294,3 +289,10 @@ def fetch_topics(sender, instance, created, **kwargs):
     topics = TopicsResource.get(missing_topics_uris)
     for topic in topics:
         Topic.objects.create(name=topic.name, uri=topic.uri)
+
+
+reversion.register(Event)
+reversion.register(EventGroup)
+reversion.register(Person)
+reversion.register(PersonEvent)
+reversion.register(TopicItem)

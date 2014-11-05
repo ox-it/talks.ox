@@ -16,6 +16,8 @@ from events.views import (homepage, upcoming_events, show_event, edit_event, eve
 from api.views import (EventViewSet, create_person, suggest_person,
                        save_item, remove_item)
 
+from audit_trail.urls import urlpatterns as audit_urls
+
 from users.views import webauth_logout
 
 router = routers.DefaultRouter()
@@ -50,4 +52,5 @@ urlpatterns = patterns('',
     url(r'^events/groups/id/(?P<event_group_id>\d+)$', show_event_group, name='show-event-group'),
     url(r'^events/groups/id/(?P<event_group_id>\d+)/edit$', edit_event_group, name='edit-event-group'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^audit/', include(audit_urls, namespace='audit'))
 )

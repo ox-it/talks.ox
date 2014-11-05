@@ -3,6 +3,7 @@ Library  fixtures
 Library  Selenium2Library
 Library  server
 Resource  keywords.robot
+Resource  datetimepicker.robot
 Variables  pages.py
 Suite Setup  suite setup
 Suite teardown  suite teardown
@@ -14,6 +15,14 @@ Scenario: Add the simplest talk
     go to ${add_talk_page}
     type "something" into ${title field}
     type "something else" into ${abstract field}
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current values for ${datetimepicker[0]}
+    ${datetimepicker[0]} should disappear
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current values for ${datetimepicker[1]}
+    ${datetimepicker[1]} should disappear
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
@@ -31,6 +40,14 @@ Scenario: Add talk to existing group of talks
     ${group field} should be displayed
     ${create group button} should be displayed
     Select from list  ${group field.locator}  foo
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current values for ${datetimepicker[0]}
+    ${datetimepicker[0]} should disappear
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current values for ${datetimepicker[1]}
+    ${datetimepicker[1]} should disappear
     click on ${button done}
     ${success message} should appear
     ${success message} should contain text "New event has been created"
