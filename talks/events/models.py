@@ -3,7 +3,7 @@ import functools
 from datetime import date, timedelta
 
 import reversion
-from textile import textile
+from textile import textile_restricted
 
 from django.conf import settings
 from django.db import models
@@ -226,7 +226,7 @@ class Event(models.Model):
 
     @property
     def description_html(self):
-        return textile(self.description)
+        return textile_restricted(self.description)
 
     def __unicode__(self):
         return "Event: {title} ({start})".format(title=self.title, start=self.start)
