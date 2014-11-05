@@ -92,7 +92,7 @@ class EventForm(forms.ModelForm):
     )
 
     class Meta:
-        exclude = ('slug',)
+        exclude = ('slug', 'description_html')
         model = models.Event
         labels = {
             'description': 'Abstract',
