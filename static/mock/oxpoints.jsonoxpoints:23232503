@@ -1,0 +1,50 @@
+{
+  "_links": {
+    "child": [
+      {
+        "href": "/places/oxpoints:23232548"
+      }
+    ], 
+    "parent": {
+      "href": "/places/oxpoints:23232546", 
+      "title": "Department of Chemistry", 
+      "type": [
+        "/university/department"
+      ], 
+      "type_name": [
+        "Department"
+      ]
+    }, 
+    "primary_place": {
+      "href": "/places/oxpoints:23232548"
+    }, 
+    "self": {
+      "href": "/places/oxpoints:23232503"
+    }
+  }, 
+  "address": "off South Parks Road OX1 3TA", 
+  "alternative_names": [
+    "Bayley Group"
+  ], 
+  "distance": 0, 
+  "id": "oxpoints:23232503", 
+  "identifiers": [
+    "oxpoints:23232503", 
+    "finance:DQ"
+  ], 
+  "lat": "51.757797", 
+  "lon": "-1.253332", 
+  "name": "Chemical Biology", 
+  "name_sort": "Chemical Biology", 
+  "shape": "POLYGON ((-1.252908 51.758493199999997 0,-1.2525447 51.758077800000002 0,-1.252753 51.758007999999997 0,-1.2527069 51.757955299999999 0,-1.2532898 51.757759999999998 0,-1.2533847 51.7578685 0,-1.2532655 51.757908399999998 0,-1.2532846 51.757930299999998 0,-1.2533138 51.757963699999998 0,-1.2533718 51.757944299999998 0,-1.253638 51.758248700000003 0,-1.252908 51.758493199999997 0))", 
+  "social_twitter": [
+    "https://www.twitter.com/bayley_lab"
+  ], 
+  "type": [
+    "/university/department"
+  ], 
+  "type_name": [
+    "Department"
+  ], 
+  "website": "http://bayley.chem.ox.ac.uk/"
+}

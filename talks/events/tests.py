@@ -317,20 +317,16 @@ class TestCreateEventView(TestCase):
             'another': u'true',
             'event-title': title,
             'event-location': u'',
-            'event-department_suggest': u'',
             'email_address': u'',
             'event-start': VALID_DATE_STRING,
-            'event-topics': u'',
-            'event-speaker_suggest': u'',
+            'event-topics': [],
             'event-group-description': u'',
-            'event-location_suggest': u'',
             'event-department_organiser': u'',
             'event-group-event_group_select': u'',
-            'event-speakers': u'',
+            'event-speakers': [],
             'event-group-group_type': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-group-select_create': u'CRE',
-            'event-topic_suggest': u'',
             'event-end': VALID_DATE_STRING,
             'event-group-title': u'',
             'name': u'',
@@ -356,14 +352,11 @@ class TestCreateEventView(TestCase):
             'another': u'true',
             'event-title': title,
             'event-location': u'',
-            'event-department_suggest': u'',
             'email_address': u'',
             'event-start': VALID_DATE_STRING,
-            'event-topics': u'',
-            'event-speaker_suggest': u'',
-            'event-location_suggest': u'',
+            'event-topics': [],
             'event-department_organiser': u'',
-            'event-speakers': u'',
+            'event-speakers': [],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
             'event-end': VALID_DATE_STRING,
@@ -390,16 +383,12 @@ class TestCreateEventView(TestCase):
             'event-title': title,
             'event-group': u'',
             'event-location': u'',
-            'event-department_suggest': u'',
             'email_address': u'',
             'event-start': VALID_DATE_STRING,
-            'event-topics': u'',
-            'event-speaker_suggest': u'',
-            'event-location_suggest': u'',
-            'event-department_organiser': u'',
-            'event-speakers': u'',
+            'event-topics': [],
+            'event-speakers': [],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-topic_suggest': u'',
+            'event-department_organiser': u'',
             'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_REQUIRED,
@@ -428,16 +417,12 @@ class TestCreateEventView(TestCase):
             'event-title': title,
             'event-group': u'',
             'event-location': u'',
-            'event-department_suggest': u'',
             'email_address': u'',
             'event-start': VALID_DATE_STRING,
-            'event-topics': u'',
-            'event-speaker_suggest': u'some junk',
-            'event-location_suggest': u'',
+            'event-topics': [],
             'event-department_organiser': u'',
-            'event-speakers': u','.join([str(s.pk) for s in speakers]),
+            'event-speakers': [str(s.pk) for s in speakers],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-topic_suggest': u'',
             'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
@@ -453,6 +438,38 @@ class TestCreateEventView(TestCase):
             self.fail("Event instance was not saved")
         logging.info("event.speakers: %s", event.speakers)
         self.assertEquals(set(speakers), set(event.speakers), "speakers were not assigned properly")
+        self.assertRedirects(response, event.get_absolute_url())
+
+    def test_post_valid_with_topics(self):
+        title = u'cjwnf887y98fw'
+        description = u'kfjdnsf'
+        topics = factories.TopicItemFactory.create_batch(3)
+        data = {
+            'event-description': description,
+            'event-title': title,
+            'event-group': u'',
+            'event-location': u'',
+            'email_address': u'',
+            'event-start': VALID_DATE_STRING,
+            'event-topics': [t.uri for t in topics],
+            'event-department_organiser': u'',
+            'event-speakers': [],
+            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'event-end': VALID_DATE_STRING,
+            'name': u'',
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
+        }
+        response = self.client.post('/events/new', data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
+        try:
+            event = models.Event.objects.get(title=title, description=description)
+        except models.Event.DoesNotExist:
+            self.fail("Event instance was not saved")
+        logging.info("event.topics: %s", [t.uri for t in event.topics.all()])
+        self.assertEquals({t.uri for t in topics}, {t.uri for t in event.topics.all()}, "topics were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
 

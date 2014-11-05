@@ -108,12 +108,6 @@ def edit_event(request, event_id):
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
-            if 'speakers' in form.cleaned_data:
-                context['selected_speakers'] = Person.objects.filter(
-                    id__in=form.cleaned_data['speakers'])
-            if 'topics' in form.cleaned_data:
-                context['selected_topics'] = TopicItem.objects.filter(
-                    id__in=form.cleaned_data['topics'])
     return render(request, "events/event_form.html", context)
 
 
@@ -152,12 +146,6 @@ def create_event(request, group_id=None):
         else:
             logging.debug("form is NOT valid")
             messages.warning(request, "Please correct errors below")
-            if 'speakers' in context['event_form'].cleaned_data:
-                context['selected_speakers'] = Person.objects.filter(
-                    id__in=context['event_form'].cleaned_data['speakers'])
-            if 'topics' in context['event_form'].cleaned_data:
-                context['selected_topics'] = TopicItem.objects.filter(
-                    id__in=context['event_form'].cleaned_data['topics'])
     else:
         context = {
             'event_form': PrefixedEventForm(),
