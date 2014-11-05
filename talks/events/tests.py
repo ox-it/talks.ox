@@ -522,16 +522,10 @@ class TestEditEventView(TestCase):
 class TestEventPublishWorkflow(TestCase):
 
     def setUp(self):
-        self.published = models.Event()
-        self.published.status = models.EVENT_PUBLISHED
-        self.published.save()
-        self.draft = models.Event()
-        self.draft.status = models.EVENT_IN_PREPARATION
-        self.draft.save()
-        self.embargo = models.Event()
-        self.embargo.status = models.EVENT_IN_PREPARATION
-        self.embargo.embargo = True
-        self.embargo.save()
+        self.published = factories.EventFactory.create(status=models.EVENT_PUBLISHED)
+        self.draft = factories.EventFactory.create(status=models.EVENT_IN_PREPARATION)
+        self.embargo = factories.EventFactory.create(status=models.EVENT_IN_PREPARATION,
+                                                     embargo=True)
 
     def test_get_no_embargo(self):
         events = models.Event.objects.all()
