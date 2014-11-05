@@ -3,7 +3,6 @@ Library  fixtures
 Library  Selenium2Library
 Library  server
 Resource  keywords.robot
-Resource  datetimepicker.robot
 Variables  pages.py
 Suite Setup  suite setup
 Suite teardown  suite teardown
@@ -17,11 +16,11 @@ Scenario: Add the simplest talk
     type "something else" into ${abstract field}
     click on ${start field}
     ${datetimepicker[0]} should appear
-    Select current values for ${datetimepicker[0]}
+    Select current date and time for ${datetimepicker[0]}
     ${datetimepicker[0]} should disappear
     click on ${end field}
     ${datetimepicker[1]} should appear
-    Select current values for ${datetimepicker[1]}
+    Select current date and time for ${datetimepicker[1]}
     ${datetimepicker[1]} should disappear
     click on ${button done}
     current page should be ${talk page}
@@ -42,11 +41,11 @@ Scenario: Add talk to existing group of talks
     Select from list  ${group field.locator}  foo
     click on ${start field}
     ${datetimepicker[0]} should appear
-    Select current values for ${datetimepicker[0]}
+    Select current date and time for ${datetimepicker[0]}
     ${datetimepicker[0]} should disappear
     click on ${end field}
     ${datetimepicker[1]} should appear
-    Select current values for ${datetimepicker[1]}
+    Select current date and time for ${datetimepicker[1]}
     ${datetimepicker[1]} should disappear
     click on ${button done}
     ${success message} should appear
@@ -212,3 +211,9 @@ Scenario: Preserve form data after validation
 *** Keywords ***
 Fill in required fields
     type "${TEST_NAME}" into ${field('Title')}
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current date and time for ${datetimepicker[0]}
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current date and time for ${datetimepicker[1]}
