@@ -1,13 +1,11 @@
 import unittest
 import logging
-from datetime import datetime
 
 from django.test import TestCase
 
 from . import forms, models, factories
 
 VALID_DATE_STRING = "2014-05-12 12:18"
-VALID_DATE_OBJ = datetime(2014, 05, 12, 12, 18)
 
 
 class TestEventForm(TestCase):
@@ -457,8 +455,7 @@ class TestEditEventView(TestCase):
         self.assertTemplateNotUsed(response, "events/event_form.html")
 
     def test_edit_event_200(self):
-        event = factories.EventFactory.create(start=VALID_DATE_OBJ,
-                                              end=VALID_DATE_OBJ)
+        event = factories.EventFactory.create()
         response = self.client.get("/events/id/%s/edit" % event.id)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, event.title)
@@ -468,10 +465,7 @@ class TestEditEventView(TestCase):
         self.assertTemplateUsed(response, "events/event_form.html")
 
     def test_edit_event_post_happy(self):
-        event = factories.EventFactory.create(
-            start=VALID_DATE_OBJ,
-            end=VALID_DATE_OBJ
-        )
+        event = factories.EventFactory.create()
         data = {
             'event-title': 'lkfjlfkds',
             'event-description': 'dflksfoingf',
@@ -499,8 +493,6 @@ class TestEditEventView(TestCase):
         event = factories.EventFactory.create(
             title=old_title,
             description=old_description,
-            start=VALID_DATE_OBJ,
-            end=VALID_DATE_OBJ
         )
         data = {
             'event-title': '',
