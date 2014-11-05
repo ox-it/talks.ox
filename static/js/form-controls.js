@@ -45,7 +45,6 @@ $(function() {
         e.stopPropagation();
         var value = suggestion[$(e.target).data('valueKey')];
         var name = $(e.target).data('name')
-        var isMultiple = $(e.target).prop('multiple');
         var $input = $('input[name="' + name + '"]', $(e.target).parents('form'));
         $input = makeInput(e.target, name, value)
         showSelectedValue($(e.target), $input, suggestion)
@@ -82,7 +81,6 @@ $(function() {
             }
         });
         var name = $this.attr('name')
-        var isMultiple = $this.prop('multiple');
         $this.data('name', name)
         $this.data('valueKey', sourceConfig.valueKey)
         $this.data('labelKey', sourceConfig.displayKey)
