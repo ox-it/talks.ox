@@ -15,11 +15,12 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "empty form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertEquals(len(errors), 5)
+        self.assertEquals(len(errors), 6)
         self.assertIn('booking_type', errors)
         self.assertIn('audience', errors)
         self.assertIn('start', errors)
         self.assertIn('end', errors)
+        self.assertIn('status', errors)
         self.assertIn('__all__', errors)
 
     def test_all_fields_blanked(self):
@@ -41,9 +42,10 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertEquals(len(errors), 5)
+        self.assertEquals(len(errors), 6)
         self.assertIn('booking_type', errors)
         self.assertIn('audience', errors)
+        self.assertIn('status', errors)
         self.assertIn('start', errors)
         self.assertIn('end', errors)
         self.assertIn('__all__', errors)
@@ -64,6 +66,7 @@ class TestEventForm(TestCase):
             'booking_type': u'nr',
             'audience': u'public',
             'topic_suggest': u'',
+            'status': models.EVENT_IN_PREPARATION,
             'end': VALID_DATE_STRING,
         }
         form = forms.EventForm(data)
@@ -89,6 +92,7 @@ class TestEventForm(TestCase):
             'booking_type': u'nr',
             'audience': u'public',
             'topic_suggest': u'',
+            'status': models.EVENT_IN_PREPARATION,
             'end': VALID_DATE_STRING,
         }
         form = forms.EventForm(data)
@@ -332,6 +336,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
 
         response = self.client.post('/events/new', data)
@@ -366,6 +371,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
 
         response = self.client.post('/events/groups/%s/new' % group_id, data)
@@ -398,6 +404,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_REQUIRED,
             'event-audience': models.AUDIENCE_OXFORD,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         response = self.client.post('/events/new', data)
         if response.context:
@@ -435,6 +442,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         response = self.client.post('/events/new', data)
         if response.context:
@@ -472,6 +480,7 @@ class TestEditEventView(TestCase):
             'event-group_type': '',
             'event-booking_type': models.BOOKING_REQUIRED,
             'event-audience': models.AUDIENCE_OXFORD,
+            'event-status': models.EVENT_IN_PREPARATION,
             'event-start': VALID_DATE_STRING,
             'event-end': VALID_DATE_STRING
         }
@@ -508,3 +517,17 @@ class TestEditEventView(TestCase):
         self.assertEquals(saved_event.title, old_title)
         self.assertEquals(saved_event.description, old_description)
         self.assertTemplateUsed(response, "events/event_form.html")
+
+
+class TestEventPublishWorkflow(TestCase):
+
+    def setUp(self):
+        self.published = factories.EventFactory.create(status=models.EVENT_PUBLISHED)
+        self.draft = factories.EventFactory.create(status=models.EVENT_IN_PREPARATION)
+        self.embargo = factories.EventFactory.create(status=models.EVENT_IN_PREPARATION,
+                                                     embargo=True)
+
+    def test_published_manager(self):
+        events = models.Event.published.all()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0], self.published)
