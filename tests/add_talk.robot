@@ -11,6 +11,8 @@ Test teardown  test teardown
 
 *** Test Cases ***
 Scenario: Add the simplest talk
+    create superuser  test     test
+    login as    test    test
     go to ${add_talk_page}
     type "something" into ${title field}
     type "something else" into ${abstract field}
