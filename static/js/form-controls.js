@@ -2,7 +2,7 @@ $(function() {
     function getSuggestionById(mainInput, id, idKey) {
         var bloodhound = $(mainInput).data('bloodhound')
         if (!bloodhound.storage) {
-            var fieldName = $(mainInput).attr('name');
+            var name = $(mainInput).attr('name');
             if(bloodhound.prefetch) {
                 throw Error("Data not prefetched for field " + name)
             } else {
