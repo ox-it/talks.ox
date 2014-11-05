@@ -184,7 +184,10 @@ class TestEventGroupForm(TestCase):
         self.assertEquals(form.is_valid(), True, "form should validate")
 
 
-class TestEventGroupViews(TestCase):
+class AuthTestCase(TestCase):
+    """Subclass AuthTestCase if you need to create/edit
+    Event or EventGroup (requiring auth)
+    """
 
     def setUp(self):
         self.client = Client()
@@ -196,6 +199,9 @@ class TestEventGroupViews(TestCase):
         user.groups.add(group)
         user.save()
         self.client.login(username=username, password=password)
+
+
+class TestEventGroupViews(AuthTestCase):
 
     def test_show_event_group_404(self):
         response = self.client.get("/events/groups/1")
@@ -298,18 +304,7 @@ class TestEventGroupViews(TestCase):
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
 
-class TestCreateEventView(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-        group = Group(name=views.GROUP_EDIT_EVENTS)
-        group.save()
-        username = 'test'
-        password = 'test'
-        user = User.objects.create_user(username, password=password)
-        user.groups.add(group)
-        user.save()
-        self.client.login(username=username, password=password)
+class TestCreateEventView(AuthTestCase):
 
     def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
@@ -498,18 +493,7 @@ class TestCreateEventView(TestCase):
         self.assertRedirects(response, event.get_absolute_url())
 
 
-class TestEditEventView(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-        group = Group(name=views.GROUP_EDIT_EVENTS)
-        group.save()
-        username = 'test'
-        password = 'test'
-        user = User.objects.create_user(username, password=password)
-        user.groups.add(group)
-        user.save()
-        self.client.login(username=username, password=password)
+class TestEditEventView(AuthTestCase):
 
     def test_edit_event_404(self):
         response = self.client.get("/events/id/1/edit")
