@@ -59,9 +59,10 @@ class DataSource(object):
     Exposes interface for use with typeahead.js and for fetching external data on the backend
     """
 
-    def __init__(self, url=None, get_prefetch_url=None, local=None, id_key=None, display_key=None,
+    def __init__(self, name, url=None, get_prefetch_url=None, local=None, id_key=None, display_key=None,
                  response_expression=None, prefetch_response_expression=None, templates=None):
         """
+        :param name: unique name (required)
         :param url: url for fetching suggestions
         :param get_prefetch_url: a callable returning an url for fetching data
         :param local: static data to be included (not implemented)
@@ -71,6 +72,7 @@ class DataSource(object):
         :param prefetch_response_expression: same as `response_expression` but for prefetch response
         :param templates: dictionary of template strings to configure typeahead
         """
+        self.name = name
         self.url = url
         if get_prefetch_url:
             self.get_prefetch_url = get_prefetch_url

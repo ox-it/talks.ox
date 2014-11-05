@@ -13,10 +13,11 @@ from . import models, typeahead
 
 
 class OxPointDataSource(typeahead.DataSource):
-    def __init__(self, **kwargs):
+    def __init__(self, name, **kwargs):
         _types = kwargs.pop('types', [])
         url = settings.API_OX_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
         super(OxPointDataSource, self).__init__(
+            name,
             url=url,
             response_expression='response._embedded.pois',
             prefetch_response_expression='response',
@@ -24,12 +25,15 @@ class OxPointDataSource(typeahead.DataSource):
         )
 
 LOCATION_DATA_SOURCE = OxPointDataSource(
+    'location',
     types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
 )
 DEPARTMENT_DATA_SOURCE = OxPointDataSource(
+    'department',
     types=['/university/department', '/university/museum', '/university/college']
 )
 TOPICS_DATA_SOURCE = typeahead.DataSource(
+    'topics',
     url=settings.TOPICS_URL + "suggest?count=10&q=%QUERY",
     get_prefetch_url=lambda values: ("%sget?%s" % (settings.TOPICS_URL, urlencode({'uri': values}, doseq=True))),
     display_key='prefLabel',
@@ -37,6 +41,7 @@ TOPICS_DATA_SOURCE = typeahead.DataSource(
     response_expression='response._embedded.concepts',
 )
 SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'speakers',
     url='/events/persons/suggest?q=%QUERY',
     display_key='name',
     serializer=serializers.PersonSerializer,
