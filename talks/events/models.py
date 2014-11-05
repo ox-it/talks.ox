@@ -45,8 +45,8 @@ AUDIENCE_CHOICES = (
     (AUDIENCE_OXFORD, 'Members of the University only'),
 )
 
-EVENT_PUBLISHED = 'PUB'
-EVENT_IN_PREPARATION = 'PREP'
+EVENT_PUBLISHED = 'published'
+EVENT_IN_PREPARATION = 'preparation'
 EVENT_STATUS_CHOICES = (
     (EVENT_PUBLISHED, 'Published'),
     (EVENT_IN_PREPARATION, 'In preparation'),
