@@ -10,7 +10,7 @@ $(function() {
             }
         }
         var data = bloodhound.storage.get('data');
-        for(i in data.datums) {
+        for(var i in data.datums) {
             if(data.datums[i][idKey] == id) {
                 return data.datums[i];
             }
