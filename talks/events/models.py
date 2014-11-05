@@ -129,22 +129,14 @@ class PersonEvent(models.Model):
     url = models.URLField(blank=True)
 
 
-class EventQuerySet(models.QuerySet):
-
-    def published(self):
-        return self.filter(status=EVENT_PUBLISHED)
-
-
-class EventManager(models.Manager):
+class PublishedEventManager(models.Manager):
+    """Manager filtering events not publised
+    or in preparation.
+    """
 
     def get_query_set(self):
-        return EventQuerySet(self.model).filter(embargo=False)
-
-    def published(self):
-        return self.get_query_set().published()
-
-    def todays_events(self):
-        return self.get_query_set().todays_events()
+        return super(PublishedEventManager, self).get_query_set().filter(embargo=False,
+                                                                         status=EVENT_PUBLISHED)
 
 
 class Event(models.Model):
@@ -186,7 +178,10 @@ class Event(models.Model):
 
     topics = GenericRelation(TopicItem)
 
-    objects = EventManager()
+    objects = models.Manager()
+    # manager used to only get published, non embargo events
+    published = PublishedEventManager()
+
     _cached_resources = {}
 
     @property

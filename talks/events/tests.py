@@ -527,12 +527,7 @@ class TestEventPublishWorkflow(TestCase):
         self.embargo = factories.EventFactory.create(status=models.EVENT_IN_PREPARATION,
                                                      embargo=True)
 
-    def test_get_no_embargo(self):
-        events = models.Event.objects.all()
-        self.assertEqual(len(events), 2)
-        self.assertEqual(set(events), set([self.draft, self.published]))
-
-    def test_published(self):
-        events = models.Event.objects.published()
+    def test_published_manager(self):
+        events = models.Event.published.all()
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0], self.published)
