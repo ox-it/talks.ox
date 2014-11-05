@@ -92,7 +92,7 @@ class EventForm(forms.ModelForm):
     )
 
     class Meta:
-        exclude = ('slug', 'description_html')
+        exclude = ('slug', 'embargo')
         model = models.Event
         labels = {
             'description': 'Abstract',
@@ -104,6 +104,7 @@ class EventForm(forms.ModelForm):
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
             'location_details': forms.TextInput,
+            'status': forms.RadioSelect
         }
 
     def save(self):

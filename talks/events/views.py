@@ -1,7 +1,7 @@
 import logging
 import json
 
-from datetime import date
+from datetime import date, timedelta
 from functools import partial
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -18,7 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request):
-    events = Event.objects.todays_events()
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+    events = Event.published.filter(start__gte=today,
+                                    start__lt=tomorrow).order_by('start')
     event_groups = EventGroup.objects.for_events(events)
     conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
                          event_groups)
@@ -45,25 +48,25 @@ def homepage(request):
 
 def upcoming_events(request):
     today = date.today()
-    events = Event.objects.filter(start__gte=today).order_by('start')
+    events = Event.published.filter(start__gte=today).order_by('start')
     return _events_list(request, events)
 
 
 def events_for_year(request, year):
-    events = Event.objects.filter(start__year=year)
+    events = Event.published.filter(start__year=year)
     return _events_list(request, events)
 
 
 def events_for_month(request, year, month):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month)
+    events = Event.published.filter(start__year=year,
+                                    start__month=month)
     return _events_list(request, events)
 
 
 def events_for_day(request, year, month, day):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month,
-                                  start__day=day)
+    events = Event.published.filter(start__year=year,
+                                    start__month=month,
+                                    start__day=day)
     return _events_list(request, events)
 
 
@@ -74,6 +77,8 @@ def _events_list(request, events):
 
 def show_event(request, event_id):
     try:
+        # TODO depending if user is admin or not,
+        # we should use Event.published here...
         ev = Event.objects.select_related(
             'speakers',
             'location',
