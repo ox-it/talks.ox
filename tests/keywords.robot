@@ -48,3 +48,9 @@ ${element} selected item should be "${label}"
     Element should be visible  ${element.locator}
     ${v}=  get selected list label  ${element.locator}
     should be equal  ${v}  ${label}
+
+Select current date and time for ${widget}
+    ${widget} should appear
+    click on ${datetimepicker current day.in_('widget')}
+    click on ${datetimepicker current hour.in_('widget')}
+    click on ${datetimepicker current minute.in_('widget')}

@@ -13,6 +13,7 @@ from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from haystack.forms import model_choices
 
 from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
 
@@ -43,6 +44,13 @@ AUDIENCE_OXFORD = 'oxonly'
 AUDIENCE_CHOICES = (
     (AUDIENCE_PUBLIC, 'Public'),
     (AUDIENCE_OXFORD, 'Members of the University only'),
+)
+
+EVENT_PUBLISHED = 'published'
+EVENT_IN_PREPARATION = 'preparation'
+EVENT_STATUS_CHOICES = (
+    (EVENT_PUBLISHED, 'Published'),
+    (EVENT_IN_PREPARATION, 'In preparation'),
 )
 
 
@@ -122,13 +130,14 @@ class PersonEvent(models.Model):
     url = models.URLField(blank=True)
 
 
-class EventManager(models.Manager):
+class PublishedEventManager(models.Manager):
+    """Manager filtering events not publised
+    or in preparation.
+    """
 
-    def todays_events(self):
-        today = date.today()
-        tomorrow = today + timedelta(days=1)
-        return self.filter(start__gte=today, start__lt=tomorrow
-                           ).order_by('start')
+    def get_query_set(self):
+        return super(PublishedEventManager, self).get_query_set().filter(embargo=False,
+                                                                         status=EVENT_PUBLISHED)
 
 
 class Event(models.Model):
@@ -146,6 +155,12 @@ class Event(models.Model):
     booking_url = models.URLField(blank=True, default='',
                                   verbose_name="Web address for booking")
     cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
+    status = models.TextField(verbose_name="Status",
+                              choices=EVENT_STATUS_CHOICES,
+                              default=EVENT_IN_PREPARATION)
+    # embargo: used by administrators to block a talk from being published
+    embargo = models.BooleanField(default=False,
+                                  verbose_name="Embargo")
     special_message = models.TextField(
         blank=True,
         default='',
@@ -164,7 +179,10 @@ class Event(models.Model):
 
     topics = GenericRelation(TopicItem)
 
-    objects = EventManager()
+    objects = models.Manager()
+    # manager used to only get published, non embargo events
+    published = PublishedEventManager()
+
     _cached_resources = {}
 
     @property

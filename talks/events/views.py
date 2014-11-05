@@ -1,7 +1,7 @@
 import logging
 import json
 
-from datetime import date
+from datetime import date, timedelta
 from functools import partial
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -29,7 +29,10 @@ def user_in_group_or_super(user):
 
 
 def homepage(request):
-    events = Event.objects.todays_events()
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+    events = Event.published.filter(start__gte=today,
+                                    start__lt=tomorrow).order_by('start')
     event_groups = EventGroup.objects.for_events(events)
     conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
                          event_groups)
@@ -56,25 +59,25 @@ def homepage(request):
 
 def upcoming_events(request):
     today = date.today()
-    events = Event.objects.filter(start__gte=today).order_by('start')
+    events = Event.published.filter(start__gte=today).order_by('start')
     return _events_list(request, events)
 
 
 def events_for_year(request, year):
-    events = Event.objects.filter(start__year=year)
+    events = Event.published.filter(start__year=year)
     return _events_list(request, events)
 
 
 def events_for_month(request, year, month):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month)
+    events = Event.published.filter(start__year=year,
+                                    start__month=month)
     return _events_list(request, events)
 
 
 def events_for_day(request, year, month, day):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month,
-                                  start__day=day)
+    events = Event.published.filter(start__year=year,
+                                    start__month=month,
+                                    start__day=day)
     return _events_list(request, events)
 
 
@@ -85,6 +88,8 @@ def _events_list(request, events):
 
 def show_event(request, event_id):
     try:
+        # TODO depending if user is admin or not,
+        # we should use Event.published here...
         ev = Event.objects.select_related(
             'speakers',
             'location',
@@ -115,12 +120,6 @@ def edit_event(request, event_id):
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
-            if 'speakers' in form.cleaned_data:
-                context['selected_speakers'] = Person.objects.filter(
-                    id__in=form.cleaned_data['speakers'])
-            if 'topics' in form.cleaned_data:
-                context['selected_topics'] = TopicItem.objects.filter(
-                    id__in=form.cleaned_data['topics'])
     return render(request, "events/event_form.html", context)
 
 
@@ -160,12 +159,6 @@ def create_event(request, group_id=None):
         else:
             logging.debug("form is NOT valid")
             messages.warning(request, "Please correct errors below")
-            if 'speakers' in context['event_form'].cleaned_data:
-                context['selected_speakers'] = Person.objects.filter(
-                    id__in=context['event_form'].cleaned_data['speakers'])
-            if 'topics' in context['event_form'].cleaned_data:
-                context['selected_topics'] = TopicItem.objects.filter(
-                    id__in=context['event_form'].cleaned_data['topics'])
     else:
         context = {
             'event_form': PrefixedEventForm(),
