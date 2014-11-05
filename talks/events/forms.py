@@ -36,10 +36,10 @@ TOPICS_DATA_SOURCE = typeahead.DataSource(
     id_key='uri',
     response_expression='response._embedded.concepts',
 )
-SPEAKERS_DATA_SOURCE = typeahead.DataSource(
+SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     url='/events/persons/suggest?q=%QUERY',
     display_key='name',
-    get_data_by_id=lambda id: serializers.PersonSerializer(get_object_or_404(models.Person, pk=id)).data,
+    serializer=serializers.PersonSerializer,
 )
 
 
