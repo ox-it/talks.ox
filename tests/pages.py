@@ -29,6 +29,14 @@ class Element(object):
     def __init__(self, locator):
         self.locator = locator
 
+    @property
+    def is_css(self):
+        return self.locator.startswith('css=')
+
+    @property
+    def is_xpath(self):
+        return self.locator.startswith('//')
+
     def __getitem__(self, index):
         if self.locator.startswith('css='):
             raise NotImplementedError("indexing not supported for css selectors")
@@ -36,6 +44,13 @@ class Element(object):
             suffix = '[%s]' % (index + 1)
         return Element(self.locator + suffix)
 
+    def in_(self, other):
+        other = _get_variable_value(other)
+        assert self.is_css == other.is_css, "Both locators must be of same type"
+        if self.is_css:
+            return Element(other.locator + " " + self.locator[len('css='):])
+        elif self.is_xpath:
+            return Element(other.locator + self.locator)  # FIXME might fail for advanced xpath
 
 # pages
 
@@ -47,6 +62,8 @@ talk_page = Page('/events/id/\d+')
 
 abstract_field = Element('css=#id_event-description')
 title_field = Element('css=#id_event-title')
+start_field = Element('css=#id_event-start')
+end_field = Element('css=#id_event-end')
 group_field = Element('css=#id_group')
 venue_field = Element('css=#id_event-location_suggest')
 button_done = Element('//button[text()="Done"]')
@@ -59,6 +76,11 @@ suggestion_popup = Element('css=.tt-suggestions')
 modal_dialog = Element('//*[@id="form-modal"]')
 modal_dialog_title = Element('//*[@id="form-modal-label"]')
 modal_dialog_submit_button = Element('//*[@id="form-modal"]//input[@type="submit"]')
+datetimepicker = Element('//div[contains(@class,"datetimepicker ")]')
+datetimepicker_current_day = Element('//*[@class="datetimepicker-days"]//*[contains(@class, "active")]')
+datetimepicker_current_hour = Element('//*[@class="datetimepicker-hours"]//*[contains(@class, "active")]')
+datetimepicker_current_minute = Element('//*[@class="datetimepicker-minutes"]//*[contains(@class, "active")]')
+
 
 # dynamic elements
 

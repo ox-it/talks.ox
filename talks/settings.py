@@ -64,6 +64,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'haystack',
     'raven.contrib.django.raven_compat',
+    'reversion',
 
     # WebAuth
     'django_webauth',
@@ -82,6 +83,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # reversion (audit)
+    'reversion.middleware.RevisionMiddleware',
 
     # Oxford Talks
     'talks.users.middleware.TalksUserMiddleware',

@@ -5,6 +5,8 @@ from django.test import TestCase
 
 from . import forms, models, factories
 
+VALID_DATE_STRING = "2014-05-12 12:18"
+
 
 class TestEventForm(TestCase):
 
@@ -13,9 +15,11 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "empty form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertEquals(len(errors), 3)
+        self.assertEquals(len(errors), 5)
         self.assertIn('booking_type', errors)
         self.assertIn('audience', errors)
+        self.assertIn('start', errors)
+        self.assertIn('end', errors)
         self.assertIn('__all__', errors)
 
     def test_all_fields_blanked(self):
@@ -37,9 +41,11 @@ class TestEventForm(TestCase):
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertEquals(len(errors), 3)
+        self.assertEquals(len(errors), 5)
         self.assertIn('booking_type', errors)
         self.assertIn('audience', errors)
+        self.assertIn('start', errors)
+        self.assertIn('end', errors)
         self.assertIn('__all__', errors)
 
     def test_invalid_date(self):
@@ -58,7 +64,7 @@ class TestEventForm(TestCase):
             'booking_type': u'nr',
             'audience': u'public',
             'topic_suggest': u'',
-            'end': u'',
+            'end': VALID_DATE_STRING,
         }
         form = forms.EventForm(data)
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
@@ -74,7 +80,7 @@ class TestEventForm(TestCase):
             'title_not_announced': u'1',
             'location': u'',
             'department_suggest': u'',
-            'start': u'',
+            'start': VALID_DATE_STRING,
             'topics': u'',
             'speaker_suggest': u'',
             'location_suggest': u'',
@@ -83,7 +89,7 @@ class TestEventForm(TestCase):
             'booking_type': u'nr',
             'audience': u'public',
             'topic_suggest': u'',
-            'end': u'',
+            'end': VALID_DATE_STRING,
         }
         form = forms.EventForm(data)
         errors = form.errors.as_data()
@@ -308,7 +314,7 @@ class TestCreateEventView(TestCase):
             'event-title': title,
             'event-location': u'',
             'email_address': u'',
-            'event-start': u'',
+            'event-start': VALID_DATE_STRING,
             'event-topics': [],
             'event-group-description': u'',
             'event-department_organiser': u'',
@@ -317,7 +323,7 @@ class TestCreateEventView(TestCase):
             'event-group-group_type': u'',
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-group-select_create': u'CRE',
-            'event-end': u'',
+            'event-end': VALID_DATE_STRING,
             'event-group-title': u'',
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
@@ -342,13 +348,13 @@ class TestCreateEventView(TestCase):
             'event-title': title,
             'event-location': u'',
             'email_address': u'',
-            'event-start': u'',
+            'event-start': VALID_DATE_STRING,
             'event-topics': [],
             'event-department_organiser': u'',
             'event-speakers': [],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
-            'event-end': u'',
+            'event-end': VALID_DATE_STRING,
             'event-group': unicode(group_id),
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
@@ -372,11 +378,12 @@ class TestCreateEventView(TestCase):
             'event-group': u'',
             'event-location': u'',
             'email_address': u'',
-            'event-start': u'',
+            'event-start': VALID_DATE_STRING,
             'event-topics': [],
             'event-speakers': [],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-end': u'',
+            'event-department_organiser': u'',
+            'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_REQUIRED,
             'event-audience': models.AUDIENCE_OXFORD,
@@ -404,12 +411,12 @@ class TestCreateEventView(TestCase):
             'event-group': u'',
             'event-location': u'',
             'email_address': u'',
-            'event-start': u'',
+            'event-start': VALID_DATE_STRING,
             'event-topics': [],
             'event-department_organiser': u'',
             'event-speakers': [str(s.pk) for s in speakers],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-end': u'',
+            'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
@@ -435,12 +442,12 @@ class TestCreateEventView(TestCase):
             'event-group': u'',
             'event-location': u'',
             'email_address': u'',
-            'event-start': u'',
+            'event-start': VALID_DATE_STRING,
             'event-topics': [t.uri for t in topics],
             'event-department_organiser': u'',
             'event-speakers': [],
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
-            'event-end': u'',
+            'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
@@ -469,6 +476,8 @@ class TestEditEventView(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, event.title)
         self.assertContains(response, event.description)
+        self.assertContains(response, event.start)
+        self.assertContains(response, event.end)
         self.assertTemplateUsed(response, "events/event_form.html")
 
     def test_edit_event_post_happy(self):
@@ -479,6 +488,8 @@ class TestEditEventView(TestCase):
             'event-group_type': '',
             'event-booking_type': models.BOOKING_REQUIRED,
             'event-audience': models.AUDIENCE_OXFORD,
+            'event-start': VALID_DATE_STRING,
+            'event-end': VALID_DATE_STRING
         }
 
         response = self.client.post("/events/id/%s/edit" % event.id, data)
@@ -497,7 +508,7 @@ class TestEditEventView(TestCase):
         old_description = u'old_description'
         event = factories.EventFactory.create(
             title=old_title,
-            description=old_description
+            description=old_description,
         )
         data = {
             'event-title': '',
