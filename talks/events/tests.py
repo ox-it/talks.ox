@@ -459,6 +459,7 @@ class TestCreateEventView(TestCase):
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         response = self.client.post('/events/new', data)
         if response.context:
