@@ -217,3 +217,15 @@ LOGGING = {
         },
     },
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'oxpoints': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'topics': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+}
