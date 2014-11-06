@@ -13,11 +13,11 @@ from . import models, typeahead
 
 
 class OxPointDataSource(typeahead.DataSource):
-    def __init__(self, name, **kwargs):
+    def __init__(self, **kwargs):
         _types = kwargs.pop('types', [])
         url = settings.API_OX_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
         super(OxPointDataSource, self).__init__(
-            name,
+            'oxpoints',
             url=url,
             response_expression='response._embedded.pois',
             prefetch_response_expression='response',
@@ -25,11 +25,9 @@ class OxPointDataSource(typeahead.DataSource):
         )
 
 LOCATION_DATA_SOURCE = OxPointDataSource(
-    'location',
     types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
 )
 DEPARTMENT_DATA_SOURCE = OxPointDataSource(
-    'department',
     types=['/university/department', '/university/museum', '/university/college']
 )
 TOPICS_DATA_SOURCE = typeahead.DataSource(
