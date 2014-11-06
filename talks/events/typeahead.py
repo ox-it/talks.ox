@@ -1,8 +1,12 @@
 import json
+import logging
 
+import requests
 from django import forms
 from django.utils.html import mark_safe
+from django.core.cache import caches as django_caches
 
+log = logging.getLogger(__name__)
 
 class Typeahead(forms.TextInput):
     """
@@ -53,6 +57,24 @@ class MultipleTypeahead(Typeahead):
         return data.get(name, None)
 
 
+def get_objects_from_response(response, expression=None):
+    """
+    Return a dict mapping id to dict representing json decoded objects. Supports only json response.
+
+    :param response: `requests.Response` instance
+    :param expression: javascript expression for extracting objects. `response` is assumed to be existing variable
+    in scope holding value of `response` object. Note: only property accessor dot notation is supported.
+    """
+    if expression is None:
+        expression = 'response'
+    json = {'response': response.json}
+    properties = expression.split('.')
+    while properties:
+        prop = properties.pop(0)
+        json = json[prop]
+    return json
+
+
 class DataSource(object):
     """
     Represents external set of data reachable by HTTP.
@@ -87,7 +109,40 @@ class DataSource(object):
         return not hasattr(self, 'get_prefetch_url')
 
     def get_object_by_id(self, id):
-        pass
+        """
+        Get single object by id.
+        """
+        log.debug("get_object_by_id(%s)", id)
+        objects = self._fetch_objects([id])
+        return objects.get(id)
+
+    def _fetch_objects(self, id_list):
+        """
+        Fetch multiple objects by their id, but check if they are cached first. Update cache accordingly.
+        """
+        log.debug("_fetch_objects(%s)", id_list)
+        objects = self.cache.get_many(id_list) if self.cache else []
+        missing = set(id_list) - set(objects)
+        log.debug("existing in cache: %s", objects)
+        log.debug("missing from cache: %s", missing)
+        if missing:
+            url = self.get_prefetch_url(missing)
+            log.debug("prefetch_url: %s", url)
+            response = requests.get(url)
+            response.raise_for_status()
+            fetched = get_objects_from_response(response, self.prefetch_response_expression)
+            log.debug("fetched from response: %s", fetched)
+            if fetched:
+                if self.cache:
+                    self.cache.set_many(fetched)
+            objects.update(fetched)
+        log.debug("returning objects: %s", objects)
+        return objects
+
+    @property
+    def cache(self):
+        if self.cache_key:
+            return django_caches[self.cache_key]
 
     def typeahead_json(self):
         """
