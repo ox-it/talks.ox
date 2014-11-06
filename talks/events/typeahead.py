@@ -67,7 +67,7 @@ def get_objects_from_response(response, expression=None):
     """
     if expression is None:
         expression = 'response'
-    json = {'response': response.json}
+    json = {'response': response.json()}
     properties = expression.split('.')
     while properties:
         prop = properties.pop(0)

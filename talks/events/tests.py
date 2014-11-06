@@ -707,25 +707,25 @@ class TestDataSourceGetObjectById(unittest.TestCase):
 class TestGetObjectsFromResponse(unittest.TestCase):
     def test_no_filter(self):
         response = mock.Mock(spec=requests.Response)
-        response.json = mock.sentinel.response_json
+        response.json.return_value = mock.sentinel.response_json
         expression = None
 
         result = typeahead.get_objects_from_response(response, expression)
 
-        self.assertEquals(result, response.json)
+        self.assertEquals(result, mock.sentinel.response_json)
 
     def test_noop_filter(self):
         response = mock.Mock(spec=requests.Response)
-        response.json = mock.sentinel.response_json
+        response.json.return_value = mock.sentinel.response_json
         expression = 'response'
 
         result = typeahead.get_objects_from_response(response, expression)
 
-        self.assertEquals(result, response.json)
+        self.assertEquals(result, mock.sentinel.response_json)
 
     def test_property(self):
         response = mock.Mock(spec=requests.Response)
-        response.json = {'foo': mock.sentinel.objects}
+        response.json.return_value = {'foo': mock.sentinel.objects}
         expression = 'response.foo'
 
         result = typeahead.get_objects_from_response(response, expression)
@@ -734,7 +734,7 @@ class TestGetObjectsFromResponse(unittest.TestCase):
 
     def test_nested_property(self):
         response = mock.Mock(spec=requests.Response)
-        response.json = {
+        response.json.return_value = {
             'foo': {
                 'bar': mock.sentinel.objects,
                 'baz': mock.sentinel.booby_trap,
@@ -749,7 +749,7 @@ class TestGetObjectsFromResponse(unittest.TestCase):
 
     def test_key_error(self):
         response = mock.Mock(spec=requests.Response)
-        response.json = {}
+        response.json.return_value = {}
         expression = 'response.foo'
 
         with self.assertRaises(KeyError) as e:
@@ -764,7 +764,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         location_id = str(mock.sentinel.location_id)
         location_object = {'name': str(mock.sentinel.location_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json = {location_id: location_object}
+        requests_get.return_value.json.return_value = {location_id: location_object}
         forms.LOCATION_DATA_SOURCE.cache.clear()
 
         result = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
@@ -777,7 +777,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         department_id = str(mock.sentinel.department_id)
         department_object = {'name': str(mock.sentinel.department_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json = {department_id: department_object}
+        requests_get.return_value.json.return_value = {department_id: department_object}
         forms.DEPARTMENT_DATA_SOURCE.cache.clear()
 
         result = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
@@ -790,7 +790,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         topic_id = str(mock.sentinel.topic_id)
         topic_object = {'prefLabel': str(mock.sentinel.topic_label)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json = {
+        requests_get.return_value.json.return_value = {
             '_embedded': {
                 'concepts': {
                     topic_id: topic_object
