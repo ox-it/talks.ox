@@ -14,18 +14,9 @@ from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.events.models import TopicItem
 from talks.api import serializers
+from talks.users.authentication import user_in_group_or_super
 
 logger = logging.getLogger(__name__)
-
-GROUP_EDIT_EVENTS = 'Contributors'
-
-
-def user_in_group_or_super(user):
-    if user.is_superuser:
-        return True
-    elif user.groups.filter(name=GROUP_EDIT_EVENTS).exists():
-        return True
-    return False
 
 
 def homepage(request):

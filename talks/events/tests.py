@@ -4,7 +4,8 @@ import logging
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
 
-from . import forms, models, factories, views
+from . import forms, models, factories
+from talks.users.authentication import GROUP_EDIT_EVENTS
 from django.test.client import Client
 
 VALID_DATE_STRING = "2014-05-12 12:18"
@@ -191,7 +192,7 @@ class AuthTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        group = Group(name=views.GROUP_EDIT_EVENTS)
+        group = Group(name=GROUP_EDIT_EVENTS)
         group.save()
         username = 'test'
         password = 'test'
