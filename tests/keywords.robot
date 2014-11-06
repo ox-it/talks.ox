@@ -3,7 +3,6 @@ Suite setup
     Open browser  ${HOST}  browser=${BROWSER}
     Set window size  ${1024}  ${768}
     server_command  migrate
-    create superuser  test     test
 
 Suite teardown
     Close browser
@@ -11,6 +10,7 @@ Suite teardown
 test setup
     start server
     server_command  dumpdata  format=yaml
+    create superuser  test     test
     Login as test test
 
 test teardown
