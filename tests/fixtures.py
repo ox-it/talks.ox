@@ -26,10 +26,3 @@ def create(model, **kwargs):
 
 def create_superuser(username, password):
     User.objects.create_superuser(username, '', password)
-
-
-def login_as(username, password):
-    concat = "{username}:{password}".format(username=username,
-                                            password=password)
-    selenium2lib = BuiltIn().get_library_instance('Selenium2Library')
-    selenium2lib.execute_javascript("document.cookie = 'autologin=%s;path=/;domain=localhost;';" % concat)

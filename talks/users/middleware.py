@@ -23,17 +23,3 @@ class TalksUserMiddleware(object):
             request.tuser = None
         # Have to return None so other middlewares are called
         return None
-
-
-class TestAuthBackend(AuthenticationMiddleware):
-
-    def process_request(self, request):
-        if 'autologin' in request.cookies:
-            values = request.cookies['autologin']
-            username, password = values.split(':')
-            user = auth.authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    auth.login(request, user)
-        else:
-            return

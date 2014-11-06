@@ -56,6 +56,7 @@ class Element(object):
 
 add_talk_page = Page('/events/new')
 talk_page = Page('/events/id/\d+')
+login_page = Page('/admin/login/')
 
 
 # elements
@@ -80,6 +81,9 @@ datetimepicker = Element('//div[contains(@class,"datetimepicker ")]')
 datetimepicker_current_day = Element('//*[@class="datetimepicker-days"]//*[contains(@class, "active")]')
 datetimepicker_current_hour = Element('//*[@class="datetimepicker-hours"]//*[contains(@class, "active")]')
 datetimepicker_current_minute = Element('//*[@class="datetimepicker-minutes"]//*[contains(@class, "active")]')
+button_login = Element('//input[@type="submit"]')
+username_field = Element('css=#id_username')
+password_field = Element('css=#id_password')
 
 
 # dynamic elements

@@ -12,8 +12,7 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    'talks.users.middleware.TestAuthBackend',
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 API_OX_URL = '/static/mock/oxpoints.json'
