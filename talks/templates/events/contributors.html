@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Events administration{% endblock %}
+
+{% block content %}
+
+
+    <table class="table table-bordered table-striped">
+  ...
+</table>
+
+
+
+    {% for event in events %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+      <h3 class="panel-title">{{ event.title }}</h3>
+      <small>{{ event.start }}</small>
+  </div>
+  <div class="panel-body">
+      <p>{{ event.description }}</p>
+      <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
+  </div>
+</div>
+
+{% endfor %}
+
+
+    <div>
+    <p>Filters</p>
+    <ul>
+        <li>Only display future events</li>
+        <li>Only display owned events</li>
+        <li>Only display events in preparation</li>
+        <li>Only display events having a title to be announced</li>
+    </ul>
+    </div>
+
+{% endblock %}

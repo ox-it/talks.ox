@@ -213,3 +213,7 @@ def create_event_group(request):
         return render(request, 'modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
+
+
+def homepage_contributors(request):
+    return render(request, 'events/contributors.html', {})
