@@ -59,10 +59,10 @@ class DataSource(object):
     Exposes interface for use with typeahead.js and for fetching external data on the backend
     """
 
-    def __init__(self, name, url=None, get_prefetch_url=None, local=None, id_key=None, display_key=None,
+    def __init__(self, cache_key=None, url=None, get_prefetch_url=None, local=None, id_key=None, display_key=None,
                  response_expression=None, prefetch_response_expression=None, templates=None):
         """
-        :param name: unique name (required)
+        :param cache_key: cache name to use
         :param url: url for fetching suggestions
         :param get_prefetch_url: a callable returning an url for fetching data
         :param local: static data to be included (not implemented)
@@ -72,7 +72,7 @@ class DataSource(object):
         :param prefetch_response_expression: same as `response_expression` but for prefetch response
         :param templates: dictionary of template strings to configure typeahead
         """
-        self.name = name
+        self.cache_key = cache_key
         self.url = url
         if get_prefetch_url:
             self.get_prefetch_url = get_prefetch_url
@@ -110,9 +110,9 @@ class DataSource(object):
 
 class DjangoModelDataSource(DataSource):
     # TODO: might use view name as param to build urls
-    def __init__(self, serializer=None, **kwargs):
+    def __init__(self, name, serializer=None, **kwargs):
         self.serializer = serializer
-        super(DjangoModelDataSource, self).__init__(**kwargs)
+        super(DjangoModelDataSource, self).__init__(name, **kwargs)
 
     def get_object_by_id(self, id):
         model = self.serializer.Meta.model
