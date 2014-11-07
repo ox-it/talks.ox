@@ -1,14 +1,57 @@
+import os
 import unittest
 import logging
 
 import mock
 import requests
+from django.conf import settings
 from django.test import TestCase
 from django.core.cache.backends.base import BaseCache
+from django.contrib.staticfiles.finders import find as find_static_file
 
 from . import forms, models, factories, typeahead
 
 VALID_DATE_STRING = "2014-05-12 12:18"
+
+
+def intercept_requests_to_statics(url, *a, **k):
+    """
+    Utility function to use with mock.path.
+    Blocks all requests through `requests.get` except for those to local static files.
+    In that case makes `requests.get` return file content without going through `httplib`
+    """
+    logging.info("intercept: %s", url)
+    if url.startswith(settings.STATIC_URL):
+        r = requests.Response()
+        try:
+            path = url[len(settings.STATIC_URL):]
+            file_path = find_static_file(path)
+            logging.info("path:%r", path)
+            logging.info("file+path:%r", file_path)
+            if file_path and os.path.isfile(file_path):
+                with open(file_path) as f:
+                    r._content = f.read()
+                    r.status_code = 200
+                    logging.info("response: %s", r._content)
+                    logging.info("response: %s", r.content)
+            else:
+                r.status_code = 404
+        except Exception, e:
+            r.status_code = 500
+            r.reason = e.message
+            import traceback
+            r._content = traceback.format_exc()
+        finally:
+            logging.info("response: %s", r._content)
+            return r
+    raise AssertionError("External request detected: %s" % url)
+
+
+def patch_requests():
+    requests_patcher = mock.patch('requests.get', autospec=True)
+    requests_get = requests_patcher.start()
+    requests_get.side_effect = intercept_requests_to_statics
+    return requests_patcher
 
 
 def assert_not_called(mock):
@@ -292,9 +335,10 @@ class TestEventGroupViews(TestCase):
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
 
+@mock.patch('requests.get', autospec=True, side_effect=intercept_requests_to_statics)
 class TestCreateEventView(TestCase):
 
-    def test_get_happy_no_group_id(self):
+    def test_get_happy_no_group_id(self, requests_get):
         response = self.client.get('/events/new')
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
@@ -304,12 +348,12 @@ class TestCreateEventView(TestCase):
         self.assertIn('event_form', response.context)
         self.assertIn('speaker_form', response.context)
 
-    def test_get_nonexistent_group(self):
+    def test_get_nonexistent_group(self, requests_get):
         response = self.client.get('/events/groups/8475623/new')
         self.assertEquals(response.status_code, 404)
         self.assertTemplateNotUsed(response, 'events/event_form.html')
 
-    def test_get_happy_for_existing_group(self):
+    def test_get_happy_for_existing_group(self, requests_get):
         group = factories.EventGroupFactory.create()
         response = self.client.get('/events/groups/%s/new' % group.pk)
         logging.info("Form errors: %s", response.context['event_form'].errors)
@@ -317,7 +361,7 @@ class TestCreateEventView(TestCase):
         self.assertIn('event_form', response.context)
         self.assertEquals(response.context['event_form']['group'].value(), group.pk)
 
-    def test_post_valid_save_and_continue_no_group_id(self):
+    def test_post_valid_save_and_continue_no_group_id(self, requests_get):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         data = {
@@ -350,7 +394,7 @@ class TestCreateEventView(TestCase):
         count = models.Event.objects.filter(title=title, description=description).count()
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
-    def test_post_valid_save_and_continue_with_group_id(self):
+    def test_post_valid_save_and_continue_with_group_id(self, requests_get):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         group = factories.EventGroupFactory.create()
@@ -383,7 +427,7 @@ class TestCreateEventView(TestCase):
         logging.info("events:%s", models.Event.objects.all())
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
-    def test_post_valid(self):
+    def test_post_valid(self, requests_get):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         data = {
@@ -416,7 +460,7 @@ class TestCreateEventView(TestCase):
         self.assertEquals(event.booking_type, data['event-booking_type'])
         self.assertEquals(event.audience, data['event-audience'])
 
-    def test_post_valid_with_speakers(self):
+    def test_post_valid_with_speakers(self, requests_get):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         speakers = factories.PersonFactory.create_batch(3)
@@ -448,7 +492,7 @@ class TestCreateEventView(TestCase):
         self.assertEquals(set(speakers), set(event.speakers), "speakers were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
-    def test_post_valid_with_topics(self):
+    def test_post_valid_with_topics(self, requests_get):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         topics = factories.TopicItemFactory.create_batch(3)
@@ -469,6 +513,7 @@ class TestCreateEventView(TestCase):
             'event-audience': models.AUDIENCE_PUBLIC,
             'event-status': models.EVENT_IN_PREPARATION,
         }
+
         response = self.client.post('/events/new', data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
@@ -497,7 +542,8 @@ class TestEditEventView(TestCase):
         self.assertContains(response, event.end)
         self.assertTemplateUsed(response, "events/event_form.html")
 
-    def test_edit_event_post_happy(self):
+    @mock.patch('requests.get', autospec=True, side_effect=intercept_requests_to_statics)
+    def test_edit_event_post_happy(self, requests_get):
         event = factories.EventFactory.create()
         data = {
             'event-title': 'lkfjlfkds',
