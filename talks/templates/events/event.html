@@ -48,7 +48,7 @@
         {% if event.group %}
         <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
         {% endif %}
-        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.topics.all %}{{ topic.topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}{{ topic.prefLabel }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>
         {% if event.booking_url %}
             <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>

@@ -215,19 +215,19 @@ class Event(models.Model):
 
     @property
     def api_location(self):
-        if not self.location:
-            return None
-        func = functools.partial(PlacesResource.from_identifier,
-                                 self.location.identifier)
-        return self.fetch_resource(self.location.identifier, func)
+        from . import forms
+        return forms.LOCATION_DATA_SOURCE.cache.get(self.location)
 
     @property
     def api_organisation(self):
-        if not self.department_organiser:
-            return None
-        func = functools.partial(PlacesResource.from_identifier,
-                                 self.department_organiser.identifier)
-        return self.fetch_resource(self.department_organiser.identifier, func)
+        from . import forms
+        return forms.DEPARTMENT_DATA_SOURCE.cache.get(self.department_organiser)
+
+    @property
+    def api_topics(self):
+        from . import forms
+        uris = [ item.uri for item in self.topics.all() ]
+        return forms.TOPICS_DATA_SOURCE.cache.get_many(uris).values()
 
     @property
     def oxford_date(self):
