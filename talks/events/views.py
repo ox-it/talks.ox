@@ -217,7 +217,7 @@ def create_event_group(request):
 def homepage_contributors(request):
     events_date = request.GET.get('date', None)
     events_status = request.GET.get('status', None)
-    only_title_to_be_announced = request.GET.get('title_tba', False)
+    events_missing = request.GET.get('missing', None)
 
     events = Event.objects.all()
 
@@ -228,8 +228,11 @@ def homepage_contributors(request):
             events = events.filter(start__lt=date.today())
     if events_status:
         events = events.filter(status=events_status)
-    if only_title_to_be_announced:
-        events = events.filter(title_not_announced=True)
+    if events_missing :
+        if events_missing == 'title':
+            events = events.filter(title_not_announced=True)
+        elif events_missing == 'location':
+            events = events.filter(location='')
 
     context = {
         'events': events
