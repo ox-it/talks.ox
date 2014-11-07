@@ -61,7 +61,7 @@
     description: Skin
     end: null
     group: null
-    location: 1
+    location: 'oxpoints:1'
     slug: complete-regeneration-of-skin
     start: 2014-12-15 14:00:00
     title: Complete Regeneration of Skin
@@ -72,7 +72,7 @@
     description: Geo sciences
     end: null
     group: null
-    location: 2
+    location: 'oxpoints:2'
     slug: deformation-and-melts-litosphere-astenosphere-boundary
     start: 2014-12-10 12:00:00
     title: Feedbacks between deformation and melts in the lithosphere-asthenosphere
@@ -106,7 +106,7 @@
       between hyaluronan polymers and cell surface receptors.
     end: null
     group: null
-    location: 4
+    location: 'oxpoints:4'
     slug: making-difference
     start: 2014-12-10 12:00:00
     title: How do we know if we're making a difference? Finding solid ground in the
@@ -136,7 +136,7 @@
       \ comparing the practices to those of mature engineering fields."
     end: null
     group: null
-    location: 2
+    location: 'oxpoints:2'
     slug: persistence-in-poor-estimating
     start: 2014-08-22 16:00:00
     title: Persistence in Poor Estimating in Software Engineering Whys and Hows
@@ -179,7 +179,7 @@
       standard classifiers in a variety of film related categorisation tasks.
     end: null
     group: null
-    location: 3
+    location: 'oxpoints:3'
     slug: data-driven
     start: 2014-09-02 16:00:00
     title: A data-driven approach to commonsense reasoning based on qualitative spatial
@@ -196,7 +196,7 @@
       \ hardest part still lies ahead."
     end: null
     group: null
-    location: 2
+    location: 'oxpoints:2'
     slug: banking-union
     start: 2014-06-09 17:00:00
     title: "Banking Union - Will the ECB\u2019s assessment do the trick?"
@@ -212,7 +212,7 @@
       \ dysfunction, and offering recommendations for dealing with these obstacles."
     end: null
     group: null
-    location: 2
+    location: 'oxpoints:2'
     slug: emerging-technology-businesses
     start: 2014-06-09 19:00:00
     title: Emerging Technology Businesses
@@ -223,7 +223,7 @@
     description: Globalisation and Regional Development in an Age of Economic Volatility
     end: null
     group: null
-    location: 1
+    location: 'oxpoints:1'
     slug: financialization-wind-energy
     start: 2014-06-10 16:00:00
     title: Financialization of wind energy? The case of Germany
@@ -245,7 +245,7 @@
       \ social protection and provision that arise in response to a world on the move."
     end: null
     group: null
-    location: 3
+    location: 'oxpoints:3'
     slug: people-culture-move
     start: 2014-06-19 17:00:00
     title: Sites of Encounter - Making Sense of People and Culture on the Move
@@ -256,7 +256,7 @@
     description: ddsad
     end: null
     group: null
-    location: ''
+    location: 'oxpoints:'
     slug: dsadd
     start: null
     title: dsadd
