@@ -2,6 +2,7 @@ import logging
 import functools
 from datetime import date, timedelta
 
+import requests
 import reversion
 from textile import textile_restricted
 
@@ -216,19 +217,28 @@ class Event(models.Model):
     @property
     def api_location(self):
         from . import forms
-        return forms.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
+        try:
+            return forms.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
+        except requests.HTTPError:
+            return None
 
     @property
     def api_organisation(self):
         from . import forms
-        return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+        try:
+            return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+        except requests.HTTPError:
+            return None
 
     @property
     def api_topics(self):
         from . import forms
         uris = [item.uri for item in self.topics.all()]
         logging.debug("uris:%s", uris)
-        return forms.TOPICS_DATA_SOURCE.get_object_list(uris)
+        try:
+            return forms.TOPICS_DATA_SOURCE.get_object_list(uris)
+        except requests.HTTPError:
+            return None
 
     @property
     def oxford_date(self):
