@@ -226,8 +226,9 @@ class Event(models.Model):
     @property
     def api_topics(self):
         from . import forms
-        uris = [ item.uri for item in self.topics.all() ]
-        return forms.TOPICS_DATA_SOURCE.cache.get_many(uris).values()
+        uris = [item.uri for item in self.topics.all()]
+        logging.debug("uris:%s", uris)
+        return forms.TOPICS_DATA_SOURCE.get_object_list(uris)
 
     @property
     def oxford_date(self):

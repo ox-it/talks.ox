@@ -116,10 +116,15 @@ class DataSource(object):
         objects = self._fetch_objects([id])
         return objects.get(id)
 
+    def get_object_list(self, id_list):
+        log.debug("get_object_list(%s)", id_list)
+        return self._fetch_objects(id_list).values()
+
     def _fetch_objects(self, id_list):
         """
         Fetch multiple objects by their id, but check if they are cached first. Update cache accordingly.
         """
+        id_list = filter(None, id_list)
         log.debug("_fetch_objects(%s)", id_list)
         objects = self.cache.get_many(id_list) if self.cache else []
         missing = set(id_list) - set(objects)
