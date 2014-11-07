@@ -738,6 +738,25 @@ class TestDataSourceFetchObjects(unittest.TestCase):
             fetched_id: fetched_object
         })
 
+    def test_remote_returns_more_than_requested(self, requests_get, cache, get_objects_from_response):
+        id_key = mock.sentinel.id_key
+        fetched_id = mock.sentinel.id
+        fetched_object = {id_key: fetched_id, 'foo': mock.sentinel.remaining_data}
+        requests_get.return_value = mock.Mock(spec=requests.Response)
+        cache.get_many.return_value = {}
+        get_objects_from_response.return_value = [fetched_object, {id_key: 'extra object'}]
+        get_prefetch_url = mock.Mock(return_value=mock.sentinel.url)
+
+        ds = typeahead.DataSource(mock.sentinel.cache_key, get_prefetch_url=get_prefetch_url, id_key=id_key)
+        result = ds._fetch_objects([fetched_id])
+
+        cache.get_many.assert_called_once_with([fetched_id])
+        cache.set_many.assert_called_once_with({fetched_id: fetched_object})
+        requests_get.assert_called_once_with(mock.sentinel.url)
+        get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
+        self.assertEquals(result, {fetched_id: fetched_object})
+
+
 
 @mock.patch('talks.events.typeahead.DataSource._fetch_objects', autospec=True)
 class TestDataSourceGetObjectById(unittest.TestCase):

@@ -137,7 +137,7 @@ class DataSource(object):
             response.raise_for_status()
             fetched = get_objects_from_response(response, self.prefetch_response_expression)
             log.debug("fetched from response: %s", fetched)
-            mapped = {obj[self.id_key]: obj for obj in fetched}
+            mapped = {obj[self.id_key]: obj for obj in fetched if obj[self.id_key] in id_list}
             if mapped:
                 if self.cache:
                     self.cache.set_many(mapped)
