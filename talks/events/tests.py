@@ -497,7 +497,7 @@ class TestCreateEventView(TestCase):
 
     @mock.patch('requests.get', autospec=True)
     def test_post_valid_with_topics(self, requests_get):
-        requests_get.return_value.json.return_value = {'_embedded': {'pois': []}}
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': [], 'concepts': []}},
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         topics = factories.TopicItemFactory.create_batch(3)
