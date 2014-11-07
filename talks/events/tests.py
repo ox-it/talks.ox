@@ -335,10 +335,9 @@ class TestEventGroupViews(TestCase):
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
 
-@mock.patch('requests.get', autospec=True, side_effect=intercept_requests_to_statics)
 class TestCreateEventView(TestCase):
 
-    def test_get_happy_no_group_id(self, requests_get):
+    def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
@@ -348,12 +347,12 @@ class TestCreateEventView(TestCase):
         self.assertIn('event_form', response.context)
         self.assertIn('speaker_form', response.context)
 
-    def test_get_nonexistent_group(self, requests_get):
+    def test_get_nonexistent_group(self):
         response = self.client.get('/events/groups/8475623/new')
         self.assertEquals(response.status_code, 404)
         self.assertTemplateNotUsed(response, 'events/event_form.html')
 
-    def test_get_happy_for_existing_group(self, requests_get):
+    def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()
         response = self.client.get('/events/groups/%s/new' % group.pk)
         logging.info("Form errors: %s", response.context['event_form'].errors)
@@ -361,7 +360,7 @@ class TestCreateEventView(TestCase):
         self.assertIn('event_form', response.context)
         self.assertEquals(response.context['event_form']['group'].value(), group.pk)
 
-    def test_post_valid_save_and_continue_no_group_id(self, requests_get):
+    def test_post_valid_save_and_continue_no_group_id(self):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         data = {
@@ -394,7 +393,7 @@ class TestCreateEventView(TestCase):
         count = models.Event.objects.filter(title=title, description=description).count()
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
-    def test_post_valid_save_and_continue_with_group_id(self, requests_get):
+    def test_post_valid_save_and_continue_with_group_id(self):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         group = factories.EventGroupFactory.create()
@@ -427,7 +426,9 @@ class TestCreateEventView(TestCase):
         logging.info("events:%s", models.Event.objects.all())
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
+    @mock.patch('requests.get', autospec=True)
     def test_post_valid(self, requests_get):
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': []}}
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         data = {
@@ -460,7 +461,9 @@ class TestCreateEventView(TestCase):
         self.assertEquals(event.booking_type, data['event-booking_type'])
         self.assertEquals(event.audience, data['event-audience'])
 
+    @mock.patch('requests.get', autospec=True)
     def test_post_valid_with_speakers(self, requests_get):
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': []}}
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         speakers = factories.PersonFactory.create_batch(3)
@@ -492,7 +495,9 @@ class TestCreateEventView(TestCase):
         self.assertEquals(set(speakers), set(event.speakers), "speakers were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
+    @mock.patch('requests.get', autospec=True)
     def test_post_valid_with_topics(self, requests_get):
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': []}}
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         topics = factories.TopicItemFactory.create_batch(3)
@@ -542,8 +547,9 @@ class TestEditEventView(TestCase):
         self.assertContains(response, event.end)
         self.assertTemplateUsed(response, "events/event_form.html")
 
-    @mock.patch('requests.get', autospec=True, side_effect=intercept_requests_to_statics)
+    @mock.patch('requests.get', autospec=True)
     def test_edit_event_post_happy(self, requests_get):
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': []}}
         event = factories.EventFactory.create()
         data = {
             'event-title': 'lkfjlfkds',
