@@ -25,6 +25,7 @@ def intercept_requests_to_statics(url, *a, **k):
         r = requests.Response()
         try:
             path = url[len(settings.STATIC_URL):]
+            path = path.split('?')[0]  # FIXME use urlparse
             file_path = find_static_file(path)
             logging.info("path:%r", path)
             logging.info("file+path:%r", file_path)
