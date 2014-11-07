@@ -11,7 +11,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
-from talks.events.models import TopicItem
 from talks.api import serializers
 
 logger = logging.getLogger(__name__)
@@ -216,4 +215,24 @@ def create_event_group(request):
 
 
 def homepage_contributors(request):
-    return render(request, 'events/contributors.html', {})
+    events_date = request.GET.get('date', None)
+    events_status = request.GET.get('status', None)
+    only_title_to_be_announced = request.GET.get('title_tba', False)
+
+    events = Event.objects.all()
+
+    if events_date:
+        if events_date == 'future':
+            events = events.filter(start__gte=date.today())
+        elif events_date == 'past':
+            events = events.filter(start__lt=date.today())
+    if events_status:
+        events = events.filter(status=events_status)
+    if only_title_to_be_announced:
+        events = events.filter(title_not_announced=True)
+
+    context = {
+        'events': events
+    }
+
+    return render(request, 'events/contributors.html', context)

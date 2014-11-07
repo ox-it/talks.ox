@@ -1,40 +1,60 @@
 {% extends "base.html" %}
 
+{% load faceted_navigation %}
+
 {% block title %}Events administration{% endblock %}
 
 {% block content %}
 
+    <style type="text/css">
+    .filter-selected {
+         background-color: #ddd;
+    }
+    </style>
+
+    <h2>Events administration</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3">
+      <ul class="nav nav-list well">
+        <li class="nav-header"><i class="icon-star"></i>Event status</li>
+        <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published</a></li>
+        <li><a href="{% facet_single_param status='preparation' %}" class="{% facet_selected status='preparation' %}">In preparation</a></li>
+        <li><a href="{% facet_remove_all 'status' %}">All</a></li>
+
+        <li class="nav-header"><i class="icon-star"></i>Title</li>
+        <li><a href="{% facet_single_param title_tba='true' %}" class="{% facet_selected title_tba='true' %}">To be announced</a></li>
+        <li><a href="{% facet_remove_all 'title_tba' %}">All</a></li>
+
+        <li class="nav-header"><i class="icon-time"></i>Date</li>
+        <li><a href="{% facet_single_param date='future' %}" class="{% facet_selected date='future' %}">Future events</a></li>
+        <li><a href="{% facet_single_param date='past' %}" class="{% facet_selected date='past' %}">Past events</a></li>
+        <li><a href="{% facet_remove_all 'date' %}">All</a></li>
+      </ul>
+    </div>
+
+    <div class="col-xs-7">
 
     <table class="table table-bordered table-striped">
-  ...
-</table>
+        <thead>
+            <td>Start date</td>
+            <td>Title</td>
+            <td>Status</td>
+            <td>View</td>
+        </thead>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.start }}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.status }}</td>
+                <td><a href="{% url 'show-event' event_id=event.id %}">More details</a></td>
+            </tr>
+        {% endfor %}
+    </table>
 
-
-
-    {% for event in events %}
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-      <h3 class="panel-title">{{ event.title }}</h3>
-      <small>{{ event.start }}</small>
-  </div>
-  <div class="panel-body">
-      <p>{{ event.description }}</p>
-      <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
-  </div>
-</div>
-
-{% endfor %}
-
-
-    <div>
-    <p>Filters</p>
-    <ul>
-        <li>Only display future events</li>
-        <li>Only display owned events</li>
-        <li>Only display events in preparation</li>
-        <li>Only display events having a title to be announced</li>
-    </ul>
+    </div>
+    </div>
     </div>
 
 {% endblock %}
