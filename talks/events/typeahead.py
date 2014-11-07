@@ -59,7 +59,7 @@ class MultipleTypeahead(Typeahead):
 
 def get_objects_from_response(response, expression=None):
     """
-    Return a dict mapping id to dict representing json decoded objects. Supports only json response.
+    Return list of dicts representing json decoded objects. Supports only json response.
 
     :param response: `requests.Response` instance
     :param expression: javascript expression for extracting objects. `response` is assumed to be existing variable
@@ -132,10 +132,11 @@ class DataSource(object):
             response.raise_for_status()
             fetched = get_objects_from_response(response, self.prefetch_response_expression)
             log.debug("fetched from response: %s", fetched)
-            if fetched:
+            mapped = {obj[self.id_key]: obj for obj in fetched}
+            if mapped:
                 if self.cache:
-                    self.cache.set_many(fetched)
-            objects.update(fetched)
+                    self.cache.set_many(mapped)
+            objects.update(mapped)
         log.debug("returning objects: %s", objects)
         return objects
 

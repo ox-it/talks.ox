@@ -589,19 +589,22 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         assert_not_called(get_objects_from_response)
 
     def test_fetched_from_remote(self, requests_get, cache, get_objects_from_response):
+        id_key = mock.sentinel.id_key
+        fetched_id = mock.sentinel.id
+        fetched_object = {id_key: fetched_id, 'foo': mock.sentinel.remaining_data}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         cache.get_many.return_value = {}
-        get_objects_from_response.return_value = {mock.sentinel.id: mock.sentinel.object}
+        get_objects_from_response.return_value = [fetched_object]
         get_prefetch_url = mock.Mock(return_value=mock.sentinel.url)
 
-        ds = typeahead.DataSource(mock.sentinel.cache_key, get_prefetch_url=get_prefetch_url)
-        result = ds._fetch_objects([mock.sentinel.id])
+        ds = typeahead.DataSource(mock.sentinel.cache_key, get_prefetch_url=get_prefetch_url, id_key=id_key)
+        result = ds._fetch_objects([fetched_id])
 
-        cache.get_many.assert_called_once_with([mock.sentinel.id])
-        cache.set_many.assert_called_once_with({mock.sentinel.id: mock.sentinel.object})
+        cache.get_many.assert_called_once_with([fetched_id])
+        cache.set_many.assert_called_once_with({fetched_id: fetched_object})
         requests_get.assert_called_once_with(mock.sentinel.url)
         get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
-        self.assertEquals(result, {mock.sentinel.id: mock.sentinel.object})
+        self.assertEquals(result, {fetched_id: fetched_object})
 
     def test_fetched_from_cache(self, requests_get, cache, get_objects_from_response):
         cache.get_many.return_value = {mock.sentinel.id: mock.sentinel.object}
@@ -663,14 +666,15 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         assert_not_called(get_objects_from_response)
 
     def test_fetched_from_remote_and_cache(self, requests_get, cache, get_objects_from_response):
+        id_key = mock.sentinel.id_key
         cached_id, cached_object = mock.sentinel.cached_id, mock.sentinel.cached_object
-        fetched_id, fetched_object = mock.sentinel.fetched_id, mock.sentinel.fetched_object
+        fetched_id, fetched_object = mock.sentinel.fetched_id, {id_key: mock.sentinel.fetched_id}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         cache.get_many.return_value = {cached_id: cached_object}
-        get_objects_from_response.return_value = {fetched_id: fetched_object}
+        get_objects_from_response.return_value = [fetched_object]
         get_prefetch_url = mock.Mock(return_value=mock.sentinel.url)
 
-        ds = typeahead.DataSource(mock.sentinel.cache_key, get_prefetch_url=get_prefetch_url)
+        ds = typeahead.DataSource(mock.sentinel.cache_key, get_prefetch_url=get_prefetch_url, id_key=id_key)
         result = ds._fetch_objects([cached_id, fetched_id])
 
         cache.get_many.assert_called_once_with([cached_id, fetched_id])
@@ -762,9 +766,9 @@ class TestGetObjectsFromResponse(unittest.TestCase):
 class TestDeclaredDataSources(unittest.TestCase):
     def test_location(self, requests_get):
         location_id = str(mock.sentinel.location_id)
-        location_object = {'name': str(mock.sentinel.location_name)}
+        location_object = {'id': location_id, 'name': str(mock.sentinel.location_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json.return_value = {location_id: location_object}
+        requests_get.return_value.json.return_value = [location_object]
         forms.LOCATION_DATA_SOURCE.cache.clear()
 
         result = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
@@ -775,9 +779,9 @@ class TestDeclaredDataSources(unittest.TestCase):
 
     def test_department(self, requests_get):
         department_id = str(mock.sentinel.department_id)
-        department_object = {'name': str(mock.sentinel.department_name)}
+        department_object = {'id': department_id, 'name': str(mock.sentinel.department_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json.return_value = {department_id: department_object}
+        requests_get.return_value.json.return_value = [department_object]
         forms.DEPARTMENT_DATA_SOURCE.cache.clear()
 
         result = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
@@ -788,13 +792,11 @@ class TestDeclaredDataSources(unittest.TestCase):
 
     def test_topics(self, requests_get):
         topic_id = str(mock.sentinel.topic_id)
-        topic_object = {'prefLabel': str(mock.sentinel.topic_label)}
+        topic_object = {'uri': topic_id, 'prefLabel': str(mock.sentinel.topic_label)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {
             '_embedded': {
-                'concepts': {
-                    topic_id: topic_object
-                },
+                'concepts': [topic_object],
             },
         }
         forms.TOPICS_DATA_SOURCE.cache.clear()
