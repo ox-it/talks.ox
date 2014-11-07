@@ -768,7 +768,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         location_id = str(mock.sentinel.location_id)
         location_object = {'id': location_id, 'name': str(mock.sentinel.location_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json.return_value = [location_object]
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': [location_object]}}
         forms.LOCATION_DATA_SOURCE.cache.clear()
 
         result = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
@@ -781,7 +781,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         department_id = str(mock.sentinel.department_id)
         department_object = {'id': department_id, 'name': str(mock.sentinel.department_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
-        requests_get.return_value.json.return_value = [department_object]
+        requests_get.return_value.json.return_value = {'_embedded': {'pois': [department_object]}}
         forms.DEPARTMENT_DATA_SOURCE.cache.clear()
 
         result = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)

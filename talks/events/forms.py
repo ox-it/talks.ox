@@ -20,8 +20,8 @@ class OxPointDataSource(typeahead.DataSource):
             'oxpoints',
             url=url,
             response_expression='response._embedded.pois',
-            prefetch_response_expression='response',
-            get_prefetch_url=lambda values: settings.API_OX_URL + ",".join(values),
+            # XXX: forcing api to return list if requesting single object
+            get_prefetch_url=lambda values: settings.API_OX_URL + ",".join(values) + ","
         )
 
 LOCATION_DATA_SOURCE = OxPointDataSource(
