@@ -38,15 +38,15 @@
 
     <table class="table table-bordered table-striped">
         <thead>
-            <td>Start date</td>
             <td>Title</td>
+            <td>Start date</td>
             <td>Status</td>
             <td>View</td>
         </thead>
         {% for event in events %}
             <tr>
-                <td>{{ event.start }}</td>
                 <td>{{ event.title }}</td>
+                <td>{{ event.start }}</td>
                 <td>{{ event.status }}</td>
                 <td><a href="{% url 'show-event' event_id=event.id %}">More details</a></td>
             </tr>
