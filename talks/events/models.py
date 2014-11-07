@@ -216,12 +216,12 @@ class Event(models.Model):
     @property
     def api_location(self):
         from . import forms
-        return forms.LOCATION_DATA_SOURCE.cache.get(self.location)
+        return forms.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
 
     @property
     def api_organisation(self):
         from . import forms
-        return forms.DEPARTMENT_DATA_SOURCE.cache.get(self.department_organiser)
+        return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
 
     @property
     def api_topics(self):
