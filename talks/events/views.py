@@ -98,6 +98,8 @@ def show_event(request, event_id):
 @user_passes_test(user_in_group_or_super)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
+    if not event.user_can_edit(request.user):
+        raise Http404
     form = EventForm(request.POST or None, instance=event, prefix='event')
     context = {
         'event': event,
@@ -136,6 +138,8 @@ def create_event(request, group_id=None):
         if forms_valid:
             logging.debug("form is valid")
             event = context['event_form'].save()
+            event.editor_set.add(request.user)
+            event.save()
             messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:

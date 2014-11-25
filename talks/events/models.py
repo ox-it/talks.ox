@@ -271,6 +271,9 @@ class Event(models.Model):
             return self.start.date() == date.today()
         return False
 
+    def user_can_edit(self, user):
+        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
+
 @receiver(models.signals.post_save, sender=Event)
 def index_event(sender, instance, created, **kwargs):
     """If the User has just been created we use a signal to also create a TalksUser
