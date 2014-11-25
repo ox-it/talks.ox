@@ -1,6 +1,7 @@
 import logging
 import functools
 from datetime import date, timedelta
+from django.contrib.auth.models import User
 
 import reversion
 from textile import textile_restricted
@@ -148,6 +149,7 @@ class Event(models.Model):
     slug = models.SlugField()
     description = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
+    editor_set = models.ManyToManyField(User, blank=True)
     audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
     booking_type = models.TextField(verbose_name="Booking required",
                                     choices=BOOKING_CHOICES,
