@@ -59,7 +59,7 @@
 - fields:
     department_organiser: ''
     description: Skin
-    end: null
+    end: 2014-12-15 14:00:00
     group: null
     location: 1
     slug: complete-regeneration-of-skin
@@ -70,7 +70,7 @@
 - fields:
     department_organiser: ''
     description: Geo sciences
-    end: null
+    end: 2014-12-10 14:00:00
     group: null
     location: 2
     slug: deformation-and-melts-litosphere-astenosphere-boundary
@@ -104,7 +104,7 @@
       jelly-like matrix around the mammalian egg that is crucial for fertility), and
       on "superselective" targeting of the cell surface through multivalent interactions
       between hyaluronan polymers and cell surface receptors.
-    end: null
+    end: 2014-12-10 13:00:00
     group: null
     location: 4
     slug: making-difference
@@ -134,7 +134,7 @@
       \ related to lack of standard and useful measures, well designed measurement\
       \ instruments, and miss-conceptions in use of measures will be discussed by\
       \ comparing the practices to those of mature engineering fields."
-    end: null
+    end: 2014-08-22 16:30:00
     group: null
     location: 2
     slug: persistence-in-poor-estimating
@@ -177,7 +177,7 @@
       relations in a conceptual space of films (derived from a large corpus of film
       reviews), we can implement a form of analogical reasoning which outperforms
       standard classifiers in a variety of film related categorisation tasks.
-    end: null
+    end: 2014-09-02 17:00:00
     group: null
     location: 3
     slug: data-driven
@@ -194,7 +194,7 @@
       \ system back to soundness. Its start has been more encouraging than cynics\
       \ expected, and market conditions have been unexpectedly supportive. But the\
       \ hardest part still lies ahead."
-    end: null
+    end: 2014-06-09 17:45:00
     group: null
     location: 2
     slug: banking-union
@@ -210,7 +210,7 @@
       \ Riva will be speaking on obstacles that emerging technology businesses face,\
       \ analysing factors causing shortfalls in funding, social mistrust, and political\
       \ dysfunction, and offering recommendations for dealing with these obstacles."
-    end: null
+    end: 2014-06-09 20:00:00
     group: null
     location: 2
     slug: emerging-technology-businesses
@@ -221,7 +221,7 @@
 - fields:
     department_organiser: ''
     description: Globalisation and Regional Development in an Age of Economic Volatility
-    end: null
+    end: 2014-06-10 17:00:00
     group: null
     location: 1
     slug: financialization-wind-energy
@@ -243,7 +243,7 @@
       \ sector in India, the second is about if and how cultural institutions create\
       \ national and global identities, and the third is on the new forms of global\
       \ social protection and provision that arise in response to a world on the move."
-    end: null
+    end: 2014-06-19 17:00:00
     group: null
     location: 3
     slug: people-culture-move
@@ -254,11 +254,11 @@
 - fields:
     department_organiser: ''
     description: ddsad
-    end: null
+    end: 2014-06-19 17:30:00
     group: null
     location: ''
     slug: dsadd
-    start: null
+    start: 2014-06-19 17:00:00
     title: dsadd
   model: events.event
   pk: 10
