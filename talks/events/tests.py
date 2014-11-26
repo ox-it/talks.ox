@@ -196,9 +196,9 @@ class AuthTestCase(TestCase):
         group.save()
         username = 'test'
         password = 'test'
-        user = User.objects.create_user(username, password=password)
-        user.groups.add(group)
-        user.save()
+        self.user = User.objects.create_user(username, password=password)
+        self.user.groups.add(group)
+        self.user.save()
         self.client.login(username=username, password=password)
 
 
@@ -503,6 +503,8 @@ class TestEditEventView(AuthTestCase):
 
     def test_edit_event_200(self):
         event = factories.EventFactory.create()
+        event.editor_set.add(self.user)
+        event.save()
         response = self.client.get("/events/id/%s/edit" % event.id)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, event.title)
@@ -513,6 +515,8 @@ class TestEditEventView(AuthTestCase):
 
     def test_edit_event_post_happy(self):
         event = factories.EventFactory.create()
+        event.editor_set.add(self.user)
+        event.save()
         data = {
             'event-title': 'lkfjlfkds',
             'event-description': 'dflksfoingf',
@@ -542,6 +546,8 @@ class TestEditEventView(AuthTestCase):
             title=old_title,
             description=old_description,
         )
+        event.editor_set.add(self.user)
+        event.save()
         data = {
             'event-title': '',
             'event-description': 'dflksfoingf',
