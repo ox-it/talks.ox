@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import user_passes_test, permission_required
+from django.contrib.auth.decorators import user_passes_test, permission_required, login_required
 
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
@@ -95,7 +95,7 @@ def show_event(request, event_id):
     }
     return render(request, 'events/event.html', context)
 
-
+@login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
@@ -116,7 +116,7 @@ def edit_event(request, event_id):
             messages.warning(request, "Please correct errors below")
     return render(request, "events/event_form.html", context)
 
-
+@login_required
 @permission_required("events.add_event", raise_exception=PermissionDenied)
 def create_event(request, group_id=None):
     initial = None
@@ -178,7 +178,7 @@ def show_event_group(request, event_group_id):
     }
     return render(request, 'events/event-group.html', context)
 
-
+@login_required
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def edit_event_group(request, event_group_id):
     group = get_object_or_404(EventGroup, pk=event_group_id)
@@ -197,7 +197,7 @@ def edit_event_group(request, event_group_id):
     }
     return render(request, 'events/event_group_form.html', context)
 
-
+@login_required
 @permission_required('events.add_eventgroup', raise_exception=PermissionDenied)
 def create_event_group(request):
     form = EventGroupForm(request.POST or None)
