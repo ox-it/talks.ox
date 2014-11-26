@@ -192,12 +192,12 @@ class AuthTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        group = Group(name=GROUP_EDIT_EVENTS)
-        group.save()
+        self.group = Group(name=GROUP_EDIT_EVENTS)
+        self.group.save()
         username = 'test'
         password = 'test'
         self.user = User.objects.create_user(username, password=password)
-        self.user.groups.add(group)
+        self.user.groups.add(self.group)
         self.user.save()
         self.client.login(username=username, password=password)
 
@@ -563,6 +563,26 @@ class TestEditEventView(AuthTestCase):
         self.assertEquals(saved_event.description, old_description)
         self.assertTemplateUsed(response, "events/event_form.html")
 
+    def test_edit_event_unauthorised(self):
+        event = factories.EventFactory.create()
+        event.editor_set.add(self.user)
+        event.save()
+
+        #switch to a different user
+        username = 'test2'
+        password = 'test2'
+        second_user = User.objects.create_user(username, password=password)
+        second_user.groups.add(self.group)
+        second_user.save()
+        self.client.login(username=username, password=password)
+
+        data = {
+            'event-title': 'lkfjlfkds'
+        }
+
+        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        self.assertEquals(response.status_code, 404)
+        self.assertTemplateNotUsed(response, "events/event_form.html")
 
 class TestEventPublishWorkflow(TestCase):
 
