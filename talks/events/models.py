@@ -174,7 +174,6 @@ class Event(models.Model):
                                         default='',
                                         verbose_name='Additional details',
                                         help_text='e.g.: room number or accessibility information')
-    # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.TextField(default='', blank=True)
 
     topics = GenericRelation(TopicItem)

@@ -8,10 +8,10 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
-from talks.events.models import TopicItem
 from talks.api import serializers
 
 logger = logging.getLogger(__name__)
@@ -213,3 +213,51 @@ def create_event_group(request):
         return render(request, 'modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
+
+
+def homepage_contributors(request):
+    events_date = request.GET.get('date', None)
+    events_status = request.GET.get('status', None)
+    events_missing = request.GET.get('missing', None)
+    count = request.GET.get('count', 20)
+    page = request.GET.get('page', 1)
+
+    # used to build a URL fragment that does not
+    # contain "page" so that we can... paginate
+    args = {'count': count}
+
+    events = Event.objects.all()
+
+    if events_date:
+        if events_date == 'future':
+            args['date'] = 'future'
+            events = events.filter(start__gte=date.today())
+        elif events_date == 'past':
+            args['date'] = 'past'
+            events = events.filter(start__lt=date.today())
+    if events_status:
+        args['status'] = events_status
+        events = events.filter(status=events_status)
+    if events_missing :
+        if events_missing == 'title':
+            args['missing'] = 'title'
+            events = events.filter(title_not_announced=True)
+        elif events_missing == 'location':
+            args['missing'] = 'location'
+            events = events.filter(location='')
+
+    paginator = Paginator(events, count)
+
+    try:
+        events = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('contributors-homepage')
+
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+
+    context = {
+        'events': events,
+        'fragment': fragment
+    }
+
+    return render(request, 'events/contributors.html', context)
