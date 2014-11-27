@@ -242,6 +242,7 @@ def homepage_contributors(request):
 
     if events_editable:
         events = Event.objects.filter(editor_set__in=[request.user])
+        args['editable'] = 'true'
     else:
         events = Event.objects.all()
 

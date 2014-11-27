@@ -195,7 +195,7 @@
       \ expected, and market conditions have been unexpectedly supportive. But the\
       \ hardest part still lies ahead."
     end: 2014-06-09 17:45:00
-    group: null
+    group: 1
     location: 2
     slug: banking-union
     start: 2014-06-09 17:00:00
@@ -211,7 +211,7 @@
       \ analysing factors causing shortfalls in funding, social mistrust, and political\
       \ dysfunction, and offering recommendations for dealing with these obstacles."
     end: 2014-06-09 20:00:00
-    group: null
+    group: 2
     location: 2
     slug: emerging-technology-businesses
     start: 2014-06-09 19:00:00
@@ -415,3 +415,17 @@
     permissions: [55, 56, 57, 43, 44, 45, 46, 47, 48, 52, 53, 54, 49, 50, 51]
   model: auth.group
   pk: 1
+- fields:
+    title: A conference
+    description: A conference featuring a diverse array of groups
+    group_type: CO
+    slug: a_conference
+  model: events.eventgroup
+  pk: 1
+- fields:
+    title: A seminar
+    description: A series of talks on something
+    group_type: SE
+    slug: a_seminar
+  model: events.eventgroup
+  pk: 2
