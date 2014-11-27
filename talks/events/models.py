@@ -248,7 +248,7 @@ class Event(models.Model):
         return textile_restricted(self.description)
 
     def __unicode__(self):
-        return "Event: {title} ({start})".format(title=self.title, start=self.start)
+        return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
         return reverse('show-event', args=[str(self.id)])
