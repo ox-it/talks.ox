@@ -1,5 +1,6 @@
 from django import template
-
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 register = template.Library()
 
 
@@ -41,6 +42,26 @@ def facet_selected(context, **kwargs):
         if _parameter_present(query_string, k, v):
             return kwargs.get('return_value', "filter-selected")
     return ""
+
+@register.simple_tag(takes_context=True)
+def event_title_with_link_if_can_edit(context, **kwargs):
+    """
+    Returns the name of the event, and if the user is allowed to edit the event, an href to edit it
+    """
+    event = kwargs['event']
+    title = event.title  if not event.title_not_announced else "Title to be announced"
+    user = context['request'].user
+    print("User is: " + user.username)
+    print(user.get_all_permissions())
+    should_link = user.has_perm('events.change_event') and event.editor_set.filter(id=user.id).exists()
+    if should_link:
+        url = reverse('edit-event', args=(event.id,))
+        return "<a href=" + url + ">" + title + "</a>"
+    else:
+        # The user should have the general edit event permission to be viewing this page in the first place.
+        # This message tells them to contact an event editor
+        return title + "<br><small> You may not edit this event</small>"
+
 
 
 def _set_parameter(query_string, key, value):

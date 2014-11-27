@@ -225,11 +225,14 @@ def create_event_group(request):
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
 
-
+@login_required
+@permission_required('events.change_event', raise_exception=PermissionDenied)
 def homepage_contributors(request):
     events_date = request.GET.get('date', None)
     events_status = request.GET.get('status', None)
     events_missing = request.GET.get('missing', None)
+    events_editable = request.GET.get('editable', None)
+    events_type = request.GET.get('type', None)
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
 
@@ -256,6 +259,7 @@ def homepage_contributors(request):
         elif events_missing == 'location':
             args['missing'] = 'location'
             events = events.filter(location='')
+
 
     paginator = Paginator(events, count)
 
