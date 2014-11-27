@@ -53,7 +53,7 @@ def event_title_with_link_if_can_edit(context, **kwargs):
     user = context['request'].user
     print("User is: " + user.username)
     print(user.get_all_permissions())
-    should_link = user.has_perm('events.change_event') and event.editor_set.filter(id=user.id).exists()
+    should_link = user.is_superuser or (user.has_perm('events.change_event') and event.editor_set.filter(id=user.id).exists())
     if should_link:
         url = reverse('edit-event', args=(event.id,))
         return "<a href=" + url + ">" + title + "</a>"

@@ -240,7 +240,10 @@ def homepage_contributors(request):
     # contain "page" so that we can... paginate
     args = {'count': count}
 
-    events = Event.objects.all()
+    if events_editable:
+        events = Event.objects.filter(editor_set__in=[request.user])
+    else:
+        events = Event.objects.all()
 
     if events_date:
         if events_date == 'future':
