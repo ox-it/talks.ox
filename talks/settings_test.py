@@ -31,3 +31,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     },
 }
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
