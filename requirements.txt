@@ -12,3 +12,4 @@ git+https://github.com/ox-it/django-webauth.git@0.3.4#egg=django-webauth
 python-ldap==2.4.15
 django-reversion==1.8.5
 textile==2.2.1
+celery==3.1.17

@@ -35,3 +35,4 @@ Developers
 * Create the database: ``python manage.py migrate --settings=talks.settings_dev``
 * Load fixtures (test events): ``./manage.py loaddata talks/events/fixtures/dev_data.yaml --settings=talks.settings_dev``
 * Run web server: ``./manage.py runserver --settings=talks.settings_dev``
+* Run celery worker: ``celery -A talks worker -l info``
