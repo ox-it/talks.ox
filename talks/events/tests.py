@@ -1,6 +1,7 @@
 import os
 import unittest
 import logging
+from django.contrib.contenttypes.models import ContentType
 
 import mock
 import requests
@@ -8,8 +9,12 @@ from django.conf import settings
 from django.test import TestCase
 from django.core.cache.backends.base import BaseCache
 from django.contrib.staticfiles.finders import find as find_static_file
+from django.contrib.auth.models import User, Group, Permission
+from django.test.client import Client
 
 from . import forms, models, factories, typeahead
+from talks.events.models import Event, EventGroup, Person
+from talks.users.authentication import GROUP_EDIT_EVENTS
 
 VALID_DATE_STRING = "2014-05-12 12:18"
 
@@ -234,7 +239,33 @@ class TestEventGroupForm(TestCase):
         self.assertEquals(form.is_valid(), True, "form should validate")
 
 
-class TestEventGroupViews(TestCase):
+class AuthTestCase(TestCase):
+    """Subclass AuthTestCase if you need to create/edit
+    Event or EventGroup (requiring auth)
+    """
+
+    def setUp(self):
+        self.client = Client()
+        #Create the 'Contributors' group
+        self.group = Group(name=GROUP_EDIT_EVENTS)
+        self.group.save()
+
+        #Add edit permissions for Event, EventGroup and Person
+        content_types = ContentType.objects.get_for_models(Event, EventGroup, Person);
+        permissions = Permission.objects.filter( content_type__in=content_types.values() )
+        self.group.permissions.add(*permissions)
+        self.group.save()
+
+        username = 'test'
+        password = 'test'
+        self.user = User.objects.create_user(username, password=password)
+        self.user.groups.add(self.group)
+        self.user.save()
+        self.client.login(username=username, password=password)
+
+
+class TestEventGroupViews(AuthTestCase):
+
     def test_show_event_group_404(self):
         response = self.client.get("/events/groups/1")
         self.assertEquals(response.status_code, 404)
@@ -336,7 +367,7 @@ class TestEventGroupViews(TestCase):
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
 
-class TestCreateEventView(TestCase):
+class TestCreateEventView(AuthTestCase):
 
     def test_get_happy_no_group_id(self):
         response = self.client.get('/events/new')
@@ -531,8 +562,74 @@ class TestCreateEventView(TestCase):
         self.assertEquals({t.uri for t in topics}, {t.uri for t in event.topics.all()}, "topics were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
+class TestAuthorisation(TestCase):
+    """
+    Test that events can only be created and edited by users who should be allowed to do so
+    """
+    def setUp(self):
+        """
+        Creates users but doesn't log any of them in. The individual tests should do that
+        """
+        self.client = Client()
+        #Create the 'Contributors' group
+        self.group = Group(name=GROUP_EDIT_EVENTS)
+        self.group.save()
 
-class TestEditEventView(TestCase):
+        #Add edit permissions for Event, EventGroup and Person
+        content_types = ContentType.objects.get_for_models(Event, EventGroup, Person);
+        permissions = Permission.objects.filter( content_type__in=content_types.values() )
+        self.group.permissions.add(*permissions)
+        self.group.save()
+
+        #user 1 who is member of contributors group
+        self.username_contrib1 = 'c1'
+        self.password_contrib1 = 'c1'
+        self.contrib_user1 = User.objects.create_user(self.username_contrib1, password=self.password_contrib1)
+        self.contrib_user1.groups.add(self.group)
+        self.contrib_user1.save()
+
+        #user 2 who is a member of contributors group
+        self.username_contrib2 = 'c2'
+        self.password_contrib2 = 'c2'
+        self.contrib_user2 = User.objects.create_user(self.username_contrib2, password=self.password_contrib2)
+        self.contrib_user2.groups.add(self.group)
+        self.contrib_user2.save()
+
+        #a non-contributing user
+        self.username_non_contrib = "nc"
+        self.password_non_contrib = "nc"
+        self.nonContribUser = User.objects.create_user(self.username_non_contrib, password=self.password_non_contrib);
+        self.nonContribUser.save()
+
+
+    def test_edit_event_unauthorised(self):
+        #create event and set user1 as an editor
+        event = factories.EventFactory.create()
+        event.editor_set.add(self.contrib_user2)
+        event.save()
+
+        #attempt to edit the event as contrib_user1
+        self.client.login(username=self.username_contrib1, password=self.password_contrib1)
+        data = {
+            'event-title': 'lkfjlfkds'
+        }
+        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        self.assertEquals(response.status_code, 403)
+        self.assertTemplateNotUsed(response, "events/event_form.html")
+
+    def test_create_event_unauthorised(self):
+        self.client.login(username=self.username_non_contrib, password=self.password_non_contrib)
+        data = {
+            'name' : u'',
+            'event-start': VALID_DATE_STRING,
+            'event-end' : VALID_DATE_STRING
+        }
+        response = self.client.post("/events/new", data)
+        self.assertEquals(response.status_code, 403)
+        self.assertTemplateNotUsed(response, "events/event_form.html")
+
+class TestEditEventView(AuthTestCase):
+
     def test_edit_event_404(self):
         response = self.client.get("/events/id/1/edit")
         self.assertEquals(response.status_code, 404)
@@ -540,6 +637,8 @@ class TestEditEventView(TestCase):
 
     def test_edit_event_200(self):
         event = factories.EventFactory.create()
+        event.editor_set.add(self.user)
+        event.save()
         response = self.client.get("/events/id/%s/edit" % event.id)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, event.title)
@@ -552,6 +651,8 @@ class TestEditEventView(TestCase):
     def test_edit_event_post_happy(self, requests_get):
         requests_get.return_value.json.return_value = {'_embedded': {'pois': []}}
         event = factories.EventFactory.create()
+        event.editor_set.add(self.user)
+        event.save()
         data = {
             'event-title': 'lkfjlfkds',
             'event-description': 'dflksfoingf',
@@ -581,6 +682,8 @@ class TestEditEventView(TestCase):
             title=old_title,
             description=old_description,
         )
+        event.editor_set.add(self.user)
+        event.save()
         data = {
             'event-title': '',
             'event-description': 'dflksfoingf',
@@ -595,6 +698,8 @@ class TestEditEventView(TestCase):
         self.assertEquals(saved_event.title, old_title)
         self.assertEquals(saved_event.description, old_description)
         self.assertTemplateUsed(response, "events/event_form.html")
+
+
 
 
 class TestEventPublishWorkflow(TestCase):

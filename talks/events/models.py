@@ -1,6 +1,7 @@
 import logging
 import functools
 from datetime import date, timedelta
+from django.contrib.auth.models import User
 
 import requests
 import reversion
@@ -149,6 +150,7 @@ class Event(models.Model):
     slug = models.SlugField()
     description = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
+    editor_set = models.ManyToManyField(User, blank=True)
     audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
     booking_type = models.TextField(verbose_name="Booking required",
                                     choices=BOOKING_CHOICES,
@@ -175,7 +177,6 @@ class Event(models.Model):
                                         default='',
                                         verbose_name='Additional details',
                                         help_text='e.g.: room number or accessibility information')
-    # TODO I'm guessing an event can be organised by multiple departments?
     department_organiser = models.TextField(default='', blank=True)
 
     topics = GenericRelation(TopicItem)
@@ -258,7 +259,7 @@ class Event(models.Model):
         return textile_restricted(self.description)
 
     def __unicode__(self):
-        return "Event: {title} ({start})".format(title=self.title, start=self.start)
+        return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
         return reverse('show-event', args=[str(self.id)])
@@ -279,6 +280,15 @@ class Event(models.Model):
         if self.start:
             return self.start.date() == date.today()
         return False
+
+    def user_can_edit(self, user):
+        """
+        Check if the given django User is authorised to edit this event.
+        They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        :param user: The django user wishing to edit the event
+        :return: True if the user is allowed to edit this event, False otherwise
+        """
+        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
 
 @receiver(models.signals.post_save, sender=Event)
 def index_event(sender, instance, created, **kwargs):

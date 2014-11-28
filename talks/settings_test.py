@@ -13,6 +13,10 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 API_OX_URL = '/static/mock/oxpoints.json'
 TOPICS_URL = '/static/mock/topics.json?'
 

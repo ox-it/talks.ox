@@ -1,4 +1,5 @@
 import django
+from django.contrib.auth.models import User
 from robot.libraries.BuiltIn import BuiltIn
 
 from talks.events import factories
@@ -21,3 +22,7 @@ def create(model, **kwargs):
     instance = fun.create(**kwargs)
     _expose_instance(model, instance)
     return instance
+
+
+def create_superuser(username, password):
+    User.objects.create_superuser(username, '', password)

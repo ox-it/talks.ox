@@ -47,6 +47,9 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login'
+
 API_OX_URL = 'http://api.m.ox.ac.uk/places/'
 TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 

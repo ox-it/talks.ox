@@ -11,7 +11,7 @@ from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
-                          create_event_group, show_event_group, edit_event_group)
+                          create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups)
 
 from api.views import (EventViewSet, create_person, suggest_person,
                        save_item, remove_item)
@@ -51,6 +51,9 @@ urlpatterns = patterns('',
     url(r'^events/groups/new$', create_event_group, name='create-event-group'),
     url(r'^events/groups/id/(?P<event_group_id>\d+)$', show_event_group, name='show-event-group'),
     url(r'^events/groups/id/(?P<event_group_id>\d+)/edit$', edit_event_group, name='edit-event-group'),
+    url(r'^contributors/$', contributors_home, name='contributors-home'),
+    url(r'^contributors/events$', contributors_events, name='contributors-events'),
+    url(r'^contributors/eventgroups$', contributors_eventgroups, name='contributors-eventgroups'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^audit/', include(audit_urls, namespace='audit'))
 )
