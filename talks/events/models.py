@@ -3,6 +3,7 @@ import functools
 from datetime import date, timedelta
 from django.contrib.auth.models import User
 
+import requests
 import reversion
 from textile import textile_restricted
 
@@ -216,19 +217,29 @@ class Event(models.Model):
 
     @property
     def api_location(self):
-        if not self.location:
+        from . import forms
+        try:
+            return forms.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
+        except requests.HTTPError:
             return None
-        func = functools.partial(PlacesResource.from_identifier,
-                                 self.location.identifier)
-        return self.fetch_resource(self.location.identifier, func)
 
     @property
     def api_organisation(self):
-        if not self.department_organiser:
+        from . import forms
+        try:
+            return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+        except requests.HTTPError:
             return None
-        func = functools.partial(PlacesResource.from_identifier,
-                                 self.department_organiser.identifier)
-        return self.fetch_resource(self.department_organiser.identifier, func)
+
+    @property
+    def api_topics(self):
+        from . import forms
+        uris = [item.uri for item in self.topics.all()]
+        logging.debug("uris:%s", uris)
+        try:
+            return forms.TOPICS_DATA_SOURCE.get_object_list(uris)
+        except requests.HTTPError:
+            return None
 
     @property
     def oxford_date(self):

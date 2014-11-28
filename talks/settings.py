@@ -50,7 +50,7 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
-API_OX_URL = '//api.m.ox.ac.uk/places/'
+API_OX_URL = 'http://api.m.ox.ac.uk/places/'
 TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
 # Application definition
@@ -218,5 +218,17 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+    },
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'oxpoints': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'topics': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
 }
