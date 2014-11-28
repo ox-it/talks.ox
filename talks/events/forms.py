@@ -131,14 +131,15 @@ class EventForm(forms.ModelForm):
 
 class EventGroupForm(forms.ModelForm):
 
-    topics = TopicsField(
-        label="Topic",
-        help_text="Type topic name and select from the list",
-        required=False,
-        widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
-    )
-
     department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Department")
+
+    organiser = forms.ModelChoiceField(
+        queryset=models.Person.objects.all(),
+        label="Organiser",
+        help_text="Type a name and select from the list.",
+        required=False,
+        widget=typeahead.Typeahead(SPEAKERS_DATA_SOURCE),
+    )
 
     class Meta:
         # fields = ('title', 'group_type', 'description', 'organiser', 'occurence', 'web_address')
