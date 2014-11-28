@@ -2,20 +2,20 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api_ox', '0001_initial'),
-        ('events', '0008_auto_20141029_1234'),
+        ('events', '0013_event_editor_set'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='eventgroup',
             name='department',
-            field=models.ForeignKey(blank=True, to='api_ox.Organisation', null=True),
+            field=models.TextField(default=b'', blank=True),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='eventgroup',
-            name='organizer',
+            name='organiser',
             field=models.ForeignKey(blank=True, to='events.Person', null=True),
             preserve_default=True,
         ),
@@ -34,6 +34,18 @@ class Migration(migrations.Migration):
             model_name='eventgroup',
             name='web_address',
             field=models.URLField(default=b'', verbose_name=b'Web address', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='event',
+            name='editor_set',
+            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='personevent',
+            name='role',
+            field=models.TextField(default=b'speaker', choices=[(b'speaker', b'Speaker'), (b'host', b'Host'), (b'organiser', b'Organiser')]),
             preserve_default=True,
         ),
     ]

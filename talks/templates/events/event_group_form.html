@@ -1,6 +1,29 @@
 {% extends "base.html" %}
 
 {% load bootstrap %}
+{% load staticfiles %}
+
+<script src="{% static "js/event-form.js"%}"></script>
+
+{% block extrahead %}
+<script src="{% static "js/event-form.js"%}"></script>
+
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<script src="{% static "js/modal-form.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<!-- form media -->
+{{ form.media }}
+{% endblock %}
 
 {% block title %}{% if event %}Edit talk group{% else %}Add talk group{% endif %}{% endblock %}
 
