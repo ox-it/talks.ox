@@ -2,6 +2,7 @@ from urllib import urlencode
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
@@ -44,7 +45,10 @@ SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='name',
     serializer=serializers.PersonSerializer,
 )
-
+USERS_DATA_SOURCE = typeahead.DataSource(
+    url='/api/user/suggest?q=%QUERY',
+    display_key='email',
+)
 
 class OxPointField(forms.CharField):
     def __init__(self, source, *args, **kwargs):
@@ -92,6 +96,15 @@ class EventForm(forms.ModelForm):
         empty_label="-- select a group --",
         widget=Select(attrs={'class': 'form-control'}),
         required=False,
+    )
+
+    editors = forms.ModelMultipleChoiceField(
+        #todo query set should be only contributors
+        queryset=User.objects.filter(groups__name='Contributors'),
+        label="Users who can edit this event",
+        help_text="Type a user's email",
+        required=False,
+        widget=typeahead.MultipleTypeahead(USERS_DATA_SOURCE),
     )
 
     class Meta:

@@ -1,4 +1,5 @@
 import logging
+from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -9,7 +10,7 @@ from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer,
+from talks.api.serializers import (EventSerializer, PersonSerializer, UserSerializer,
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
@@ -34,6 +35,12 @@ def suggest_person(request):
     serializer = PersonSerializer(persons, many=True)
     return Response(serializer.data)
 
+@api_view(["GET"])
+def suggest_user(request):
+    query = request.GET.get('q', '')
+    users = User.objects.filter(groups__name='Contributors').filter(email__startswith=query)
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
 
 # TODO: require auth
 @api_view(["POST"])
