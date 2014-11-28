@@ -10,6 +10,8 @@ Suite teardown
 test setup
     start server
     server_command  dumpdata  format=yaml
+    create superuser  test     test
+    Login as test test
 
 test teardown
     stop server
@@ -54,3 +56,9 @@ Select current date and time for ${widget}
     click on ${datetimepicker current day.in_('widget')}
     click on ${datetimepicker current hour.in_('widget')}
     click on ${datetimepicker current minute.in_('widget')}
+
+Login as ${username} ${password}
+    go to ${login_page}
+    type "${username}" into ${username field}
+    type "${password}" into ${password field}
+    click on ${button login}

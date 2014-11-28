@@ -112,6 +112,7 @@ Scenario: Lookup topic
 Scenario: Lookup speaker
     create  person  name=James Bond
     create  person  name=Napoleon Solo
+
     go to ${add_talk_page}
     type "bon" into ${field('Speaker')}
     ${suggestion popup} should appear
@@ -128,6 +129,7 @@ Scenario: Properly display typeahead fields in newly created event
     [Tags]  todo
     create  person  name=James Bond
     create  person  name=Napoleon Solo
+
     go to ${add_talk_page}
     fill in required fields
     type "oucs" into ${field('Venue')}
@@ -171,6 +173,7 @@ Scenario: Save and add another
 Scenario: Preserve form data after validation
     create  person  name=James Bond
     create  person  name=Napoleon Solo
+
     go to ${add_talk_page}
     type "oucs" into ${field('Venue')}
     ${suggestion popup} should appear

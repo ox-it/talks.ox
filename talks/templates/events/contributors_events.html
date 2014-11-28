@@ -17,7 +17,14 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
+
+        <ul class="nav nav-list well">
+            <li><a href="{% url 'contributors-events' %}" class="filter-selected">Events</a></li>
+            <li><a href="{% url 'contributors-eventgroups' %}">Event Groups</a></li>
+        </ul>
+
       <ul class="nav nav-list well">
+
         <li class="nav-header"><i class="icon-star"></i>Event status</li>
         <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published</a></li>
         <li><a href="{% facet_single_param status='preparation' %}" class="{% facet_selected status='preparation' %}">In preparation</a></li>
@@ -32,6 +39,11 @@
         <li><a href="{% facet_single_param date='future' %}" class="{% facet_selected date='future' %}">Future events</a></li>
         <li><a href="{% facet_single_param date='past' %}" class="{% facet_selected date='past' %}">Past events</a></li>
         <li><a href="{% facet_remove_all 'date' %}">All</a></li>
+
+        <li class="nav-headder"><i class-"icon-star"></i>Show Editable Events</li>
+          <li><a href="{% facet_single_param editable='true' %}" class="{% facet_selected editable='true' %}">Editable by me</a></li>
+          <li><a href="{% facet_remove_all 'editable' %}">All</a></li>
+
       </ul>
     </div>
 
@@ -44,31 +56,25 @@
             <td>Status</td>
             <td></td>
         </thead>
+
         {% for event in events %}
             <tr>
-                <td>{{ event.title }}</td>
+                <td>
+                    {% if request.user|can_edit:event %}
+                        <a href="{% url 'edit-event' event.id %}">{{ event.title }}</a>
+                    {% else %}
+                        {{ event.title }}
+                    {% endif %}
+                </td>
                 <td>{{ event.start }}</td>
                 <td>{{ event.status }}</td>
-                <td><a href="{% url 'edit-event' event_id=event.id %}">Edit</a></td>
             </tr>
         {% endfor %}
     </table>
 
-    <div class="pagination">
-        <span class="step-links">
-            {% if events.has_previous %}
-                <a href="?{{ fragment }}&page={{ events.previous_page_number }}">previous</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ events.number }} of {{ events.paginator.num_pages }}.
-            </span>
-
-            {% if events.has_next %}
-                <a href="?{{ fragment }}&page={{ events.next_page_number }}">next</a>
-            {% endif %}
-        </span>
-    </div>
+    {% with events as page %}
+        {% include 'events/_pagination.html' %}
+    {% endwith %}
 
     </div>
     </div>

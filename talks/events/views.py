@@ -4,15 +4,18 @@ import json
 from datetime import date, timedelta
 from functools import partial
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import user_passes_test, permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.api import serializers
+from talks.users.authentication import user_in_group_or_super
 
 logger = logging.getLogger(__name__)
 
@@ -92,9 +95,12 @@ def show_event(request, event_id):
     }
     return render(request, 'events/event.html', context)
 
-
+@login_required
+@permission_required('events.change_event', raise_exception=PermissionDenied)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
+    if not event.user_can_edit(request.user):
+        raise PermissionDenied
     form = EventForm(request.POST or None, instance=event, prefix='event')
     context = {
         'event': event,
@@ -110,7 +116,8 @@ def edit_event(request, event_id):
             messages.warning(request, "Please correct errors below")
     return render(request, "events/event_form.html", context)
 
-
+@login_required
+@permission_required("events.add_event", raise_exception=PermissionDenied)
 def create_event(request, group_id=None):
     initial = None
     event_group = None
@@ -132,6 +139,8 @@ def create_event(request, group_id=None):
         if forms_valid:
             logging.debug("form is valid")
             event = context['event_form'].save()
+            event.editor_set.add(request.user)
+            event.save()
             messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:
@@ -169,7 +178,8 @@ def show_event_group(request, event_group_id):
     }
     return render(request, 'events/event-group.html', context)
 
-
+@login_required
+@permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def edit_event_group(request, event_group_id):
     group = get_object_or_404(EventGroup, pk=event_group_id)
     form = EventGroupForm(request.POST or None, instance=group)
@@ -187,7 +197,8 @@ def edit_event_group(request, event_group_id):
     }
     return render(request, 'events/event_group_form.html', context)
 
-
+@login_required
+@permission_required('events.add_eventgroup', raise_exception=PermissionDenied)
 def create_event_group(request):
     form = EventGroupForm(request.POST or None)
     is_modal = request.GET.get('modal')
@@ -214,11 +225,18 @@ def create_event_group(request):
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
 
+def contributors_home(request):
+    return HttpResponseRedirect(reverse('contributors-events'))
 
-def homepage_contributors(request):
+
+@login_required
+@permission_required('events.change_event', raise_exception=PermissionDenied)
+def contributors_events(request):
     events_date = request.GET.get('date', None)
     events_status = request.GET.get('status', None)
     events_missing = request.GET.get('missing', None)
+    events_editable = request.GET.get('editable', None)
+
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
 
@@ -226,7 +244,11 @@ def homepage_contributors(request):
     # contain "page" so that we can... paginate
     args = {'count': count}
 
-    events = Event.objects.all()
+    if events_editable:
+        events = Event.objects.filter(editor_set__in=[request.user])
+        args['editable'] = 'true'
+    else:
+        events = Event.objects.all()
 
     if events_date:
         if events_date == 'future':
@@ -246,12 +268,13 @@ def homepage_contributors(request):
             args['missing'] = 'location'
             events = events.filter(location='')
 
+
     paginator = Paginator(events, count)
 
     try:
         events = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
-        return redirect('contributors-homepage')
+        return redirect('contributors-events')
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
@@ -260,4 +283,24 @@ def homepage_contributors(request):
         'fragment': fragment
     }
 
-    return render(request, 'events/contributors.html', context)
+    return render(request, 'events/contributors_events.html', context)
+
+@login_required()
+@permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
+def contributors_eventgroups(request):
+    eventgroups = EventGroup.objects.all()
+    count = request.GET.get('count',20)
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(eventgroups, count)
+
+    try:
+        eventgroups = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('contributors-eventgroups')
+
+    context = {
+        'groups': eventgroups
+    }
+
+    return render(request, 'events/contributors_groups.html', context)
