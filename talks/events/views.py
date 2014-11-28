@@ -225,9 +225,13 @@ def create_event_group(request):
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
 
+def contributors_home(request):
+    return HttpResponseRedirect(reverse('contributors-events'))
+
+
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
-def homepage_contributors(request):
+def contributors_events(request):
     events_date = request.GET.get('date', None)
     events_status = request.GET.get('status', None)
     events_missing = request.GET.get('missing', None)
@@ -270,13 +274,34 @@ def homepage_contributors(request):
     try:
         events = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
-        return redirect('contributors-homepage')
+        return redirect(reverse('contributors-events'))
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
     context = {
-        'events': events,
+        #send the events list as a page so different types of results can share the same pagination template
+        'page': events,
         'fragment': fragment
     }
 
-    return render(request, 'events/contributors.html', context)
+    return render(request, 'events/contributors_events.html', context)
+
+@login_required()
+@permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
+def contributors_eventgroups(request):
+    eventgroups = EventGroup.objects.all()
+    count = request.GET.get('count',20)
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(eventgroups, count)
+
+    try:
+        eventgroups = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect(reverse('contributors-eventgroups'))
+
+    context = {
+        'page': eventgroups
+    }
+
+    return render(request, 'events/contributors_groups.html', context)

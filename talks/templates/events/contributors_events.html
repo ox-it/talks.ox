@@ -6,6 +6,7 @@
 
 {% block content %}
 
+    {% with events=page %}
     <style type="text/css">
     .filter-selected {
          background-color: #ddd;
@@ -14,10 +15,24 @@
 
     <h2>Events administration</h2>
 
+
+
+
+
+
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
+
+        {% block select_type %}
+        <ul class="nav nav-list well">
+            <li><a href="{% url 'contributors-events' %}" class="filter-selected">Events</a></li>
+            <li><a href="{% url 'contributors-eventgroups' %}">Event Groups</a></li>
+        </ul>
+        {% endblock %}
+
       <ul class="nav nav-list well">
+    {% block filters %}
         <li class="nav-header"><i class="icon-star"></i>Event status</li>
         <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published</a></li>
         <li><a href="{% facet_single_param status='preparation' %}" class="{% facet_selected status='preparation' %}">In preparation</a></li>
@@ -36,11 +51,13 @@
         <li class="nav-headder"><i class-"icon-star"></i>Show Editable Events</li>
           <li><a href="{% facet_single_param editable='true' %}" class="{% facet_selected editable='true' %}">Editable by me</a></li>
           <li><a href="{% facet_remove_all 'editable' %}">All</a></li>
+    {% endblock %}
       </ul>
     </div>
 
     <div class="col-xs-7">
 
+    {% block table %}
     <table class="table table-bordered table-striped">
         <thead>
             <td>Title</td>
@@ -57,25 +74,28 @@
             </tr>
         {% endfor %}
     </table>
+    {% endblock %}
 
+    {% block pagination %}
     <div class="pagination">
         <span class="step-links">
-            {% if events.has_previous %}
-                <a href="?{{ fragment }}&page={{ events.previous_page_number }}">previous</a>
+            {% if page.has_previous %}
+                <a href="?{{ fragment }}&page={{ page.previous_page_number }}">previous</a>
             {% endif %}
 
             <span class="current">
-                Page {{ events.number }} of {{ events.paginator.num_pages }}.
+                Page {{ page.number }} of {{ page.paginator.num_pages }}.
             </span>
 
             {% if events.has_next %}
-                <a href="?{{ fragment }}&page={{ events.next_page_number }}">next</a>
+                <a href="?{{ fragment }}&page={{ page.next_page_number }}">next</a>
             {% endif %}
         </span>
     </div>
+    {% endblock %}
 
     </div>
     </div>
     </div>
-
+    {% endwith %}
 {% endblock %}

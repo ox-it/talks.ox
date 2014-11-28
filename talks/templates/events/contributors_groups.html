@@ -1,0 +1,36 @@
+{% extends "events/contributors_events.html" %}
+
+{% load faceted_navigation %}
+
+{% block title %}Groups Administration{% endblock %}
+
+{% block heading %}Groups Administration{% endblock %}
+
+{% block select_type %}
+    <ul class="nav nav-list well">
+        <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
+        <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Event Groups</a></li>
+    </ul>
+{% endblock %}
+
+{% block filters %}
+ EventGroup Filters
+{% endblock %}
+
+
+{% block table %}
+    {% with groups=page %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <td>Group Name</td>
+            <td>Group Type</td>
+        </thead>
+            {% for group in groups %}
+            <tr>
+                <td>{% eventgroup_title_with_link_if_can_edit group=group %}</td>
+                <td>{{ group.get_group_type_display }}</td>
+            </tr>
+            {% endfor %}
+    </table>
+    {% endwith %}
+{% endblock %}

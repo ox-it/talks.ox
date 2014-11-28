@@ -51,8 +51,6 @@ def event_title_with_link_if_can_edit(context, **kwargs):
     event = kwargs['event']
     title = event.title  if not event.title_not_announced else "Title to be announced"
     user = context['request'].user
-    print("User is: " + user.username)
-    print(user.get_all_permissions())
     should_link = user.is_superuser or (user.has_perm('events.change_event') and event.editor_set.filter(id=user.id).exists())
     if should_link:
         url = reverse('edit-event', args=(event.id,))
@@ -62,7 +60,19 @@ def event_title_with_link_if_can_edit(context, **kwargs):
         # This message tells them to contact an event editor
         return title + "<br><small> You may not edit this event</small>"
 
+@register.simple_tag(takes_context=True)
+def eventgroup_title_with_link_if_can_edit(context, **kwargs):
+    """
+    Returns the name of the group, and if the user is allowed to edit the group, an href to edit it
+    """
+    group = kwargs['group']
+    user = context['request'].user
 
+    if user.has_perm('events.change_eventgroup'):
+        url = reverse('edit-event-group', args=(group.id,))
+        return "<a href=" + url + ">" + group.title + "</a>"
+    else:
+        return group.title + "<br><small> You may not edit this event group</small>"
 
 def _set_parameter(query_string, key, value):
     """
