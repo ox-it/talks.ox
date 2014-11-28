@@ -1,9 +1,10 @@
 from haystack import indexes
+from celery_haystack.indexes import CelerySearchIndex
 
-from .models import  Event
+from .models import Event
 
 
-class EventIndex(indexes.SearchIndex, indexes.Indexable):
+class EventIndex(CelerySearchIndex, indexes.Indexable):
     # text: multiple fields use to do full-text search
     text = indexes.MultiValueField(document=True, stored=False)
 
