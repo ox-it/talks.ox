@@ -126,6 +126,13 @@ class EventForm(forms.ModelForm):
     def save(self):
         event = super(EventForm, self).save(commit=False)
         event.save()
+
+        # clear the list of editors and repopulate with the contents of the form
+        event.editor_set = User.objects.none()
+        for user in self.cleaned_data['editors']:
+            event.editor_set.add(user)
+        event.save()
+
         for person in self.cleaned_data['speakers']:
             models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
         event_topics = self.cleaned_data['topics']
