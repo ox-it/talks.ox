@@ -1,25 +1,33 @@
-{% extends "events/contributors_events.html" %}
+{% extends "base.html" %}
 
 {% load faceted_navigation %}
 
 {% block title %}Groups Administration{% endblock %}
 
-{% block heading %}Groups Administration{% endblock %}
+{% block content %}
 
-{% block select_type %}
-    <ul class="nav nav-list well">
-        <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
-        <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Event Groups</a></li>
-    </ul>
-{% endblock %}
+    <style type="text/css">
+    .filter-selected {
+         background-color: #ddd;
+    }
+    </style>
 
-{% block filters %}
- EventGroup Filters
-{% endblock %}
+    <h2>Events administration</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3">
+
+            <ul class="nav nav-list well">
+                <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
+                <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Event Groups</a></li>
+            </ul>
+        </div>
 
 
-{% block table %}
-    {% with groups=page %}
+
+    <div class="col-xs-7">
+
     <table class="table table-bordered table-striped">
         <thead>
             <td>Group Name</td>
@@ -27,10 +35,24 @@
         </thead>
             {% for group in groups %}
             <tr>
-                <td>{% eventgroup_title_with_link_if_can_edit group=group %}</td>
-                <td>{{ group.get_group_type_display }}</td>
+                <td>
+                    {% if perms.events.change_eventgroup %}
+                        <a href="{% url 'edit-event-group' group.id %}">{{ group.title }}</a>
+                    {% else %}
+                        {{ group.title }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
     </table>
+
+
+    {% with groups as page %}
+        {% include 'events/_pagination.html' %}
     {% endwith %}
+
+    </div>
+    </div>
+    </div>
+
 {% endblock %}

@@ -43,36 +43,9 @@ def facet_selected(context, **kwargs):
             return kwargs.get('return_value', "filter-selected")
     return ""
 
-@register.simple_tag(takes_context=True)
-def event_title_with_link_if_can_edit(context, **kwargs):
-    """
-    Returns the name of the event, and if the user is allowed to edit the event, an href to edit it
-    """
-    event = kwargs['event']
-    title = event.title  if not event.title_not_announced else "Title to be announced"
-    user = context['request'].user
-    should_link = user.is_superuser or (user.has_perm('events.change_event') and event.editor_set.filter(id=user.id).exists())
-    if should_link:
-        url = reverse('edit-event', args=(event.id,))
-        return "<a href=" + url + ">" + title + "</a>"
-    else:
-        # The user should have the general edit event permission to be viewing this page in the first place.
-        # This message tells them to contact an event editor
-        return title + "<br><small> You may not edit this event</small>"
-
-@register.simple_tag(takes_context=True)
-def eventgroup_title_with_link_if_can_edit(context, **kwargs):
-    """
-    Returns the name of the group, and if the user is allowed to edit the group, an href to edit it
-    """
-    group = kwargs['group']
-    user = context['request'].user
-
-    if user.has_perm('events.change_eventgroup'):
-        url = reverse('edit-event-group', args=(group.id,))
-        return "<a href=" + url + ">" + group.title + "</a>"
-    else:
-        return group.title + "<br><small> You may not edit this event group</small>"
+@register.filter()
+def can_edit(user, event):
+    return event.user_can_edit(user)
 
 def _set_parameter(query_string, key, value):
     """

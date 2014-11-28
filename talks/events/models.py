@@ -271,6 +271,12 @@ class Event(models.Model):
         return False
 
     def user_can_edit(self, user):
+        """
+        Check if the given django User is authorised to edit this event.
+        They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        :param user: The django user wishing to edit the event
+        :return: True if the user is allowed to edit this event, False otherwise
+        """
         return self.editor_set.filter(id=user.id).exists() or user.is_superuser
 
 @receiver(models.signals.post_save, sender=Event)

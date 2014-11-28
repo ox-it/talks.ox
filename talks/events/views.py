@@ -236,7 +236,7 @@ def contributors_events(request):
     events_status = request.GET.get('status', None)
     events_missing = request.GET.get('missing', None)
     events_editable = request.GET.get('editable', None)
-    events_type = request.GET.get('type', None)
+
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
 
@@ -274,13 +274,12 @@ def contributors_events(request):
     try:
         events = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
-        return redirect(reverse('contributors-events'))
+        return redirect('contributors-events')
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
     context = {
-        #send the events list as a page so different types of results can share the same pagination template
-        'page': events,
+        'events': events,
         'fragment': fragment
     }
 
@@ -298,10 +297,10 @@ def contributors_eventgroups(request):
     try:
         eventgroups = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
-        return redirect(reverse('contributors-eventgroups'))
+        return redirect('contributors-eventgroups')
 
     context = {
-        'page': eventgroups
+        'groups': eventgroups
     }
 
     return render(request, 'events/contributors_groups.html', context)
