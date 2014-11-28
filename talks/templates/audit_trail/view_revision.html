@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+  <section id="fluidGridSystem">
+    <header class="page-header">
+      <h1>Revision details</h1>
+    </header>
+
+    <div class="row">
+        <div class="span12">
+            <p><strong>Who?</strong> {{ revision.user.email }}</p>
+            <p><strong>When?</strong> {{ revision.date_created }}</p>
+            <p><strong>What?</strong> {{ revision.comment }}</p>
+            {% for diff, compared in diffs %}
+            <h3>{{ diff.object_name }}</h3>
+            {% if diff.has_previous %}
+                <p>The previous version of this object has been made by <strong>{{ diff.previous_user }}
+                </strong> on <strong>{{ diff.previous_date }}</strong>.</p>
+                <p>Comment was "{{ diff.previous_comment }}".</p>
+            {% else %}
+                <p>This object is <strong>new</strong> and does not have a previous version.</p>
+            {% endif %}
+            <table class="table table-bordered table-condensed">
+            <tr>
+                <th>Field</th>
+                <th>New value</th>
+                {% if diff.has_previous %}
+                <th>Previous value</th>
+                {% endif %}
+            </tr>
+                {% for field, val in compared.items %}
+            <tr {% if val.2 %}style="background-color: yellow"{% endif %}>
+              <td>
+                {{ field }}
+              </td>
+              <td>
+                {% if val.2 %}
+                    <strong>{{ val.0|default_if_none:'-' }}</strong>
+                {% else %}
+                    {{ val.0|default_if_none:'-' }}
+                {% endif %}
+              </td>
+              {% if diff.has_previous %}
+              <td>
+                {% if val.2 %}
+                    <strong>{{ val.1|default_if_none:'-' }}</strong>
+                {% else %}
+                    {{ val.1|default_if_none:'-' }}
+                {% endif %}
+              </td>
+                {% endif %}
+            </tr>
+
+                {% endfor %}
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+  </section>
+{% endblock content %}

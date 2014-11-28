@@ -57,22 +57,22 @@
   model: events.person
   pk: 8
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Skin
-    end: null
+    end: 2014-12-15 14:00:00
     group: null
-    location: 1
+    location: 'oxpoints:1'
     slug: complete-regeneration-of-skin
     start: 2014-12-15 14:00:00
     title: Complete Regeneration of Skin
   model: events.event
   pk: 1
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Geo sciences
-    end: null
+    end: 2014-12-10 14:00:00
     group: null
-    location: 2
+    location: 'oxpoints:2'
     slug: deformation-and-melts-litosphere-astenosphere-boundary
     start: 2014-12-10 12:00:00
     title: Feedbacks between deformation and melts in the lithosphere-asthenosphere
@@ -80,7 +80,7 @@
   model: events.event
   pk: 2
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Nature has evolved complex materials that are exquisitely designed
       to perform specific functions. Certain proteins and glycans self-organize in
       vivo into soft and dynamic, strongly hydrated gel-like matrices. Even though
@@ -104,9 +104,9 @@
       jelly-like matrix around the mammalian egg that is crucial for fertility), and
       on "superselective" targeting of the cell surface through multivalent interactions
       between hyaluronan polymers and cell surface receptors.
-    end: null
+    end: 2014-12-10 13:00:00
     group: null
-    location: 4
+    location: 'oxpoints:4'
     slug: making-difference
     start: 2014-12-10 12:00:00
     title: How do we know if we're making a difference? Finding solid ground in the
@@ -114,7 +114,7 @@
   model: events.event
   pk: 3
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "There has been a mind shift in software engineering for how software\
       \ is built and managed. The software industry has been experiencing mainly three\
       \ major trends. The first is the shift towards agility and leanness in software\
@@ -134,16 +134,16 @@
       \ related to lack of standard and useful measures, well designed measurement\
       \ instruments, and miss-conceptions in use of measures will be discussed by\
       \ comparing the practices to those of mature engineering fields."
-    end: null
+    end: 2014-08-22 16:30:00
     group: null
-    location: 2
+    location: 'oxpoints:2'
     slug: persistence-in-poor-estimating
     start: 2014-08-22 16:00:00
     title: Persistence in Poor Estimating in Software Engineering Whys and Hows
   model: events.event
   pk: 4
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Conceptual spaces (sometimes also called semantic spaces) are high-dimensional
       geometric spaces in which entities are modelled as points and categories as
       convex regions. Given a relevant text corpus, conceptual spaces can be induced
@@ -177,9 +177,9 @@
       relations in a conceptual space of films (derived from a large corpus of film
       reviews), we can implement a form of analogical reasoning which outperforms
       standard classifiers in a variety of film related categorisation tasks.
-    end: null
+    end: 2014-09-02 17:00:00
     group: null
-    location: 3
+    location: 'oxpoints:3'
     slug: data-driven
     start: 2014-09-02 16:00:00
     title: A data-driven approach to commonsense reasoning based on qualitative spatial
@@ -187,50 +187,50 @@
   model: events.event
   pk: 5
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "The European Central Bank\u2019s comprehensive assessment of the\
       \ bulk of Europe\u2019s banking system, started in 2013 and expected to be completed\
       \ in October 2014, is a critical opportunity to restore Europe\u2019s financial\
       \ system back to soundness. Its start has been more encouraging than cynics\
       \ expected, and market conditions have been unexpectedly supportive. But the\
       \ hardest part still lies ahead."
-    end: null
-    group: null
-    location: 2
+    location: 'oxpoints:2'
+    end: 2014-06-09 17:45:00
+    group: 1
     slug: banking-union
     start: 2014-06-09 17:00:00
     title: "Banking Union - Will the ECB\u2019s assessment do the trick?"
   model: events.event
   pk: 6
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "OxTET is happy to welcome Riva-Melissa Tez \u2013 lecturer at the\
       \ DAB university in Berlin, founder of the Berlin Singularity, Associate Director\
       \ of Longevity Intelligence Communications, and co-runner of Kardashev Communications.\
       \ Riva will be speaking on obstacles that emerging technology businesses face,\
       \ analysing factors causing shortfalls in funding, social mistrust, and political\
       \ dysfunction, and offering recommendations for dealing with these obstacles."
-    end: null
-    group: null
-    location: 2
+    location: 'oxpoints:2'
+    end: 2014-06-09 20:00:00
+    group: 2
     slug: emerging-technology-businesses
     start: 2014-06-09 19:00:00
     title: Emerging Technology Businesses
   model: events.event
   pk: 7
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: Globalisation and Regional Development in an Age of Economic Volatility
-    end: null
+    end: 2014-06-10 17:00:00
     group: null
-    location: 1
+    location: 'oxpoints:1'
     slug: financialization-wind-energy
     start: 2014-06-10 16:00:00
     title: Financialization of wind energy? The case of Germany
   model: events.event
   pk: 8
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: "Much social science still sees rootedness and boundedness as the\
       \ norm while mobility and connection are the exception. But because more and\
       \ more people live transnational lives, we need new concepts and methods for\
@@ -243,22 +243,22 @@
       \ sector in India, the second is about if and how cultural institutions create\
       \ national and global identities, and the third is on the new forms of global\
       \ social protection and provision that arise in response to a world on the move."
-    end: null
+    end: 2014-06-19 17:00:00
     group: null
-    location: 3
+    location: 'oxpoints:3'
     slug: people-culture-move
     start: 2014-06-19 17:00:00
     title: Sites of Encounter - Making Sense of People and Culture on the Move
   model: events.event
   pk: 9
 - fields:
-    department_organiser: null
+    department_organiser: ''
     description: ddsad
-    end: null
+    end: 2014-06-19 17:30:00
     group: null
-    location: null
+    location: 'oxpoints:'
     slug: dsadd
-    start: null
+    start: 2014-06-19 17:00:00
     title: dsadd
   model: events.event
   pk: 10
@@ -383,28 +383,49 @@
   model: events.personevent
   pk: 15
 - fields:
-    identifier: oxpoints:23233507
-    name: Sheldonian Theatre
-  model: api_ox.location
+    username: superuser
+    is_superuser: true
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    groups: [1]
+    is_staff: true
+  model: auth.user
   pk: 1
 - fields:
-    identifier: oxpoints:23232612
-    name: Oxford Martin School
-  model: api_ox.location
+    username: contrib_user1
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    groups: [1]
+    is_staff: true
+  model: auth.user
   pk: 2
 - fields:
-    identifier: oxpoints:23232496
-    name: Global Economic Governance Programme
-  model: api_ox.location
+    username: contrib_user2
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    is_staff: true
+    groups: [1]
+  model: auth.user
   pk: 3
 - fields:
-    identifier: oxpoints:23232608
-    name: Oxford Internet Institute
-  model: api_ox.location
+    username: non_contrib_user1
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    is_staff: true
+  model: auth.user
   pk: 4
 - fields:
-    identifier: oxpoints:23232670
-    name: Department of Pharmacology
-  model: api_ox.location
-  pk: 5
-
+    name: Contributors
+    permissions: [55, 56, 57, 43, 44, 45, 46, 47, 48, 52, 53, 54, 49, 50, 51]
+  model: auth.group
+  pk: 1
+- fields:
+    title: A conference
+    description: A conference featuring a diverse array of groups
+    group_type: CO
+    slug: a_conference
+  model: events.eventgroup
+  pk: 1
+- fields:
+    title: A seminar
+    description: A series of talks on something
+    group_type: SE
+    slug: a_seminar
+  model: events.eventgroup
+  pk: 2

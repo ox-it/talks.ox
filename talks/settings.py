@@ -47,8 +47,11 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_REDIRECT_URL = '/'
-API_OX_URL = 'http://api.m.ox.ac.uk'
-TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics'
+
+LOGIN_URL = '/login'
+
+API_OX_URL = 'http://api.m.ox.ac.uk/places/'
+TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
 # Application definition
 
@@ -64,6 +67,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'haystack',
     'raven.contrib.django.raven_compat',
+    'reversion',
 
     # WebAuth
     'django_webauth',
@@ -82,6 +86,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # reversion (audit)
+    'reversion.middleware.RevisionMiddleware',
 
     # Oxford Talks
     'talks.users.middleware.TalksUserMiddleware',
@@ -211,5 +218,17 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+    },
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'oxpoints': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'topics': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
 }

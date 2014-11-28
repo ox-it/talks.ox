@@ -1,15 +1,11 @@
 language: python
 python:
     - "2.7"
-before_install:
-    - "export DISPLAY=:99.0"
-    - "sh -e /etc/init.d/xvfb start"
 install:
     - pip install -r requirements.txt
     - pip install -r requirements_dev.txt
 script:
-    - python manage.py test --settings=talks.settings_test
-    - PYTHONPATH=tests/ BROWSER=firefox DJANGO_SETTINGS_MODULE=talks.settings_test pybot -e todo tests/
+    - make test
 notifications:
     irc:
         channels:

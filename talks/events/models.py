@@ -1,7 +1,11 @@
 import logging
 import functools
-
 from datetime import date, timedelta
+from django.contrib.auth.models import User
+
+import requests
+import reversion
+from textile import textile_restricted
 
 from django.conf import settings
 from django.db import models
@@ -11,9 +15,9 @@ from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from haystack.forms import model_choices
 
 from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
-from talks.api_ox.models import Location, Organisation
 
 
 logger = logging.getLogger(__name__)
@@ -43,6 +47,14 @@ AUDIENCE_CHOICES = (
     (AUDIENCE_PUBLIC, 'Public'),
     (AUDIENCE_OXFORD, 'Members of the University only'),
 )
+
+EVENT_PUBLISHED = 'published'
+EVENT_IN_PREPARATION = 'preparation'
+EVENT_STATUS_CHOICES = (
+    (EVENT_PUBLISHED, 'Published'),
+    (EVENT_IN_PREPARATION, 'In preparation'),
+)
+
 
 class EventGroupManager(models.Manager):
     def for_events(self, events):
@@ -110,21 +122,15 @@ class Person(models.Model):
         return self.name
 
 
-class Topic(models.Model):
-
-    name = models.CharField(max_length=250)
-    uri = models.URLField(unique=True, db_index=True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class TopicItem(models.Model):
 
-    topic = models.ForeignKey(Topic)
+    uri = models.URLField(db_index=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
+
+    class Meta:
+        unique_together = ('uri', 'content_type', 'object_id')
 
 
 class PersonEvent(models.Model):
@@ -134,23 +140,26 @@ class PersonEvent(models.Model):
     role = models.TextField(choices=ROLES, default=ROLES_SPEAKER)
     url = models.URLField(blank=True)
 
-class EventManager(models.Manager):
 
-    def todays_events(self):
-        today = date.today()
-        tomorrow = today + timedelta(days=1)
-        return self.filter(start__gte=today, start__lt=tomorrow
-                           ).order_by('start')
+class PublishedEventManager(models.Manager):
+    """Manager filtering events not publised
+    or in preparation.
+    """
+
+    def get_query_set(self):
+        return super(PublishedEventManager, self).get_query_set().filter(embargo=False,
+                                                                         status=EVENT_PUBLISHED)
 
 
 class Event(models.Model):
-    start = models.DateTimeField(null=True, blank=True)
-    end = models.DateTimeField(null=True, blank=True)
+    start = models.DateTimeField(null=False, blank=False)
+    end = models.DateTimeField(null=False, blank=False)
     title = models.CharField(max_length=250, blank=True)
     title_not_announced = models.BooleanField(default=False, verbose_name="Title to be announced")
     slug = models.SlugField()
     description = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
+    editor_set = models.ManyToManyField(User, blank=True)
     audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
     booking_type = models.TextField(verbose_name="Booking required",
                                     choices=BOOKING_CHOICES,
@@ -158,6 +167,12 @@ class Event(models.Model):
     booking_url = models.URLField(blank=True, default='',
                                   verbose_name="Web address for booking")
     cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
+    status = models.TextField(verbose_name="Status",
+                              choices=EVENT_STATUS_CHOICES,
+                              default=EVENT_IN_PREPARATION)
+    # embargo: used by administrators to block a talk from being published
+    embargo = models.BooleanField(default=False,
+                                  verbose_name="Embargo")
     special_message = models.TextField(
         blank=True,
         default='',
@@ -166,17 +181,19 @@ class Event(models.Model):
     )
     group = models.ForeignKey(EventGroup, null=True, blank=True,
                               related_name='events')
-    location = models.ForeignKey(Location, null=True, blank=True)
+    location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
                                         default='',
                                         verbose_name='Additional details',
                                         help_text='e.g.: room number or accessibility information')
-    # TODO I'm guessing an event can be organised by multiple departments?
-    department_organiser = models.ForeignKey(Organisation, null=True, blank=True)
+    department_organiser = models.TextField(default='', blank=True)
 
     topics = GenericRelation(TopicItem)
 
-    objects = EventManager()
+    objects = models.Manager()
+    # manager used to only get published, non embargo events
+    published = PublishedEventManager()
+
     _cached_resources = {}
 
     @property
@@ -209,19 +226,29 @@ class Event(models.Model):
 
     @property
     def api_location(self):
-        if not self.location:
+        from . import forms
+        try:
+            return forms.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
+        except requests.HTTPError:
             return None
-        func = functools.partial(PlacesResource.from_identifier,
-                                 self.location.identifier)
-        return self.fetch_resource(self.location.identifier, func)
 
     @property
     def api_organisation(self):
-        if not self.department_organiser:
+        from . import forms
+        try:
+            return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+        except requests.HTTPError:
             return None
-        func = functools.partial(PlacesResource.from_identifier,
-                                 self.department_organiser.identifier)
-        return self.fetch_resource(self.department_organiser.identifier, func)
+
+    @property
+    def api_topics(self):
+        from . import forms
+        uris = [item.uri for item in self.topics.all()]
+        logging.debug("uris:%s", uris)
+        try:
+            return forms.TOPICS_DATA_SOURCE.get_object_list(uris)
+        except requests.HTTPError:
+            return None
 
     @property
     def oxford_date(self):
@@ -236,8 +263,12 @@ class Event(models.Model):
             self.slug = slugify(self.title)  # FIXME max_length, empty title
         super(Event, self).save(*args, **kwargs)
 
+    @property
+    def description_html(self):
+        return textile_restricted(self.description)
+
     def __unicode__(self):
-        return "Event: {title} ({start})".format(title=self.title, start=self.start)
+        return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
         return reverse('show-event', args=[str(self.id)])
@@ -258,6 +289,15 @@ class Event(models.Model):
         if self.start:
             return self.start.date() == date.today()
         return False
+
+    def user_can_edit(self, user):
+        """
+        Check if the given django User is authorised to edit this event.
+        They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        :param user: The django user wishing to edit the event
+        :return: True if the user is allowed to edit this event, False otherwise
+        """
+        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
 
 @receiver(models.signals.post_save, sender=Event)
 def index_event(sender, instance, created, **kwargs):
@@ -281,13 +321,8 @@ def fetch_topics(sender, instance, created, **kwargs):
         Topic.objects.create(name=topic.name, uri=topic.uri)
 
 
-@receiver(models.signals.post_save, sender=Topic)
-def fetch_topic(sender, instance, created, **kwargs):
-    """Populate the topic name if it is empty by fetching
-    it from the API.
-    """
-    if created and not instance.name:
-        topic = TopicsResource.get([instance.uri])
-        topic = topic[0]
-        instance.name = topic.name
-        instance.save()
+reversion.register(Event)
+reversion.register(EventGroup)
+reversion.register(Person)
+reversion.register(PersonEvent)
+reversion.register(TopicItem)

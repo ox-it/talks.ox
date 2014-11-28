@@ -1,6 +1,7 @@
 *** Keywords ***
 Suite setup
     Open browser  ${HOST}  browser=${BROWSER}
+    Set window size  ${1024}  ${768}
     server_command  migrate
 
 Suite teardown
@@ -9,6 +10,8 @@ Suite teardown
 test setup
     start server
     server_command  dumpdata  format=yaml
+    create superuser  test     test
+    Login as test test
 
 test teardown
     stop server
@@ -47,3 +50,15 @@ ${element} selected item should be "${label}"
     Element should be visible  ${element.locator}
     ${v}=  get selected list label  ${element.locator}
     should be equal  ${v}  ${label}
+
+Select current date and time for ${widget}
+    ${widget} should appear
+    click on ${datetimepicker current day.in_('widget')}
+    click on ${datetimepicker current hour.in_('widget')}
+    click on ${datetimepicker current minute.in_('widget')}
+
+Login as ${username} ${password}
+    go to ${login_page}
+    type "${username}" into ${username field}
+    type "${password}" into ${password field}
+    click on ${button login}

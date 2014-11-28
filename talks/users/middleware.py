@@ -1,4 +1,6 @@
 import logging
+from django.contrib.auth.middleware import AuthenticationMiddleware
+from django.contrib import auth
 
 from .models import TalksUser
 

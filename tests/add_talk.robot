@@ -14,6 +14,14 @@ Scenario: Add the simplest talk
     go to ${add_talk_page}
     type "something" into ${title field}
     type "something else" into ${abstract field}
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current date and time for ${datetimepicker[0]}
+    ${datetimepicker[0]} should disappear
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current date and time for ${datetimepicker[1]}
+    ${datetimepicker[1]} should disappear
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
@@ -31,8 +39,16 @@ Scenario: Add talk to existing group of talks
     ${group field} should be displayed
     ${create group button} should be displayed
     Select from list  ${group field.locator}  foo
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current date and time for ${datetimepicker[0]}
+    ${datetimepicker[0]} should disappear
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current date and time for ${datetimepicker[1]}
+    ${datetimepicker[1]} should disappear
     click on ${button done}
-    ${success message} should be displayed
+    ${success message} should appear
     ${success message} should contain text "New event has been created"
     page should contain text "something"
     page should contain text "Part of: foo" 
@@ -41,6 +57,7 @@ Scenario: Title not announced
     go to ${add talk page}
     click on ${button done}
     current page should be ${add talk page}
+    ${error message} should appear
     ${error message[0]} should be displayed
     ${error message[1]} should be displayed
     ${error message[0]} should contain text "Please correct errors below"
@@ -65,26 +82,140 @@ Scenario: Create new group on the go
 
 Scenario: Lookup venue
     go to ${add_talk_page}
-    type "oucs" into ${venue field}
+    type "oucs" into ${field('Venue')}
     ${suggestion popup} should appear
-    ${suggestion popup} should contain text "Banbury Road"
-
+    ${suggestion popup} should contain text "7-19 Banbury Road"
+    click on ${suggestion popup item('Banbury Road')}
+    ${list group item("7-19 Banbury Road")} should be displayed
+    
 Scenario: Lookup department
-    [Tags]  todo
+    go to ${add_talk_page}
+    type "biol" into ${field('Department')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Chemical Biology"
+    click on ${suggestion popup item('Chemical Biology')}
+    ${list group item("Chemical Biology")} should be displayed
+    
 Scenario: Lookup topic
-    [Tags]  todo
+    go to ${add_talk_page}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Biodiversity"
+    click on ${suggestion popup item('Biodiversity')}
+    ${list group item("Biodiversity")} should be displayed
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Animal diversity"
+    click on ${suggestion popup item('Animal diversity')}
+    ${list group item("Animal diversity")} should be displayed
+
 Scenario: Lookup speaker
     create  person  name=James Bond
+    create  person  name=Napoleon Solo
+
     go to ${add_talk_page}
-    type "bon" into ${speaker field}
-    ${suggestion list} should appear
-    ${suggestion list} should contain text "James Bond"
-    click on ${suggested item('James Bond')}
+    type "bon" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "James Bond"
+    click on ${suggestion popup item('James Bond')}
+    ${list group item("James Bond")} should be displayed
+    type "apo" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Napoleon Solo"
+    click on ${suggestion popup item('Napoleon Solo')}
+    ${list group item("Napoleon Solo")} should be displayed
+
+Scenario: Properly display typeahead fields in newly created event
+    create  person  name=James Bond
+    create  person  name=Napoleon Solo
+
+    go to ${add_talk_page}
+    fill in required fields
+    type "oucs" into ${field('Venue')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "7-19 Banbury Road"
+    click on ${suggestion popup item('Banbury Road')}
+    type "biol" into ${field('Department')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Chemical Biology"
+    click on ${suggestion popup item('Chemical Biology')}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Biodiversity"
+    click on ${suggestion popup item('Biodiversity')}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Animal diversity"
+    click on ${suggestion popup item('Animal diversity')}
+    type "bon" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "James Bond"
+    click on ${suggestion popup item('James Bond')}
+    type "apo" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Napoleon Solo"
+    click on ${suggestion popup item('Napoleon Solo')}
+    click on ${button done}
+    current page should be ${talk page}
+    ${success message} should be displayed
+    ${success message} should contain text "New event has been created"
+    page should contain text "Venue: 7-19 Banbury Road"
+    page should contain text "Organiser: Chemical Biology"
+    page should contain text "Topics: Biodiversity"
+    page should contain text "Speakers: James Bond, Napoleon Solo"
 
 Scenario: Create speaker on the go
     [Tags]  todo
 Scenario: Save and add another
     [Tags]  todo
-Scenario: Preserve form data after validation
-    [Tags]  todo
 
+Scenario: Preserve form data after validation
+    create  person  name=James Bond
+    create  person  name=Napoleon Solo
+
+    go to ${add_talk_page}
+    type "oucs" into ${field('Venue')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "7-19 Banbury Road"
+    click on ${suggestion popup item('Banbury Road')}
+    type "biol" into ${field('Department')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Chemical Biology"
+    click on ${suggestion popup item('Chemical Biology')}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Biodiversity"
+    click on ${suggestion popup item('Biodiversity')}
+    type "biodiv" into ${field('Topic')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Animal diversity"
+    click on ${suggestion popup item('Animal diversity')}
+    type "bon" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "James Bond"
+    click on ${suggestion popup item('James Bond')}
+    type "apo" into ${field('Speaker')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Napoleon Solo"
+    click on ${suggestion popup item('Napoleon Solo')}
+    click on ${button done}
+    current page should be ${add talk page}
+    ${error message} should appear
+    ${error message} should contain text "Please correct errors below"
+    ${list group item("7-19 Banbury Road")} should be displayed
+    ${list group item("Chemical Biology")} should be displayed
+    ${list group item("Biodiversity")} should be displayed
+    ${list group item("Animal diversity")} should be displayed
+    ${list group item("James Bond")} should be displayed
+    ${list group item("Napoleon Solo")} should be displayed
+
+
+*** Keywords ***
+Fill in required fields
+    type "${TEST_NAME}" into ${field('Title')}
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current date and time for ${datetimepicker[0]}
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current date and time for ${datetimepicker[1]}

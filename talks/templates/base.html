@@ -38,11 +38,17 @@
                 <div class="container-fluid">
                     {% url 'homepage' as home %}
                     {% url 'create-event' as create_event %}
+                    {% url 'contributors-events' as contributors_homepage %}
                     <div class="navbar-header">
                         <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">Add Talk</a></li>
+                        {% if perms.events.change_event %}
+                            <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}">Contributors homepage</a></li>
+                        {% endif %}
+                        {% if perms.events.add_event %}
+                            <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">Add Talk</a></li>
+                        {% endif %}
                     </ul>
                     <form class="navbar-form navbar-right" role="search" method="get" action="{% url 'haystack_search' %}">
                         <div class="form-group">

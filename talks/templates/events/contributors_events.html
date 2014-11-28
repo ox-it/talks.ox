@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load faceted_navigation %}
+
+{% block title %}Events administration{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+    .filter-selected {
+         background-color: #ddd;
+    }
+    </style>
+
+    <h2>Events administration</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3">
+
+        <ul class="nav nav-list well">
+            <li><a href="{% url 'contributors-events' %}" class="filter-selected">Events</a></li>
+            <li><a href="{% url 'contributors-eventgroups' %}">Event Groups</a></li>
+        </ul>
+
+      <ul class="nav nav-list well">
+
+        <li class="nav-header"><i class="icon-star"></i>Event status</li>
+        <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published</a></li>
+        <li><a href="{% facet_single_param status='preparation' %}" class="{% facet_selected status='preparation' %}">In preparation</a></li>
+        <li><a href="{% facet_remove_all 'status' %}">All</a></li>
+
+        <li class="nav-header"><i class="icon-star"></i>Missing properties</li>
+        <li><a href="{% facet_single_param missing='title' %}" class="{% facet_selected missing='title' %}">Title to be announced</a></li>
+        <li><a href="{% facet_single_param missing='location' %}" class="{% facet_selected missing='location' %}">Location</a></li>
+        <li><a href="{% facet_remove_all 'missing' %}">All</a></li>
+
+        <li class="nav-header"><i class="icon-time"></i>Date</li>
+        <li><a href="{% facet_single_param date='future' %}" class="{% facet_selected date='future' %}">Future events</a></li>
+        <li><a href="{% facet_single_param date='past' %}" class="{% facet_selected date='past' %}">Past events</a></li>
+        <li><a href="{% facet_remove_all 'date' %}">All</a></li>
+
+        <li class="nav-headder"><i class-"icon-star"></i>Show Editable Events</li>
+          <li><a href="{% facet_single_param editable='true' %}" class="{% facet_selected editable='true' %}">Editable by me</a></li>
+          <li><a href="{% facet_remove_all 'editable' %}">All</a></li>
+
+      </ul>
+    </div>
+
+    <div class="col-xs-7">
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <td>Title</td>
+            <td>Start date</td>
+            <td>Status</td>
+        </thead>
+
+        {% for event in events %}
+            <tr>
+                <td>
+                    {% if request.user|can_edit:event %}
+                        <a href="{% url 'edit-event' event.id %}">{{ event.title }}</a>
+                    {% else %}
+                        {{ event.title }}
+                    {% endif %}
+                </td>
+                <td>{{ event.start }}</td>
+                <td>{{ event.status }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {% with events as page %}
+        {% include 'events/_pagination.html' %}
+    {% endwith %}
+
+    </div>
+    </div>
+    </div>
+
+{% endblock %}
