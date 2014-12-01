@@ -1,6 +1,7 @@
 from haystack import indexes
 
 from .models import Event
+from talks.events.models import EVENT_IN_PREPARATION, EVENT_PUBLISHED
 
 
 class EventIndex(indexes.SearchIndex, indexes.Indexable):
@@ -11,9 +12,10 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     description = indexes.CharField(model_attr='description', null=True)
     start = indexes.DateTimeField(model_attr='start', faceted=True)
     speakers = indexes.MultiValueField(faceted=True, null=True)
-    departments = indexes.CharField(faceted=True, null=True)
-    locations = indexes.CharField(faceted=True, null=True)
+    department = indexes.CharField(faceted=True, null=True)
+    location = indexes.CharField(faceted=True, null=True)
     topics = indexes.MultiValueField(faceted=True, null=True)
+    published = indexes.BooleanField(null=False)
 
     # suggestions: used for spellchecking
     suggestions = indexes.SuggestionField()
@@ -28,30 +30,39 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_suggestions(self, obj):
         suggest = []
-        suggest.append(obj.title)
+        if obj.title:
+            suggest.append(obj.title)
         if obj.description:
             suggest.append(obj.description)
-        suggest.extend([topic.topic.name for topic in obj.topics.all()])
+        topics = obj.api_topics
+        if topics:
+            suggest.extend([topic.prefLabel for topic in topics])
         suggest.extend([speaker.name for speaker in obj.speakers.all()])
         return suggest
 
     def prepare_speakers(self, obj):
         return [speaker.name for speaker in obj.speakers.all()]
 
-    def prepare_departments(self, obj):
+    def prepare_department(self, obj):
         if obj.department_organiser:
-            return obj.department_organiser.name
-        else:
-            return None
+            api_dept = obj.api_organisation
+            if api_dept:
+                return api_dept.name
+        return None
 
-    def prepare_locations(self, obj):
+    def prepare_location(self, obj):
         if obj.location:
-            return obj.location.name
-        else:
-            return None
+            api_loc = obj.api_location
+            if api_loc:
+                return api_loc.name
+        return None
 
     def prepare_topics(self, obj):
-        return [topic.topic.name for topic in obj.topics.all()]
+        topics = obj.api_topics
+        if topics:
+            return [topic.prefLabel for topic in topics]
+        else:
+            return None
 
     def prepare_text(self, obj):
         text = []
@@ -59,6 +70,17 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         text.append(obj.description)
         for speaker in obj.speakers.all():
             text.append(speaker.name)
-        for topicitem in obj.topics.all():
-            text.append(topicitem.topic.name)
+        topics = obj.api_topics
+        if topics:
+            text.extend([topic.prefLabel for topic in topics])
         return text
+
+    def prepare_published(self, obj):
+        if obj.embargo:
+            return False
+        elif obj.status == EVENT_IN_PREPARATION:
+            return False
+        elif obj.status == EVENT_PUBLISHED:
+            return True
+        else:
+            return False
