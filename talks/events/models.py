@@ -290,27 +290,6 @@ class Event(models.Model):
         """
         return self.editor_set.filter(id=user.id).exists() or user.is_superuser
 
-@receiver(models.signals.post_save, sender=Event)
-def index_event(sender, instance, created, **kwargs):
-    """If the User has just been created we use a signal to also create a TalksUser
-    """
-    pass
-
-
-@receiver(models.signals.post_save, sender=Event)
-def fetch_topics(sender, instance, created, **kwargs):
-    """If the User has just been created we use a signal to also create a TalksUser
-    """
-    return      # TODO to be discussed
-    uris = [topic.uri for topic in instance.topics.all()]
-    cached_topics = Topic.objects.filter(uri__in=uris)
-    cached_topics_uris = [topic.uri for topic in cached_topics]
-    missing_topics_uris = set(uris) - set(cached_topics_uris)
-    logger.info("Fetching missing topics {uris}".format(uris=missing_topics_uris))
-    topics = TopicsResource.get(missing_topics_uris)
-    for topic in topics:
-        Topic.objects.create(name=topic.name, uri=topic.uri)
-
 
 reversion.register(Event)
 reversion.register(EventGroup)
