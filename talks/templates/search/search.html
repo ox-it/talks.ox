@@ -31,10 +31,10 @@
         {% endif %}
     </dl>
     <dl>
-        {% if facets.fields.locations %}
+        {% if facets.fields.location %}
             <dt>Location</dt>
-            {% for location in facets.fields.locations|slice:":10" %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=locations_exact:{{ location.0|urlencode }}">{{ location.0 }}</a> ({{ location.1 }})</dd>
+            {% for location in facets.fields.location|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=location_exact:{{ location.0|urlencode }}">{{ location.0 }}</a> ({{ location.1 }})</dd>
             {% endfor %}
         {% endif %}
     </dl>
