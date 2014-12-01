@@ -34,3 +34,10 @@ CACHES = {
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+# used to silence haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
