@@ -50,6 +50,20 @@ $(function() {
         $input = makeInput(e.target, name, value);
         showSelectedValue($(e.target), $input, suggestion);
     }
+    function onEventGroupChanged(e, department) {
+        //update to use the supplied department ID, if it doesn't currently have one set
+        existingValues = $(this).siblings('.list-group-item');
+        if(existingValues.length==0) {
+            e.preventDefault();
+            e.stopPropagation();
+            var value = department;
+            var name = $(e.target).data('name');
+            var $input = $('input[name="' + name + '"]', $(e.target).parents('form'));
+            $input = makeInput(e.target, name, value);
+            showSelectedValue($(e.target), $input, department);
+        }
+    }
+
     function makeInput(sourceInput, name, value) {
         return $('<input>').
             insertBefore(sourceInput).
@@ -106,6 +120,9 @@ $(function() {
         })($this)
         );
 
-        $this.typeahead(options, dataSource).on('typeahead:selected', onChange);
+        var typeahead = $this.typeahead(options, dataSource);
+        typeahead.on('typeahead:selected', onChange);
+        typeahead.on('eventGroupChanged', onEventGroupChanged);
     });
+
 });

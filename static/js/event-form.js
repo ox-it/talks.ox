@@ -37,4 +37,34 @@ $(function() {
     $('#create-group-button').data('successCallback', function(newGroup) {
            $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_group').prop('selected', true)
     })
+
+    //On picking a new event group, retrieve the information and set the value of the department organiser field
+    $('#id_group').change( function() {
+        //TODO only update the form based on the eventGroup IF it's not already specified
+        var groupID = this.value;
+        url = '/api/eventgroups/id/' + groupID
+
+        //retrieve the ID of the event organiser and apply that to the department field of the form
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(response) {
+                //retrieve the name of the location in question
+                $.ajax({
+                    type:'GET',
+                    url: 'http://api.m.ox.ac.uk/places/' + response.department_organiser,
+                    success: function(response) {
+                        $('#id_event-department_organiser').trigger("eventGroupChanged", response);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                })
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+
+    })
 });
