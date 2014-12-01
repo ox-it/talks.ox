@@ -1,6 +1,6 @@
 import logging
 import functools
-from datetime import date, timedelta
+from datetime import date
 from django.contrib.auth.models import User
 
 import requests
@@ -9,15 +9,13 @@ from textile import textile_restricted
 
 from django.conf import settings
 from django.db import models
-from django.dispatch.dispatcher import receiver
 from django.template.defaultfilters import date as date_filter
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from haystack.forms import model_choices
 
-from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
+from talks.api_ox.api import ApiException, OxfordDateResource
 
 
 logger = logging.getLogger(__name__)

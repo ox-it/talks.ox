@@ -3,7 +3,6 @@ from urllib import urlencode
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
