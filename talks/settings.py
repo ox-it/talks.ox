@@ -40,17 +40,18 @@ DATETIME_INPUT_FORMATS = (
 SECRET_KEY = 'diq0@tw%t7(vlxo3e65x##2(*29cz22k@_&u9--u69q^g$9j)@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['talks-dev.oucs.ox.ac.uk']
 
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
-API_OX_URL = 'http://api.m.ox.ac.uk/places/'
+API_OX_PLACES_URL = 'http://api.m.ox.ac.uk/places/'
+API_OX_DATES_URL = 'http://api.m.ox.ac.uk/dates/'
 TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
 # Application definition

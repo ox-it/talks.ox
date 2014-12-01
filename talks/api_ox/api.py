@@ -1,3 +1,8 @@
+"""This is only used for oxford dates, this should probably
+be moved to typeahead.Datasource, but the API should support the
+query of multiple dates at once to keep the use consistent
+"""
+
 import logging
 
 import requests
@@ -23,7 +28,7 @@ class ApiOxResource(object):
 
     _json = {}
 
-    def __init__(self, base_url=settings.API_OX_URL, timeout=1):
+    def __init__(self, base_url, timeout=1):
         self.base_url = base_url
         self.timeout = timeout
 
@@ -45,71 +50,19 @@ class ApiOxResource(object):
             raise ApiException()
 
 
-class PlacesResource(ApiOxResource):
-
-    PATH = '/places/'
-    name = JSONAttribute('name')
-    address = JSONAttribute('address')
-
-    @classmethod
-    def from_identifier(cls, ident, **kwargs):
-        """Create a new instance of `cls` and call _get_request with our
-        provided identifier.
-        """
-        places_resource = cls(**kwargs)
-        places_resource._get_request('{path}{ident}'.format(
-            path=places_resource.PATH, ident=ident))
-        return places_resource
-
-
 class OxfordDateResource(ApiOxResource):
 
     formatted = JSONAttribute('formatted')
 
+    def __init__(self, base_url=settings.API_OX_DATES_URL, timeout=1):
+        super(OxfordDateResource, self).__init__(base_url, timeout=timeout)
+
     @classmethod
     def from_date(cls, py_date, **kwargs):
         date_resource = cls(**kwargs)
-        date_resource._get_request('/dates/{year}-{month}-{day}'.format(
+        date_resource._get_request('{year}-{month}-{day}'.format(
             year=py_date.year, month=py_date.month, day=py_date.day))
         return date_resource
-
-
-class Topic(object):
-
-    uri = JSONAttribute('uri')
-    name = JSONAttribute('prefLabel')
-    altNames = JSONAttribute('altLabels')
-
-    _json = {}
-
-    def __init__(self, json):
-        self._json = json
-
-    def __unicode__(self):
-        return 'Topic <{uri}>'.format(uri=self.uri)
-
-    def __str__(self):
-        return self.__unicode__()
-
-
-class TopicsResource(ApiOxResource):
-
-    def __init__(self, base_url=None, timeout=1):
-        self.base_url = base_url or settings.TOPICS_URL
-        self.timeout = timeout
-
-    @classmethod
-    def get(cls, uris, **kwargs):
-        """
-        Get topics by URIs
-        :param uris: list of URIs
-        :return: list of Topic
-        """
-        topics_resource = cls(**kwargs)
-        parameters = ["uri={uri}".format(uri=u) for u in uris]
-        response = topics_resource._get_request('/get?{uris}'.format(uris='&'.join(parameters)))
-        topics = response.json()['_embedded']['concepts']
-        return [Topic(t) for t in topics]
 
 
 class ApiException(Exception):

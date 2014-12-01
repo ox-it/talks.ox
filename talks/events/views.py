@@ -9,13 +9,12 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import user_passes_test, permission_required, login_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Event, EventGroup, Person
+from .models import Event, EventGroup
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.api import serializers
-from talks.users.authentication import user_in_group_or_super
 
 logger = logging.getLogger(__name__)
 

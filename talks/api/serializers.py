@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from talks.events.models import Event, Person, EventGroup
@@ -44,6 +45,10 @@ class PersonSerializer(serializers.ModelSerializer):
         model = Person
         fields = ('id', 'name', 'email_address')
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email')
 
 def get_item_serializer(item):
     if isinstance(item, Event):

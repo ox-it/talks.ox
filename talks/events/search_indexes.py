@@ -1,6 +1,6 @@
 from haystack import indexes
 
-from .models import  Event
+from .models import Event
 
 
 class EventIndex(indexes.SearchIndex, indexes.Indexable):
