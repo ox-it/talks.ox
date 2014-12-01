@@ -36,12 +36,12 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         self.prepared_data = super(EventIndex, self).prepare(obj)
 
         topics = obj.api_topics
-        topics_preflabels = []
-        topic_altLabels = []
+        topics_pref_labels = []
+        topic_alt_labels = []
         if topics:
             for topic in topics:
-                topics_preflabels.append(topic.get('prefLabel', ''))
-                topic_altLabels.extend(topic.get('altLabels', []))
+                topics_pref_labels.append(topic.get('prefLabel', ''))
+                topic_alt_labels.extend(topic.get('altLabels', []))
         if obj.department_organiser:
             api_dept = obj.api_organisation
         else:
@@ -64,8 +64,8 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             self.prepared_data[self.location.index_fieldname] = api_loc.get('name', '')
 
         # Topics
-        if topics_preflabels:
-            self.prepared_data[self.topics.index_fieldname] = topics_preflabels
+        if topics_pref_labels:
+            self.prepared_data[self.topics.index_fieldname] = topics_pref_labels
 
         # Published status
         self.prepared_data[self.published.index_fieldname] = obj.is_published
@@ -79,11 +79,11 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         if obj.description:
             suggest_content.append(obj.description)
             full_text_content.append(obj.description)
-        if topics_preflabels:
-            full_text_content.extend(topics_preflabels)
-            suggest_content.extend(topics_preflabels)
-        if topic_altLabels:
-            full_text_content.extend(topic_altLabels)
+        if topics_pref_labels:
+            full_text_content.extend(topics_pref_labels)
+            suggest_content.extend(topics_pref_labels)
+        if topic_alt_labels:
+            full_text_content.extend(topic_alt_labels)
         suggest_content.extend(speakers_names)
         full_text_content.extend(speakers_names)
 
