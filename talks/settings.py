@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     # 3rd Party
     'bootstrapform',
     'haystack',
+    'celery_haystack',
     'raven.contrib.django.raven_compat',
     'reversion',
 
@@ -174,6 +175,9 @@ HAYSTACK_CONNECTIONS = {
         'INCLUDE_SPELLING': True
     },
 }
+
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+BROKER_URL = 'redis://localhost:6379/0'
 
 RAVEN_CONFIG = {
     'dsn': 'http://cc958b8c93c340c9a25dd765e1843172:f67c8030f2674d6b9c74718f2abf4c16@sentry.oucs.ox.ac.uk/27',
