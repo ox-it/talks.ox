@@ -28,59 +28,62 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         #return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
         return self.get_model().objects.all()
 
-    def prepare_suggestions(self, obj):
-        suggest = []
-        if obj.title:
-            suggest.append(obj.title)
-        if obj.description:
-            suggest.append(obj.description)
+    def prepare(self, obj):
+        """Overriding the prepare() method of SearchIndex in order to add our most complicated fields
+        It is done in prepare() rather than the individual prepare_FIELD() to avoid having to do
+        multiple calls to the APIs...
+        """
+        self.prepared_data = super(EventIndex, self).prepare(obj)
+
         topics = obj.api_topics
         if topics:
-            suggest.extend([topic.get('prefLabel', '') for topic in topics])
-        suggest.extend([speaker.name for speaker in obj.speakers.all()])
-        return suggest
-
-    def prepare_speakers(self, obj):
-        return [speaker.name for speaker in obj.speakers.all()]
-
-    def prepare_department(self, obj):
+            topics_preflabels = [topic.get('prefLabel', '') for topic in topics]
+        else:
+            topics_preflabels = None
         if obj.department_organiser:
             api_dept = obj.api_organisation
-            if api_dept:
-                return api_dept.get('name', '')
-        return None
-
-    def prepare_location(self, obj):
+        else:
+            api_dept = None
         if obj.location:
             api_loc = obj.api_location
-            if api_loc:
-                return api_loc.get('name', '')
-        return None
-
-    def prepare_topics(self, obj):
-        topics = obj.api_topics
-        if topics:
-            return [topic.get('prefLabel', '') for topic in topics]
         else:
-            return None
+            api_loc = None
+        speakers_names = [speaker.name for speaker in obj.speakers.all()]
 
-    def prepare_text(self, obj):
-        text = []
-        text.append(obj.title)
-        text.append(obj.description)
-        for speaker in obj.speakers.all():
-            text.append(speaker.name)
-        topics = obj.api_topics
-        if topics:
-            text.extend([topic.get('prefLabel', '') for topic in topics])
-        return text
+        # Speakers
+        self.prepared_data[self.speakers.index_fieldname] = speakers_names
 
-    def prepare_published(self, obj):
-        if obj.embargo:
-            return False
-        elif obj.status == EVENT_IN_PREPARATION:
-            return False
-        elif obj.status == EVENT_PUBLISHED:
-            return True
-        else:
-            return False
+        # Department organiser
+        if api_dept:
+            self.prepared_data[self.department.index_fieldname] = api_dept.get('name', '')
+
+        # Location
+        if api_loc:
+            self.prepared_data[self.location.index_fieldname] = api_loc.get('name', '')
+
+        # Topics
+        if topics_preflabels:
+            self.prepared_data[self.topics.index_fieldname] = topics_preflabels
+
+        # Published status
+        self.prepared_data[self.published.index_fieldname] = obj.is_published
+
+        suggest_content = []        # used when providing suggestions
+        full_text_content = []      # used when searching full text
+
+        if obj.title:
+            suggest_content.append(obj.title)
+            full_text_content.append(obj.title)
+        if obj.description:
+            suggest_content.append(obj.description)
+            full_text_content.append(obj.description)
+        if topics_preflabels:
+            full_text_content.extend(topics_preflabels)
+            suggest_content.extend(topics_preflabels)
+        suggest_content.extend(speakers_names)
+        full_text_content.extend(speakers_names)
+
+        self.prepared_data[self.suggestions.index_fieldname] = suggest_content
+        self.prepared_data[self.text.index_fieldname] = full_text_content
+
+        return self.prepared_data
