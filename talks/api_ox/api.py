@@ -23,7 +23,7 @@ class ApiOxResource(object):
 
     _json = {}
 
-    def __init__(self, base_url=settings.API_OX_URL, timeout=1):
+    def __init__(self, base_url, timeout=1):
         self.base_url = base_url
         self.timeout = timeout
 
@@ -49,10 +49,13 @@ class OxfordDateResource(ApiOxResource):
 
     formatted = JSONAttribute('formatted')
 
+    def __init__(self, base_url=settings.API_OX_DATES_URL, timeout=1):
+        super(OxfordDateResource, self).__init__(base_url, timeout=timeout)
+
     @classmethod
     def from_date(cls, py_date, **kwargs):
         date_resource = cls(**kwargs)
-        date_resource._get_request('/dates/{year}-{month}-{day}'.format(
+        date_resource._get_request('{year}-{month}-{day}'.format(
             year=py_date.year, month=py_date.month, day=py_date.day))
         return date_resource
 

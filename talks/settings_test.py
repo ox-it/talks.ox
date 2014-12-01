@@ -17,7 +17,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-API_OX_URL = '/static/mock/oxpoints.json'
+API_OX_PLACES_URL = '/static/mock/oxpoints.json'
 TOPICS_URL = '/static/mock/topics.json?'
 
 CACHES = {

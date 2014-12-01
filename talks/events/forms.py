@@ -15,13 +15,13 @@ from . import models, typeahead
 class OxPointDataSource(typeahead.DataSource):
     def __init__(self, **kwargs):
         _types = kwargs.pop('types', [])
-        url = settings.API_OX_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
+        url = settings.API_OX_PLACES_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
         super(OxPointDataSource, self).__init__(
             'oxpoints',
             url=url,
             response_expression='response._embedded.pois',
             # XXX: forcing api to return list if requesting single object
-            get_prefetch_url=lambda values: settings.API_OX_URL + ",".join(values) + ","
+            get_prefetch_url=lambda values: settings.API_OX_PLACES_URL + ",".join(values) + ","
         )
 
 LOCATION_DATA_SOURCE = OxPointDataSource(
@@ -49,6 +49,7 @@ USERS_DATA_SOURCE = typeahead.DataSource(
     url='/api/user/suggest?q=%QUERY',
     display_key='email',
 )
+
 
 class OxPointField(forms.CharField):
     def __init__(self, source, *args, **kwargs):
