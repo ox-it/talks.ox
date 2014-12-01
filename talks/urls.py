@@ -13,7 +13,7 @@ from events.views import (homepage, upcoming_events, show_event, edit_event, eve
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups)
 
-from api.views import (EventViewSet, create_person, suggest_person,
+from api.views import (EventViewSet, create_person, suggest_person, suggest_user,
                        save_item, remove_item)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -33,6 +33,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', webauth_logout, name='logout'),
 
     url(r'^api/', include(router.urls)),
+    url(r'^api/user/suggest$', suggest_user, name='suggest-user'),
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
     url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
@@ -56,4 +57,5 @@ urlpatterns = patterns('',
     url(r'^contributors/eventgroups$', contributors_eventgroups, name='contributors-eventgroups'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^audit/', include(audit_urls, namespace='audit'))
+
 )
