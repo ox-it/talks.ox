@@ -28,7 +28,8 @@ LOCATION_DATA_SOURCE = OxPointDataSource(
     types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
 )
 DEPARTMENT_DATA_SOURCE = OxPointDataSource(
-    types=['/university/department', '/university/museum', '/university/college']
+    types=['/university/department', '/university/museum', '/university/college', '/university/hall',
+           '/university/division']
 )
 TOPICS_DATA_SOURCE = typeahead.DataSource(
     'topics',
