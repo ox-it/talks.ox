@@ -2,13 +2,17 @@ import logging
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
+from talks.users.authentication import GROUP_EDIT_EVENTS
 from talks.users.models import Collection
 from talks.api.serializers import (EventSerializer, PersonSerializer, UserSerializer,
                                    CollectionItemSerializer,
@@ -36,9 +40,13 @@ def suggest_person(request):
     return Response(serializer.data)
 
 @api_view(["GET"])
+@authentication_classes((BasicAuthentication, SessionAuthentication))
+@permission_classes((IsAuthenticated,))
 def suggest_user(request):
     query = request.GET.get('q', '')
-    users = User.objects.filter(groups__name='Contributors').filter(email__startswith=query)
+    superusers = User.objects.filter(is_superuser=True)
+    contributors = User.objects.filter(groups__name=GROUP_EDIT_EVENTS)
+    users = (superusers | contributors).filter(email__startswith=query)
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
