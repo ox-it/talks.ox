@@ -36,10 +36,12 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         self.prepared_data = super(EventIndex, self).prepare(obj)
 
         topics = obj.api_topics
+        topics_preflabels = []
+        topic_altLabels = []
         if topics:
-            topics_preflabels = [topic.get('prefLabel', '') for topic in topics]
-        else:
-            topics_preflabels = None
+            for topic in topics:
+                topics_preflabels.append(topic.get('prefLabel', ''))
+                topic_altLabels.extend(topic.get('altLabels', []))
         if obj.department_organiser:
             api_dept = obj.api_organisation
         else:
@@ -80,6 +82,8 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         if topics_preflabels:
             full_text_content.extend(topics_preflabels)
             suggest_content.extend(topics_preflabels)
+        if topic_altLabels:
+            full_text_content.extend(topic_altLabels)
         suggest_content.extend(speakers_names)
         full_text_content.extend(speakers_names)
 
