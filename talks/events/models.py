@@ -281,6 +281,21 @@ class Event(models.Model):
             return self.start.date() == date.today()
         return False
 
+    @property
+    def is_published(self):
+        """Check if the event is published (i.e. not embargo)
+        :return: True if the Event is published else False
+        """
+        if self.embargo:
+            return False
+        elif self.status == EVENT_IN_PREPARATION:
+            return False
+        elif self.status == EVENT_PUBLISHED:
+            return True
+        else:
+            return False
+
+
     def user_can_edit(self, user):
         """
         Check if the given django User is authorised to edit this event.
