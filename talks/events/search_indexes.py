@@ -36,7 +36,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             suggest.append(obj.description)
         topics = obj.api_topics
         if topics:
-            suggest.extend([topic.prefLabel for topic in topics])
+            suggest.extend([topic.get('prefLabel', '') for topic in topics])
         suggest.extend([speaker.name for speaker in obj.speakers.all()])
         return suggest
 
@@ -47,20 +47,20 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         if obj.department_organiser:
             api_dept = obj.api_organisation
             if api_dept:
-                return api_dept.name
+                return api_dept.get('name', '')
         return None
 
     def prepare_location(self, obj):
         if obj.location:
             api_loc = obj.api_location
             if api_loc:
-                return api_loc.name
+                return api_loc.get('name', '')
         return None
 
     def prepare_topics(self, obj):
         topics = obj.api_topics
         if topics:
-            return [topic.prefLabel for topic in topics]
+            return [topic.get('prefLabel', '') for topic in topics]
         else:
             return None
 
@@ -72,7 +72,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             text.append(speaker.name)
         topics = obj.api_topics
         if topics:
-            text.extend([topic.prefLabel for topic in topics])
+            text.extend([topic.get('prefLabel', '') for topic in topics])
         return text
 
     def prepare_published(self, obj):
