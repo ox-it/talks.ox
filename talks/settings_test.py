@@ -18,6 +18,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 API_OX_PLACES_URL = '/static/mock/oxpoints.json'
+API_OX_DATES_URL = API_OX_PLACES_URL    # faking the response for dates
 TOPICS_URL = '/static/mock/topics.json?'
 
 CACHES = {
