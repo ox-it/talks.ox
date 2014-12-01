@@ -1,15 +1,20 @@
 import logging
+from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
-from rest_framework import viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework import viewsets, status, permissions
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
+from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer,
+from talks.api.serializers import (EventSerializer, PersonSerializer, UserSerializer,
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
@@ -25,6 +30,13 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
 
 
+class IsSuperuserOrContributor(permissions.BasePermission):
+    """
+    Only allow superusers or contributors to retrieve email addresses
+    """
+    def has_permission(self, request, view):
+        return user_in_group_or_super(request.user)
+
 # These views are typically used by ajax
 
 @api_view(["GET"])
@@ -34,6 +46,14 @@ def suggest_person(request):
     serializer = PersonSerializer(persons, many=True)
     return Response(serializer.data)
 
+@api_view(["GET"])
+@authentication_classes((SessionAuthentication,))
+@permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
+def suggest_user(request):
+    query = request.GET.get('q', '')
+    users = User.objects.filter((Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)) & Q(email__startswith=query))
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
 
 # TODO: require auth
 @api_view(["POST"])
