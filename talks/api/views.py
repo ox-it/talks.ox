@@ -40,13 +40,11 @@ def suggest_person(request):
     return Response(serializer.data)
 
 @api_view(["GET"])
-@authentication_classes((BasicAuthentication, SessionAuthentication))
+@authentication_classes((SessionAuthentication,))
 @permission_classes((IsAuthenticated,))
 def suggest_user(request):
     query = request.GET.get('q', '')
-    superusers = User.objects.filter(is_superuser=True)
-    contributors = User.objects.filter(groups__name=GROUP_EDIT_EVENTS)
-    users = (superusers | contributors).filter(email__startswith=query)
+    users = User.objects.filter((Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)) & Q(email__startswith=query))
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
