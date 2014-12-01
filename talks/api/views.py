@@ -45,7 +45,6 @@ def create_person(request):
 
 @api_view(["GET"])
 def get_event_group(request, event_group_id):
-    print("group id: %i", event_group_id)
     try:
         eg = EventGroup.objects.get(id=event_group_id)
     except ObjectDoesNotExist:

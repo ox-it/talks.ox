@@ -59,7 +59,7 @@ $(function() {
             var value = department;
             var name = $(e.target).data('name');
             var $input = $('input[name="' + name + '"]', $(e.target).parents('form'));
-            $input = makeInput(e.target, name, value);
+            $input = makeInput(e.target, name, value.id);
             showSelectedValue($(e.target), $input, department);
         }
     }
