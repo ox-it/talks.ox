@@ -1,3 +1,8 @@
+"""This is only used for oxford dates, this should probably
+be moved to typeahead.Datasource, but the API should support the
+query of multiple dates at once to keep the use consistent
+"""
+
 import logging
 
 import requests
