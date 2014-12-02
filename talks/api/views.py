@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer, UserSerializer,
+from talks.api.serializers import (EventSerializer, PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
@@ -54,7 +54,6 @@ def suggest_user(request):
     users = User.objects.filter((Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)) & Q(email__startswith=query))
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
-
 # TODO: require auth
 @api_view(["POST"])
 def create_person(request):
@@ -63,6 +62,17 @@ def create_person(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def get_event_group(request, event_group_id):
+    try:
+        eg = EventGroup.objects.get(id=event_group_id)
+    except ObjectDoesNotExist:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    serializer = EventGroupSerializer(eg)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def item_from_request(request):

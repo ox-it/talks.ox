@@ -152,13 +152,31 @@ class EventForm(forms.ModelForm):
 
 class EventGroupForm(forms.ModelForm):
 
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Department")
+
+    organiser = forms.ModelChoiceField(
+        queryset=models.Person.objects.all(),
+        label="Organiser",
+        help_text="Type a name and select from the list.",
+        required=False,
+        widget=typeahead.Typeahead(SPEAKERS_DATA_SOURCE),
+    )
+
     class Meta:
-        fields = ('title', 'group_type', 'description')
+        # fields = ('title', 'group_type', 'description', 'organiser', 'occurence', 'web_address')
+        exclude = ('slug',)
         model = models.EventGroup
         widgets = {
             'title': forms.TextInput(),
             'description': forms.Textarea(),
+            'occurence': forms.TextInput(),
         }
+
+class PersonForm(forms.ModelForm):
+
+    class Meta:
+        fields = ('name', 'bio', 'email_address')
+        model = models.Person
 
 
 class SpeakerQuickAdd(forms.ModelForm):

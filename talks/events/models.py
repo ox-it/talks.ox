@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
 
 ROLES_SPEAKER = 'speaker'
 ROLES_HOST = 'host'
-ROLES_ORGANIZER = 'organizer'
+ROLES_ORGANISER = 'organiser'
 ROLES = (
     (ROLES_SPEAKER, 'Speaker'),
     (ROLES_HOST, 'Host'),
-    (ROLES_ORGANIZER, 'Organizer'),
+    (ROLES_ORGANISER, 'Organiser'),
 )
 
 BOOKING_NOT_REQUIRED = 'nr'
@@ -83,6 +83,15 @@ class EventGroup(models.Model):
         max_length=2,
         choices=EVENT_GROUP_TYPE_CHOICES
     )
+    organiser = models.ForeignKey("Person", null=True, blank=True)
+    occurence = models.TextField(
+        blank=True,
+        default='',
+        verbose_name='Timing',
+        help_text='e.g.: Mondays at 10 or September 19th to 20th.'
+    )
+    web_address = models.URLField(blank=True, default='', verbose_name='Web address')
+    department_organiser = models.TextField(default='', blank=True)
 
     objects = EventGroupManager()
 
@@ -98,6 +107,13 @@ class EventGroup(models.Model):
             self.slug = str(uuid.uuid4())
         super(EventGroup, self).save(*args, **kwargs)
 
+    @property
+    def api_organisation(self):
+        from . import forms
+        try:
+            return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+        except requests.HTTPError:
+            return None
 
 class PersonManager(models.Manager):
 
@@ -122,6 +138,8 @@ class Person(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('show-person', args=[self.id])
 
 class TopicItem(models.Model):
 
@@ -202,8 +220,8 @@ class Event(models.Model):
         return self.person_set.filter(personevent__role=ROLES_SPEAKER)
 
     @property
-    def organizers(self):
-        return self.person_set.filter(personevent__role=ROLES_ORGANIZER)
+    def organisers(self):
+        return self.person_set.filter(personevent__role=ROLES_ORGANISER)
 
     @property
     def hosts(self):

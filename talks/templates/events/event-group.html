@@ -26,6 +26,18 @@
     </div>
     <!-- List group -->
     <ul class="list-group">
+        <li class="list-group-item"><strong>Type</strong>: {{ event_group.get_group_type_display }}</li>
+        <li class="list-group-item"><strong>Organiser</strong>: {{ event_group.organiser.name }}</li>
+    {% if event_group.occurence %}
+        <li class="list-group-item"><strong>Occurence</strong>: {{ event_group.occurence }}</li>
+    {% endif %}
+    {% if event_group.web_address %}
+        <li class="list-group-item"><strong>Web Address</strong>: {{ event_group.web_address }}</li>
+    {% endif %}
+    {% if event_group.api_organisation %}
+        <li class="list-group-item"><strong>Department</strong>: {{ event_group.api_organisation.name }}</li>
+    {% endif %}
+
         {% for event in event_group.events.all %}
         <li class="list-group-item"><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> ({{ event.start }})</li>
         {% endfor %}
