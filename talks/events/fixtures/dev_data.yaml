@@ -1,6 +1,6 @@
 - fields:
     bio: JB
-    email_address: ''
+    email_address: 'email@email.com'
     name: James Bond
     slug: james-bond
   model: events.person
@@ -8,42 +8,42 @@
 - fields:
     bio: Professor of Department of Reconstructive & Plastic Surgery, Keio University,
       Tokyo
-    email_address: ''
+    email_address: 'email@email.com'
     name: Professor Kazuo Kishi
     slug: prof-kazuo-kishi
   model: events.person
   pk: 2
 - fields:
     bio: Geosciences Montpellier
-    email_address: ''
+    email_address: 'email@email.com'
     name: Dr Andrea Tommasi
     slug: dr-andrea-tommasi
   model: events.person
   pk: 3
 - fields:
     bio: Oxford
-    email_address: ''
+    email_address: 'email@email.com'
     name: Dr Claire Conway
     slug: dr-claire-conway
   model: events.person
   pk: 4
 - fields:
     bio: University of Sheffield
-    email_address: ''
+    email_address: 'email@email.com'
     name: David Dockrell
     slug: david-dockrell
   model: events.person
   pk: 5
 - fields:
     bio: test
-    email_address: ''
+    email_address: 'email@email.com'
     name: Simon Knight
     slug: simon-knight
   model: events.person
   pk: 6
 - fields:
     bio: test
-    email_address: ''
+    email_address: 'email@email.com'
     name: Jonathan Pearson-Stuttard
     slug: jonathan-pearson-stuttard
   model: events.person
@@ -51,7 +51,7 @@
 - fields:
     bio: Senior Fellow at Bruegel, and Visiting Fellow at the Peterson Institute,
       Washington DC
-    email_address: ''
+    email_address: 'email@email.com'
     name: Nicolas Veron
     slug: nicolas-veron
   model: events.person

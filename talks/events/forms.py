@@ -172,6 +172,12 @@ class EventGroupForm(forms.ModelForm):
             'occurence': forms.TextInput(),
         }
 
+class PersonForm(forms.ModelForm):
+
+    class Meta:
+        fields = ('name', 'bio', 'email_address')
+        model = models.Person
+
 
 class SpeakerQuickAdd(forms.ModelForm):
     class Meta:

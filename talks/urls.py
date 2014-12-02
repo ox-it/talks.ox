@@ -9,9 +9,9 @@ from haystack.views import FacetedSearchView
 
 from rest_framework import routers
 
-from events.views import (homepage, upcoming_events, show_event, edit_event, events_for_day,
+from events.views import (homepage, upcoming_events, show_person, edit_person, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
-                          create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups)
+                          create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups, contributors_persons)
 
 from api.views import (EventViewSet, create_person, suggest_person, suggest_user,
                        save_item, remove_item, get_event_group)
@@ -42,6 +42,8 @@ urlpatterns = patterns('',
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/persons/new$', create_person, name='create-person'),
     url(r'^events/persons/suggest$', suggest_person, name='suggest-person'),
+    url(r'^events/persons/id/(?P<person_id>\d+)$', show_person, name='show-person'),
+    url(r'^events/persons/id/(?P<person_id>\d+)/edit$', edit_person, name='edit-person'),
     url(r'^events/new$', create_event, name='create-event'),
     url(r'^events/id/(?P<event_id>\d+)$', show_event, name='show-event'),
     url(r'^events/id/(?P<event_id>\d+)/edit$', edit_event, name='edit-event'),
@@ -56,6 +58,7 @@ urlpatterns = patterns('',
     url(r'^contributors/$', contributors_home, name='contributors-home'),
     url(r'^contributors/events$', contributors_events, name='contributors-events'),
     url(r'^contributors/eventgroups$', contributors_eventgroups, name='contributors-eventgroups'),
+    url(r'^contributors/persons$', contributors_persons, name='contributors-persons'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^audit/', include(audit_urls, namespace='audit'))
 
