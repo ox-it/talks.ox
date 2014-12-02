@@ -163,6 +163,22 @@ def create_event(request, group_slug=None):
     return render(request, 'events/event_form.html', context)
 
 
+@login_required
+@permission_required('events.delete_event', raise_exception=PermissionDenied)
+def delete_event(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
+    if not event.user_can_edit(request.user):
+        raise PermissionDenied
+    context = {
+        'event': event,
+    }
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, "Event has been successfully deleted")
+        return redirect('contributors-events')
+    return render(request, "events/delete_event.html", context)
+
+
 def list_event_groups(request):
     object_list = EventGroup.objects.all()
     context = {

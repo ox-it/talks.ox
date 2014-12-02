@@ -11,7 +11,8 @@ from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, show_person, edit_person, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
-                          create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups, contributors_persons)
+                          create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
+                          contributors_eventgroups, contributors_persons, delete_event)
 
 from api.views import (EventViewSet, create_person, suggest_person, suggest_user,
                        save_item, remove_item, get_event_group)
@@ -47,6 +48,7 @@ urlpatterns = patterns('',
     url(r'^events/new$', create_event, name='create-event'),
     url(r'^events/id/(?P<event_slug>[^/]+)/$', show_event, name='show-event'),
     url(r'^events/id/(?P<event_slug>[^/]+)/edit$', edit_event, name='edit-event'),
+    url(r'^events/id/(?P<event_slug>[^/]+)/delete', delete_event, name='delete-event'),
     url(r'^events/groups/(?P<group_slug>[^/]+)/new$', create_event, name='create-event-in-group'),
     url(r'^events/date/(?P<year>\d{4})/$', events_for_year, name='events_year'),
     url(r'^events/date/(?P<year>\d{4})/(?P<month>\d{2})/$', events_for_month, name='events_month'),
