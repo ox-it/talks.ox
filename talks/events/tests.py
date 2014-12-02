@@ -282,7 +282,7 @@ class TestEventGroupViews(AuthTestCase):
 
     def test_show_event_group_200(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get("/events/groups/id/%s" % group.id)
+        response = self.client.get("/events/groups/id/%s" % group.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
         self.assertContains(response, group.description)
@@ -294,7 +294,7 @@ class TestEventGroupViews(AuthTestCase):
 
     def test_edit_event_group_200(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get("/events/groups/id/%s/edit" % group.id)
+        response = self.client.get("/events/groups/id/%s/edit" % group.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
         self.assertContains(response, group.description)
@@ -308,8 +308,8 @@ class TestEventGroupViews(AuthTestCase):
             'group_type': '',
         }
 
-        response = self.client.post("/events/groups/id/%s/edit" % group.id, data)
-        self.assertRedirects(response, "/events/groups/id/%s" % group.id)
+        response = self.client.post("/events/groups/id/%s/edit" % group.slug, data)
+        self.assertRedirects(response, "/events/groups/id/%s" % group.slug)
         saved_group = models.EventGroup.objects.get(pk=group.id)
         self.assertEquals(saved_group.title, data['title'])
         self.assertEquals(saved_group.description, data['description'])
@@ -328,8 +328,8 @@ class TestEventGroupViews(AuthTestCase):
             'group_type': '',
         }
 
-        response = self.client.post("/events/groups/id/%s/edit" % group.id, data)
-        saved_group = models.EventGroup.objects.get(pk=group.id)
+        response = self.client.post("/events/groups/id/%s/edit" % group.slug, data)
+        saved_group = models.EventGroup.objects.get(slug=group.slug)
         self.assertFormError(response, 'form', 'title', ['This field is required.'])
         self.assertEquals(saved_group.title, old_title)
         self.assertEquals(saved_group.description, old_description)
@@ -349,7 +349,7 @@ class TestEventGroupViews(AuthTestCase):
 
         response = self.client.post("/events/groups/new", data)
         saved_group = models.EventGroup.objects.get()
-        self.assertRedirects(response, "/events/groups/id/%s" % saved_group.id)
+        self.assertRedirects(response, "/events/groups/id/%s" % saved_group.slug)
         self.assertEquals(saved_group.title, data['title'])
         self.assertEquals(saved_group.description, data['description'])
         self.assertTemplateNotUsed(response, "events/event_group_form.html")
@@ -386,11 +386,11 @@ class TestCreateEventView(AuthTestCase):
 
     def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get('/events/groups/%s/new' % group.pk)
+        response = self.client.get('/events/groups/%s/new' % group.slug)
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
         self.assertIn('event_form', response.context)
-        self.assertEquals(response.context['event_form']['group'].value(), group.pk)
+        self.assertEquals(response.context['event_form']['group'].value(), group.id)
 
     def test_post_valid_save_and_continue_no_group_id(self):
         title = u'cjwnf887y98fw'
@@ -429,7 +429,6 @@ class TestCreateEventView(AuthTestCase):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         group = factories.EventGroupFactory.create()
-        group_id = group.pk
         data = {
             'event-description': description,
             'another': u'true',
@@ -443,18 +442,18 @@ class TestCreateEventView(AuthTestCase):
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
             'event-end': VALID_DATE_STRING,
-            'event-group': unicode(group_id),
+            'event-group': group.id,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
             'event-status': models.EVENT_IN_PREPARATION,
         }
 
-        response = self.client.post('/events/groups/%s/new' % group_id, data)
+        response = self.client.post('/events/groups/%s/new' % group.slug, data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
-        self.assertRedirects(response, '/events/groups/%s/new' % group_id)
-        count = models.Event.objects.filter(title=title, description=description, group_id=group_id).count()
+        self.assertRedirects(response, '/events/groups/%s/new' % group.slug)
+        count = models.Event.objects.filter(title=title, description=description, group__slug=group.slug).count()
         logging.info("events:%s", models.Event.objects.all())
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
@@ -668,7 +667,7 @@ class TestEditEventView(AuthTestCase):
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertRedirects(response, "/events/id/%s/" % event.slug)
-        saved_event = models.Event.objects.get(pk=event.id)
+        saved_event = models.Event.objects.get(slug=event.slug)
         self.assertEquals(saved_event.title, data['event-title'])
         self.assertEquals(saved_event.description, data['event-description'])
         self.assertEquals(saved_event.booking_type, data['event-booking_type'])
@@ -690,7 +689,7 @@ class TestEditEventView(AuthTestCase):
         }
 
         response = self.client.post("/events/id/%s/edit" % event.slug, data)
-        saved_event = models.Event.objects.get(pk=event.id)
+        saved_event = models.Event.objects.get(slug=event.slug)
         self.assertEquals(response.status_code, 200)
         logging.info("form errors: %s", response.context['event_form'].errors.as_data())
         self.assertFormError(response, 'event_form', 'booking_type', ['This field is required.'])
@@ -698,8 +697,6 @@ class TestEditEventView(AuthTestCase):
         self.assertEquals(saved_event.title, old_title)
         self.assertEquals(saved_event.description, old_description)
         self.assertTemplateUsed(response, "events/event_form.html")
-
-
 
 
 class TestEventPublishWorkflow(TestCase):

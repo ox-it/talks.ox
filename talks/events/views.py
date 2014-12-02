@@ -117,12 +117,12 @@ def edit_event(request, event_slug):
 
 @login_required
 @permission_required("events.add_event", raise_exception=PermissionDenied)
-def create_event(request, group_id=None):
+def create_event(request, group_slug=None):
     initial = None
     event_group = None
-    logger.debug("group_id:%s", group_id)
-    if group_id:
-        event_group = get_object_or_404(EventGroup, pk=group_id)
+    logger.debug("group_id:%s", group_slug)
+    if group_slug:
+        event_group = get_object_or_404(EventGroup, slug=group_slug)
         initial = {
             'group': event_group,
         }
@@ -145,7 +145,7 @@ def create_event(request, group_id=None):
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
                     # Adding more events, redirect to the create event in existing group form
-                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.slug,)))
                 else:
                     logger.debug("redirecting to create-event")
                     return HttpResponseRedirect(reverse('create-event'))
@@ -170,8 +170,8 @@ def list_event_groups(request):
     return render(request, "events/event_group_list.html", context)
 
 
-def show_event_group(request, event_group_id):
-    group = get_object_or_404(EventGroup, pk=event_group_id)
+def show_event_group(request, event_group_slug):
+    group = get_object_or_404(EventGroup, slug=event_group_slug)
     context = {
         'event_group': group,
     }
@@ -179,8 +179,8 @@ def show_event_group(request, event_group_id):
 
 @login_required
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
-def edit_event_group(request, event_group_id):
-    group = get_object_or_404(EventGroup, pk=event_group_id)
+def edit_event_group(request, event_group_slug):
+    group = get_object_or_404(EventGroup, slug=event_group_slug)
     form = EventGroupForm(request.POST or None, instance=group)
     if request.method == 'POST':
         logging.debug("incoming post: %s", request.POST)

@@ -38,7 +38,7 @@ class EventGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventGroup
-        fields = ('id', 'url', 'title', 'description', 'class_name')
+        fields = ('slug', 'url', 'title', 'description', 'class_name')
 
 
 class PersonSerializer(serializers.ModelSerializer):

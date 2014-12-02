@@ -90,7 +90,13 @@ class EventGroup(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('show-event-group', args=[self.id])
+        return reverse('show-event-group', args=[self.slug])
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = str(uuid.uuid4())
+        super(EventGroup, self).save(*args, **kwargs)
 
 
 class PersonManager(models.Manager):
