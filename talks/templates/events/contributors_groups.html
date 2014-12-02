@@ -42,6 +42,9 @@
                         {{ group.title }}
                     {% endif %}
                 </td>
+                <td>
+                    {{ group.get_group_type_display }}
+                </td>
             </tr>
             {% endfor %}
     </table>
