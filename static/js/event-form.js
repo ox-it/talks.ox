@@ -38,6 +38,10 @@ $(function() {
            $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_group').prop('selected', true)
     })
 
+    $('#create-person-button').data('successCallback', function(newPerson) {
+        $('#id_event-speakers').trigger("addSpeaker", newPerson);
+    })
+
     //On picking a new event group, retrieve the information and set the value of the department organiser field
     $('#id_group').change( function() {
         var groupID = this.value;
