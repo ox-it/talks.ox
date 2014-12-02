@@ -2,7 +2,7 @@ from urllib import urlencode
 
 from django import forms
 from django.conf import settings
-from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
@@ -15,20 +15,21 @@ from . import models, typeahead
 class OxPointDataSource(typeahead.DataSource):
     def __init__(self, **kwargs):
         _types = kwargs.pop('types', [])
-        url = settings.API_OX_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
+        url = settings.API_OX_PLACES_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
         super(OxPointDataSource, self).__init__(
             'oxpoints',
             url=url,
             response_expression='response._embedded.pois',
             # XXX: forcing api to return list if requesting single object
-            get_prefetch_url=lambda values: settings.API_OX_URL + ",".join(values) + ","
+            get_prefetch_url=lambda values: settings.API_OX_PLACES_URL + ",".join(values) + ","
         )
 
 LOCATION_DATA_SOURCE = OxPointDataSource(
     types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
 )
 DEPARTMENT_DATA_SOURCE = OxPointDataSource(
-    types=['/university/department', '/university/museum', '/university/college']
+    types=['/university/department', '/university/museum', '/university/college', '/university/hall',
+           '/university/division']
 )
 TOPICS_DATA_SOURCE = typeahead.DataSource(
     'topics',
@@ -43,6 +44,10 @@ SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     url='/events/persons/suggest?q=%QUERY',
     display_key='name',
     serializer=serializers.PersonSerializer,
+)
+USERS_DATA_SOURCE = typeahead.DataSource(
+    url='/api/user/suggest?q=%QUERY',
+    display_key='email',
 )
 
 
@@ -94,6 +99,15 @@ class EventForm(forms.ModelForm):
         required=False,
     )
 
+    editors = forms.ModelMultipleChoiceField(
+        #todo query set should be only contributors
+        queryset=User.objects.filter(groups__name='Contributors'),
+        label="Users who can edit this event",
+        help_text="Type a user's email",
+        required=False,
+        widget=typeahead.MultipleTypeahead(USERS_DATA_SOURCE),
+    )
+
     class Meta:
         exclude = ('slug', 'embargo')
         model = models.Event
@@ -113,6 +127,13 @@ class EventForm(forms.ModelForm):
     def save(self):
         event = super(EventForm, self).save(commit=False)
         event.save()
+
+        # clear the list of editors and repopulate with the contents of the form
+        event.editor_set = User.objects.none()
+        for user in self.cleaned_data['editors']:
+            event.editor_set.add(user)
+        event.save()
+
         for person in self.cleaned_data['speakers']:
             models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
         event_topics = self.cleaned_data['topics']

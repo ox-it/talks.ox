@@ -31,10 +31,10 @@
         {% endif %}
     </dl>
     <dl>
-        {% if facets.fields.locations %}
+        {% if facets.fields.location %}
             <dt>Location</dt>
-            {% for location in facets.fields.locations|slice:":10" %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=locations_exact:{{ location.0|urlencode }}">{{ location.0 }}</a> ({{ location.1 }})</dd>
+            {% for location in facets.fields.location|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=location_exact:{{ location.0|urlencode }}">{{ location.0 }}</a> ({{ location.1 }})</dd>
             {% endfor %}
         {% endif %}
     </dl>
@@ -75,7 +75,8 @@ return Speakers as main results -- if it was something that we wanted to do.
 It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
 {% endcomment %}
             {{ result.start|date:"D, d M" }}
-            <a href="{% url 'event' result.pk %}">{{ result.title }}</a>
+            {{ result.speakers|join:", " }}
+            <a href="{% url 'show-event' result.pk %}">{{ result.title }}</a>
         </p>
     {% empty %}
         <p>No results found.</p>

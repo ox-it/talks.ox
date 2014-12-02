@@ -13,7 +13,7 @@ from events.views import (homepage, upcoming_events, show_person, edit_person, s
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups, contributors_persons)
 
-from api.views import (EventViewSet, create_person, suggest_person,
+from api.views import (EventViewSet, create_person, suggest_person, suggest_user,
                        save_item, remove_item)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -23,7 +23,7 @@ from users.views import webauth_logout
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
-sqs = SearchQuerySet().facet('speakers', mincount=1).facet('locations', mincount=1).facet('topics', mincount=1)
+sqs = SearchQuerySet().filter(published=True).facet('speakers', mincount=1).facet('location', mincount=1).facet('topics', mincount=1)
 # .date_facet('start', date(2014,1,1), date(2015,1,1), 'month')   removed for now as we want dynamic dates and range
 
 
@@ -33,6 +33,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', webauth_logout, name='logout'),
 
     url(r'^api/', include(router.urls)),
+    url(r'^api/user/suggest$', suggest_user, name='suggest-user'),
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
     url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
@@ -59,4 +60,5 @@ urlpatterns = patterns('',
     url(r'^contributors/persons$', contributors_persons, name='contributors-persons'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^audit/', include(audit_urls, namespace='audit'))
+
 )

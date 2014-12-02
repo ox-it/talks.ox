@@ -1,6 +1,6 @@
 import logging
 import functools
-from datetime import date, timedelta
+from datetime import date
 from django.contrib.auth.models import User
 
 import requests
@@ -9,15 +9,13 @@ from textile import textile_restricted
 
 from django.conf import settings
 from django.db import models
-from django.dispatch.dispatcher import receiver
 from django.template.defaultfilters import date as date_filter
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from haystack.forms import model_choices
 
-from talks.api_ox.api import ApiException, OxfordDateResource, PlacesResource, TopicsResource
+from talks.api_ox.api import ApiException, OxfordDateResource
 
 
 logger = logging.getLogger(__name__)
@@ -283,6 +281,21 @@ class Event(models.Model):
             return self.start.date() == date.today()
         return False
 
+    @property
+    def is_published(self):
+        """Check if the event is published (i.e. not embargo)
+        :return: True if the Event is published else False
+        """
+        if self.embargo:
+            return False
+        elif self.status == EVENT_IN_PREPARATION:
+            return False
+        elif self.status == EVENT_PUBLISHED:
+            return True
+        else:
+            return False
+
+
     def user_can_edit(self, user):
         """
         Check if the given django User is authorised to edit this event.
@@ -291,27 +304,6 @@ class Event(models.Model):
         :return: True if the user is allowed to edit this event, False otherwise
         """
         return self.editor_set.filter(id=user.id).exists() or user.is_superuser
-
-@receiver(models.signals.post_save, sender=Event)
-def index_event(sender, instance, created, **kwargs):
-    """If the User has just been created we use a signal to also create a TalksUser
-    """
-    pass
-
-
-@receiver(models.signals.post_save, sender=Event)
-def fetch_topics(sender, instance, created, **kwargs):
-    """If the User has just been created we use a signal to also create a TalksUser
-    """
-    return      # TODO to be discussed
-    uris = [topic.uri for topic in instance.topics.all()]
-    cached_topics = Topic.objects.filter(uri__in=uris)
-    cached_topics_uris = [topic.uri for topic in cached_topics]
-    missing_topics_uris = set(uris) - set(cached_topics_uris)
-    logger.info("Fetching missing topics {uris}".format(uris=missing_topics_uris))
-    topics = TopicsResource.get(missing_topics_uris)
-    for topic in topics:
-        Topic.objects.create(name=topic.name, uri=topic.uri)
 
 
 reversion.register(Event)
