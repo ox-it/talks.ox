@@ -44,12 +44,14 @@ class EventGroupSerializer(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
-        fields = ('id', 'name', 'email_address')
+        fields = ('id', 'slug', 'name', 'email_address')
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email')
+
 
 def get_item_serializer(item):
     if isinstance(item, Event):
