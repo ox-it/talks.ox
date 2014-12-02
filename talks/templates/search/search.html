@@ -1,18 +1,10 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block search_query %}
+{{ form.q.value }}
+{% endblock search_query %}
 
-<form method="get" action=".">
-    <table>
-        <tbody>
-            {{ form.as_table }}
-            <tr>
-                <td>&nbsp;</td>
-                <td><input type="submit" value="Search"></td>
-            </tr>
-        </tbody>
-    </table>
-</form>
+{% block content %}
 
 {% if query %}
     <div class="container">
