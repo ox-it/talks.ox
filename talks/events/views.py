@@ -106,6 +106,7 @@ def edit_event(request, event_slug):
         'event': event,
         'event_form': form,
         'speaker_form': SpeakerQuickAdd(),
+        'event_edition': True
     }
     if request.method == 'POST':
         if form.is_valid():
@@ -159,6 +160,7 @@ def create_event(request, group_slug=None):
         context = {
             'event_form': PrefixedEventForm(),
             'speaker_form': SpeakerQuickAdd(),
+            'event_edition': False
         }
     return render(request, 'events/event_form.html', context)
 
