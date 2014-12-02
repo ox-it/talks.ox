@@ -40,9 +40,12 @@ $(function() {
 
     //On picking a new event group, retrieve the information and set the value of the department organiser field
     $('#id_group').change( function() {
-        //TODO only update the form based on the eventGroup IF it's not already specified
         var groupID = this.value;
-        url = '/api/eventgroups/id/' + groupID
+        if(!groupID) {
+            //User has probably selected the 'Please select' option
+            return;
+        }
+        var url = '/api/eventgroups/id/' + groupID
 
         //retrieve the ID of the event organiser and apply that to the department field of the form
         $.ajax({
