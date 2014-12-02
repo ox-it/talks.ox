@@ -29,7 +29,7 @@ It is best practice to not access result.object as this would hit the database f
 {% endcomment %}
             {{ result.start|date:"D, d M" }}
             {{ result.speakers|join:", " }}
-            <a href="{% url 'show-event' result.pk %}">{{ result.title }}</a>
+            <a href="{% url 'show-event' result.slug %}">{{ result.title }}</a>
         </p>
     {% empty %}
         <p>No results found.</p>

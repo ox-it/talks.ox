@@ -78,7 +78,7 @@ def _events_list(request, events):
     return render(request, 'events/events.html', context)
 
 
-def show_event(request, event_id):
+def show_event(request, event_slug):
     try:
         # TODO depending if user is admin or not,
         # we should use Event.published here...
@@ -86,7 +86,7 @@ def show_event(request, event_id):
             'speakers',
             'location',
             'group',
-            'department_organiser').get(id=event_id)
+            'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
     context = {
@@ -97,8 +97,8 @@ def show_event(request, event_id):
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
-def edit_event(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
+def edit_event(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
     if not event.user_can_edit(request.user):
         raise PermissionDenied
     form = EventForm(request.POST or None, instance=event, prefix='event')
@@ -118,12 +118,12 @@ def edit_event(request, event_id):
 
 @login_required
 @permission_required("events.add_event", raise_exception=PermissionDenied)
-def create_event(request, group_id=None):
+def create_event(request, group_slug=None):
     initial = None
     event_group = None
-    logger.debug("group_id:%s", group_id)
-    if group_id:
-        event_group = get_object_or_404(EventGroup, pk=group_id)
+    logger.debug("group_id:%s", group_slug)
+    if group_slug:
+        event_group = get_object_or_404(EventGroup, slug=group_slug)
         initial = {
             'group': event_group,
         }
@@ -146,12 +146,12 @@ def create_event(request, group_id=None):
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
                     # Adding more events, redirect to the create event in existing group form
-                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.slug,)))
                 else:
                     logger.debug("redirecting to create-event")
                     return HttpResponseRedirect(reverse('create-event'))
             else:
-                return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
+                return HttpResponseRedirect(reverse('show-event', args=(event.slug,)))
         else:
             logging.debug("form is NOT valid")
             messages.warning(request, "Please correct errors below")
@@ -171,8 +171,8 @@ def list_event_groups(request):
     return render(request, "events/event_group_list.html", context)
 
 
-def show_event_group(request, event_group_id):
-    group = get_object_or_404(EventGroup, pk=event_group_id)
+def show_event_group(request, event_group_slug):
+    group = get_object_or_404(EventGroup, slug=event_group_slug)
     context = {
         'event_group': group,
     }
@@ -180,8 +180,8 @@ def show_event_group(request, event_group_id):
 
 @login_required
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
-def edit_event_group(request, event_group_id):
-    group = get_object_or_404(EventGroup, pk=event_group_id)
+def edit_event_group(request, event_group_slug):
+    group = get_object_or_404(EventGroup, slug=event_group_slug)
     form = EventGroupForm(request.POST or None, instance=group)
     if request.method == 'POST':
         logging.debug("incoming post: %s", request.POST)
@@ -326,11 +326,8 @@ def contributors_persons(request):
     return render(request, 'events/contributors_persons.html', context)
 
 @login_required()
-def show_person(request, person_id):
-    try:
-        person = Person.objects.get(id=person_id)
-    except Person.DoesNotExist:
-        raise Http404
+def show_person(request, person_slug):
+    person = get_object_or_404(Person, slug=person_slug)
 
     context = {
         'person': person,
@@ -340,8 +337,8 @@ def show_person(request, person_id):
 
 @login_required
 @permission_required('events.change_person', raise_exception=PermissionDenied)
-def edit_person(request, person_id):
-    person = get_object_or_404(Person, pk=person_id)
+def edit_person(request, person_slug):
+    person = get_object_or_404(Person, slug=person_slug)
     form = PersonForm(request.POST or None, instance=person)
     if request.method == 'POST':
         if form.is_valid():

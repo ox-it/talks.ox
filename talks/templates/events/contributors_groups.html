@@ -25,8 +25,6 @@
             </ul>
         </div>
 
-
-
     <div class="col-xs-7">
 
     <table class="table table-bordered table-striped">
@@ -38,7 +36,7 @@
             <tr>
                 <td>
                     {% if perms.events.change_eventgroup %}
-                        <a href="{% url 'edit-event-group' group.id %}">{{ group.title }}</a>
+                        <a href="{% url 'edit-event-group' group.slug %}">{{ group.title }}</a>
                     {% else %}
                         {{ group.title }}
                     {% endif %}

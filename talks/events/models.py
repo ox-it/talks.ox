@@ -1,16 +1,16 @@
 import logging
 import functools
 from datetime import date
-from django.contrib.auth.models import User
+import uuid
 
 import requests
 import reversion
 from textile import textile_restricted
 
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import date as date_filter
-from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -99,7 +99,13 @@ class EventGroup(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('show-event-group', args=[self.id])
+        return reverse('show-event-group', args=[self.slug])
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = str(uuid.uuid4())
+        super(EventGroup, self).save(*args, **kwargs)
 
     @property
     def api_organisation(self):
@@ -123,11 +129,17 @@ class Person(models.Model):
 
     objects = PersonManager()
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = str(uuid.uuid4())
+        super(Person, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('show-person', args=[self.id])
+        return reverse('show-person', args=[self.slug])
 
 class TopicItem(models.Model):
 
@@ -267,7 +279,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
-            self.slug = slugify(self.title)  # FIXME max_length, empty title
+            self.slug = str(uuid.uuid4())
         super(Event, self).save(*args, **kwargs)
 
     @property
@@ -278,7 +290,7 @@ class Event(models.Model):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
-        return reverse('show-event', args=[str(self.id)])
+        return reverse('show-event', args=[str(self.slug)])
 
     def formatted_date(self):
         if self.start:

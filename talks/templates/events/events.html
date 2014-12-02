@@ -22,7 +22,7 @@
   </div>
   <div class="panel-body">
       <p>{{ event.description }}</p>
-      <p><a href="{% url 'event' event_id=event.id %}">More details</a></p>
+      <p><a href="{{ event.get_absolute_url }}">More details</a></p>
   </div>
 </div>
 
