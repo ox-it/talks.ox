@@ -113,6 +113,12 @@ class Person(models.Model):
 
     objects = PersonManager()
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = str(uuid.uuid4())
+        super(Person, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return self.name
 
