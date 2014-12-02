@@ -52,7 +52,7 @@
                     </ul>
                     <form class="navbar-form navbar-right" role="search" method="get" action="{% url 'haystack_search' %}">
                         <div class="form-group">
-                            <input id="id_q" name="q" type="text" class="form-control" placeholder="{% block search_query %}Search{% endblock search_query %}" />
+                            <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" value="{% block search_query %}{% endblock search_query %}" />
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
