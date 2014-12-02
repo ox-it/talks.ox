@@ -1,16 +1,16 @@
 import logging
 import functools
 from datetime import date
-from django.contrib.auth.models import User
+import uuid
 
 import requests
 import reversion
 from textile import textile_restricted
 
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import date as date_filter
-from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -249,7 +249,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
-            self.slug = slugify(self.title)  # FIXME max_length, empty title
+            self.slug = str(uuid.uuid4())
         super(Event, self).save(*args, **kwargs)
 
     @property
