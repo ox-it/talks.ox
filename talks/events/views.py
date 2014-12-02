@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.api import serializers
+from talks.events.forms import PersonForm
 from talks.users.authentication import user_in_group_or_super
 
 logger = logging.getLogger(__name__)
@@ -304,3 +305,54 @@ def contributors_eventgroups(request):
     }
 
     return render(request, 'events/contributors_groups.html', context)
+
+@login_required()
+@permission_required('events.change_person', raise_exception=PermissionDenied)
+def contributors_persons(request):
+    persons = Person.objects.all()
+    count = request.GET.get('count', 20)
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(persons, count)
+
+    try:
+        persons = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('contributors-persons')
+
+    context = {
+        'persons' : persons
+    }
+
+    return render(request, 'events/contributors_persons.html', context)
+
+@login_required()
+def show_person(request, person_id):
+    try:
+        person = Person.objects.get(id=person_id)
+    except Person.DoesNotExist:
+        raise Http404
+
+    context = {
+        'person': person,
+    }
+    return render(request, 'events/person.html', context)
+
+
+@login_required
+@permission_required('events.change_person', raise_exception=PermissionDenied)
+def edit_person(request, person_id):
+    person = get_object_or_404(Person, pk=person_id)
+    form = PersonForm(request.POST or None, instance=person)
+    if request.method == 'POST':
+        if form.is_valid():
+            person = form.save()
+            messages.success(request, "Person was updated")
+            return redirect(person.get_absolute_url())
+        else:
+            messages.warning(request,"Please correct errors below")
+    context = {
+        'form': form,
+        'person': person,
+    }
+    return render(request, 'events/person_form.html', context)
