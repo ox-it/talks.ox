@@ -613,7 +613,7 @@ class TestAuthorisation(TestCase):
         data = {
             'event-title': 'lkfjlfkds'
         }
-        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        response = self.client.post("/events/id/%s/edit" % event.slug, data)
         self.assertEquals(response.status_code, 403)
         self.assertTemplateNotUsed(response, "events/event_form.html")
 
@@ -639,7 +639,7 @@ class TestEditEventView(AuthTestCase):
         event = factories.EventFactory.create()
         event.editor_set.add(self.user)
         event.save()
-        response = self.client.get("/events/id/%s/edit" % event.id)
+        response = self.client.get("/events/id/%s/edit" % event.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, event.title)
         self.assertContains(response, event.description)
@@ -664,10 +664,10 @@ class TestEditEventView(AuthTestCase):
             'event-end': VALID_DATE_STRING
         }
 
-        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        response = self.client.post("/events/id/%s/edit" % event.slug, data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
-        self.assertRedirects(response, "/events/id/%s" % event.id)
+        self.assertRedirects(response, "/events/id/%s/" % event.slug)
         saved_event = models.Event.objects.get(pk=event.id)
         self.assertEquals(saved_event.title, data['event-title'])
         self.assertEquals(saved_event.description, data['event-description'])
@@ -689,7 +689,7 @@ class TestEditEventView(AuthTestCase):
             'event-description': 'dflksfoingf',
         }
 
-        response = self.client.post("/events/id/%s/edit" % event.id, data)
+        response = self.client.post("/events/id/%s/edit" % event.slug, data)
         saved_event = models.Event.objects.get(pk=event.id)
         self.assertEquals(response.status_code, 200)
         logging.info("form errors: %s", response.context['event_form'].errors.as_data())

@@ -77,7 +77,7 @@ def _events_list(request, events):
     return render(request, 'events/events.html', context)
 
 
-def show_event(request, event_id):
+def show_event(request, event_slug):
     try:
         # TODO depending if user is admin or not,
         # we should use Event.published here...
@@ -85,7 +85,7 @@ def show_event(request, event_id):
             'speakers',
             'location',
             'group',
-            'department_organiser').get(id=event_id)
+            'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
     context = {
@@ -96,8 +96,8 @@ def show_event(request, event_id):
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
-def edit_event(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
+def edit_event(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
     if not event.user_can_edit(request.user):
         raise PermissionDenied
     form = EventForm(request.POST or None, instance=event, prefix='event')
@@ -150,7 +150,7 @@ def create_event(request, group_id=None):
                     logger.debug("redirecting to create-event")
                     return HttpResponseRedirect(reverse('create-event'))
             else:
-                return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
+                return HttpResponseRedirect(reverse('show-event', args=(event.slug,)))
         else:
             logging.debug("form is NOT valid")
             messages.warning(request, "Please correct errors below")

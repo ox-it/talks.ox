@@ -60,7 +60,7 @@
             <tr>
                 <td>
                     {% if request.user|can_edit:event %}
-                        <a href="{% url 'edit-event' event.id %}">{{ event.title }}</a>
+                        <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
                     {% else %}
                         {{ event.title }}
                     {% endif %}
