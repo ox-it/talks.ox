@@ -61,7 +61,7 @@
     description: Skin
     end: 2014-12-15 14:00:00
     group: null
-    location: 'oxpoints:1'
+    location: 'oxpoints:23233672'
     slug: complete-regeneration-of-skin
     start: 2014-12-15 14:00:00
     title: Complete Regeneration of Skin
@@ -72,7 +72,7 @@
     description: Geo sciences
     end: 2014-12-10 14:00:00
     group: null
-    location: 'oxpoints:2'
+    location: 'oxpoints:23233672'
     slug: deformation-and-melts-litosphere-astenosphere-boundary
     start: 2014-12-10 12:00:00
     title: Feedbacks between deformation and melts in the lithosphere-asthenosphere
@@ -106,7 +106,7 @@
       between hyaluronan polymers and cell surface receptors.
     end: 2014-12-10 13:00:00
     group: null
-    location: 'oxpoints:4'
+    location: 'oxpoints:23233672'
     slug: making-difference
     start: 2014-12-10 12:00:00
     title: How do we know if we're making a difference? Finding solid ground in the
@@ -136,7 +136,7 @@
       \ comparing the practices to those of mature engineering fields."
     end: 2014-08-22 16:30:00
     group: null
-    location: 'oxpoints:2'
+    location: 'oxpoints:23233672'
     slug: persistence-in-poor-estimating
     start: 2014-08-22 16:00:00
     title: Persistence in Poor Estimating in Software Engineering Whys and Hows
@@ -179,7 +179,7 @@
       standard classifiers in a variety of film related categorisation tasks.
     end: 2014-09-02 17:00:00
     group: null
-    location: 'oxpoints:3'
+    location: 'oxpoints:23233672'
     slug: data-driven
     start: 2014-09-02 16:00:00
     title: A data-driven approach to commonsense reasoning based on qualitative spatial
@@ -194,7 +194,7 @@
       \ system back to soundness. Its start has been more encouraging than cynics\
       \ expected, and market conditions have been unexpectedly supportive. But the\
       \ hardest part still lies ahead."
-    location: 'oxpoints:2'
+    location: 'oxpoints:23233672'
     end: 2014-06-09 17:45:00
     group: 1
     slug: banking-union
@@ -210,7 +210,7 @@
       \ Riva will be speaking on obstacles that emerging technology businesses face,\
       \ analysing factors causing shortfalls in funding, social mistrust, and political\
       \ dysfunction, and offering recommendations for dealing with these obstacles."
-    location: 'oxpoints:2'
+    location: 'oxpoints:23233672'
     end: 2014-06-09 20:00:00
     group: 2
     slug: emerging-technology-businesses
@@ -223,7 +223,7 @@
     description: Globalisation and Regional Development in an Age of Economic Volatility
     end: 2014-06-10 17:00:00
     group: null
-    location: 'oxpoints:1'
+    location: 'oxpoints:23233672'
     slug: financialization-wind-energy
     start: 2014-06-10 16:00:00
     title: Financialization of wind energy? The case of Germany
@@ -245,7 +245,7 @@
       \ social protection and provision that arise in response to a world on the move."
     end: 2014-06-19 17:00:00
     group: null
-    location: 'oxpoints:3'
+    location: 'oxpoints:23233672'
     slug: people-culture-move
     start: 2014-06-19 17:00:00
     title: Sites of Encounter - Making Sense of People and Culture on the Move
@@ -256,7 +256,7 @@
     description: ddsad
     end: 2014-06-19 17:30:00
     group: null
-    location: 'oxpoints:'
+    location: 'oxpoints:23233672'
     slug: dsadd
     start: 2014-06-19 17:00:00
     title: dsadd
