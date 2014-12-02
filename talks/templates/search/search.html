@@ -75,6 +75,7 @@ return Speakers as main results -- if it was something that we wanted to do.
 It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
 {% endcomment %}
             {{ result.start|date:"D, d M" }}
+            {{ result.speakers|join:", " }}
             <a href="{% url 'show-event' result.slug %}">{{ result.title }}</a>
         </p>
     {% empty %}
