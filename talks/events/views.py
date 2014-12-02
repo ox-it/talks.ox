@@ -326,11 +326,8 @@ def contributors_persons(request):
     return render(request, 'events/contributors_persons.html', context)
 
 @login_required()
-def show_person(request, person_id):
-    try:
-        person = Person.objects.get(id=person_id)
-    except Person.DoesNotExist:
-        raise Http404
+def show_person(request, person_slug):
+    person = get_object_or_404(Person, slug=person_slug)
 
     context = {
         'person': person,
@@ -340,8 +337,8 @@ def show_person(request, person_id):
 
 @login_required
 @permission_required('events.change_person', raise_exception=PermissionDenied)
-def edit_person(request, person_id):
-    person = get_object_or_404(Person, pk=person_id)
+def edit_person(request, person_slug):
+    person = get_object_or_404(Person, slug=person_slug)
     form = PersonForm(request.POST or None, instance=person)
     if request.method == 'POST':
         if form.is_valid():

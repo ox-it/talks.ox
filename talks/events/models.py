@@ -139,7 +139,7 @@ class Person(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('show-person', args=[self.id])
+        return reverse('show-person', args=[self.slug])
 
 class TopicItem(models.Model):
 
