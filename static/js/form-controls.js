@@ -84,7 +84,6 @@ $(function() {
     //Select and initialise all typeaheads in the original document. Note that multiple new '.typeahead' elements are created.
     //Those from the original document lack the tt-hint or tt-input classes, so exclude these from the selection
     var typeaheads = $('.typeahead:not(.tt-hint):not(.tt-input)');
-    console.log(typeaheads.length);
     typeaheads.each(function() {
         $this = $(this);
         options = {
