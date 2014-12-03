@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load users %}
+
 {% block title %}{{ event.title }}{% endblock %}
 
 {% block extrahead %}
@@ -16,6 +18,8 @@
 
 {% include "events/jsonld_event.html" with event=event location=location url=url %}
 
+{% spaceless %}
+
 {% if perms.events.change_event %}
     <div class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -23,12 +27,17 @@
                 <li><p class="navbar-brand">{{ event.get_status_display }}</p></li>
             </ul>
         <ul class="nav navbar-right">
-            <li><a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a></li>
+            {% if request.user|can_edit:event %}
+                <li><a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a></li>
+            {% else %}
+                <li><p class="navbar-text">Not authorised to edit</p></li>
+            {% endif %}
         </ul>
-
         </div>
     </div>
 {% endif %}
+
+{% endspaceless %}
 
 <div class="panel panel-default">
 

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load users %}
+
 {% block title %}{{ event_group.title }}{% endblock %}
 
 {% block extrahead %}
@@ -15,13 +17,26 @@
 
 {% block content %}
 
+{% spaceless %}
+
+{% if perms.events.change_eventgroup %}
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+        <ul class="nav navbar-right">
+            <li><a class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit</a></li>
+        </ul>
+        </div>
+    </div>
+{% endif %}
+
+{% endspaceless %}
+
 <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">
         <h3 class="panel-title">{{ event_group.title }}</h3>
     </div>
     <div class="panel-body">
-        <a class="pull-right btn btn-default" role="button" href="{% url 'edit-event-group' event_group.id %}">edit</a>
         <p>{{ event_group.description }}</p>
     </div>
     <!-- List group -->
