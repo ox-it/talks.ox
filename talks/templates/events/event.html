@@ -8,13 +8,13 @@
 <meta name="twitter:description" content="{{ event.description }}">
 <meta property="og:title" content="{{ event.title }}" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="" />
+<meta property="og:url" content="{{ url }}" />
 <meta property="og:image" content="" />
 {% endblock %}
 
 {% block content %}
 
-{% include "events/jsonld_event.html" with event=event location=location %}
+{% include "events/jsonld_event.html" with event=event location=location url=url %}
 
 <div class="panel panel-default">
     <!-- Default panel contents -->
@@ -28,8 +28,8 @@
     <ul class="list-group">
         <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
-            {% if event.api_location %}
-            <address>{{ event.api_location.name }}{% if event.api_location.address %}</br>{{ event.api_location.address }}{% endif %}</address>
+            {% if location %}
+            <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
             {% else %}
             Venue to be announced
             {% endif %}

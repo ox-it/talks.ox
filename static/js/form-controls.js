@@ -91,6 +91,13 @@ $(function() {
         if(!sourceConfig) {
             throw Error("Missing data-source attribute");
         }
+
+        //This function may be called again when a modal form opens.
+        //Don't re-initialise typeaheads which have already been initialised
+        if($this.data('bloodhound') != null) {
+            return;
+        }
+
         var prefetchUrl = $this.data('prefetch-url');
         var bloodhound = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace(sourceConfig.displayKey),
