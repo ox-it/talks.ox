@@ -55,19 +55,21 @@
             <td>Title</td>
             <td>Start date</td>
             <td>Status</td>
+            <td>Edit</td>
         </thead>
 
         {% for event in events %}
             <tr>
-                <td>
-                    {% if request.user|can_edit:event %}
-                        <a href="{% url 'edit-event' event.slug %}">{{ event.title }}</a>
-                    {% else %}
-                        {{ event.title }}
-                    {% endif %}
-                </td>
+                <td><a href="{% url 'show-event' event.slug %}">{{ event.title }}</a></td>
                 <td>{{ event.start }}</td>
                 <td>{{ event.status }}</td>
+                <td>
+                    {% if request.user|can_edit:event %}
+                        <a class="btn btn-primary" href="{% url 'edit-event' event.slug %}">Edit</a>
+                    {% else %}
+                        Not authorised
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>

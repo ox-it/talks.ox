@@ -31,18 +31,22 @@
         <thead>
             <td>Group Name</td>
             <td>Group Type</td>
+            <td>Edit</td>
         </thead>
             {% for group in groups %}
             <tr>
                 <td>
-                    {% if perms.events.change_eventgroup %}
-                        <a href="{% url 'edit-event-group' group.slug %}">{{ group.title }}</a>
-                    {% else %}
-                        {{ group.title }}
-                    {% endif %}
+                    <a href="{% url 'show-event-group' group.slug %}">{{ group.title }}</a>
                 </td>
                 <td>
                     {{ group.get_group_type_display }}
+                </td>
+                <td>
+                    {% if perms.events.change_eventgroup %}
+                        <a class="btn btn-primary" href="{% url 'edit-event-group' group.slug %}">Edit</a>
+                    {% else %}
+                        Not authorised
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
