@@ -8,13 +8,13 @@
 <meta name="twitter:description" content="{{ event.description }}">
 <meta property="og:title" content="{{ event.title }}" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="" />
+<meta property="og:url" content="{{ url }}" />
 <meta property="og:image" content="" />
 {% endblock %}
 
 {% block content %}
 
-{% include "events/jsonld_event.html" with event=event location=location %}
+{% include "events/jsonld_event.html" with event=event location=location url=url %}
 
 {% if perms.events.change_event %}
     <div class="navbar navbar-inverse">
