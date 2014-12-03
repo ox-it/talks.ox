@@ -171,8 +171,17 @@ def create_event(request, group_slug=None):
 @permission_required('events.delete_event', raise_exception=PermissionDenied)
 def delete_event(request, event_slug):
     event = get_object_or_404(Event, slug=event_slug)
+
+    # only super users or editors can delete an event
     if not event.user_can_edit(request.user):
         raise PermissionDenied
+
+    # if the user is not a super user, and if the event has already started
+    # it should not be possible to delete it
+    if not request.user.is_superuser:
+        if event.already_started:
+            messages.warning(request, "You cannot delete an event that has already started")
+            return redirect(event.get_absolute_url())
     context = {
         'event': event,
     }

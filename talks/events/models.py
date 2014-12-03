@@ -7,6 +7,7 @@ import requests
 import reversion
 from textile import textile_restricted
 
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
@@ -323,6 +324,11 @@ class Event(models.Model):
         else:
             return False
 
+    @property
+    def already_started(self):
+        if self.start <= timezone.now():
+            return True
+        return False
 
     def user_can_edit(self, user):
         """
