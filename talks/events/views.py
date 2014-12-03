@@ -91,6 +91,7 @@ def show_event(request, event_slug):
         raise Http404
     context = {
         'event': ev,
+        'location': ev.api_location,
         'speakers': ev.speakers.all(),
     }
     return render(request, 'events/event.html', context)
