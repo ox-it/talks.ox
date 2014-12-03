@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
 from rest_framework import viewsets, status, permissions
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
@@ -54,14 +54,6 @@ def suggest_user(request):
     users = User.objects.filter((Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)) & Q(email__startswith=query))
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
-# TODO: require auth
-@api_view(["POST"])
-def create_person(request):
-    serializer = PersonSerializer(data=request.DATA)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
 def get_event_group(request, event_group_id):

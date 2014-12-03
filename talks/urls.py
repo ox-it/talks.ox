@@ -9,11 +9,11 @@ from haystack.views import FacetedSearchView
 
 from rest_framework import routers
 
-from events.views import (homepage, upcoming_events, show_person, edit_person, show_event, edit_event, events_for_day,
+from events.views import (homepage, upcoming_events, show_person, create_person, edit_person, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events, contributors_eventgroups, contributors_persons)
 
-from api.views import (EventViewSet, create_person, suggest_person, suggest_user,
+from api.views import (EventViewSet, suggest_person, suggest_user,
                        save_item, remove_item, get_event_group)
 
 from audit_trail.urls import urlpatterns as audit_urls

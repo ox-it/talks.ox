@@ -64,6 +64,15 @@ $(function() {
         }
     }
 
+    function onAddSpeaker(e, person) {
+        e.preventDefault();
+        e.stopPropagation();
+        var name = $(e.target).data('name');
+        var $input = $('input[name="' + name + '"]', $(e.target).parent('form'));
+        $input = makeInput(e.target, name, person.id);
+        showSelectedValue($(e.target), $input, person);
+    }
+
     function makeInput(sourceInput, name, value) {
         return $('<input>').
             insertBefore(sourceInput).
@@ -123,6 +132,7 @@ $(function() {
         var typeahead = $this.typeahead(options, dataSource);
         typeahead.on('typeahead:selected', onChange);
         typeahead.on('eventGroupChanged', onEventGroupChanged);
+        typeahead.on('addSpeaker', onAddSpeaker);
     });
 
 });
