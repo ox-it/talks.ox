@@ -56,9 +56,13 @@
             Venue to be announced
             {% endif %}
         {% endspaceless %}</li>
-        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% spaceless %}{% for speaker in speakers %}{{ speaker.name}}{% if not forloop.last %}, {% endif %}{% empty %}
-            Speaker to be announced
-        {% endfor %}
+        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% spaceless %}
+            {% for speaker in speakers %}
+                {{ speaker.name}} {% if speaker.bio %}({{ speaker.bio }}){% endif %}
+                {% if not forloop.last %}, {% endif %}
+            {% empty %}
+                Speaker to be announced
+            {% endfor %}
         </li>
         {% endspaceless %}
         {% if event.api_organisation %}

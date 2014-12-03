@@ -125,7 +125,7 @@ class PersonManager(models.Manager):
 class Person(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
-    bio = models.TextField()
+    bio = models.TextField(verbose_name="Affiliation")
     email_address = models.EmailField(max_length=254)
 
     objects = PersonManager()

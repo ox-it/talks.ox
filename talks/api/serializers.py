@@ -42,9 +42,15 @@ class EventGroupSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
+
+    title = serializers.SerializerMethodField(method_name='formatted_title')
+
+    def formatted_title(self, obj):
+        return obj.name + ', ' + obj.bio
+
     class Meta:
         model = Person
-        fields = ('id', 'slug', 'name', 'email_address')
+        fields = ('id', 'slug', 'name', 'email_address', 'title')
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -42,7 +42,7 @@ TOPICS_DATA_SOURCE = typeahead.DataSource(
 SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     'speakers',
     url='/events/persons/suggest?q=%QUERY',
-    display_key='name',
+    display_key='title',
     serializer=serializers.PersonSerializer,
 )
 USERS_DATA_SOURCE = typeahead.DataSource(
@@ -172,11 +172,15 @@ class EventGroupForm(forms.ModelForm):
             'occurence': forms.TextInput(),
         }
 
+
 class PersonForm(forms.ModelForm):
 
     class Meta:
         fields = ('name', 'bio', 'email_address')
         model = models.Person
+        widgets = {
+            'bio': forms.TextInput(),
+        }
 
 
 class SpeakerQuickAdd(forms.ModelForm):
