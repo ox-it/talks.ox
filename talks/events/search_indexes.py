@@ -10,6 +10,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
 
     title = indexes.CharField(model_attr='title')
     description = indexes.CharField(model_attr='description', null=True)
+    slug = indexes.CharField(model_attr='slug', null=False)
     start = indexes.DateTimeField(model_attr='start', faceted=True)
     speakers = indexes.MultiValueField(faceted=True, null=True)
     department = indexes.CharField(faceted=True, null=True)

@@ -38,7 +38,7 @@
             <tr>
                 <td>
                     {% if perms.events.change_person %}
-                        <a href="{% url 'edit-person' person.id %}">{{ person.name }}</a>
+                        <a href="{% url 'edit-person' person.slug %}">{{ person.name }}</a>
                     {% else %}
                         {{ person.name }}
                     {% endif %}

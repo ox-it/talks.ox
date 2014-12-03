@@ -68,13 +68,13 @@ def get_event_group(request, event_group_id):
 
 
 def item_from_request(request):
-    event_id = request.DATA.get('event', None)
+    event_slug = request.DATA.get('event', None)
     group_id = request.DATA.get('group', None)
     # Our JS doesn't support sending both
-    assert not(event_id and group_id)
+    assert not(event_slug and group_id)
     try:
-        if event_id:
-            return Event.objects.get(id=event_id)
+        if event_slug:
+            return Event.objects.get(slug=event_slug)
         elif group_id:
             return EventGroup.objects.get(id=group_id)
     except ObjectDoesNotExist:
