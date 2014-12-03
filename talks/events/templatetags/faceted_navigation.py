@@ -1,6 +1,5 @@
 from django import template
-from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
+
 register = template.Library()
 
 
@@ -43,9 +42,6 @@ def facet_selected(context, **kwargs):
             return kwargs.get('return_value', "filter-selected")
     return ""
 
-@register.filter()
-def can_edit(user, event):
-    return event.user_can_edit(user)
 
 def _set_parameter(query_string, key, value):
     """

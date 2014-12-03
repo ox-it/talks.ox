@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load users %}
+
 {% block title %}{{ event.title }}{% endblock %}
 
 {% block extrahead %}
@@ -16,7 +18,27 @@
 
 {% include "events/jsonld_event.html" with event=event location=location url=url %}
 
+{% spaceless %}
+
+{% if perms.events.change_event %}
+    <div class="container-fluid">
+    <div class="row bg-primary">
+      <div class="col-md-11"><h4>{{ event.get_status_display }}</h4></div>
+      <div class="col-md-1">
+        <strong>
+          {% if request.user|can_edit:event %}
+            <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
+          {% endif %}
+        </strong>
+      </div>
+    </div>
+    </div>
+{% endif %}
+
+{% endspaceless %}
+
 <div class="panel panel-default">
+
     <!-- Default panel contents -->
     <div class="panel-heading">
         <h3 class="panel-title">{{ event.title }}</h3>
