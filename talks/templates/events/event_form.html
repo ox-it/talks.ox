@@ -129,6 +129,9 @@
                     Save and add another Talk
                 </button>
                 <button type="submit" class="btn btn-primary">Done</button>
+                {% if is_editing %}
+                <a class="btn btn-danger" href="{% url 'delete-event' event.slug %}">Delete</a>
+                {% endif %}
             </div>
         </div>
     </div>

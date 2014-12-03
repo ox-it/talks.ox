@@ -108,6 +108,7 @@ def edit_event(request, event_slug):
         'event': event,
         'event_form': form,
         'speaker_form': SpeakerQuickAdd(),
+        'is_editing': True
     }
     if request.method == 'POST':
         if form.is_valid():
@@ -161,8 +162,34 @@ def create_event(request, group_slug=None):
         context = {
             'event_form': PrefixedEventForm(),
             'speaker_form': SpeakerQuickAdd(),
+            'is_editing': False
         }
     return render(request, 'events/event_form.html', context)
+
+
+@login_required
+@permission_required('events.delete_event', raise_exception=PermissionDenied)
+def delete_event(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
+
+    # only super users or editors can delete an event
+    if not event.user_can_edit(request.user):
+        raise PermissionDenied
+
+    # if the user is not a super user, and if the event has already started
+    # it should not be possible to delete it
+    if not request.user.is_superuser:
+        if event.already_started:
+            messages.warning(request, "You cannot delete an event that has already started")
+            return redirect(event.get_absolute_url())
+    context = {
+        'event': event,
+    }
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, "Event has been successfully deleted")
+        return redirect('contributors-events')
+    return render(request, "events/delete_event.html", context)
 
 
 def list_event_groups(request):
@@ -196,6 +223,7 @@ def edit_event_group(request, event_group_slug):
     context = {
         'form': form,
         'event_group': group,
+        'is_editing': True
     }
     return render(request, 'events/event_group_form.html', context)
 
@@ -220,12 +248,31 @@ def create_event_group(request):
     context = {
         'form': form,
         'modal_title': "Add a new event group",
+        'is_editing': False
     }
 
     if is_modal:
         return render(request, 'modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
+
+
+@login_required
+@permission_required('events.delete_eventgroup', raise_exception=PermissionDenied)
+def delete_event_group(request, event_group_slug):
+    event_group = get_object_or_404(EventGroup, slug=event_group_slug)
+    context = {
+        'event_group': event_group,
+        'events': event_group.events.all()
+    }
+    if request.method == 'POST':
+        # first updating all events that were referring to the group to be deleted
+        Event.objects.filter(group=event_group).update(group=None)
+        event_group.delete()
+        messages.success(request, "Event group has been successfully deleted")
+        return redirect('contributors-events')
+    return render(request, "events/delete_event_group.html", context)
+
 
 def contributors_home(request):
     return HttpResponseRedirect(reverse('contributors-events'))
