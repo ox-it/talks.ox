@@ -20,12 +20,13 @@
 {% spaceless %}
 
 {% if perms.events.change_eventgroup %}
-    <div class="navbar navbar-inverse">
-        <div class="container-fluid">
-        <ul class="nav navbar-right">
-            <li><a class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit</a></li>
-        </ul>
-        </div>
+    <div class="container-fluid">
+    <div class="row bg-primary">
+      <div class="col-md-11"></div>
+      <div class="col-md-1">
+        <a class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit</a>
+      </div>
+    </div>
     </div>
 {% endif %}
 

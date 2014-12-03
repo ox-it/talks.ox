@@ -21,19 +21,19 @@
 {% spaceless %}
 
 {% if perms.events.change_event %}
-    <div class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <ul class="nav navbar-left">
-                <li><p class="navbar-brand">{{ event.get_status_display }}</p></li>
-            </ul>
-        <ul class="nav navbar-right">
-            {% if request.user|can_edit:event %}
-                <li><a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a></li>
-            {% else %}
-                <li><p class="navbar-text">Not authorised to edit</p></li>
-            {% endif %}
-        </ul>
-        </div>
+    <div class="container-fluid">
+    <div class="row bg-primary">
+      <div class="col-md-11"><h4>{{ event.get_status_display }}</h4></div>
+      <div class="col-md-1">
+        <strong>
+          {% if request.user|can_edit:event %}
+            <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
+          {% else %}
+            Not authorised to edit
+          {% endif %}
+        </strong>
+      </div>
+    </div>
     </div>
 {% endif %}
 
