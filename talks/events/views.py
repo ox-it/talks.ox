@@ -214,6 +214,7 @@ def edit_event_group(request, event_group_slug):
     context = {
         'form': form,
         'event_group': group,
+        'event_group_edition': True
     }
     return render(request, 'events/event_group_form.html', context)
 
@@ -238,12 +239,29 @@ def create_event_group(request):
     context = {
         'form': form,
         'modal_title': "Add a new event group",
+        'event_group_edition': False
     }
 
     if is_modal:
         return render(request, 'modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
+
+
+@login_required
+@permission_required('events.delete_eventgroup', raise_exception=PermissionDenied)
+def delete_event_group(request, event_group_slug):
+    event_group = get_object_or_404(EventGroup, slug=event_group_slug)
+    context = {
+        'event_group': event_group,
+        'events': event_group.events.all()
+    }
+    if request.method == 'POST':
+        event_group.delete()
+        messages.success(request, "Event group has been successfully deleted")
+        return redirect('contributors-events')
+    return render(request, "events/delete_event_group.html", context)
+
 
 def contributors_home(request):
     return HttpResponseRedirect(reverse('contributors-events'))

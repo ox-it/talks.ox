@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Delete event group{% endblock %}
+
+{% block content %}
+
+    <h3>Delete the event group</h3>
+
+    <p>You are about to delete the event group "{{ event_group.title }}".</p>
+
+    <p>The following events will not belong to any group anymore:</p>
+
+    <ul>
+        {% for event in events %}
+        <li><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> ({{ event.start }})</li>
+        {% endfor %}
+    </ul>
+
+    <p>Do you confirm?</p>
+
+    <p><form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Yes, delete the event group" class="btn btn-danger"></form></p>
+    <p><a href="{{ event_group.get_absolute_url }}">Cancel, and go back to the event group page</a></p>
+
+{% endblock content %}
