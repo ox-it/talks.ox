@@ -91,6 +91,7 @@ def show_event(request, event_slug):
         raise Http404
     context = {
         'event': ev,
+        'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
         'location': ev.api_location,
         'speakers': ev.speakers.all(),
     }
