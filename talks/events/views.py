@@ -108,7 +108,7 @@ def edit_event(request, event_slug):
         'event': event,
         'event_form': form,
         'speaker_form': SpeakerQuickAdd(),
-        'event_edition': True
+        'is_editing': True
     }
     if request.method == 'POST':
         if form.is_valid():
@@ -162,7 +162,7 @@ def create_event(request, group_slug=None):
         context = {
             'event_form': PrefixedEventForm(),
             'speaker_form': SpeakerQuickAdd(),
-            'event_edition': False
+            'is_editing': False
         }
     return render(request, 'events/event_form.html', context)
 
@@ -223,7 +223,7 @@ def edit_event_group(request, event_group_slug):
     context = {
         'form': form,
         'event_group': group,
-        'event_group_edition': True
+        'is_editing': True
     }
     return render(request, 'events/event_group_form.html', context)
 
@@ -248,7 +248,7 @@ def create_event_group(request):
     context = {
         'form': form,
         'modal_title': "Add a new event group",
-        'event_group_edition': False
+        'is_editing': False
     }
 
     if is_modal:
