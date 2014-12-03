@@ -51,7 +51,8 @@ def suggest_person(request):
 @permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
 def suggest_user(request):
     query = request.GET.get('q', '')
-    users = User.objects.filter((Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)) & Q(email__startswith=query))
+    users = User.objects.filter((Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS))
+                                & Q(email__startswith=query)).distinct()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
