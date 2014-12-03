@@ -257,6 +257,8 @@ def delete_event_group(request, event_group_slug):
         'events': event_group.events.all()
     }
     if request.method == 'POST':
+        # first updating all events that were referring to the group to be deleted
+        Event.objects.filter(group=event_group).update(group=None)
         event_group.delete()
         messages.success(request, "Event group has been successfully deleted")
         return redirect('contributors-events')
