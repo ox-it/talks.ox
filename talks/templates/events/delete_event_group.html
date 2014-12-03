@@ -10,6 +10,7 @@
 
     <p>You are about to delete the event group "{{ event_group.title }}".</p>
 
+    {% if events %}
     <p>The following events will not belong to any group anymore:</p>
 
     <ul>
@@ -17,6 +18,9 @@
         <li><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> ({{ event.start }})</li>
         {% endfor %}
     </ul>
+    {% else %}
+    <p>No events belong to the group.</p>
+    {% endif %}
 
     <p>Do you confirm?</p>
 
