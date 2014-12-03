@@ -252,7 +252,7 @@ def create_event_group(request):
     }
 
     if is_modal:
-        return render(request, 'modal_form.html', context, status=status_code)
+        return render(request, 'events/event_group_modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
 
@@ -301,7 +301,7 @@ def create_person(request):
     }
 
     if is_modal:
-        return render(request, 'modal_form.html', context, status=status_code)
+        return render(request, 'events/person_modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/person_form.html', context, status=status_code)
 

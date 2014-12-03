@@ -13,7 +13,8 @@
         <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
     {% endfor %}
 {% endif %}
-        {{ form|bootstrap_horizontal }}
+    {% include 'events/_event_group_form_fields.html' %}
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
