@@ -35,12 +35,30 @@ $(function() {
     });
 
     $('#create-group-button').data('successCallback', function(newGroup) {
-           $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_group').prop('selected', true)
+        $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_group').prop('selected', true);
+
+        //update the event's department, if the newly created group has it set
+        if (newGroup.department_organiser != null) {
+            updateEventDepartment(newGroup.department_organiser);
+        }
     })
 
     $('#create-person-button').data('successCallback', function(newPerson) {
         $('#id_event-speakers').trigger("addSpeaker", newPerson);
     })
+
+    function updateEventDepartment(location_id) {
+        $.ajax({
+                    type:'GET',
+                    url: 'http://api.m.ox.ac.uk/places/' + location_id,
+                    success: function(response) {
+                        $('#id_event-department_organiser').trigger("eventGroupChanged", response);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                })
+    }
 
     //On picking a new event group, retrieve the information and set the value of the department organiser field
     $('#id_group').change( function() {
@@ -57,16 +75,7 @@ $(function() {
             url: url,
             success: function(response) {
                 //retrieve the name of the location in question
-                $.ajax({
-                    type:'GET',
-                    url: 'http://api.m.ox.ac.uk/places/' + response.department_organiser,
-                    success: function(response) {
-                        $('#id_event-department_organiser').trigger("eventGroupChanged", response);
-                    },
-                    error: function(err) {
-                        console.log(err);
-                    }
-                })
+                updateEventDepartment(response.department_organiser);
             },
             error: function(err) {
                 console.log(err);
