@@ -273,11 +273,8 @@ def contributors_events(request):
     # contain "page" so that we can... paginate
     args = {'count': count}
 
-    if events_editable:
-        if request.user.is_superuser:
-            events = Event.objects.all()
-        else:
-            events = Event.objects.filter(editor_set__in=[request.user])
+    if events_editable and not request.user.is_superuser:
+        events = Event.objects.filter(editor_set__in=[request.user])
         args['editable'] = 'true'
     else:
         events = Event.objects.all()
