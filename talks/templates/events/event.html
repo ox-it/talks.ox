@@ -28,8 +28,6 @@
         <strong>
           {% if request.user|can_edit:event %}
             <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
-          {% else %}
-            Not authorised to edit
           {% endif %}
         </strong>
       </div>
