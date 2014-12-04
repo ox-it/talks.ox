@@ -128,6 +128,8 @@ class EventForm(forms.ModelForm):
 
     def save(self):
         event = super(EventForm, self).save(commit=False)
+        # saved with commit=False because of the ManyToMany relations
+        # in the model
         event.save()
 
         # clear the list of editors and repopulate with the contents of the form
