@@ -17,6 +17,14 @@ test teardown
     stop server
     server_command  flush  interactive=${False}
 
+test setup edit
+    start server
+    server_command dumpdata format=yaml
+    create superuser  test   test
+#   Create event group and events
+    Login as test test
+
+
 go to ${page}
     go to  ${page.url}
 

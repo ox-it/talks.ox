@@ -58,6 +58,10 @@ add_talk_page = Page('/events/new')
 talk_page = Page('/events/id/\d+')
 login_page = Page('/admin/login/')
 
+# dynamic pages
+
+edit_talk_page = lambda slug: Page('/events/id/%s/edit' % slug)
+
 
 # elements
 

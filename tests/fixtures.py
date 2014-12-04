@@ -6,6 +6,7 @@ from talks.events import factories
 FACTORIES = {
     'eventgroup': factories.EventGroupFactory,
     'person': factories.PersonFactory,
+    'event': factories.EventFactory,
 }
 
 django.setup()
