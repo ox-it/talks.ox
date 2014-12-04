@@ -168,7 +168,22 @@ Scenario: Properly display typeahead fields in newly created event
 Scenario: Create speaker on the go
     [Tags]  todo
 Scenario: Save and add another
-    [Tags]  todo
+
+    go to ${add talk page}
+    type "something" into ${title field}
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current date and time for ${datetimepicker[0]}
+    ${datetimepicker[0]} should disappear
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current date and time for ${datetimepicker[1]}
+    ${datetimepicker[1]} should disappear
+    click on ${button save add another}
+    current page should be ${add talk page}
+    ${success message} should be displayed
+    ${success message} should contain text "New event has been created"
+
 
 Scenario: Preserve form data after validation
     create  person  name=James Bond
