@@ -127,7 +127,7 @@ Scenario: Lookup speaker
 
 Scenario: Properly display typeahead fields in newly created event
     create  person  name=James Bond
-    create  person  name=Napoleon Solo
+    create  person  name=Napoleon Solo      bio=IT Services
 
     go to ${add_talk_page}
     fill in required fields
@@ -162,7 +162,8 @@ Scenario: Properly display typeahead fields in newly created event
     page should contain text "Venue: 7-19 Banbury Road"
     page should contain text "Organiser: Chemical Biology"
     page should contain text "Topics: Biodiversity"
-    page should contain text "Speakers: James Bond, Napoleon Solo"
+    page should contain text "James Bond"
+    page should contain text "Napoleon Solo (IT Services)"
 
 Scenario: Create speaker on the go
     [Tags]  todo

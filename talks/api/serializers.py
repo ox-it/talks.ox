@@ -46,7 +46,10 @@ class PersonSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField(method_name='formatted_title')
 
     def formatted_title(self, obj):
-        return obj.name + ', ' + obj.bio
+        if obj.bio:
+            return obj.name + ', ' + obj.bio
+        else:
+            return obj.name
 
     class Meta:
         model = Person
