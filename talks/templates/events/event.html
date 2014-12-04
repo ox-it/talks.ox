@@ -53,15 +53,13 @@
             {% if location %}
             <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
             {% else %}
-            Venue to be announced
+            <span>Venue to be announced<span>
             {% endif %}
         {% endspaceless %}</li>
-        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% spaceless %}
-            {% for speaker in speakers %}
-                {{ speaker.name}} {% if speaker.bio %}({{ speaker.bio }}){% endif %}
-                {% if not forloop.last %}, {% endif %}
+        {% spaceless %}
+        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<span>{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}</span>
             {% empty %}
-                Speaker to be announced
+                <span>Speaker to be announced</span>
             {% endfor %}
         </li>
         {% endspaceless %}
@@ -71,7 +69,9 @@
         {% if event.group %}
         <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
         {% endif %}
-        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}{{ topic.prefLabel }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        {% spaceless %}
+        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}<span>{{ topic.prefLabel }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        {% endspaceless %}
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>
         {% if event.booking_url %}
             <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>
