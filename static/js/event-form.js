@@ -35,7 +35,7 @@ $(function() {
     });
 
     $('#create-group-button').data('successCallback', function(newGroup) {
-        $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_group').prop('selected', true);
+        $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_event-group').prop('selected', true);
 
         //update the event's department, if the newly created group has it set
         if (newGroup.department_organiser != null) {
@@ -61,7 +61,7 @@ $(function() {
     }
 
     //On picking a new event group, retrieve the information and set the value of the department organiser field
-    $('#id_group').change( function() {
+    $('#id_event-group').change( function() {
         var groupID = this.value;
         if(!groupID) {
             //User has probably selected the 'Please select' option
