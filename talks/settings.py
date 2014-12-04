@@ -50,8 +50,8 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
-API_OX_PLACES_URL = 'http://api.m.ox.ac.uk/places/'
-API_OX_DATES_URL = 'http://api.m.ox.ac.uk/dates/'
+API_OX_PLACES_URL = 'https://api.m.ox.ac.uk/places/'
+API_OX_DATES_URL = 'https://api.m.ox.ac.uk/dates/'
 TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
 # Application definition
