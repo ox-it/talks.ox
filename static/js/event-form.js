@@ -4,11 +4,11 @@ $(function() {
     // Register event to show event group forms
     $('#id_event-group-enabled').on('change', function(ev) {
         if (ev.target.checked) {
-            $('#id_group').prop('disabled', false)
+            $('#id_event-group').prop('disabled', false)
             $('.event-group').slideDown(animationTime);
         } else {
             $('.event-group').slideUp(animationTime);
-            $('#id_group').prop('disabled', true)
+            $('#id_event-group').prop('disabled', true)
         }
     });
 
