@@ -45,9 +45,11 @@ SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='title',
     serializer=serializers.PersonSerializer,
 )
-USERS_DATA_SOURCE = typeahead.DataSource(
+USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'users',
     url='/api/user/suggest?q=%QUERY',
     display_key='email',
+    serializer=serializers.UserSerializer
 )
 
 
@@ -99,7 +101,7 @@ class EventForm(forms.ModelForm):
         required=False,
     )
 
-    editors = forms.ModelMultipleChoiceField(
+    editor_set = forms.ModelMultipleChoiceField(
         #todo query set should be only contributors
         queryset=User.objects.filter(groups__name='Contributors'),
         label="Users who can edit this event",
@@ -130,7 +132,7 @@ class EventForm(forms.ModelForm):
 
         # clear the list of editors and repopulate with the contents of the form
         event.editor_set = User.objects.none()
-        for user in self.cleaned_data['editors']:
+        for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
         event.save()
 
