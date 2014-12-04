@@ -103,7 +103,10 @@ def edit_event(request, event_slug):
     event = get_object_or_404(Event, slug=event_slug)
     if not event.user_can_edit(request.user):
         raise PermissionDenied
-    form = EventForm(request.POST or None, instance=event, prefix='event')
+    # providing data for topics/speakers as it is not straight from the Model
+    initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
+               'speakers': event.speakers.all()}        # different of person_set
+    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,
         'event_form': form,
