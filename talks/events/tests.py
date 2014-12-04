@@ -377,7 +377,6 @@ class TestCreateEventView(AuthTestCase):
         self.assertContains(response, "Oxford Talks")
         self.assertContains(response, "Add Talk")
         self.assertIn('event_form', response.context)
-        self.assertIn('speaker_form', response.context)
 
     def test_get_nonexistent_group(self):
         response = self.client.get('/events/groups/8475623/new')
