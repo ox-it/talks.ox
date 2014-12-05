@@ -11,6 +11,11 @@ Test Setup  test setup
 Test teardown  test teardown
 
 *** Test Cases ***
+Scenario: test the test data creation
+    Create test data
+    go to ${show_talk_page('a-maths-talk')}
+    capture page screenshot  show_event.png
+
 Scenario: edit a simple talk
     Create sample event
     go to ${edit_talk_page('${event_slug}')}
@@ -30,13 +35,12 @@ Scenario: change location
 Scenario: initialise with correct data
     create test data
     go to ${edit_talk_page('a-maths-talk')}
-    #set up the speakers, topics etc here, rather than creating programmatically
     page should contain text "Banbury Road"
+    page should contain text "Chemical Biology"
     page should contain text "James Bond"
-    page should contain text "Oxford Centre for Industrial and Applied Mathematics"
     page should contain text "A maths conference"
-    page should contain text "Mathematics"
-    page should contain text "Numbers, Ordinal"
+    page should contain text "Biodiversity"
+    page should contain text "Plant diversity"
     page should contain text "contrib.user@users.com"
 
 Scenario: remove speaker
@@ -51,16 +55,16 @@ Scenario: remove speaker
 Scenario: remove topic
     create test data
     go to ${edit_talk_page('a-maths-talk')}
-    page should contain text "Mathematics"
-    page should contain text "Numbers, Ordinal"
+    page should contain text "Biodiversity"
+    page should contain text "Plant diversity"
     click on ${remove item('event-topics')}
     #assuming 'click on' clicks on the first element found by the locator, so do it again
     click on ${remove item('event-topics')}
-    page should not contain text "Mathematics"
-    page should not contain text "Numbers, Ordinal"
+    page should not contain text "Biodiversity"
+    page should not contain text "Plant diversity"
     click on ${button done}
-    page should not contain text "Mathematics"
-    page should not contain text "Numbers, Ordinal"
+    page should not contain text "Biodiversity"
+    page should not contain text "Plant diversity"
 
 *** Keywords ***
 Create sample event

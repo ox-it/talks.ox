@@ -1,7 +1,7 @@
 *** Variables ***
 ${event_name}           A mathematics talk
 ${event_slug}           %Sdssgd4955-sdfjalst%%sjksgi
-${event_description}    A seminar on maths
+${event_description}    A talk on maths
 ${LOCATION_its}         oxpoints:40002001
 
 *** Keywords ***

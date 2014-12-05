@@ -61,7 +61,7 @@ login_page = Page('/admin/login/')
 # dynamic pages
 
 edit_talk_page = lambda slug: Page('/events/id/%s/edit' % slug)
-
+show_talk_page = lambda slug: Page('/events/id/%s' % slug)
 
 # elements
 
