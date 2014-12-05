@@ -97,3 +97,4 @@ modal_dialog_field = lambda label: Element('//*[@id=//*[@id="form-modal"]//label
 suggested_item = lambda label: Element('//a[contains(text(), "%s")][contains(@class, "js-suggestion")]' % label)
 suggestion_popup_item = lambda label: Element('//*[contains(., "%s")][@class="tt-suggestion"]' % label)
 list_group_item = lambda label: Element('//*[contains(@class, "list-group-item")][contains(text(), "%s")]' % label)
+remove_item = lambda label: Element('//input[@name="%s"]/following-sibling::div/a' % label)
