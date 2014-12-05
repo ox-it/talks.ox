@@ -38,12 +38,14 @@
         <h3 class="panel-title">{{ event_group.title }}</h3>
     </div>
     <div class="panel-body">
-        <p>{{ event_group.description }}</p>
+        <p>{% if event_group.description %}{{ event_group.description }}{% else %}<i>This group does not yet have a description</i>{% endif %}</p>
     </div>
     <!-- List group -->
     <ul class="list-group">
         <li class="list-group-item"><strong>Type</strong>: {{ event_group.get_group_type_display }}</li>
+    {% if event_group.organiser %}
         <li class="list-group-item"><strong>Organiser</strong>: {{ event_group.organiser.name }}</li>
+    {% endif %}
     {% if event_group.occurence %}
         <li class="list-group-item"><strong>Occurence</strong>: {{ event_group.occurence }}</li>
     {% endif %}

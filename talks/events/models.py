@@ -77,7 +77,7 @@ class EventGroup(models.Model):
 
     title = models.CharField(max_length=250)
     slug = models.SlugField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
     group_type = models.CharField(
         blank=True,
         null=True,
