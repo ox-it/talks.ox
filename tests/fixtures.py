@@ -60,7 +60,7 @@ def create_test_data():
     event_group.save()
 
     #event
-    event = factories.EventFactory.create(title='A maths talk', slug='a-maths-talk',
+    event = factories.EventFactory.create(title=event1_title, slug=event1_slug,
                                           description='Description for a talk about maths',
                                           location='oxpoints:40002001',
                                           department_organiser='oxpoints:23233906')
@@ -68,10 +68,10 @@ def create_test_data():
     PersonEvent.objects.create(person=person1, event=event, role=ROLES_SPEAKER)
 
     event_ct = ContentType.objects.get_for_model(Event)
-    TopicItem.objects.create(uri="http://id.worldcat.org/fast/1012163",     #Mathematics
+    TopicItem.objects.create(uri="http://id.worldcat.org/fast/1429860",     # Biodiversity
                              content_type=event_ct,
                              object_id=event.id)
-    TopicItem.objects.create(uri="http://id.worldcat.org/fast/1041239",     #Numbers, Ordinal
+    TopicItem.objects.create(uri="http://id.worldcat.org/fast/1737875",     # Aquatic biodiversity
                              content_type=event_ct,
                              object_id=event.id)
     event.save()

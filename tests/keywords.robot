@@ -55,6 +55,9 @@ ${element} should contain text "${text}"
 ${element} should not contain text "${text}"
     Run keyword if  ${element=='page'}   page should not contain  ${text}    ELSE    Element should not contain  ${element.locator}  ${text}
 
+${element} should appear text "${text}"
+    Wait until keyword succeeds     3s   0.2s    ${element} should contain text "${text}"
+
 ${element} selected item should be "${label}"
     Element should be visible  ${element.locator}
     ${v}=  get selected list label  ${element.locator}
