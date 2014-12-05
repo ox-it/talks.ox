@@ -213,8 +213,7 @@ class TestEventGroupForm(TestCase):
         self.assertEquals(form.is_valid(), False, "empty form should not validate")
         errors = form.errors.as_data()
         self.assertIn('title', errors)
-        self.assertIn('description', errors)
-        self.assertEquals(len(errors), 2)
+        self.assertEquals(len(errors), 1)
 
     def test_all_fields_blanked(self):
         data = {
@@ -226,8 +225,7 @@ class TestEventGroupForm(TestCase):
         self.assertEquals(form.is_valid(), False, "blanked form should not validate")
         errors = form.errors.as_data()
         self.assertIn('title', errors)
-        self.assertIn('description', errors)
-        self.assertEquals(len(errors), 2)
+        self.assertEquals(len(errors), 1)
 
     def test_all_fields_valid(self):
         data = {
