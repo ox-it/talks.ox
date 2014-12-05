@@ -90,7 +90,7 @@ class EventForm(forms.ModelForm):
     )
 
     location = OxPointField(LOCATION_DATA_SOURCE, label="Venue", required=False)
-    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Department")
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
 
     group = forms.ModelChoiceField(
         models.EventGroup.objects.all(),
@@ -152,7 +152,7 @@ class EventForm(forms.ModelForm):
 
 class EventGroupForm(forms.ModelForm):
 
-    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Department")
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
 
     organiser = forms.ModelChoiceField(
         queryset=models.Person.objects.all(),
