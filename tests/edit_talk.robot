@@ -41,7 +41,7 @@ Scenario: remove speaker
     click on ${remove item('event-speakers')}
     page should not contain text "James Bond"
     click on ${button done}
-    current page should be ${show_talk_page('${event1_slug}')}
+    Location should be  ${show_talk_page('${event1_slug}').url}
     page should not contain text "James Bond"
 
 Scenario: remove topic
@@ -54,6 +54,6 @@ Scenario: remove topic
     page should not contain text "Biodiversity"
     page should not contain text "Aquatic biodiversity"
     click on ${button done}
-    current page should be ${show_talk_page('${event1_slug}')}
+    Location should be  ${show_talk_page('${event1_slug}').url}
     page should not contain text "Biodiversity"
     page should not contain text "Aquatic biodiversity"

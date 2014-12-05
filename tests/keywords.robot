@@ -35,7 +35,9 @@ click on ${element}
     Click element  ${element.locator} 
 
 current page should be ${page}
-    log  TODO
+    # TODO this should use a regular expression
+    # e.g. when redirecting after creating an event
+    Location should contain     ${page.url}
 
 ${element} should be displayed
     Element should be visible  ${element.locator}
