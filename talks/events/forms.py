@@ -102,8 +102,8 @@ class EventForm(forms.ModelForm):
     editors = forms.ModelMultipleChoiceField(
         #todo query set should be only contributors
         queryset=User.objects.filter(groups__name='Contributors'),
-        label="Users who can edit this event",
-        help_text="Type a user's email",
+        label="Other event organisers who can edit this event",
+        help_text="Type an event organiser's email address",
         required=False,
         widget=typeahead.MultipleTypeahead(USERS_DATA_SOURCE),
     )
