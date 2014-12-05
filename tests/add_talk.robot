@@ -90,7 +90,7 @@ Scenario: Lookup venue
     
 Scenario: Lookup department
     go to ${add_talk_page}
-    type "biol" into ${field('Department')}
+    type "biol" into ${field('Organising department')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
@@ -135,7 +135,7 @@ Scenario: Properly display typeahead fields in newly created event
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "7-19 Banbury Road"
     click on ${suggestion popup item('Banbury Road')}
-    type "biol" into ${field('Department')}
+    type "biol" into ${field('Organising department')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
@@ -160,7 +160,7 @@ Scenario: Properly display typeahead fields in newly created event
     ${success message} should be displayed
     ${success message} should contain text "New event has been created"
     page should contain text "Venue: 7-19 Banbury Road"
-    page should contain text "Organiser: Chemical Biology"
+    page should contain text "Organising department: Chemical Biology"
     page should contain text "Topics: Biodiversity"
     page should contain text "James Bond"
     page should contain text "Napoleon Solo (IT Services)"
@@ -194,7 +194,7 @@ Scenario: Preserve form data after validation
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "7-19 Banbury Road"
     click on ${suggestion popup item('Banbury Road')}
-    type "biol" into ${field('Department')}
+    type "biol" into ${field('Organising department')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
