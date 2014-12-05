@@ -15,7 +15,9 @@ Suite teardown
 
 test setup
     start server
-    server_command  dumpdata  format=yaml
+    # use dumpdata if you want to check what is
+    # in the database, disabled by default
+    #server_command  dumpdata  format=yaml
     create superuser  test     test
     Login as test test
 
