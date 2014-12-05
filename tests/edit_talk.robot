@@ -41,6 +41,27 @@ Scenario: initialise with correct data
     page should contain text "Numbers, Ordinal"
     page should contain text "contrib.user@users.com"
 
+Scenario: remove speaker
+    create test data
+    go to ${edit_talk_page('a-maths-talk')}
+    click on ${remove item('event-speaker')}
+    page should not contain     James Bond
+    click on ${button done}
+    page should not contain     James Bond
+
+Scenario: remove topic
+    create test data
+    go to ${edit_talk_page('a-maths-talk')}
+    click on ${remove item('event-topics')}
+    #assuming 'click on' clicks on the first element found by the locator, so do it again
+    click on ${remove item('event-topics')}
+    capture page screenshot  filename=removed_topic.png
+    page should not contain  Mathematics
+    page should not contain  Numbers, Ordinal
+    click on ${button done}
+    page should not contain  Mathematics
+    page should not contain  Numbers, Ordinal
+
 *** Keywords ***
 Create sample event
     create  event   title=${event_name}     slug=${event_slug}      description=${event_description}    location=oxpoints:40002001   department_organiser=oxpoints:23232596
