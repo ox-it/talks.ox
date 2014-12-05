@@ -55,13 +55,13 @@ class Element(object):
 # pages
 
 add_talk_page = Page('/events/new')
-talk_page = Page('/events/id/\d+')
+talk_page = Page('/events/id/')     # TODO this should be a regex
 login_page = Page('/admin/login/')
 
 # dynamic pages
 
 edit_talk_page = lambda slug: Page('/events/id/%s/edit' % slug)
-
+show_talk_page = lambda slug: Page('/events/id/%s/' % slug)
 
 # elements
 
@@ -69,9 +69,10 @@ abstract_field = Element('css=#id_event-description')
 title_field = Element('css=#id_event-title')
 start_field = Element('css=#id_event-start')
 end_field = Element('css=#id_event-end')
-group_field = Element('css=#id_group')
+group_field = Element('css=#id_event-group')
 venue_field = Element('css=#id_event-location_suggest')
 button_done = Element('//button[text()="Done"]')
+button_save_add_another = Element('css=#btn-save-add-another')
 checkbox_in_group_section = Element('css=#id_event-group-enabled')
 error_message = Element('//*[contains(@class, "alert-warning")]')
 success_message = Element('//*[contains(@class, "alert-success")]')

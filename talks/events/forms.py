@@ -3,6 +3,7 @@ from urllib import urlencode
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
@@ -10,6 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from talks.api import serializers
 
 from . import models, typeahead
+from talks.users.authentication import GROUP_EDIT_EVENTS
 
 
 class OxPointDataSource(typeahead.DataSource):
@@ -45,9 +47,11 @@ SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='title',
     serializer=serializers.PersonSerializer,
 )
-USERS_DATA_SOURCE = typeahead.DataSource(
+USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'users',
     url='/api/user/suggest?q=%QUERY',
     display_key='email',
+    serializer=serializers.UserSerializer
 )
 
 
@@ -99,9 +103,8 @@ class EventForm(forms.ModelForm):
         required=False,
     )
 
-    editors = forms.ModelMultipleChoiceField(
-        #todo query set should be only contributors
-        queryset=User.objects.filter(groups__name='Contributors'),
+    editor_set = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
         label="Other event organisers who can edit this event",
         help_text="Type an event organiser's email address",
         required=False,
@@ -126,22 +129,39 @@ class EventForm(forms.ModelForm):
 
     def save(self):
         event = super(EventForm, self).save(commit=False)
+        # saved with commit=False because of the ManyToMany relations
+        # in the model
         event.save()
 
         # clear the list of editors and repopulate with the contents of the form
-        event.editor_set = User.objects.none()
-        for user in self.cleaned_data['editors']:
+        event.editor_set.clear()
+        for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
         event.save()
 
-        for person in self.cleaned_data['speakers']:
-            models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
-        event_topics = self.cleaned_data['topics']
+        current_speakers = event.speakers
+        form_speakers = self.cleaned_data['speakers']
+        for person in form_speakers:
+            models.PersonEvent.objects.get_or_create(person=person, event=event, role=models.ROLES_SPEAKER)
+        for person in current_speakers:
+            if person not in form_speakers:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
+                rel.delete()
+
+        current_topics_uris = [t.uri for t in event.topics.all()]
+        form_topics = self.cleaned_data['topics']
         event_ct = ContentType.objects.get_for_model(models.Event)
-        for topic in event_topics:
-            models.TopicItem.objects.create(uri=topic,
-                                            content_type=event_ct,
-                                            object_id=event.id)
+        for topic in form_topics:
+            models.TopicItem.objects.get_or_create(uri=topic,
+                                                   content_type=event_ct,
+                                                   object_id=event.id)
+        for topic_uri in current_topics_uris:
+            if topic_uri not in form_topics:
+                ti = models.TopicItem.objects.get(uri=topic_uri,
+                                                  content_type=event_ct,
+                                                  object_id=event.id)
+                ti.delete()
+
         return event
 
     def clean(self):
