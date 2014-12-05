@@ -13,7 +13,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
-EVENT_DATETIME_FORMAT = "D j M H:i"
+EVENT_DATETIME_FORMAT = "j F Y, G:i"
 EVENT_TIME_FORMAT = "H:i"
 
 DATETIME_INPUT_FORMATS = (
