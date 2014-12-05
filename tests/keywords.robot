@@ -1,3 +1,9 @@
+*** Variables ***
+${event_name}           A mathematics talk
+${event_slug}           %Sdssgd4955-sdfjalst%%sjksgi
+${event_description}    A seminar on maths
+${LOCATION_its}         oxpoints:40002001
+
 *** Keywords ***
 Suite setup
     Open browser  ${HOST}  browser=${BROWSER}
@@ -45,6 +51,9 @@ ${element} should disappear
 
 ${element} should contain text "${text}"
     Run keyword if  ${element=='page'}  page should contain  ${text}   ELSE  Element should contain  ${element.locator}  ${text}
+
+${element} should not contain text "${text}"
+    Run keyword if  ${element=='page'}   page should not contain  ${text}    ELSE    Element should not contain  ${element.locator}  ${text}
 
 ${element} selected item should be "${label}"
     Element should be visible  ${element.locator}
