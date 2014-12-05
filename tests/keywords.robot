@@ -1,8 +1,8 @@
 *** Variables ***
-${event_name}           "A mathematics seminar"
+${event_name}           A mathematics talk
 ${event_slug}           %Sdssgd4955-sdfjalst%%sjksgi
-${event_description}    "A seminar on maths"
-${LOCATION_its}         "oxpoints:40002001"
+${event_description}    A seminar on maths
+${LOCATION_its}         oxpoints:40002001
 
 *** Keywords ***
 Suite setup
