@@ -1,9 +1,3 @@
-*** Variables ***
-${event_name}           A mathematics talk
-${event_slug}           %Sdssgd4955-sdfjalst%%sjksgi
-${event_description}    A seminar on maths
-${LOCATION_its}         oxpoints:40002001
-
 *** Keywords ***
 Suite setup
     Open browser  ${HOST}  browser=${BROWSER}
@@ -24,6 +18,10 @@ test setup
 test teardown
     stop server
     server_command  flush  interactive=${False}
+
+test edit setup
+    test setup
+    create test data
 
 go to ${page}
     go to  ${page.url}

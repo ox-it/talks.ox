@@ -7,6 +7,8 @@ from talks.events.models import Event, EventGroup, Person, PersonEvent, TopicIte
 from talks.users.authentication import GROUP_EDIT_EVENTS
 from django.contrib.contenttypes.models import ContentType
 
+from events import *
+
 
 FACTORIES = {
     'eventgroup': factories.EventGroupFactory,
@@ -33,10 +35,12 @@ def create(model, **kwargs):
 def create_superuser(username, password):
     User.objects.create_superuser(username, '', password)
 
+
 def create_contributors_group():
     group = Group(name=GROUP_EDIT_EVENTS)
     group.save()
     return group
+
 
 def create_test_data():
     #users
@@ -50,13 +54,15 @@ def create_test_data():
     person2 = Person.objects.create(name="M", bio="head of MI5")
 
     #event group
-    event_group = factories.EventGroupFactory.create(title='A maths conference', department_organiser='oxpoints:23232627')
-    event_group.oragniser=person2
+    event_group = factories.EventGroupFactory.create(title='A maths conference',
+                                                     department_organiser='oxpoints:23232627')
+    event_group.organiser = person2
     event_group.save()
 
     #event
     event = factories.EventFactory.create(title='A maths talk', slug='a-maths-talk',
-                                          description='Description for a talk about maths', location='oxpoints:40002001',
+                                          description='Description for a talk about maths',
+                                          location='oxpoints:40002001',
                                           department_organiser='oxpoints:23233906')
     event.editor_set.add(contrib_user)
     PersonEvent.objects.create(person=person1, event=event, role=ROLES_SPEAKER)
@@ -70,3 +76,7 @@ def create_test_data():
                              object_id=event.id)
     event.save()
 
+    event2 = factories.EventFactory(title=event2_title,
+                                    slug=event2_slug,
+                                    description=event2_description,
+                                    location=event2_location)
