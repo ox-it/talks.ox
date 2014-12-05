@@ -3,6 +3,7 @@ from urllib import urlencode
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
@@ -10,6 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from talks.api import serializers
 
 from . import models, typeahead
+from talks.users.authentication import GROUP_EDIT_EVENTS
 
 
 class OxPointDataSource(typeahead.DataSource):
@@ -102,8 +104,7 @@ class EventForm(forms.ModelForm):
     )
 
     editor_set = forms.ModelMultipleChoiceField(
-        #todo query set should be only contributors
-        queryset=User.objects.filter(groups__name='Contributors'),
+        queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
         label="Users who can edit this event",
         help_text="Type a user's email",
         required=False,
@@ -133,7 +134,7 @@ class EventForm(forms.ModelForm):
         event.save()
 
         # clear the list of editors and repopulate with the contents of the form
-        event.editor_set = User.objects.none()
+        event.editor_set.clear()
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
         event.save()
