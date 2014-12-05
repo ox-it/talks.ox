@@ -61,7 +61,7 @@
 
         {% for event in events %}
             <tr>
-                <td><a href="{% url 'show-event' event.slug %}">{{ event.title }}</a></td>
+                <td><a href="{% url 'show-event' event.slug %}">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</a></td>
                 <td>{{ event.start }}</td>
                 <td>{{ event.status }}</td>
                 <td>
