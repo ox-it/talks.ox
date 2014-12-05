@@ -77,7 +77,7 @@ class EventGroup(models.Model):
 
     title = models.CharField(max_length=250)
     slug = models.SlugField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
     group_type = models.CharField(
         blank=True,
         null=True,
@@ -92,7 +92,7 @@ class EventGroup(models.Model):
         help_text='e.g.: Mondays at 10 or September 19th to 20th.'
     )
     web_address = models.URLField(blank=True, default='', verbose_name='Web address')
-    department_organiser = models.TextField(default='', blank=True)
+    department_organiser = models.TextField(default='', blank=True, verbose_name='Organising Department')
 
     objects = EventGroupManager()
 

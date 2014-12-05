@@ -387,6 +387,7 @@
     is_superuser: true
     password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
     groups: [1]
+    email: super.user@users.com
     is_staff: true
   model: auth.user
   pk: 1
@@ -394,12 +395,14 @@
     username: contrib_user1
     password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
     groups: [1]
+    email: contributor.one@users.com
     is_staff: true
   model: auth.user
   pk: 2
 - fields:
     username: contrib_user2
     password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    email: contributor.two@users.com
     is_staff: true
     groups: [1]
   model: auth.user
@@ -408,6 +411,7 @@
     username: non_contrib_user1
     password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
     is_staff: true
+    email: non.contributor@users.com
   model: auth.user
   pk: 4
 - fields:
