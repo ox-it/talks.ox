@@ -33,19 +33,12 @@ def create(model, **kwargs):
 def create_superuser(username, password):
     User.objects.create_superuser(username, '', password)
 
-# def create_user(username, password, email, is_contributor=False, group=None)
-#     user = User.objects.create_user(username, password=password, email=email)
-#     if group:
-#         user.groups.add(group)
-#     return user
-
 def create_contributors_group():
     group = Group(name=GROUP_EDIT_EVENTS)
     group.save()
     return group
 
 def create_test_data():
-    print "Creating test data......"
     #users
     contributors_group = create_contributors_group()
     contrib_user = User.objects.create_user('contrib_user', email='contrib.user@users.com', password='pw')

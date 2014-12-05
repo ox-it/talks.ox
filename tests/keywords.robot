@@ -23,14 +23,6 @@ test teardown
     stop server
     server_command  flush  interactive=${False}
 
-test setup edit
-    start server
-    server_command dumpdata format=yaml
-    create superuser  test   test
-#   Create event group and events
-    Login as test test
-
-
 go to ${page}
     go to  ${page.url}
 
@@ -59,6 +51,9 @@ ${element} should disappear
 
 ${element} should contain text "${text}"
     Run keyword if  ${element=='page'}  page should contain  ${text}   ELSE  Element should contain  ${element.locator}  ${text}
+
+${element} should not contain text "${text}"
+    Run keyword if  ${element=='page'}   page should not contain  ${text}    ELSE    Element should not contain  ${element.locator}  ${text}
 
 ${element} selected item should be "${label}"
     Element should be visible  ${element.locator}
