@@ -12,5 +12,10 @@ DATABASES = {
 
 RAVEN_CONFIG = {}
 
+LOGIN_URL = '/admin/login'
+
 LOGGING = None
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG

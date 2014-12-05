@@ -1,11 +1,69 @@
+from urllib import urlencode
+
 from django import forms
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
-from talks.api_ox.models import Location, Organisation
-from . import models
+from talks.api import serializers
+
+from . import models, typeahead
+from talks.users.authentication import GROUP_EDIT_EVENTS
+
+
+class OxPointDataSource(typeahead.DataSource):
+    def __init__(self, **kwargs):
+        _types = kwargs.pop('types', [])
+        url = settings.API_OX_PLACES_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
+        super(OxPointDataSource, self).__init__(
+            'oxpoints',
+            url=url,
+            response_expression='response._embedded.pois',
+            # XXX: forcing api to return list if requesting single object
+            get_prefetch_url=lambda values: settings.API_OX_PLACES_URL + ",".join(values) + ","
+        )
+
+LOCATION_DATA_SOURCE = OxPointDataSource(
+    types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
+)
+DEPARTMENT_DATA_SOURCE = OxPointDataSource(
+    types=['/university/department', '/university/museum', '/university/college', '/university/hall',
+           '/university/division']
+)
+TOPICS_DATA_SOURCE = typeahead.DataSource(
+    'topics',
+    url=settings.TOPICS_URL + "suggest?count=10&q=%QUERY",
+    get_prefetch_url=lambda values: ("%sget?%s" % (settings.TOPICS_URL, urlencode({'uri': values}, doseq=True))),
+    display_key='prefLabel',
+    id_key='uri',
+    response_expression='response._embedded.concepts',
+)
+SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'speakers',
+    url='/events/persons/suggest?q=%QUERY',
+    display_key='title',
+    serializer=serializers.PersonSerializer,
+)
+USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'users',
+    url='/api/user/suggest?q=%QUERY',
+    display_key='email',
+    serializer=serializers.UserSerializer
+)
+
+
+class OxPointField(forms.CharField):
+    def __init__(self, source, *args, **kwargs):
+        self.widget = typeahead.Typeahead(source)
+        return super(OxPointField, self).__init__(*args, **kwargs)
+
+
+class TopicsField(forms.MultipleChoiceField):
+    def valid_value(self, value):
+        return True
 
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
@@ -19,116 +77,25 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
         return mark_safe(html)
 
 
-class ModelCommaSeparatedChoiceField(forms.ModelMultipleChoiceField):
-    widget = forms.HiddenInput
-
-    def clean(self, value):
-        if value:
-            value = [item.strip() for item in value.split(",")]
-        return super(ModelCommaSeparatedChoiceField, self).clean(value)
-
-    def prepare_value(self, value):
-        if (hasattr(value, '__iter__')):
-            return ",".join(map(str, map(super(ModelCommaSeparatedChoiceField, self).prepare_value, value)))
-        else:
-            super(ModelCommaSeparatedChoiceField, self).prepare_value(value)
-
-
-
-class APIOxField(forms.ModelChoiceField):
-    def __init__(self, *args, **kwargs):
-        self.Model = kwargs.pop('Model', [])
-        self.types = kwargs.pop('types', [])
-        self.endpoint = kwargs.pop(
-            'endpoint', '//api.m.ox.ac.uk/places/suggest')
-        return super(APIOxField, self).__init__(*args, **kwargs)
-
-    def clean(self, value):
-        if not value:
-            return None  # FIXME
-        instance, _created = self.Model.objects.get_or_create(identifier=value)
-        return super(APIOxField, self).clean(instance.pk)
-
-
-class TopicsField(forms.ModelMultipleChoiceField):
-
-    widget = forms.HiddenInput
-
-    def __init__(self, *args, **kwargs):
-        self.endpoint = kwargs.pop('endpoint', settings.TOPICS_URL)
-        return super(TopicsField, self).__init__(*args, **kwargs)
-
-    def clean(self, value):
-        ids = []
-        if value:
-            value = [item.strip() for item in value.split(",")]
-            ids = [models.Topic.objects.get_or_create(uri=v)[0].pk for v in value]  # FIXME
-        return super(TopicsField, self).clean(ids)
-
-    def prepare_value(self, value):
-        if (hasattr(value, '__iter__')):
-            return ",".join(map(str, map(super(TopicsField, self).prepare_value, value)))
-        else:
-            super(TopicsField, self).prepare_value(value)
-
-
-class SpeakerTypeaheadInput(forms.TextInput):
-    class Media:
-        js = ('js/element-typeahead.js',)
-
-
-class TopicTypeaheadInput(forms.TextInput):
-    class Media:
-        js = ('js/element-typeahead.js',)
-
-
 class EventForm(forms.ModelForm):
-    speaker_suggest = forms.CharField(
-        label="Speaker",
-        help_text="Type speakers name and select from the list.",
-        required=False,
-        widget=SpeakerTypeaheadInput(attrs={'class': 'js-speakers-typeahead'}),
-    )
-    speakers = ModelCommaSeparatedChoiceField(
+    speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
-        required=False)
-
-    topic_suggest = forms.CharField(
-        label="Topic",
-        help_text="Type topic name and select from the list",
+        label="Speaker",
+        help_text="Type a speaker's name and select from the list",
         required=False,
-        widget=TopicTypeaheadInput(attrs={'class': 'js-topics-typeahead'}),
+        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
+
     topics = TopicsField(
-        queryset=models.Topic.objects.all(),
+        label="Topic",
+        help_text="Type a topic name and select from the list",
         required=False,
+        widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
     )
 
-    location_suggest = forms.CharField(
-        label="Venue",
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'js-location-typeahead'}),
-    )
-    location = APIOxField(
-        Model=Location,
-        queryset=Location.objects.all(),
-        required=False,
-        types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library'],
-        widget=forms.HiddenInput(attrs={'class': 'js-location'}),
-    )
+    location = OxPointField(LOCATION_DATA_SOURCE, label="Venue", required=False)
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
 
-    department_suggest = forms.CharField(
-        label="Department",
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'js-organisation-typeahead'}),
-    )
-    department_organiser = APIOxField(
-        Model=Organisation,
-        queryset=Organisation.objects.all(),
-        required=False,
-        types=['/university/department', '/university/museum', '/university/college'],
-        widget=forms.HiddenInput(attrs={'class': 'js-organisation'}),
-    )
     group = forms.ModelChoiceField(
         models.EventGroup.objects.all(),
         empty_label="-- select a group --",
@@ -136,11 +103,16 @@ class EventForm(forms.ModelForm):
         required=False,
     )
 
-    class Media:
-        js = ('js/location-typeahead.js',)
+    editor_set = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
+        label="Other event organisers who can edit this event",
+        help_text="Type an event organiser's email address",
+        required=False,
+        widget=typeahead.MultipleTypeahead(USERS_DATA_SOURCE),
+    )
 
     class Meta:
-        exclude = ('slug', 'topics')
+        exclude = ('slug', 'embargo')
         model = models.Event
         labels = {
             'description': 'Abstract',
@@ -152,19 +124,44 @@ class EventForm(forms.ModelForm):
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
             'location_details': forms.TextInput,
+            'status': forms.RadioSelect
         }
 
     def save(self):
         event = super(EventForm, self).save(commit=False)
+        # saved with commit=False because of the ManyToMany relations
+        # in the model
         event.save()
-        for person in self.cleaned_data['speakers']:
-            models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
-        event_topics = self.cleaned_data['topics']
+
+        # clear the list of editors and repopulate with the contents of the form
+        event.editor_set.clear()
+        for user in self.cleaned_data['editor_set']:
+            event.editor_set.add(user)
+        event.save()
+
+        current_speakers = event.speakers
+        form_speakers = self.cleaned_data['speakers']
+        for person in form_speakers:
+            models.PersonEvent.objects.get_or_create(person=person, event=event, role=models.ROLES_SPEAKER)
+        for person in current_speakers:
+            if person not in form_speakers:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
+                rel.delete()
+
+        current_topics_uris = [t.uri for t in event.topics.all()]
+        form_topics = self.cleaned_data['topics']
         event_ct = ContentType.objects.get_for_model(models.Event)
-        for topic in event_topics:
-            models.TopicItem.objects.create(topic=topic,
-                                            content_type=event_ct,
-                                            object_id=event.id)
+        for topic in form_topics:
+            models.TopicItem.objects.get_or_create(uri=topic,
+                                                   content_type=event_ct,
+                                                   object_id=event.id)
+        for topic_uri in current_topics_uris:
+            if topic_uri not in form_topics:
+                ti = models.TopicItem.objects.get(uri=topic_uri,
+                                                  content_type=event_ct,
+                                                  object_id=event.id)
+                ti.delete()
+
         return event
 
     def clean(self):
@@ -172,21 +169,35 @@ class EventForm(forms.ModelForm):
             raise forms.ValidationError("Either provide title or mark it as not announced")
         return self.cleaned_data
 
+
 class EventGroupForm(forms.ModelForm):
 
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
+
+    organiser = forms.ModelChoiceField(
+        queryset=models.Person.objects.all(),
+        label="Organiser",
+        help_text="Type a name and select from the list",
+        required=False,
+        widget=typeahead.Typeahead(SPEAKERS_DATA_SOURCE),
+    )
+
     class Meta:
-        fields = ('title', 'group_type', 'description')
+        # fields = ('title', 'group_type', 'description', 'organiser', 'occurence', 'web_address')
+        exclude = ('slug',)
         model = models.EventGroup
         widgets = {
             'title': forms.TextInput(),
             'description': forms.Textarea(),
+            'occurence': forms.TextInput(),
         }
 
 
-class SpeakerQuickAdd(forms.ModelForm):
-    class Meta:
-        fields = ('name', 'email_address')
-        model = models.Person
+class PersonForm(forms.ModelForm):
 
-    class Media:
-        js = ('js/event-element-quick-add.js',)
+    class Meta:
+        fields = ('name', 'bio', 'email_address')
+        model = models.Person
+        widgets = {
+            'bio': forms.TextInput(),
+        }

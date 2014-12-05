@@ -5,8 +5,7 @@ install:
     - pip install -r requirements.txt
     - pip install -r requirements_dev.txt
 script:
-    - python manage.py test --settings=talks.settings_test
-    - PYTHONPATH=tests/ BROWSER=phantomjs DJANGO_SETTINGS_MODULE=talks.settings_test pybot -e todo tests/
+    - make test
 notifications:
     irc:
         channels:

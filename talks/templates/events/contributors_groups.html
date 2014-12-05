@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load faceted_navigation %}
+
+{% block title %}Groups Administration{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+    .filter-selected {
+         background-color: #ddd;
+    }
+    </style>
+
+    <h2>Events administration</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3">
+
+            <ul class="nav nav-list well">
+                <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
+                <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Event Groups</a></li>
+                <li><a href="{% url 'contributors-persons' %}" class="">People</a></li>
+            </ul>
+        </div>
+
+    <div class="col-xs-7">
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <td>Group Name</td>
+            <td>Group Type</td>
+            <td>Edit</td>
+        </thead>
+            {% for group in groups %}
+            <tr>
+                <td>
+                    <a href="{% url 'show-event-group' group.slug %}">{{ group.title }}</a>
+                </td>
+                <td>
+                    {{ group.get_group_type_display }}
+                </td>
+                <td>
+                    {% if perms.events.change_eventgroup %}
+                        <a class="btn btn-primary" href="{% url 'edit-event-group' group.slug %}">Edit</a>
+                    {% else %}
+                        Not authorised
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+    </table>
+
+
+    {% with groups as page %}
+        {% include 'events/_pagination.html' %}
+    {% endwith %}
+
+    </div>
+    </div>
+    </div>
+
+{% endblock %}

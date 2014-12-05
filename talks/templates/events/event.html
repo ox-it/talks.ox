@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load users %}
+
 {% block title %}{{ event.title }}{% endblock %}
 
 {% block extrahead %}
@@ -8,47 +10,74 @@
 <meta name="twitter:description" content="{{ event.description }}">
 <meta property="og:title" content="{{ event.title }}" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="" />
+<meta property="og:url" content="{{ url }}" />
 <meta property="og:image" content="" />
 {% endblock %}
 
 {% block content %}
 
-{% include "events/jsonld_event.html" with event=event location=location %}
+{% include "events/jsonld_event.html" with event=event location=location url=url %}
+
+{% spaceless %}
+
+{% if perms.events.change_event %}
+    <div class="container-fluid">
+    <div class="row bg-primary">
+      <div class="col-md-11"><h4>{{ event.get_status_display }}</h4></div>
+      <div class="col-md-1">
+        <strong>
+          {% if request.user|can_edit:event %}
+            <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
+          {% endif %}
+        </strong>
+      </div>
+    </div>
+    </div>
+{% endif %}
+
+{% endspaceless %}
 
 <div class="panel panel-default">
+
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">{{ event.title }}</h3>
+        <h3 class="panel-title">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</h3>
     </div>
     <div class="panel-body">
-        <p>{{ event.description }}</p>
+        {% if event.description %}
+        <p>{{ event.description_html | safe }}</p>
+        {% else %}
+        <i>Description not yet added</i>
+        {% endif %}
     </div>
     <!-- List group -->
     <ul class="list-group">
         <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
-            {% if event.api_location %}
-            <address>{{ event.api_location.name }}{% if event.api_location.address %}</br>{{ event.api_location.address }}{% endif %}</address>
+            {% if location %}
+            <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
             {% else %}
-            Venue to be announced
+            <span>Venue to be announced<span>
             {% endif %}
         {% endspaceless %}</li>
-        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% spaceless %} 
-        {% for speaker in speakers %}
-            {{ speaker.name}}{% if not forloop.last %}, {% endif %}
-        {% empty %}
-            Speaker to be announced
-        {% endfor %}
+        {% spaceless %}
+        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<span>{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}</span>
+            {% empty %}
+                <span>Speaker to be announced</span>
+            {% endfor %}
         </li>
         {% endspaceless %}
         {% if event.api_organisation %}
-        <li class="list-group-item"><strong>Organiser</strong>: {{ event.api_organisation.name }}</li>
+        <li class="list-group-item"><strong>Organising department</strong>: {{ event.api_organisation.name }}</li>
         {% endif %}
         {% if event.group %}
         <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
         {% endif %}
-        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.topics.all %}{{ topic.topic.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        {% spaceless %}
+        {% if event.topics.count %}
+        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}<span>{{ topic.prefLabel }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        {% endif %}
+        {% endspaceless %}
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>
         {% if event.booking_url %}
             <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>

@@ -1,25 +1,30 @@
 import logging
 import json
 
-from datetime import date
+from datetime import date, timedelta
 from functools import partial
-from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import permission_required, login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
-from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
-from talks.events.models import TopicItem, Topic
+from .forms import EventForm, EventGroupForm
 from talks.api import serializers
+from talks.events.forms import PersonForm
 
 logger = logging.getLogger(__name__)
 
 
 def homepage(request):
-    events = Event.objects.todays_events()
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+    events = Event.published.filter(start__gte=today,
+                                    start__lt=tomorrow).order_by('start')
     event_groups = EventGroup.objects.for_events(events)
     conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
                          event_groups)
@@ -46,25 +51,25 @@ def homepage(request):
 
 def upcoming_events(request):
     today = date.today()
-    events = Event.objects.filter(start__gte=today).order_by('start')
+    events = Event.published.filter(start__gte=today).order_by('start')
     return _events_list(request, events)
 
 
 def events_for_year(request, year):
-    events = Event.objects.filter(start__year=year)
+    events = Event.published.filter(start__year=year)
     return _events_list(request, events)
 
 
 def events_for_month(request, year, month):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month)
+    events = Event.published.filter(start__year=year,
+                                    start__month=month)
     return _events_list(request, events)
 
 
 def events_for_day(request, year, month, day):
-    events = Event.objects.filter(start__year=year,
-                                  start__month=month,
-                                  start__day=day)
+    events = Event.published.filter(start__year=year,
+                                    start__month=month,
+                                    start__day=day)
     return _events_list(request, events)
 
 
@@ -73,29 +78,39 @@ def _events_list(request, events):
     return render(request, 'events/events.html', context)
 
 
-def show_event(request, event_id):
+def show_event(request, event_slug):
     try:
+        # TODO depending if user is admin or not,
+        # we should use Event.published here...
         ev = Event.objects.select_related(
             'speakers',
             'location',
             'group',
-            'department_organiser').get(id=event_id)
+            'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
     context = {
         'event': ev,
+        'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
+        'location': ev.api_location,
         'speakers': ev.speakers.all(),
     }
     return render(request, 'events/event.html', context)
 
-
-def edit_event(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    form = EventForm(request.POST or None, instance=event, prefix='event')
+@login_required
+@permission_required('events.change_event', raise_exception=PermissionDenied)
+def edit_event(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
+    if not event.user_can_edit(request.user):
+        raise PermissionDenied
+    # providing data for topics/speakers as it is not straight from the Model
+    initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
+               'speakers': event.speakers.all()}        # different of person_set
+    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,
         'event_form': form,
-        'speaker_form': SpeakerQuickAdd(),
+        'is_editing': True
     }
     if request.method == 'POST':
         if form.is_valid():
@@ -104,21 +119,16 @@ def edit_event(request, event_id):
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
-            if 'speakers' in form.cleaned_data:
-                context['selected_speakers'] = Person.objects.filter(
-                    id__in=form.cleaned_data['speakers'])
-            if 'topics' in form.cleaned_data:
-                context['selected_topics'] = Topic.objects.filter(
-                    id__in=form.cleaned_data['topics'])
     return render(request, "events/event_form.html", context)
 
-
-def create_event(request, group_id=None):
+@login_required
+@permission_required("events.add_event", raise_exception=PermissionDenied)
+def create_event(request, group_slug=None):
     initial = None
     event_group = None
-    logger.debug("group_id:%s", group_id)
-    if group_id:
-        event_group = get_object_or_404(EventGroup, pk=group_id)
+    logger.debug("group_id:%s", group_slug)
+    if group_slug:
+        event_group = get_object_or_404(EventGroup, slug=group_slug)
         initial = {
             'group': event_group,
         }
@@ -128,38 +138,59 @@ def create_event(request, group_id=None):
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
-            'speaker_form': SpeakerQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid()
         if forms_valid:
             logging.debug("form is valid")
             event = context['event_form'].save()
+            if request.user not in event.editor_set.all():
+                event.editor_set.add(request.user)
+                event.save()
             messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
                     # Adding more events, redirect to the create event in existing group form
-                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.id,)))
+                    return HttpResponseRedirect(reverse('create-event-in-group', args=(event_group.slug,)))
                 else:
                     logger.debug("redirecting to create-event")
                     return HttpResponseRedirect(reverse('create-event'))
             else:
-                return HttpResponseRedirect(reverse('show-event', args=(event.id,)))
+                return HttpResponseRedirect(reverse('show-event', args=(event.slug,)))
         else:
             logging.debug("form is NOT valid")
             messages.warning(request, "Please correct errors below")
-            if 'speakers' in context['event_form'].cleaned_data:
-                context['selected_speakers'] = Person.objects.filter(
-                    id__in=context['event_form'].cleaned_data['speakers'])
-            if 'topics' in context['event_form'].cleaned_data:
-                context['selected_topics'] = Topic.objects.filter(
-                    id__in=context['event_form'].cleaned_data['topics'])
     else:
         context = {
             'event_form': PrefixedEventForm(),
-            'speaker_form': SpeakerQuickAdd(),
+            'is_editing': False
         }
     return render(request, 'events/event_form.html', context)
+
+
+@login_required
+@permission_required('events.delete_event', raise_exception=PermissionDenied)
+def delete_event(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
+
+    # only super users or editors can delete an event
+    if not event.user_can_edit(request.user):
+        raise PermissionDenied
+
+    # if the user is not a super user, and if the event has already started
+    # it should not be possible to delete it
+    if not request.user.is_superuser:
+        if event.already_started:
+            messages.warning(request, "You cannot delete an event that has already started")
+            return redirect(event.get_absolute_url())
+    context = {
+        'event': event,
+    }
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, "Event has been successfully deleted")
+        return redirect('contributors-events')
+    return render(request, "events/delete_event.html", context)
 
 
 def list_event_groups(request):
@@ -170,16 +201,17 @@ def list_event_groups(request):
     return render(request, "events/event_group_list.html", context)
 
 
-def show_event_group(request, event_group_id):
-    group = get_object_or_404(EventGroup, pk=event_group_id)
+def show_event_group(request, event_group_slug):
+    group = get_object_or_404(EventGroup, slug=event_group_slug)
     context = {
         'event_group': group,
     }
     return render(request, 'events/event-group.html', context)
 
-
-def edit_event_group(request, event_group_id):
-    group = get_object_or_404(EventGroup, pk=event_group_id)
+@login_required
+@permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
+def edit_event_group(request, event_group_slug):
+    group = get_object_or_404(EventGroup, slug=event_group_slug)
     form = EventGroupForm(request.POST or None, instance=group)
     if request.method == 'POST':
         logging.debug("incoming post: %s", request.POST)
@@ -192,10 +224,12 @@ def edit_event_group(request, event_group_id):
     context = {
         'form': form,
         'event_group': group,
+        'is_editing': True
     }
     return render(request, 'events/event_group_form.html', context)
 
-
+@login_required
+@permission_required('events.add_eventgroup', raise_exception=PermissionDenied)
 def create_event_group(request):
     form = EventGroupForm(request.POST or None)
     is_modal = request.GET.get('modal')
@@ -215,9 +249,183 @@ def create_event_group(request):
     context = {
         'form': form,
         'modal_title': "Add a new event group",
+        'is_editing': False
     }
 
     if is_modal:
-        return render(request, 'modal_form.html', context, status=status_code)
+        return render(request, 'events/event_group_modal_form.html', context, status=status_code)
     else:
         return render(request, 'events/event_group_form.html', context, status=status_code)
+
+
+@login_required
+@permission_required('events.delete_eventgroup', raise_exception=PermissionDenied)
+def delete_event_group(request, event_group_slug):
+    event_group = get_object_or_404(EventGroup, slug=event_group_slug)
+    context = {
+        'event_group': event_group,
+        'events': event_group.events.all()
+    }
+    if request.method == 'POST':
+        # first updating all events that were referring to the group to be deleted
+        Event.objects.filter(group=event_group).update(group=None)
+        event_group.delete()
+        messages.success(request, "Event group has been successfully deleted")
+        return redirect('contributors-events')
+    return render(request, "events/delete_event_group.html", context)
+
+
+def contributors_home(request):
+    return HttpResponseRedirect(reverse('contributors-events'))
+
+
+@login_required()
+@permission_required('events.add_person', raise_exception=PermissionDenied)
+def create_person(request):
+    form = PersonForm(request.POST or None)
+    is_modal = request.GET.get('modal')
+    status_code = 200
+    if request.method == 'POST':
+        if form.is_valid():
+            person = form.save()
+            if is_modal:
+                response = json.dumps(serializers.PersonSerializer(person).data)
+                return  HttpResponse(response, status=201, content_type='application/json')
+            messages.success(request, "Person was created")
+            return redirect(person.get_absolute_url())
+        else:
+            status_code = 400
+            messages.warning(request, "Please correct errors below")
+    context = {
+        'form': form,
+        'modal_title': "Add a new Person",
+    }
+
+    if is_modal:
+        return render(request, 'events/person_modal_form.html', context, status=status_code)
+    else:
+        return render(request, 'events/person_form.html', context, status=status_code)
+
+@login_required
+@permission_required('events.change_event', raise_exception=PermissionDenied)
+def contributors_events(request):
+    events_date = request.GET.get('date', None)
+    events_status = request.GET.get('status', None)
+    events_missing = request.GET.get('missing', None)
+    events_editable = request.GET.get('editable', None)
+
+    count = request.GET.get('count', 20)
+    page = request.GET.get('page', 1)
+
+    # used to build a URL fragment that does not
+    # contain "page" so that we can... paginate
+    args = {'count': count}
+
+    if events_editable and not request.user.is_superuser:
+        events = Event.objects.filter(editor_set__in=[request.user])
+        args['editable'] = 'true'
+    else:
+        events = Event.objects.all()
+
+    if events_date:
+        if events_date == 'future':
+            args['date'] = 'future'
+            events = events.filter(start__gte=date.today())
+        elif events_date == 'past':
+            args['date'] = 'past'
+            events = events.filter(start__lt=date.today())
+    if events_status:
+        args['status'] = events_status
+        events = events.filter(status=events_status)
+    if events_missing :
+        if events_missing == 'title':
+            args['missing'] = 'title'
+            events = events.filter(title_not_announced=True)
+        elif events_missing == 'location':
+            args['missing'] = 'location'
+            events = events.filter(location='')
+
+
+    paginator = Paginator(events, count)
+
+    try:
+        events = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('contributors-events')
+
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+
+    context = {
+        'events': events,
+        'fragment': fragment
+    }
+
+    return render(request, 'events/contributors_events.html', context)
+
+@login_required()
+@permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
+def contributors_eventgroups(request):
+    eventgroups = EventGroup.objects.all()
+    count = request.GET.get('count',20)
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(eventgroups, count)
+
+    try:
+        eventgroups = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('contributors-eventgroups')
+
+    context = {
+        'groups': eventgroups
+    }
+
+    return render(request, 'events/contributors_groups.html', context)
+
+@login_required()
+@permission_required('events.change_person', raise_exception=PermissionDenied)
+def contributors_persons(request):
+    persons = Person.objects.all()
+    count = request.GET.get('count', 20)
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(persons, count)
+
+    try:
+        persons = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('contributors-persons')
+
+    context = {
+        'persons' : persons
+    }
+
+    return render(request, 'events/contributors_persons.html', context)
+
+@login_required()
+def show_person(request, person_slug):
+    person = get_object_or_404(Person, slug=person_slug)
+
+    context = {
+        'person': person,
+    }
+    return render(request, 'events/person.html', context)
+
+
+@login_required
+@permission_required('events.change_person', raise_exception=PermissionDenied)
+def edit_person(request, person_slug):
+    person = get_object_or_404(Person, slug=person_slug)
+    form = PersonForm(request.POST or None, instance=person)
+    if request.method == 'POST':
+        if form.is_valid():
+            person = form.save()
+            messages.success(request, "Person was updated")
+            return redirect(person.get_absolute_url())
+        else:
+            messages.warning(request,"Please correct errors below")
+    context = {
+        'form': form,
+        'person': person,
+    }
+    return render(request, 'events/person_form.html', context)

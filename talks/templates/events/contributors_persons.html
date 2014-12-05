@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% load faceted_navigation %}
+
+{% block title %}Person Administration{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+    .filter-selected {
+         background-color: #ddd;
+    }
+    </style>
+
+    <h2>People administration</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3">
+
+            <ul class="nav nav-list well">
+                <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
+                <li><a href="{% url 'contributors-eventgroups' %}" class="">Event Groups</a></li>
+                <li><a href="{% url 'contributors-persons' %}" class="filter-selected">People</a></li>
+            </ul>
+        </div>
+
+
+
+    <div class="col-xs-7">
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <td>Name</td>
+            <td>Email</td>
+        </thead>
+            {% for person in persons %}
+            <tr>
+                <td>
+                    {% if perms.events.change_person %}
+                        <a href="{% url 'edit-person' person.slug %}">{{ person.name }}</a>
+                    {% else %}
+                        {{ person.name }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ person.email_address }}
+                </td>
+            </tr>
+            {% endfor %}
+    </table>
+
+
+    {% with persons as page %}
+        {% include 'events/_pagination.html' %}
+    {% endwith %}
+
+    </div>
+    </div>
+    </div>
+
+{% endblock %}

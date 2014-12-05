@@ -62,6 +62,8 @@ docs/build/
 
 talks/local_settings.py
 
+solr/schema.xml
+
 # Vim
 .*.swp
 
@@ -69,4 +71,5 @@ talks/local_settings.py
 report.html
 output.xml
 log.html
+ghostdriver.log
 selenium-screenshot-*

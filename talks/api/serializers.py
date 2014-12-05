@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from talks.events.models import Event, Person, EventGroup
@@ -25,7 +26,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'url', 'title', 'start', 'end', 'description',
+        fields = ('slug', 'url', 'title', 'start', 'end', 'description',
                   'formatted_date', 'formatted_time', 'happening_today',
                   'class_name')
 
@@ -37,13 +38,28 @@ class EventGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventGroup
-        fields = ('id', 'url', 'title', 'description', 'class_name')
+        fields = ('id', 'slug', 'url', 'title', 'description', 'class_name', 'department_organiser')
 
 
 class PersonSerializer(serializers.ModelSerializer):
+
+    title = serializers.SerializerMethodField(method_name='formatted_title')
+
+    def formatted_title(self, obj):
+        if obj.bio:
+            return obj.name + ', ' + obj.bio
+        else:
+            return obj.name
+
     class Meta:
         model = Person
-        fields = ('id', 'name', 'email_address')
+        fields = ('id', 'slug', 'name', 'email_address', 'title')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email')
 
 
 def get_item_serializer(item):

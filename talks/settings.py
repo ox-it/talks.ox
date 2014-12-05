@@ -40,15 +40,19 @@ DATETIME_INPUT_FORMATS = (
 SECRET_KEY = 'diq0@tw%t7(vlxo3e65x##2(*29cz22k@_&u9--u69q^g$9j)@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['talks-dev.oucs.ox.ac.uk']
 
 LOGIN_REDIRECT_URL = '/'
-API_OX_URL = 'http://api.m.ox.ac.uk'
-TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics'
+
+LOGIN_URL = '/login'
+
+API_OX_PLACES_URL = 'https://api.m.ox.ac.uk/places/'
+API_OX_DATES_URL = 'https://api.m.ox.ac.uk/dates/'
+TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
 # Application definition
 
@@ -64,6 +68,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'haystack',
     'raven.contrib.django.raven_compat',
+    'reversion',
 
     # WebAuth
     'django_webauth',
@@ -83,6 +88,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # reversion (audit)
+    'reversion.middleware.RevisionMiddleware',
 
     # Oxford Talks
     'talks.users.middleware.TalksUserMiddleware',
@@ -169,6 +177,8 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
 RAVEN_CONFIG = {
     'dsn': 'http://cc958b8c93c340c9a25dd765e1843172:f67c8030f2674d6b9c74718f2abf4c16@sentry.oucs.ox.ac.uk/27',
 }
@@ -212,5 +222,17 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+    },
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'oxpoints': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'topics': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
 }

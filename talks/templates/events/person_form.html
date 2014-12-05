@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+
+{% block title %}{% if person %}Edit Person{% endif %}{% endblock %}
+
+{% block content %}
+
+{% if person %}
+<h3>Editing "{{ person.name }}"</h3>
+{% else %}
+<h3>New Person</h3>
+{% endif %}
+
+<form class="form-horizontal" method="post">
+    {% csrf_token %}
+    {{ form|bootstrap_horizontal }}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+            {% if not person %}
+            <button type="submit" name="another" value="true" calss="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span>
+                Save and add another
+            </button>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Done</button>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

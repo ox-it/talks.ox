@@ -1,0 +1,116 @@
+{
+  "_embedded": {
+    "pois": [
+      {
+        "_links": {
+          "self": {
+            "href": "/places/oxpoints:40002001"
+          }
+        }, 
+        "address": "7-19 Banbury Road OX2 6NN", 
+        "distance": 0, 
+        "id": "oxpoints:40002001", 
+        "identifiers": [], 
+        "name": "7-19 Banbury Road", 
+        "type": [
+          "/university/site"
+        ], 
+        "type_name": [
+          "Site"
+        ]
+      },
+      {
+        "_links": {
+          "self": {
+            "href": "/places/oxpoints:23232503"
+          }
+        }, 
+        "address": "off South Parks Road OX1 3TA", 
+        "distance": 0, 
+        "id": "oxpoints:23232503", 
+        "identifiers": [], 
+        "name": "Chemical Biology", 
+        "type": [
+          "/university/department"
+        ], 
+        "type_name": [
+          "Department"
+        ]
+      }, 
+      {
+        "_links": {
+          "self": {
+            "href": "/places/oxpoints:23233904"
+          }
+        }, 
+        "address": "Woodstock Road OX2 6GG", 
+        "distance": 0, 
+        "id": "oxpoints:23233904", 
+        "identifiers": [], 
+        "name": "Centre for Mathematical Biology", 
+        "type": [
+          "/university/department"
+        ], 
+        "type_name": [
+          "Department"
+        ]
+      }, 
+      {
+        "_links": {
+          "self": {
+            "href": "/places/oxpoints:23232634"
+          }
+        }, 
+        "address": "South Parks Road OX1 3RE", 
+        "distance": 0, 
+        "id": "oxpoints:23232634", 
+        "identifiers": [], 
+        "name": "Computational Biology Research Group", 
+        "type": [
+          "/university/department"
+        ], 
+        "type_name": [
+          "Department"
+        ]
+      }, 
+      {
+        "_links": {
+          "self": {
+            "href": "/places/oxpoints:54333103"
+          }
+        }, 
+        "address": "Headington OX3 7XP", 
+        "distance": 0, 
+        "id": "oxpoints:54333103", 
+        "identifiers": [], 
+        "name": "Division of Structural Biology", 
+        "type": [
+          "/university/department"
+        ], 
+        "type_name": [
+          "Department"
+        ]
+      }
+    ]
+  }, 
+  "_links": {
+    "curies": [
+      {
+        "href": "http://moxie.readthedocs.org/en/latest/http_api/relations/{rel}.html", 
+        "name": "hl", 
+        "templated": true
+      }
+    ], 
+    "hl:first": {
+      "href": "/places/suggest?q=biol&count=20&type_exact=%2Funiversity%2Fdepartment&type_exact=%2Funiversity%2Fmuseum&type_exact=%2Funiversity%2Fcollege"
+    }, 
+    "hl:last": {
+      "href": "/places/suggest?q=biol&count=20&type_exact=%2Funiversity%2Fdepartment&type_exact=%2Funiversity%2Fmuseum&type_exact=%2Funiversity%2Fcollege"
+    }, 
+    "self": {
+      "href": "/places/suggest?q=biol&count=20&type_exact=%2Funiversity%2Fdepartment&type_exact=%2Funiversity%2Fmuseum&type_exact=%2Funiversity%2Fcollege&start=0"
+    }
+  }, 
+  "query": "", 
+  "size": 5
+}

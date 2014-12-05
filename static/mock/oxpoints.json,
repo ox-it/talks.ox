@@ -1,0 +1,12 @@
+{
+  "_embedded": {
+    "pois": [
+    ]
+  }, 
+  "_links": {
+    "self": {
+      "href": "/places/oxpoints:%2C"
+    }
+  }, 
+  "count": 0
+}

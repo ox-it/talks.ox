@@ -1,0 +1,17 @@
+{% load bootstrap %}
+
+{% csrf_token %}
+
+{{ form.title|bootstrap_horizontal }}
+{{ form.description|bootstrap_horizontal }}
+{{ form.group_type|bootstrap_horizontal }}
+{% if is_editing %}
+    {{ form.organiser|bootstrap_horizontal }}
+{% endif %}
+{{ form.occurence|bootstrap_horizontal }}
+{{ form.web_address|bootstrap_horizontal }}
+{{ form.department_organiser|bootstrap_horizontal }}
+
+{% if not is_editing %}
+<p>More details can be added to the event group when it is being edited.</p>
+{% endif %}
