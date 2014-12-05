@@ -157,9 +157,9 @@ class EventForm(forms.ModelForm):
                                                    object_id=event.id)
         for topic_uri in current_topics_uris:
             if topic_uri not in form_topics:
-                ti = models.TopicItem.objects.get_or_create(uri=topic_uri,
-                                                            content_type=event_ct,
-                                                            object_id=event.id)
+                ti = models.TopicItem.objects.get(uri=topic_uri,
+                                                  content_type=event_ct,
+                                                  object_id=event.id)
                 ti.delete()
 
         return event
