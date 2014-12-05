@@ -197,7 +197,7 @@ class Event(models.Model):
         blank=True,
         default='',
         verbose_name="Special message",
-        help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue."
+        help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue"
     )
     group = models.ForeignKey(EventGroup, null=True, blank=True,
                               related_name='events')
