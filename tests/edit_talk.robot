@@ -38,9 +38,10 @@ Scenario: change location
 Scenario: remove speaker
     go to ${edit_talk_page('${event1_slug}')}
     page should appear text "James Bond"
-    click on ${remove item('event-speaker')}
+    click on ${remove item('event-speakers')}
     page should not contain text "James Bond"
     click on ${button done}
+    current page should be ${show_talk_page('${event1_slug}')}
     page should not contain text "James Bond"
 
 Scenario: remove topic
