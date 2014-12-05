@@ -139,15 +139,29 @@ class EventForm(forms.ModelForm):
             event.editor_set.add(user)
         event.save()
 
-        # TODO handle deleted speakers / topics
-        for person in self.cleaned_data['speakers']:
+        current_speakers = event.speakers
+        form_speakers = self.cleaned_data['speakers']
+        for person in form_speakers:
             models.PersonEvent.objects.get_or_create(person=person, event=event, role=models.ROLES_SPEAKER)
-        event_topics = self.cleaned_data['topics']
+        for person in current_speakers:
+            if person not in form_speakers:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
+                rel.delete()
+
+        current_topics_uris = [t.uri for t in event.topics.all()]
+        form_topics = self.cleaned_data['topics']
         event_ct = ContentType.objects.get_for_model(models.Event)
-        for topic in event_topics:
+        for topic in form_topics:
             models.TopicItem.objects.get_or_create(uri=topic,
                                                    content_type=event_ct,
                                                    object_id=event.id)
+        for topic_uri in current_topics_uris:
+            if topic_uri not in form_topics:
+                ti = models.TopicItem.objects.get_or_create(uri=topic_uri,
+                                                            content_type=event_ct,
+                                                            object_id=event.id)
+                ti.delete()
+
         return event
 
     def clean(self):
