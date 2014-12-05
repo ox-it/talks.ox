@@ -278,8 +278,8 @@ class Event(models.Model):
         return self.fetch_resource(self.start, func)
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            # Newly created object, so set slug
+        if not self.id and not self.slug:
+            # Newly created object (or slug explicitly specified e.g. for tests), so set slug
             self.slug = str(uuid.uuid4())
         super(Event, self).save(*args, **kwargs)
 
