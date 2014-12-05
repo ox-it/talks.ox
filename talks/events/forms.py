@@ -81,14 +81,14 @@ class EventForm(forms.ModelForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
         label="Speaker",
-        help_text="Type speakers name and select from the list.",
+        help_text="Type a speaker's name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
 
     topics = TopicsField(
         label="Topic",
-        help_text="Type topic name and select from the list",
+        help_text="Type a topic name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
     )
@@ -105,8 +105,8 @@ class EventForm(forms.ModelForm):
 
     editor_set = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
-        label="Users who can edit this event",
-        help_text="Type a user's email",
+        label="Other event organisers who can edit this event",
+        help_text="Type an event organiser's email address",
         required=False,
         widget=typeahead.MultipleTypeahead(USERS_DATA_SOURCE),
     )
@@ -163,7 +163,7 @@ class EventGroupForm(forms.ModelForm):
     organiser = forms.ModelChoiceField(
         queryset=models.Person.objects.all(),
         label="Organiser",
-        help_text="Type a name and select from the list.",
+        help_text="Type a name and select from the list",
         required=False,
         widget=typeahead.Typeahead(SPEAKERS_DATA_SOURCE),
     )
