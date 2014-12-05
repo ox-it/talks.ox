@@ -54,5 +54,6 @@ Scenario: remove topic
     page should not contain text "Biodiversity"
     page should not contain text "Aquatic biodiversity"
     click on ${button done}
+    current page should be ${show_talk_page('${event1_slug}')}
     page should not contain text "Biodiversity"
     page should not contain text "Aquatic biodiversity"
