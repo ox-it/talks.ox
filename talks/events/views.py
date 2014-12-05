@@ -143,8 +143,9 @@ def create_event(request, group_slug=None):
         if forms_valid:
             logging.debug("form is valid")
             event = context['event_form'].save()
-            event.editor_set.add(request.user)
-            event.save()
+            if request.user not in event.editor_set.all():
+                event.editor_set.add(request.user)
+                event.save()
             messages.success(request, "New event has been created")
             if 'another' in request.POST:
                 if event_group:
