@@ -64,4 +64,4 @@ Scenario: remove topic
 
 *** Keywords ***
 Create sample event
-    create  event   title=${event_name}     slug=${event_slug}      description=${event_description}    location=oxpoints:40002001   department_organiser=oxpoints:23232596
+    create  event   title=${event_name}     slug=${event_slug}      description=${event_description}    location=${LOCATION_its}   department_organiser=oxpoints:23232596
