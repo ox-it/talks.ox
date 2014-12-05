@@ -24,9 +24,9 @@ Scenario: change location
     page should contain text "Banbury"
     go to ${edit_talk_page('${event_slug}')}
     click on ${remove item('event-location')}
-    page should not contain     "Banbury"
+    page should not contain     Banbury
     click on ${button done}
-    page should not contain     "Banbury"
+    page should not contain     Banbury
 
 Scenario: initialise with correct data
     create test data
