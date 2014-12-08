@@ -81,20 +81,27 @@ class EventForm(forms.ModelForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
         label="Speakers",
-        help_text="Type a speaker's name and select from the list",
+        help_text="Type speaker name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
 
     topics = TopicsField(
         label="Topics",
-        help_text="Type a topic name and select from the list",
+        help_text="Type topic name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
     )
 
-    location = OxPointField(LOCATION_DATA_SOURCE, label="Venue", required=False)
-    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
+    location = OxPointField(LOCATION_DATA_SOURCE,
+                            label="Venue",
+                            help_text="Type location name and select from the list",
+                            required=False)
+
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE,
+                                        required=False,
+                                        help_text="Type department name and select from the list",
+                                        label="Organising department")
 
     group = forms.ModelChoiceField(
         models.EventGroup.objects.all(),
