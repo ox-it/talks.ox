@@ -44,22 +44,31 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[title]", event.title))
     else:
         data.append(("talk[title]", "To be announced"))
-    if event.description:
-        data.append(("talk[abstract]", event.description))
-    else:
-        data.append(("talk[abstract]", ""))
+    event.description = build_abstract(event)
     if event.start:
         data.append(("talk[date_string]", event.start.strftime("%Y/%m/%d")))
         data.append(("talk[start_time_string]", event.start.strftime("%H:%M")))
     if event.end:
         data.append(("talk[end_time_string]", event.end.strftime("%H:%M")))
     if event.location:
-        data.append(("talk[venue_name]", event.location.identifier))
+        location = event.api_location
+        data.append(("talk[venue_name]", "{name}, {address}".format(name=location['name'], address=location.get('address', ''))))
     if series_id:
         data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
         data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in event.speakers.all()])))
     return data
+
+
+def build_abstract(event):
+    abstract = ""
+    if event.description:
+        abstract += event.description
+        abstract += "\n"
+    if event.topics.count() > 0:
+        topics = event.api_topics
+        abstract += [topic['prefLabel'] for topic in topics]
+    return abstract
 
 
 def group_to_old_series(group):
