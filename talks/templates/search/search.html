@@ -52,7 +52,7 @@ It is best practice to not access result.object as this would hit the database f
     {% if page.object_list %}
 
     <div class="col-md-3 col-md-pull-9">
-
+    {% spaceless %}
     <dl>
         {% if facets.fields.speakers %}
             <dt>Speaker</dt>
@@ -81,10 +81,16 @@ It is best practice to not access result.object as this would hit the database f
         {% if facet_date %}
             <dt>Start</dt>
             {% for item in facet_date %}
+                {% if item.count > 0 %}
+                    {% comment %}
+                    Cannot use facet.min_count=1 as we use here our own custom function
+                    {% endcomment %}
                 <dd><a href="{{ request.get_full_path }}&amp;filtered_date={{ item.url_param|urlencode }}">{{ item.name }}</a> ({{ item.count }})</dd>
+                {% endif %}
             {% endfor %}
         {% endif %}
     </dl>
+    {% endspaceless %}
     </div>
 
     {% endif %}
