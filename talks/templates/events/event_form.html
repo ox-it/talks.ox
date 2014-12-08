@@ -65,11 +65,6 @@
     </div>
     {{ event_form.start|bootstrap_horizontal }}
     {{ event_form.end|bootstrap_horizontal }}
-    {{ event_form.description|bootstrap_horizontal }}
-    {{ event_form.location|bootstrap_horizontal }}
-    {{ event_form.location_details|bootstrap_horizontal }}
-    {{ event_form.department_organiser|bootstrap_horizontal }}
-    {{ event_form.topics|bootstrap_horizontal }}
     {{ event_form.speakers|bootstrap_horizontal }}
 
     <div class="col-sm-offset-2 col-sm-10">
@@ -78,11 +73,16 @@
         </div>
     </div>
 
+    {{ event_form.location|bootstrap_horizontal }}
+    {{ event_form.location_details|bootstrap_horizontal }}
+    {{ event_form.description|bootstrap_horizontal }}
+    {{ event_form.topics|bootstrap_horizontal }}
+    {{ event_form.special_message|bootstrap_horizontal }}
+    {{ event_form.department_organiser|bootstrap_horizontal }}
+    {{ event_form.audience|bootstrap_horizontal }}
     {{ event_form.booking_type|bootstrap_horizontal }}
     {{ event_form.booking_url|bootstrap_horizontal }}
     {{ event_form.cost|bootstrap_horizontal }}
-    {{ event_form.audience|bootstrap_horizontal }}
-    {{ event_form.special_message|bootstrap_horizontal }}
     {{ event_form.status|bootstrap_horizontal }}
     {{ event_form.editor_set|bootstrap_horizontal }}
 
