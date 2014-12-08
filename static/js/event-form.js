@@ -63,9 +63,8 @@ $(function() {
 
     //add the speaker
     $('.js-submit-speaker').on('click', function(ev) {
-        var name = $('#id_name').val();
-        var email = $('#id_email_address').val();
-        console.log(name + "; " + email);
+        var namefield = $('#id_name');
+        var emailfield = $('#id_email_address');
         var csrftoken = $.cookie('csrftoken');
         $.ajax({
                 type: 'POST',
@@ -74,12 +73,14 @@ $(function() {
                     "X-CSRFToken": csrftoken,
                 },
                 data: {
-                    name: name,
-                    email_address: email
+                    name: namefield.val(),
+                    email_address: emailfield.val()
                 },
 
                 success: function(response) {
                     $('#id_event-speakers').trigger("addSpeaker", response);
+                    namefield.val("");
+                    emailfield.val("");
                 },
                 error: function(response) {
                     //todo explain any form errors to the user

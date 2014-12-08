@@ -104,14 +104,14 @@ def edit_event(request, event_slug):
     if not event.user_can_edit(request.user):
         raise PermissionDenied
     # providing data for topics/speakers as it is not straight from the Model
-               'speakers': event.speakers.all()}        # different of person_set
     initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
+               'speakers': event.speakers.all()}        # different of person_set
     form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,
         'event_form': form,
-        'speaker_form': SpeakerQuickAdd(),
-        'is_editing': True
+        'speaker_form': SpeakerQuickAdd,
+        'is_editing': True,
     }
     if request.method == 'POST':
         if form.is_valid():
