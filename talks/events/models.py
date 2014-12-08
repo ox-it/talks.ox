@@ -43,15 +43,15 @@ BOOKING_CHOICES = (
 AUDIENCE_PUBLIC = 'public'
 AUDIENCE_OXFORD = 'oxonly'
 AUDIENCE_CHOICES = (
-    (AUDIENCE_PUBLIC, 'Public'),
     (AUDIENCE_OXFORD, 'Members of the University only'),
+    (AUDIENCE_PUBLIC, 'Public'),
 )
 
 EVENT_PUBLISHED = 'published'
 EVENT_IN_PREPARATION = 'preparation'
 EVENT_STATUS_CHOICES = (
-    (EVENT_PUBLISHED, 'Published'),
     (EVENT_IN_PREPARATION, 'In preparation'),
+    (EVENT_PUBLISHED, 'Published'),
 )
 
 
