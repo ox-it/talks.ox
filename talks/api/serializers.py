@@ -44,6 +44,24 @@ class EventGroupSerializer(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField(method_name='formatted_title')
+    name = serializers.CharField(max_length=250)
+    bio = serializers.CharField()
+
+    def validate_name(self, values, key):
+        """
+        Check that name is present
+        """
+        if not values['name']:
+            raise serializers.ValidationError("Person must have a name")
+        return values
+
+    def validate_bio(self, values, key):
+        """
+        Check that bio is present
+        """
+        if not values['bio']:
+            raise serializers.ValidationError("Person must have a bio")
+        return values
 
     def formatted_title(self, obj):
         if obj.bio:
