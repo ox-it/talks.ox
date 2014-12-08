@@ -57,12 +57,7 @@
     </div>
     <div class="form-group event-group" {% if not event_form.group.value %}style="display:none;"{% endif %}>
         <div class="col-sm-offset-2 col-sm-8">
-            <input name="group" type="hidden" value=""/>
-            <select class="form-control" id="id_group" name="event-group" {% if not event_form.group.value %}disabled{% endif %}>
-                {% for value, label in event_form.fields.group.choices %}
-                <option value="{{ value }}"{% ifequal event_form.group.value value|stringformat:"s" %}selected{% endifequal %}>{{ label }}</option>
-                {% endfor %}
-            </select>
+            {{ event_form.group|bootstrap_horizontal }}
         </div>
         <div class="col-sm-2">
             <a data-url="{% url 'create-event-group' %}?modal=1" class="btn btn-default" id="create-group-button" data-toggle="modal" data-target="#form-modal">New event group</a>
@@ -118,18 +113,20 @@
     {{ event_form.audience|bootstrap_horizontal }}
     {{ event_form.special_message|bootstrap_horizontal }}
     {{ event_form.status|bootstrap_horizontal }}
-    {{ event_form.editors|bootstrap_horizontal }}
+    {{ event_form.editor_set|bootstrap_horizontal }}
 
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="form-group">
             <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-                <button type="submit" name="another" value="true" class="btn btn-default">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Save and add another Talk
-                </button>
+                {% if not is_editing %}
+                    <button type="submit" id="btn-save-add-another" name="another" value="true" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Save and add another Talk
+                    </button>
+                {% endif %}
                 <button type="submit" class="btn btn-primary">Done</button>
                 {% if is_editing %}
-                <a class="btn btn-danger" href="{% url 'delete-event' event.slug %}">Delete</a>
+                    <a class="btn btn-danger" href="{% url 'delete-event' event.slug %}">Delete</a>
                 {% endif %}
             </div>
         </div>

@@ -90,7 +90,7 @@ Scenario: Lookup venue
     
 Scenario: Lookup department
     go to ${add_talk_page}
-    type "biol" into ${field('Department')}
+    type "biol" into ${field('Organising department')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
@@ -135,7 +135,7 @@ Scenario: Properly display typeahead fields in newly created event
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "7-19 Banbury Road"
     click on ${suggestion popup item('Banbury Road')}
-    type "biol" into ${field('Department')}
+    type "biol" into ${field('Organising department')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
@@ -160,7 +160,7 @@ Scenario: Properly display typeahead fields in newly created event
     ${success message} should be displayed
     ${success message} should contain text "New event has been created"
     page should contain text "Venue: 7-19 Banbury Road"
-    page should contain text "Organiser: Chemical Biology"
+    page should contain text "Organising department: Chemical Biology"
     page should contain text "Topics: Biodiversity"
     page should contain text "James Bond"
     page should contain text "Napoleon Solo (IT Services)"
@@ -168,7 +168,22 @@ Scenario: Properly display typeahead fields in newly created event
 Scenario: Create speaker on the go
     [Tags]  todo
 Scenario: Save and add another
-    [Tags]  todo
+
+    go to ${add talk page}
+    type "something" into ${title field}
+    click on ${start field}
+    ${datetimepicker[0]} should appear
+    Select current date and time for ${datetimepicker[0]}
+    ${datetimepicker[0]} should disappear
+    click on ${end field}
+    ${datetimepicker[1]} should appear
+    Select current date and time for ${datetimepicker[1]}
+    ${datetimepicker[1]} should disappear
+    click on ${button save add another}
+    current page should be ${add talk page}
+    ${success message} should be displayed
+    ${success message} should contain text "New event has been created"
+
 
 Scenario: Preserve form data after validation
     create  person  name=James Bond
@@ -179,7 +194,7 @@ Scenario: Preserve form data after validation
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "7-19 Banbury Road"
     click on ${suggestion popup item('Banbury Road')}
-    type "biol" into ${field('Department')}
+    type "biol" into ${field('Organising department')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
