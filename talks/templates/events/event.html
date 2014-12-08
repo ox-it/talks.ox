@@ -56,6 +56,7 @@
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location %}
             <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
+            <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
             {% else %}
             <span>Venue to be announced<span>
             {% endif %}
