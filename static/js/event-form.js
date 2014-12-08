@@ -66,6 +66,10 @@ $(function() {
         var namefield = $('#id_name');
         var biofield = $('#id_bio');
         var csrftoken = $.cookie('csrftoken');
+        var $errorMessage=$('.js-speaker-form-errors');
+
+
+
         $.ajax({
                 type: 'POST',
                 url: '/api/persons/new',
@@ -81,14 +85,34 @@ $(function() {
                     $('#id_event-speakers').trigger("addSpeaker", response);
                     namefield.val("");
                     biofield.val("");
+                    //clear error classes
+                    setErrorStateForInput('name', false);
+                    setErrorStateForInput('bio', false);
+                    //clear and hide error message
+                    $errorMessage.addClass("hidden");
                 },
                 error: function(response) {
-                    //todo explain any form errors to the user
-                    console.log(response);
+                    setErrorStateForInput('name', false);
+                    setErrorStateForInput('bio', false)
+                    for(key in response.responseJSON) {
+                        setErrorStateForInput(key, true)
+                    }
+                    $errorMessage.removeClass("hidden");
+                    $errorMessage.html("Missing required field");
                 }
             }
         );
     });
+
+    function setErrorStateForInput(id, on) {
+        var el = $("#id_"+id).parent().parent();
+        if(on) {
+            el.addClass("has-error");
+        }
+        else {
+            el.removeClass("has-error");
+        }
+    }
 
     function updateEventDepartment(location_id) {
         $.ajax({

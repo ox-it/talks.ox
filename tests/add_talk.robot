@@ -172,7 +172,7 @@ Scenario: Create speaker on the go
     type "Albert Einstein" into ${speaker name field}
     type "Theoretical Physicist" into ${speaker bio field}
     click on ${add speaker button}
-    page should contain text "Albert Einstein, Theoretical Physicist"
+    page should appear text "Albert Einstein, Theoretical Physicist"
     click on ${button done}
     current page should be ${talk page}
     page should contain text "Albert Einstein"

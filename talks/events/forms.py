@@ -223,3 +223,7 @@ class SpeakerQuickAdd(forms.ModelForm):
             'name': "",
             'bio': "",
         }
+        help_texts = {
+            'name': "e.g. Dr Joseph Bloggs",
+            'bio': "e.g. University of Oxford"
+        }
