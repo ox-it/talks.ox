@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
-from .forms import EventForm, EventGroupForm
+from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
 
@@ -104,12 +104,13 @@ def edit_event(request, event_slug):
     if not event.user_can_edit(request.user):
         raise PermissionDenied
     # providing data for topics/speakers as it is not straight from the Model
-    initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
                'speakers': event.speakers.all()}        # different of person_set
+    initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
     form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,
         'event_form': form,
+        'speaker_form': SpeakerQuickAdd(),
         'is_editing': True
     }
     if request.method == 'POST':
@@ -163,6 +164,7 @@ def create_event(request, group_slug=None):
     else:
         context = {
             'event_form': PrefixedEventForm(),
+            'speaker_form': SpeakerQuickAdd(),
             'is_editing': False
         }
     return render(request, 'events/event_form.html', context)
