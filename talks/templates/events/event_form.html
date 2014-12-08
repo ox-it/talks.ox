@@ -69,38 +69,9 @@
     {{ event_form.location|bootstrap_horizontal }}
     {{ event_form.location_details|bootstrap_horizontal }}
     {{ event_form.department_organiser|bootstrap_horizontal }}
-
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-topics-list">
-            {% for topic in selected_topics %}
-            <a href="#" data-id="{{ topic.uri }}" class="list-group-item list-group-item-info fade in">
-                <span class="badge">-</span>{{ topic.name }}
-            </a>
-            {% endfor %}
-        </div>
-    </div>
     {{ event_form.topics|bootstrap_horizontal }}
-
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-suggested-topics-list">
-        </div>
-    </div>
-
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-speakers-list">
-            {% for speaker in selected_speakers %}
-            <a href="#" data-id="{{ speaker.id }}" class="list-group-item list-group-item-info fade in">
-                <span class="badge">-</span>{{ speaker.name }} - {{ speaker.email_address }}
-            </a>
-            {% endfor %}
-        </div>
-    </div>
     {{ event_form.speakers|bootstrap_horizontal }}
 
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-suggested-speakers-list">
-        </div>
-    </div>
     <div class="col-sm-offset-2 col-sm-10">
         <div class="col-sm-2">
             <a data-url="{% url 'create-person' %}?modal=1" class="btn btn-default" id="create-person-button" data-toggle="modal" data-target="#form-modal">Create Speaker</a>
