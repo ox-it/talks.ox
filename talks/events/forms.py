@@ -203,5 +203,8 @@ class PersonForm(forms.ModelForm):
 
 class SpeakerQuickAdd(forms.ModelForm):
     class Meta:
-        fields = ('name', 'email_address')
+        fields = ('name', 'bio')
         model = models.Person
+        widgets = {
+            'bio':forms.TextInput(),
+        }

@@ -64,7 +64,7 @@ $(function() {
     //add the speaker
     $('.js-submit-speaker').on('click', function(ev) {
         var namefield = $('#id_name');
-        var emailfield = $('#id_email_address');
+        var biofield = $('#id_bio');
         var csrftoken = $.cookie('csrftoken');
         $.ajax({
                 type: 'POST',
@@ -74,13 +74,13 @@ $(function() {
                 },
                 data: {
                     name: namefield.val(),
-                    email_address: emailfield.val()
+                    bio: biofield.val()
                 },
 
                 success: function(response) {
                     $('#id_event-speakers').trigger("addSpeaker", response);
                     namefield.val("");
-                    emailfield.val("");
+                    biofield.val("");
                 },
                 error: function(response) {
                     //todo explain any form errors to the user

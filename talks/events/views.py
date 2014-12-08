@@ -286,14 +286,10 @@ def contributors_home(request):
 @permission_required('events.add_person', raise_exception=PermissionDenied)
 def create_person(request):
     form = PersonForm(request.POST or None)
-    is_modal = request.GET.get('modal')
     status_code = 200
     if request.method == 'POST':
         if form.is_valid():
             person = form.save()
-            if is_modal:
-                response = json.dumps(serializers.PersonSerializer(person).data)
-                return  HttpResponse(response, status=201, content_type='application/json')
             messages.success(request, "Person was created")
             return redirect(person.get_absolute_url())
         else:
@@ -301,13 +297,9 @@ def create_person(request):
             messages.warning(request, "Please correct errors below")
     context = {
         'form': form,
-        'modal_title': "Add a new Person",
     }
 
-    if is_modal:
-        return render(request, 'events/person_modal_form.html', context, status=status_code)
-    else:
-        return render(request, 'events/person_form.html', context, status=status_code)
+    return render(request, 'events/person_form.html', context, status=status_code)
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)

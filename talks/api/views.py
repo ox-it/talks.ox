@@ -43,7 +43,7 @@ class IsSuperuserOrContributor(permissions.BasePermission):
 @permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
 @api_view(["POST"])
 def api_create_person(request):
-    serializer = PersonSerializer(data=request.DATA)
+    serializer = PersonSerializer(data=request.DATA, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
