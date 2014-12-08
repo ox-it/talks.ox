@@ -169,6 +169,7 @@ Scenario: Create speaker on the go
     go to ${add talk page}
     Fill in required fields
     click on ${reveal create speaker link}
+    ${speaker name field} should appear
     type "Albert Einstein" into ${speaker name field}
     type "Theoretical Physicist" into ${speaker bio field}
     click on ${add speaker button}
