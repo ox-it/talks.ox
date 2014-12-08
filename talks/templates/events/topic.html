@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.prefLabel }}{% endblock %}
+
+
+{% block content %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ topic.prefLabel }}</h3>
+    </div>
+
+    <ul class="list-group">
+        {% for event in events.all %}
+        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+
+</div>
+
+{% endblock %}

@@ -75,7 +75,7 @@
         {% endif %}
         {% spaceless %}
         {% if event.topics.count %}
-        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}<span>{{ topic.prefLabel }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}<a href="{% url 'show-topic' %}?uri={{ topic.uri }}">{{ topic.prefLabel }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
         {% endif %}
         {% endspaceless %}
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>

@@ -412,6 +412,18 @@ def show_person(request, person_slug):
     return render(request, 'events/person.html', context)
 
 
+def show_topic(request):
+    topic_uri = request.GET.get('uri')
+    from . import forms
+    api_topic = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
+    events = Event.published.filter(topics__uri=topic_uri)
+    context = {
+        'topic': api_topic,
+        'events': events
+    }
+    return render(request, 'events/topic.html', context)
+
+
 @login_required
 @permission_required('events.change_person', raise_exception=PermissionDenied)
 def edit_person(request, person_slug):
