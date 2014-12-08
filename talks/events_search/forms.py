@@ -14,6 +14,6 @@ class DateFacetedSearchForm(FacetedSearchForm):
         if self.filtered_date:
             solr_query = URL_TO_SOLR.get(self.filtered_date, None)
             if solr_query:
-                sqs = sqs.narrow(u'%s:"%s"' % ('start', sqs.query.clean(solr_query)))
+                sqs = sqs.narrow(u'%s:%s' % ('start', solr_query))
 
         return sqs
