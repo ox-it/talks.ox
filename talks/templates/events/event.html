@@ -52,7 +52,7 @@
     </div>
     <!-- List group -->
     <ul class="list-group">
-        <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
+        <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location %}
             <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
