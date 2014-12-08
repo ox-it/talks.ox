@@ -98,12 +98,12 @@ Scenario: Lookup department
     
 Scenario: Lookup topic
     go to ${add_talk_page}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Biodiversity"
     click on ${suggestion popup item('Biodiversity')}
     ${list group item("Biodiversity")} should be displayed
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Animal diversity"
     click on ${suggestion popup item('Animal diversity')}
@@ -114,12 +114,12 @@ Scenario: Lookup speaker
     create  person  name=Napoleon Solo
 
     go to ${add_talk_page}
-    type "bon" into ${field('Speaker')}
+    type "bon" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "James Bond"
     click on ${suggestion popup item('James Bond')}
     ${list group item("James Bond")} should be displayed
-    type "apo" into ${field('Speaker')}
+    type "apo" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
@@ -139,19 +139,19 @@ Scenario: Properly display typeahead fields in newly created event
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Biodiversity"
     click on ${suggestion popup item('Biodiversity')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Animal diversity"
     click on ${suggestion popup item('Animal diversity')}
-    type "bon" into ${field('Speaker')}
+    type "bon" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "James Bond"
     click on ${suggestion popup item('James Bond')}
-    type "apo" into ${field('Speaker')}
+    type "apo" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
@@ -198,19 +198,19 @@ Scenario: Preserve form data after validation
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Biodiversity"
     click on ${suggestion popup item('Biodiversity')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Animal diversity"
     click on ${suggestion popup item('Animal diversity')}
-    type "bon" into ${field('Speaker')}
+    type "bon" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "James Bond"
     click on ${suggestion popup item('James Bond')}
-    type "apo" into ${field('Speaker')}
+    type "apo" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
