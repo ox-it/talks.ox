@@ -16,8 +16,8 @@
     </div>
 
     <ul class="list-group">
-        {% for event in person.events.all %}
-        <li class="list-group-item">event.title</li>
+        {% for event in events.all %}
+        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a></li>
         {% endfor %}
     </ul>
 

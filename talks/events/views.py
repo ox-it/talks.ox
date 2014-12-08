@@ -16,6 +16,7 @@ from .models import Event, EventGroup, Person
 from .forms import EventForm, EventGroupForm
 from talks.api import serializers
 from talks.events.forms import PersonForm
+from talks.events.models import ROLES_SPEAKER
 
 logger = logging.getLogger(__name__)
 
@@ -405,9 +406,12 @@ def contributors_persons(request):
 @login_required()
 def show_person(request, person_slug):
     person = get_object_or_404(Person, slug=person_slug)
+    events = Event.published.filter(personevent__role=ROLES_SPEAKER,
+                                    personevent__person__slug=person_slug)
 
     context = {
         'person': person,
+        'events': events
     }
     return render(request, 'events/person.html', context)
 
