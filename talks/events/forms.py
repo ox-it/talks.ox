@@ -80,14 +80,14 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
 class EventForm(forms.ModelForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
-        label="Speaker",
+        label="Speakers",
         help_text="Type a speaker's name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
 
     topics = TopicsField(
-        label="Topic",
+        label="Topics",
         help_text="Type a topic name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
