@@ -166,9 +166,19 @@ Scenario: Properly display typeahead fields in newly created event
     page should contain text "Napoleon Solo (IT Services)"
 
 Scenario: Create speaker on the go
-    [Tags]  todo
-Scenario: Save and add another
+    go to ${add talk page}
+    Fill in required fields
+    click on ${reveal create speaker link}
+    type "Albert Einstein" into ${speaker name field}
+    type "Theoretical Physicist" into ${speaker bio field}
+    click on ${add speaker button}
+    page should contain text "Albert Einstein, Theoretical Physicist"
+    click on ${button done}
+    current page should be ${talk page}
+    page should contain text "Albert Einstein"
+    page should contain text "Theoretical Physicist"
 
+Scenario: Save and add another
     go to ${add talk page}
     type "something" into ${title field}
     click on ${start field}
