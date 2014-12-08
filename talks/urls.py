@@ -14,7 +14,7 @@ from events.views import (homepage, upcoming_events, show_person, create_person,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
                           contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic)
 
-from api.views import (EventViewSet, suggest_person, suggest_user,
+from api.views import (EventViewSet, suggest_person, api_create_person, suggest_user,
                        save_item, remove_item, get_event_group)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -35,6 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^api/', include(router.urls)),
     url(r'^api/user/suggest$', suggest_user, name='suggest-user'),
+    url(r'^api/persons/new$', api_create_person, name='api-create-person'),
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
     url(r'^api/eventgroups/id/(?P<event_group_id>\d+)', get_event_group, name='get-event-group'),

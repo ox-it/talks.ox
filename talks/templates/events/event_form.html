@@ -67,9 +67,20 @@
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.speakers|bootstrap_horizontal }}
 
-    <div class="col-sm-offset-2 col-sm-10">
-        <div class="col-sm-2">
-            <a data-url="{% url 'create-person' %}?modal=1" class="btn btn-default" id="create-person-button" data-toggle="modal" data-target="#form-modal">Create Speaker</a>
+
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="#" class="js-create-speaker">Create new speaker</a>
+            </div>
+            <div class="panel-body js-speaker-panel" style="display: none">
+                <div class="js-speaker-form form-inline">
+                    {{ speaker_form|bootstrap_horizontal }}
+                    <a class="btn btn-primary js-submit-speaker" style="margin-left:40px">Add</a>
+                </div>
+                <div class="js-speaker-form-errors alert alert-danger hidden">
+                </div>
+            </div>
         </div>
     </div>
 
