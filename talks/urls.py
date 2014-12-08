@@ -12,7 +12,7 @@ from rest_framework import routers
 from events.views import (homepage, upcoming_events, show_person, create_person, edit_person, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
-                          contributors_eventgroups, contributors_persons, delete_event, delete_event_group)
+                          contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic)
 
 from api.views import (EventViewSet, suggest_person, api_create_person, suggest_user,
                        save_item, remove_item, get_event_group)
@@ -59,6 +59,7 @@ urlpatterns = patterns('',
     url(r'^events/groups/id/(?P<event_group_slug>[^/]+)$', show_event_group, name='show-event-group'),
     url(r'^events/groups/id/(?P<event_group_slug>[^/]+)/edit$', edit_event_group, name='edit-event-group'),
     url(r'^events/groups/id/(?P<event_group_slug>[^/]+)/delete', delete_event_group, name='delete-event-group'),
+    url(r'^events/topics/id/$', show_topic, name="show-topic"),
     url(r'^contributors/$', contributors_home, name='contributors-home'),
     url(r'^contributors/events$', contributors_events, name='contributors-events'),
     url(r'^contributors/eventgroups$', contributors_eventgroups, name='contributors-eventgroups'),

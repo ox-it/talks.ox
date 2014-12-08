@@ -82,7 +82,8 @@ class EventGroup(models.Model):
         blank=True,
         null=True,
         max_length=2,
-        choices=EVENT_GROUP_TYPE_CHOICES
+        choices=EVENT_GROUP_TYPE_CHOICES,
+        default=SEMINAR
     )
     organiser = models.ForeignKey("Person", null=True, blank=True)
     occurence = models.TextField(
@@ -126,7 +127,9 @@ class Person(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
     bio = models.TextField(verbose_name="Affiliation")
-    email_address = models.EmailField(max_length=254)
+    email_address = models.EmailField(max_length=254,
+                                      null=True,
+                                      blank=True)
 
     objects = PersonManager()
 
@@ -204,7 +207,7 @@ class Event(models.Model):
     location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
                                         default='',
-                                        verbose_name='Additional details',
+                                        verbose_name='Venue details',
                                         help_text='e.g.: room number or accessibility information')
     department_organiser = models.TextField(default='', blank=True)
 

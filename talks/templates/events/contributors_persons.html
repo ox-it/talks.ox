@@ -32,19 +32,27 @@
     <table class="table table-bordered table-striped">
         <thead>
             <td>Name</td>
+            <td>Bio/affiliation</td>
             <td>Email</td>
+            <td>Edit</td>
         </thead>
             {% for person in persons %}
             <tr>
                 <td>
-                    {% if perms.events.change_person %}
-                        <a href="{% url 'edit-person' person.slug %}">{{ person.name }}</a>
-                    {% else %}
-                        {{ person.name }}
-                    {% endif %}
+                    <a href="{% url 'show-person' person.slug %}">{{ person.name }}</a>
+                </td>
+                <td>
+                    {{ person.bio }}
                 </td>
                 <td>
                     {{ person.email_address }}
+                </td>
+                <td>
+                    {% if perms.events.change_person %}
+                        <a class="btn btn-primary" href="{% url 'edit-person' person.slug %}">Edit</a>
+                    {% else %}
+                        Not authorised
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

@@ -53,6 +53,7 @@ class ApiOxResource(object):
 class OxfordDateResource(ApiOxResource):
 
     formatted = JSONAttribute('formatted')
+    formatted_nocal = JSONAttribute('formatted_nocal')
 
     def __init__(self, base_url=settings.API_OX_DATES_URL, timeout=1):
         super(OxfordDateResource, self).__init__(base_url, timeout=timeout)

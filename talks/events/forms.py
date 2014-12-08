@@ -80,21 +80,28 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
 class EventForm(forms.ModelForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
-        label="Speaker",
-        help_text="Type a speaker's name and select from the list",
+        label="Speakers",
+        help_text="Type speaker name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
 
     topics = TopicsField(
-        label="Topic",
-        help_text="Type a topic name and select from the list",
+        label="Topics",
+        help_text="Type topic name and select from the list",
         required=False,
         widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
     )
 
-    location = OxPointField(LOCATION_DATA_SOURCE, label="Venue", required=False)
-    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
+    location = OxPointField(LOCATION_DATA_SOURCE,
+                            label="Venue",
+                            help_text="Type location name and select from the list",
+                            required=False)
+
+    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE,
+                                        required=False,
+                                        help_text="Type department name and select from the list",
+                                        label="Organising department")
 
     group = forms.ModelChoiceField(
         models.EventGroup.objects.all(),
@@ -137,7 +144,6 @@ class EventForm(forms.ModelForm):
         event.editor_set.clear()
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
-        event.save()
 
         current_speakers = event.speakers
         form_speakers = self.cleaned_data['speakers']
@@ -162,6 +168,7 @@ class EventForm(forms.ModelForm):
                                                   object_id=event.id)
                 ti.delete()
 
+        event.save()
         return event
 
     def clean(self):
@@ -195,7 +202,7 @@ class EventGroupForm(forms.ModelForm):
 class PersonForm(forms.ModelForm):
 
     class Meta:
-        fields = ('name', 'bio', 'email_address')
+        fields = ('name', 'bio',)
         model = models.Person
         widgets = {
             'bio': forms.TextInput(),
