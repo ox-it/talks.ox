@@ -137,7 +137,6 @@ class EventForm(forms.ModelForm):
         event.editor_set.clear()
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
-        event.save()
 
         current_speakers = event.speakers
         form_speakers = self.cleaned_data['speakers']
@@ -162,6 +161,7 @@ class EventForm(forms.ModelForm):
                                                   object_id=event.id)
                 ti.delete()
 
+        event.save()
         return event
 
     def clean(self):
