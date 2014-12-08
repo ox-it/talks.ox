@@ -139,6 +139,7 @@ def create_event(request, group_slug=None):
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
+            'speaker_form': SpeakerQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid()
         if forms_valid:
