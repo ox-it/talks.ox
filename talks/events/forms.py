@@ -206,5 +206,11 @@ class SpeakerQuickAdd(forms.ModelForm):
         fields = ('name', 'bio')
         model = models.Person
         widgets = {
-            'bio':forms.TextInput(),
+            # For an inline form, a placeholder works better than a label
+            'name':forms.TextInput(attrs={'placeholder':'Enter Name'}),
+            'bio':forms.TextInput(attrs={'placeholder':'Enter Affiliation'}),
+        }
+        labels = {
+            'name':"",
+            'bio':"",
         }
