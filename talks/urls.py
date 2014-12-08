@@ -1,17 +1,16 @@
-from collections import OrderedDict
-
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from django_webauth.views import LoginView
-from haystack.query import SearchQuerySet
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, show_person, create_person, edit_person, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
-                          contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic, SearchView)
-from talks.events.forms import DateFacetedSearchForm
+                          contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic)
+from talks.events_search.forms import DateFacetedSearchForm
+from talks.events_search.views import SearchView
+from talks.events_search.conf import sqs
 from api.views import (EventViewSet, suggest_person, suggest_user,
                        save_item, remove_item, get_event_group)
 
@@ -22,24 +21,6 @@ from users.views import webauth_logout
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
 
-# Order used in the search UI for the filtering per start date
-FACET_START_DATE = OrderedDict()
-FACET_START_DATE['Next 7 days'] = {'solr_query': '[NOW TO NOW/DAY+7DAY]', 'url_param': 'next_7'}
-FACET_START_DATE['Future talks'] = {'solr_query': '[NOW/DAY+7DAY TO *]', 'url_param': 'future'}
-FACET_START_DATE['Past talks'] = {'solr_query': '[* TO NOW]', 'url_param': 'past'}
-
-# map an URL param to a solr query, used when a search is done
-URL_TO_SOLR = {d['url_param']: d['solr_query'] for d in FACET_START_DATE.itervalues()}
-
-# solr query to "user-friendly" name
-SOLR_TO_NAME = {d['solr_query']: key for key, d in FACET_START_DATE.iteritems()}
-
-sqs = (SearchQuerySet()
-       .filter(published=True).facet('speakers', mincount=1).facet('location', mincount=1).facet('topics', mincount=1))
-
-# add all the facet start date queries to the queryset
-for v in FACET_START_DATE.itervalues():
-    sqs = sqs.query_facet('start', v['solr_query'])
 
 urlpatterns = patterns('',
     # WebAuth login/logout

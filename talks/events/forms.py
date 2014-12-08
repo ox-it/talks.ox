@@ -7,7 +7,6 @@ from django.db.models.query_utils import Q
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
-from haystack.forms import FacetedSearchForm
 
 from talks.api import serializers
 
@@ -209,21 +208,3 @@ class PersonForm(forms.ModelForm):
         widgets = {
             'bio': forms.TextInput(),
         }
-
-
-class DateFacetedSearchForm(FacetedSearchForm):
-    def __init__(self, *args, **kwargs):
-        self.filtered_date = kwargs.pop("filtered_date", None)
-        super(DateFacetedSearchForm, self).__init__(*args, **kwargs)
-
-    def search(self):
-        from talks.urls import URL_TO_SOLR
-
-        sqs = super(DateFacetedSearchForm, self).search()
-
-        if self.filtered_date:
-            solr_query = URL_TO_SOLR.get(self.filtered_date, None)
-            if solr_query:
-                sqs = sqs.narrow(u'%s:"%s"' % ('start', sqs.query.clean(solr_query)))
-
-        return sqs
