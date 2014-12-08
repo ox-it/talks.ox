@@ -19,6 +19,9 @@
         <!-- underscore.js -->
         <script src="{% static "js/underscore-min.js"%}"></script>
 
+        <!-- bootstrap.js -->
+        <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -35,21 +38,32 @@
                 <div class="container-fluid">
                     {% url 'homepage' as home %}
                     {% url 'create-event' as create_event %}
+                    {% url 'contributors-events' as contributors_homepage %}
                     <div class="navbar-header">
                         <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">Add Talk</a></li>
+                        {% if perms.events.change_event %}
+                            <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}">Dashboard</a></li>
+                        {% endif %}
+                        {% if perms.events.add_event %}
+                            <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">Add Talk</a></li>
+                        {% endif %}
                     </ul>
                     <form class="navbar-form navbar-right" role="search" method="get" action="{% url 'haystack_search' %}">
                         <div class="form-group">
-                            <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" />
+                            <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" value="{% block search_query %}{% endblock search_query %}" />
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
 
                 </div><!--/.container-fluid -->
             </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             {% block content %}
             {% endblock content %}
         </div>

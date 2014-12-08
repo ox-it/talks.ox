@@ -1,0 +1,23 @@
+{% load bootstrap %}
+
+{{ form.media }}
+
+<form class="form-horizontal" method="post" action="{{ request.build_absolute_uri }}">{% csrf_token %}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="form-modal-label">{{ modal_title }}</h4>
+      </div>
+      <div class="modal-body">
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+    {% include 'events/_event_group_form_fields.html' %}
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Save changes">
+      </div>
+</form>

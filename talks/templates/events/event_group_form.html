@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block extrahead %}
+<script src="{% static "js/event-form.js"%}"></script>
+
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<script src="{% static "js/modal-form.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<!-- form media -->
+{{ form.media }}
+{% endblock %}
+
+{% block title %}{% if event_group %}Edit talk group{% else %}Add talk group{% endif %}{% endblock %}
+
+{% block content %}
+{% if event_group %}
+<h3>Editing "{{ event_group.title }}"</h3>
+{% else %}
+<h3>New event group</h3>
+{% endif %}
+
+<form class="form-horizontal" method="post">
+    {% include 'events/_event_group_form_fields.html' %}
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+            {% if not event_group %}
+            <button type="submit" name="another" value="true" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Save and add another
+                </button>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Done</button>
+            {% if is_editing %}
+            <a class="btn btn-danger" href="{% url 'delete-event-group' event_group.slug %}">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+</form>
+
+{% include '_prevent_form_enter.html' %}
+
+{% endblock %}
+

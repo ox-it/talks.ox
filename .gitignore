@@ -28,6 +28,7 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+cover/
 .tox/
 .coverage
 .cache
@@ -61,3 +62,14 @@ docs/build/
 
 talks/local_settings.py
 
+solr/schema.xml
+
+# Vim
+.*.swp
+
+# pybot test
+report.html
+output.xml
+log.html
+ghostdriver.log
+selenium-screenshot-*

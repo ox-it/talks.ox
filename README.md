@@ -12,11 +12,20 @@ See requirements.txt
 Currently using Django 1.7 beta 4
 
 
-Solr schema
------------
+Use of Apache Solr
+------------------
 
-The schema.xml needs to be generated using ``python manage.py build_solr_schema``.
+Apache Solr is used to provide the search functionnalities of the website.
 
+You can download it from the [main website](http://lucene.apache.org/solr/).
+
+The ``schema.xml`` needs to be generated using:
+  
+    python manage.py build_solr_schema
+
+The ``solrconfig.xml`` file is available in the ``solr`` directory at the root of the repository.
+
+Both files (``schema.xml`` and ``solrconfig.xml``) need to be put in your core's (default is ``collection1``) ``conf`` directory.
 
 Developers
 ----------

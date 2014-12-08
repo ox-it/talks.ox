@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}{% if event %}Edit talk{% else %}Add talk{% endif %}{% endblock %}
+
+{% block extrahead %}
+<script src="{% static "js/event-form.js"%}"></script>
+
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<script src="{% static "js/modal-form.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<!-- form media -->
+{{ event_form.media }}
+{% endblock extrahead %}
+
+{% block content %}
+
+{% if event %}
+<h3>Edit "{{ event.title }}"</h3>
+{% else %}
+<h3>Add Talk</h3>
+{% endif %}
+{% for error in event_form.non_field_errors %}
+    <div class="alert alert-warning" role="alert">{{ error }}</div>
+{% endfor %}
+<form class="form-horizontal" method="post" action="{{ request.get_full_path }}">{% csrf_token %}
+    {{ event_form.title|bootstrap_horizontal }}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                    <label>
+                        <input autocomplete="off" id="id_event-title_not_announced" name="event-title_not_announced" type="checkbox" {% if event_form.title_not_announced.value %}checked{% endif %}> Title to be announced
+                    </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Group</label>
+        <div class="col-sm-10">
+            <div class="checkbox">
+                    <label>
+                        <input autocomplete="off" id="id_event-group-enabled" name="event-group-enabled" type="checkbox" {% if event_form.group.value %}checked{% endif %}> <span>This talk is part of a seminar series or conference</span>
+                    </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group event-group" {% if not event_form.group.value %}style="display:none;"{% endif %}>
+        <div class="col-sm-offset-2 col-sm-8">
+            {{ event_form.group|bootstrap_horizontal }}
+        </div>
+        <div class="col-sm-2">
+            <a data-url="{% url 'create-event-group' %}?modal=1" class="btn btn-default" id="create-group-button" data-toggle="modal" data-target="#form-modal">New event group</a>
+        </div>
+    </div>
+    {{ event_form.start|bootstrap_horizontal }}
+    {{ event_form.end|bootstrap_horizontal }}
+    {{ event_form.speakers|bootstrap_horizontal }}
+
+    <div class="col-sm-offset-2 col-sm-10">
+        <div class="col-sm-2">
+            <a data-url="{% url 'create-person' %}?modal=1" class="btn btn-default" id="create-person-button" data-toggle="modal" data-target="#form-modal">Create Speaker</a>
+        </div>
+    </div>
+
+    {{ event_form.location|bootstrap_horizontal }}
+    {{ event_form.location_details|bootstrap_horizontal }}
+    {{ event_form.description|bootstrap_horizontal }}
+    {{ event_form.topics|bootstrap_horizontal }}
+    {{ event_form.special_message|bootstrap_horizontal }}
+    {{ event_form.department_organiser|bootstrap_horizontal }}
+    {{ event_form.audience|bootstrap_horizontal }}
+    {{ event_form.booking_type|bootstrap_horizontal }}
+    {{ event_form.booking_url|bootstrap_horizontal }}
+    {{ event_form.cost|bootstrap_horizontal }}
+    {{ event_form.status|bootstrap_horizontal }}
+    {{ event_form.editor_set|bootstrap_horizontal }}
+
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+                {% if not is_editing %}
+                    <button type="submit" id="btn-save-add-another" name="another" value="true" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Save and add another Talk
+                    </button>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Done</button>
+                {% if is_editing %}
+                    <a class="btn btn-danger" href="{% url 'delete-event' event.slug %}">Delete</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</form>
+
+{% include '_prevent_form_enter.html' %}
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Existing event groups</h1>
+<div class="list-group">
+{% for object in object_list %}
+    <div class="list-group-item">
+        <a href="{% url 'show-event-group' object.slug %}">{{ object.title }}</a>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

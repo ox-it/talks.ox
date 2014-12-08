@@ -1,163 +1,435 @@
-- model: events.Speaker
-  pk: 1
-  fields:
+- fields:
+    bio: JB
+    email_address: 'email@email.com'
     name: James Bond
     slug: james-bond
-    bio: JB
-- model: events.Speaker
-  pk: 2
-  fields:
+  model: events.person
+  pk: 1
+- fields:
+    bio: Professor of Department of Reconstructive & Plastic Surgery, Keio University,
+      Tokyo
+    email_address: 'email@email.com'
     name: Professor Kazuo Kishi
     slug: prof-kazuo-kishi
-    bio: Professor of Department of Reconstructive & Plastic Surgery, Keio University, Tokyo
-- model: events.Speaker
-  pk: 3
-  fields:
+  model: events.person
+  pk: 2
+- fields:
+    bio: Geosciences Montpellier
+    email_address: 'email@email.com'
     name: Dr Andrea Tommasi
     slug: dr-andrea-tommasi
-    bio: Geosciences Montpellier
-- model: events.Speaker
-  pk: 4
-  fields:
+  model: events.person
+  pk: 3
+- fields:
+    bio: Oxford
+    email_address: 'email@email.com'
     name: Dr Claire Conway
     slug: dr-claire-conway
-    bio: Oxford
-- model: events.Speaker
-  pk: 5
-  fields:
+  model: events.person
+  pk: 4
+- fields:
+    bio: University of Sheffield
+    email_address: 'email@email.com'
     name: David Dockrell
     slug: david-dockrell
-    bio: University of Sheffield
-- model: events.Speaker
-  pk: 6
-  fields:
+  model: events.person
+  pk: 5
+- fields:
+    bio: test
+    email_address: 'email@email.com'
     name: Simon Knight
     slug: simon-knight
+  model: events.person
+  pk: 6
+- fields:
     bio: test
-- model: events.Speaker
-  pk: 7
-  fields:
+    email_address: 'email@email.com'
     name: Jonathan Pearson-Stuttard
     slug: jonathan-pearson-stuttard
-    bio: test
-- model: events.Speaker
-  pk: 8
-  fields:
+  model: events.person
+  pk: 7
+- fields:
+    bio: Senior Fellow at Bruegel, and Visiting Fellow at the Peterson Institute,
+      Washington DC
+    email_address: 'email@email.com'
     name: Nicolas Veron
     slug: nicolas-veron
-    bio: Senior Fellow at Bruegel, and Visiting Fellow at the Peterson Institute, Washington DC
-- model: api_ox.Location
-  pk: 1
-  fields:
-    identifier: oxpoints:23233507
-    name: Sheldonian Theatre
-- model: api_ox.Location
-  pk: 2
-  fields:
-    identifier: oxpoints:23232612
-    name: Oxford Martin School
-- model: api_ox.Location
-  pk: 3
-  fields:
-    identifier: oxpoints:23232496
-    name: Global Economic Governance Programme
-- model: api_ox.Location
-  pk: 4
-  fields:
-    identifier: oxpoints:23232608
-    name: Oxford Internet Institute
-- model: api_ox.Location
-  pk: 5
-  fields:
-    identifier: oxpoints:23232670
-    name: Department of Pharmacology
-- model: events.Event
-  pk: 1
-  fields:
-    start: 2014-12-15T14:00:00.0Z
-    title: Complete Regeneration of Skin
-    slug: complete-regeneration-of-skin
-    description: Skin
-    speakers: [2,]
-    location: 1
-- model: events.Event
-  pk: 2
-  fields:
-    start: 2014-12-10T12:00:00.0Z
-    title: Feedbacks between deformation and melts in the lithosphere-asthenosphere boundary
-    slug: deformation-and-melts-litosphere-astenosphere-boundary
-    description: Geo sciences
-    speakers: [3,]
-    location: 2
-- model: events.Event
-  pk: 3
-  fields:
-    start: 2014-12-10T12:00:00.0Z
-    title: How do we know if we're making a difference? Finding solid ground in the shifting sands of conservation evaluation
-    slug: making-difference
-    description: Nature has evolved complex materials that are exquisitely designed to perform specific functions. Certain proteins and glycans self-organize in vivo into soft and dynamic, strongly hydrated gel-like matrices. Even though biological hydrogels are ubiquitous in living organisms and fulfill fundamental biological tasks, we have today a very limited understanding of their internal organization, and how they function. The main reason is that this type of assemblies is difficult to study with conventional biochemical methods. This talk will focus on peri- and extracellular matrices that are rich in large polysaccharides from the glycosaminoglycan family, in particular hyaluronan. In order to study biological hydrogels directly on the supramolecular level, we have developed an unconventional approach that draws on knowledge from several scientific disciplines. Exploiting surface science tools, we tailor-make model systems by directed self-assembly of purified components on solid supports. With a toolbox of biophysical characterization techniques, including QCM -D, ellipsometry, AFM and RICM , these model systems can be investigated quantitatively and in great detail. The experimental data, combined with polymer theory, allow us to develop a better understanding of the relationship between the supramolecular organization and dynamics of biological hydrogels, their physico-chemical properties and their biological function. To illustrate this concept, I will present a few examples, including recent works on the cross-linking of glycan-rich extracellular matrices (such as the jelly-like matrix around the mammalian egg that is crucial for fertility), and on "superselective" targeting of the cell surface through multivalent interactions between hyaluronan polymers and cell surface receptors.
-    speakers: [3,6]
-    location: 4
-- model: events.Event
-  pk: 4
-  fields:
-    start: 2014-08-22T16:00:00.0Z
-    title: Persistence in Poor Estimating in Software Engineering Whys and Hows
-    slug: persistence-in-poor-estimating
-    description: There has been a mind shift in software engineering for how software is built and managed. The software industry has been experiencing mainly three major trends. The first is the shift towards agility and leanness in software development. Being lean and agile is reflected both in practices and in outcomes. The second shift is re-definition of business models in order to distribute the development within a country and/or across borders to get benefits such as low cost, high productivity and time shifting. The third is the increase in scale of software systems. Furthermore, there is high uncertainty in how these will change in the near future. The software industry has already been experiencing considerable challenges in project effort and cost estimating. Many projects fail or the ones delivered are with huge time and cost over-runs. Poor estimating processes and the uncertainty in requirements have been widely blamed for as major causes of the problems. In spite of the facts that considerable efforts have been put forth on improving estimations, it seems the problem continues to persist. The aim of this talk is to elaborate on the ‘fundamental issues of poor estimating’ in software engineering. In particular; issues related to lack of standard and useful measures, well designed measurement instruments, and miss-conceptions in use of measures will be discussed by comparing the practices to those of mature engineering fields.
-    speakers: [4,]
-    location: 2
-- model: events.Event
-  pk: 5
-  fields:
-    start: 2014-09-2T16:00:00.0Z
-    title: A data-driven approach to commonsense reasoning based on qualitative spatial representations from the web
-    slug: data-driven
-    description: Conceptual spaces (sometimes also called semantic spaces) are high-dimensional geometric spaces in which entities are modelled as points and categories as convex regions. Given a relevant text corpus, conceptual spaces can be induced from data by using dimensionality reduction methods such as multi-dimensional scaling. To date, conceptual spaces are mainly used for measuring similarity. In this talk, I will argue that many aspects of semantic relatedness can be identified with qualitative spatial relations in conceptual spaces, and that this allows us to learn symbolic knowledge about categories in a purely data-driven way. As a simple example, the spatial part-of relation corresponds to the conceptual is-a relation, which is useful for automatically refining taxonomies. Second, spatial betweenness in conceptual spaces is useful for identifying "intermediary concepts". For example, we can think of a tapas bar as being intermediate between a pub and a restaurant, and accordingly we can expect the representation of "tapas bar" to be geometrically between the representations of "restaurant" and "pub" in a conceptual space of places. Finally, relative attributes such as "more violent than" (for films) or "more tannic than" (for wines) can be associated with direction relations in a conceptual space. The aforementioned spatial relations are useful for implementing various patterns of commonsense reasoning. Betweenness, for example, can be used to implement a symbolic counterpart to numerical interpolation, e.g. from the knowledge that bars and restaurants sell drinks, we derive that tapas-bars are also likely to sell drinks. Direction relations are useful for implementing a fortiori inference (and other forms of analogical reasoning). For example, given that Die Hard has received an 18 certificate from the British Board of Film Classification and that Drive is more violent than Die Hard, we can plausibly derive that Drive has also received an 18 certificate. I will report the result of experiments that show the usefulness of the aforementioned patterns of commonsense reasoning. For example, we have found that a betweenness based classifier, using a conceptual space of place types induced from Flickr, outperforms humans in categorising places from the Foursquare and Geonames taxonomies. Similarly, by identifying qualitative direction relations in a conceptual space of films (derived from a large corpus of film reviews), we can implement a form of analogical reasoning which outperforms standard classifiers in a variety of film related categorisation tasks.
-    speakers: [1,2,3,4]
-    location: 3
-- model: events.Event
-  pk: 6
-  fields:
-    start: 2014-6-9T17:00:00.0Z
-    title: Banking Union - Will the ECB’s assessment do the trick?
-    slug: banking-union
-    description: The European Central Bank’s comprehensive assessment of the bulk of Europe’s banking system, started in 2013 and expected to be completed in October 2014, is a critical opportunity to restore Europe’s financial system back to soundness. Its start has been more encouraging than cynics expected, and market conditions have been unexpectedly supportive. But the hardest part still lies ahead.
-    speakers: [8,]
-    location: 2
-- model: events.Event
-  pk: 7
-  fields:
-    start: 2014-6-9T19:00:00.0Z
-    title: Emerging Technology Businesses
-    slug: emerging-technology-businesses
-    description: OxTET is happy to welcome Riva-Melissa Tez – lecturer at the DAB university in Berlin, founder of the Berlin Singularity, Associate Director of Longevity Intelligence Communications, and co-runner of Kardashev Communications. Riva will be speaking on obstacles that emerging technology businesses face, analysing factors causing shortfalls in funding, social mistrust, and political dysfunction, and offering recommendations for dealing with these obstacles.
-    speakers: [7,]
-    location: 2
-- model: events.Event
+  model: events.person
   pk: 8
-  fields:
-    start: 2014-6-10T16:00:00.0Z
-    title: Financialization of wind energy? The case of Germany
-    slug: financialization-wind-energy
+- fields:
+    department_organiser: ''
+    description: Skin
+    end: 2014-12-15 14:00:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: complete-regeneration-of-skin
+    start: 2014-12-15 14:00:00
+    title: Complete Regeneration of Skin
+  model: events.event
+  pk: 1
+- fields:
+    department_organiser: ''
+    description: Geo sciences
+    end: 2014-12-10 14:00:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: deformation-and-melts-litosphere-astenosphere-boundary
+    start: 2014-12-10 12:00:00
+    title: Feedbacks between deformation and melts in the lithosphere-asthenosphere
+      boundary
+  model: events.event
+  pk: 2
+- fields:
+    department_organiser: ''
+    description: Nature has evolved complex materials that are exquisitely designed
+      to perform specific functions. Certain proteins and glycans self-organize in
+      vivo into soft and dynamic, strongly hydrated gel-like matrices. Even though
+      biological hydrogels are ubiquitous in living organisms and fulfill fundamental
+      biological tasks, we have today a very limited understanding of their internal
+      organization, and how they function. The main reason is that this type of assemblies
+      is difficult to study with conventional biochemical methods. This talk will
+      focus on peri- and extracellular matrices that are rich in large polysaccharides
+      from the glycosaminoglycan family, in particular hyaluronan. In order to study
+      biological hydrogels directly on the supramolecular level, we have developed
+      an unconventional approach that draws on knowledge from several scientific disciplines.
+      Exploiting surface science tools, we tailor-make model systems by directed self-assembly
+      of purified components on solid supports. With a toolbox of biophysical characterization
+      techniques, including QCM -D, ellipsometry, AFM and RICM , these model systems
+      can be investigated quantitatively and in great detail. The experimental data,
+      combined with polymer theory, allow us to develop a better understanding of
+      the relationship between the supramolecular organization and dynamics of biological
+      hydrogels, their physico-chemical properties and their biological function.
+      To illustrate this concept, I will present a few examples, including recent
+      works on the cross-linking of glycan-rich extracellular matrices (such as the
+      jelly-like matrix around the mammalian egg that is crucial for fertility), and
+      on "superselective" targeting of the cell surface through multivalent interactions
+      between hyaluronan polymers and cell surface receptors.
+    end: 2014-12-10 13:00:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: making-difference
+    start: 2014-12-10 12:00:00
+    title: How do we know if we're making a difference? Finding solid ground in the
+      shifting sands of conservation evaluation
+  model: events.event
+  pk: 3
+- fields:
+    department_organiser: ''
+    description: "There has been a mind shift in software engineering for how software\
+      \ is built and managed. The software industry has been experiencing mainly three\
+      \ major trends. The first is the shift towards agility and leanness in software\
+      \ development. Being lean and agile is reflected both in practices and in outcomes.\
+      \ The second shift is re-definition of business models in order to distribute\
+      \ the development within a country and/or across borders to get benefits such\
+      \ as low cost, high productivity and time shifting. The third is the increase\
+      \ in scale of software systems. Furthermore, there is high uncertainty in how\
+      \ these will change in the near future. The software industry has already been\
+      \ experiencing considerable challenges in project effort and cost estimating.\
+      \ Many projects fail or the ones delivered are with huge time and cost over-runs.\
+      \ Poor estimating processes and the uncertainty in requirements have been widely\
+      \ blamed for as major causes of the problems. In spite of the facts that considerable\
+      \ efforts have been put forth on improving estimations, it seems the problem\
+      \ continues to persist. The aim of this talk is to elaborate on the \u2018fundamental\
+      \ issues of poor estimating\u2019 in software engineering. In particular; issues\
+      \ related to lack of standard and useful measures, well designed measurement\
+      \ instruments, and miss-conceptions in use of measures will be discussed by\
+      \ comparing the practices to those of mature engineering fields."
+    end: 2014-08-22 16:30:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: persistence-in-poor-estimating
+    start: 2014-08-22 16:00:00
+    title: Persistence in Poor Estimating in Software Engineering Whys and Hows
+  model: events.event
+  pk: 4
+- fields:
+    department_organiser: ''
+    description: Conceptual spaces (sometimes also called semantic spaces) are high-dimensional
+      geometric spaces in which entities are modelled as points and categories as
+      convex regions. Given a relevant text corpus, conceptual spaces can be induced
+      from data by using dimensionality reduction methods such as multi-dimensional
+      scaling. To date, conceptual spaces are mainly used for measuring similarity.
+      In this talk, I will argue that many aspects of semantic relatedness can be
+      identified with qualitative spatial relations in conceptual spaces, and that
+      this allows us to learn symbolic knowledge about categories in a purely data-driven
+      way. As a simple example, the spatial part-of relation corresponds to the conceptual
+      is-a relation, which is useful for automatically refining taxonomies. Second,
+      spatial betweenness in conceptual spaces is useful for identifying "intermediary
+      concepts". For example, we can think of a tapas bar as being intermediate between
+      a pub and a restaurant, and accordingly we can expect the representation of
+      "tapas bar" to be geometrically between the representations of "restaurant"
+      and "pub" in a conceptual space of places. Finally, relative attributes such
+      as "more violent than" (for films) or "more tannic than" (for wines) can be
+      associated with direction relations in a conceptual space. The aforementioned
+      spatial relations are useful for implementing various patterns of commonsense
+      reasoning. Betweenness, for example, can be used to implement a symbolic counterpart
+      to numerical interpolation, e.g. from the knowledge that bars and restaurants
+      sell drinks, we derive that tapas-bars are also likely to sell drinks. Direction
+      relations are useful for implementing a fortiori inference (and other forms
+      of analogical reasoning). For example, given that Die Hard has received an 18
+      certificate from the British Board of Film Classification and that Drive is
+      more violent than Die Hard, we can plausibly derive that Drive has also received
+      an 18 certificate. I will report the result of experiments that show the usefulness
+      of the aforementioned patterns of commonsense reasoning. For example, we have
+      found that a betweenness based classifier, using a conceptual space of place
+      types induced from Flickr, outperforms humans in categorising places from the
+      Foursquare and Geonames taxonomies. Similarly, by identifying qualitative direction
+      relations in a conceptual space of films (derived from a large corpus of film
+      reviews), we can implement a form of analogical reasoning which outperforms
+      standard classifiers in a variety of film related categorisation tasks.
+    end: 2014-09-02 17:00:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: data-driven
+    start: 2014-09-02 16:00:00
+    title: A data-driven approach to commonsense reasoning based on qualitative spatial
+      representations from the web
+  model: events.event
+  pk: 5
+- fields:
+    department_organiser: ''
+    description: "The European Central Bank\u2019s comprehensive assessment of the\
+      \ bulk of Europe\u2019s banking system, started in 2013 and expected to be completed\
+      \ in October 2014, is a critical opportunity to restore Europe\u2019s financial\
+      \ system back to soundness. Its start has been more encouraging than cynics\
+      \ expected, and market conditions have been unexpectedly supportive. But the\
+      \ hardest part still lies ahead."
+    location: 'oxpoints:23233672'
+    end: 2014-06-09 17:45:00
+    group: 1
+    slug: banking-union
+    start: 2014-06-09 17:00:00
+    title: "Banking Union - Will the ECB\u2019s assessment do the trick?"
+  model: events.event
+  pk: 6
+- fields:
+    department_organiser: ''
+    description: "OxTET is happy to welcome Riva-Melissa Tez \u2013 lecturer at the\
+      \ DAB university in Berlin, founder of the Berlin Singularity, Associate Director\
+      \ of Longevity Intelligence Communications, and co-runner of Kardashev Communications.\
+      \ Riva will be speaking on obstacles that emerging technology businesses face,\
+      \ analysing factors causing shortfalls in funding, social mistrust, and political\
+      \ dysfunction, and offering recommendations for dealing with these obstacles."
+    location: 'oxpoints:23233672'
+    end: 2014-06-09 20:00:00
+    group: 2
+    slug: emerging-technology-businesses
+    start: 2014-06-09 19:00:00
+    title: Emerging Technology Businesses
+  model: events.event
+  pk: 7
+- fields:
+    department_organiser: ''
     description: Globalisation and Regional Development in an Age of Economic Volatility
-    speakers: [8,]
-    location: 1
-- model: events.Event
-  pk: 9
-  fields:
-    start: 2014-6-17T13:00:00.0Z
-    title: Current and best practices for patient reported outcome assessment in clinical trials
-    slug: assessment-clinical-trials
-    description: Sir Richard Doll Seminars in Public Health and Epidemiology
-    speakers: [6,]
-    location: 4
-- model: events.Event
-  pk: 9
-  fields:
-    start: 2014-6-19T17:00:00.0Z
-    title: Sites of Encounter - Making Sense of People and Culture on the Move
+    end: 2014-06-10 17:00:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: financialization-wind-energy
+    start: 2014-06-10 16:00:00
+    title: Financialization of wind energy? The case of Germany
+  model: events.event
+  pk: 8
+- fields:
+    department_organiser: ''
+    description: "Much social science still sees rootedness and boundedness as the\
+      \ norm while mobility and connection are the exception. But because more and\
+      \ more people live transnational lives, we need new concepts and methods for\
+      \ understanding the relationship between migrating people and migrating culture\
+      \ and how they effect poverty alleviation and development. The first part of\
+      \ this lecture will suggest ways to understand culture in motion. The second\
+      \ half will showcase findings from three studies on different aspects of the\
+      \ relationship between migrating people and culture\u2014the first is research\
+      \ about how return migrants and social remittances are influencing the health\
+      \ sector in India, the second is about if and how cultural institutions create\
+      \ national and global identities, and the third is on the new forms of global\
+      \ social protection and provision that arise in response to a world on the move."
+    end: 2014-06-19 17:00:00
+    group: null
+    location: 'oxpoints:23233672'
     slug: people-culture-move
-    description: Much social science still sees rootedness and boundedness as the norm while mobility and connection are the exception. But because more and more people live transnational lives, we need new concepts and methods for understanding the relationship between migrating people and migrating culture and how they effect poverty alleviation and development. The first part of this lecture will suggest ways to understand culture in motion. The second half will showcase findings from three studies on different aspects of the relationship between migrating people and culture—the first is research about how return migrants and social remittances are influencing the health sector in India, the second is about if and how cultural institutions create national and global identities, and the third is on the new forms of global social protection and provision that arise in response to a world on the move.
-    speakers: [3,8]
-    location: 3
+    start: 2014-06-19 17:00:00
+    title: Sites of Encounter - Making Sense of People and Culture on the Move
+  model: events.event
+  pk: 9
+- fields:
+    department_organiser: ''
+    description: ddsad
+    end: 2014-06-19 17:30:00
+    group: null
+    location: 'oxpoints:23233672'
+    slug: dsadd
+    start: 2014-06-19 17:00:00
+    title: dsadd
+  model: events.event
+  pk: 10
+- fields:
+    affiliation: ''
+    event: 1
+    person: 2
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 1
+- fields:
+    affiliation: ''
+    event: 2
+    person: 3
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 2
+- fields:
+    affiliation: ''
+    event: 3
+    person: 3
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 3
+- fields:
+    affiliation: ''
+    event: 3
+    person: 6
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 4
+- fields:
+    affiliation: ''
+    event: 4
+    person: 4
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 5
+- fields:
+    affiliation: ''
+    event: 5
+    person: 1
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 6
+- fields:
+    affiliation: ''
+    event: 5
+    person: 3
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 7
+- fields:
+    affiliation: ''
+    event: 5
+    person: 2
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 8
+- fields:
+    affiliation: ''
+    event: 5
+    person: 4
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 9
+- fields:
+    affiliation: ''
+    event: 6
+    person: 8
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 10
+- fields:
+    affiliation: ''
+    event: 7
+    person: 7
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 11
+- fields:
+    affiliation: ''
+    event: 8
+    person: 8
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 12
+- fields:
+    affiliation: ''
+    event: 9
+    person: 8
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 13
+- fields:
+    affiliation: ''
+    event: 9
+    person: 3
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 14
+- fields:
+    affiliation: ''
+    event: 10
+    person: 1
+    role: speaker
+    url: ''
+  model: events.personevent
+  pk: 15
+- fields:
+    username: superuser
+    is_superuser: true
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    groups: [1]
+    email: super.user@users.com
+    is_staff: true
+  model: auth.user
+  pk: 1
+- fields:
+    username: contrib_user1
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    groups: [1]
+    email: contributor.one@users.com
+    is_staff: true
+  model: auth.user
+  pk: 2
+- fields:
+    username: contrib_user2
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    email: contributor.two@users.com
+    is_staff: true
+    groups: [1]
+  model: auth.user
+  pk: 3
+- fields:
+    username: non_contrib_user1
+    password: pbkdf2_sha256$12000$4VLRVRlHD6oo$Au/HNjADyf3fTd0rEjXJ2wPcofI2DO1i1sb+3UfoXqQ= #pw
+    is_staff: true
+    email: non.contributor@users.com
+  model: auth.user
+  pk: 4
+- fields:
+    name: Contributors
+    permissions: [55, 56, 57, 43, 44, 45, 46, 47, 48, 52, 53, 54, 49, 50, 51]
+  model: auth.group
+  pk: 1
+- fields:
+    title: A conference
+    description: A conference featuring a diverse array of groups
+    group_type: CO
+    slug: a_conference
+  model: events.eventgroup
+  pk: 1
+- fields:
+    title: A seminar
+    description: A series of talks on something
+    group_type: SE
+    slug: a_seminar
+  model: events.eventgroup
+  pk: 2

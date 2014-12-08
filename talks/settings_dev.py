@@ -1,7 +1,7 @@
 from talks.settings import *
 
 
-INSTALLED_APPS += ('debug_toolbar',)
+INSTALLED_APPS += ('debug_toolbar', 'django_nose')
 
 DATABASES = {
     'default': {
@@ -10,6 +10,12 @@ DATABASES = {
     }
 }
 
-RAVEN_CONFIG = None
+RAVEN_CONFIG = {}
+
+LOGIN_URL = '/admin/login'
 
 LOGGING = None
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
