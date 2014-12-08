@@ -1,3 +1,8 @@
+"""
+Configuration for our query set
+Very specific to Solr unfortunately
+"""
+
 from collections import OrderedDict
 
 from haystack.query import SearchQuerySet

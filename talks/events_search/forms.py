@@ -1,3 +1,7 @@
+"""
+Custom search form to include the dynamic date faceting
+"""
+
 from haystack.forms import FacetedSearchForm
 
 

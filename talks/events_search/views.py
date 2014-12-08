@@ -1,3 +1,7 @@
+"""
+Custom search view, includes our custom dynamic faceting
+"""
+
 from haystack.views import FacetedSearchView
 
 
