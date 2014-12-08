@@ -199,6 +199,7 @@ class EventGroupForm(forms.ModelForm):
             'occurence': forms.TextInput(),
         }
 
+
 class PersonForm(forms.ModelForm):
 
     class Meta:
@@ -208,16 +209,17 @@ class PersonForm(forms.ModelForm):
             'bio': forms.TextInput(),
         }
 
+
 class SpeakerQuickAdd(forms.ModelForm):
     class Meta:
         fields = ('name', 'bio')
         model = models.Person
         widgets = {
             # For an inline form, a placeholder works better than a label
-            'name':forms.TextInput(attrs={'placeholder':'Enter Name'}),
-            'bio':forms.TextInput(attrs={'placeholder':'Enter Affiliation'}),
+            'name': forms.TextInput(attrs={'placeholder':'Enter Name'}),
+            'bio': forms.TextInput(attrs={'placeholder':'Enter Affiliation'}),
         }
         labels = {
-            'name':"",
-            'bio':"",
+            'name': "",
+            'bio': "",
         }
