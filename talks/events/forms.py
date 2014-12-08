@@ -203,7 +203,7 @@ class EventGroupForm(forms.ModelForm):
 class PersonForm(forms.ModelForm):
 
     class Meta:
-        fields = ('name', 'bio', 'email_address')
+        fields = ('name', 'bio',)
         model = models.Person
         widgets = {
             'bio': forms.TextInput(),
