@@ -204,7 +204,7 @@ class Event(models.Model):
     location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
                                         default='',
-                                        verbose_name='Additional details',
+                                        verbose_name='Venue details',
                                         help_text='e.g.: room number or accessibility information')
     department_organiser = models.TextField(default='', blank=True)
 
