@@ -1,14 +1,11 @@
-import os
 import unittest
 import logging
-from django.contrib.contenttypes.models import ContentType
-
 import mock
 import requests
-from django.conf import settings
+
 from django.test import TestCase
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache.backends.base import BaseCache
-from django.contrib.staticfiles.finders import find as find_static_file
 from django.contrib.auth.models import User, Group, Permission
 from django.test.client import Client
 
@@ -17,49 +14,6 @@ from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 VALID_DATE_STRING = "2014-05-12 12:18"
-
-
-def intercept_requests_to_statics(url, *a, **k):
-    """
-    Utility function to use with mock.path.
-    Blocks all requests through `requests.get` except for those to local static files.
-    In that case makes `requests.get` return file content without going through `httplib`
-    """
-    logging.info("intercept: %s", url)
-    if url.startswith(settings.STATIC_URL):
-        r = requests.Response()
-        try:
-            path = url[len(settings.STATIC_URL):]
-            path = path.split('?')[0]  # FIXME use urlparse
-            file_path = find_static_file(path)
-            logging.info("path:%r", path)
-            logging.info("file+path:%r", file_path)
-            if file_path and os.path.isfile(file_path):
-                with open(file_path) as f:
-                    r._content = f.read()
-                    r.status_code = 200
-                    logging.info("response: %s", r._content)
-                    logging.info("response: %s", r.content)
-            else:
-                r.status_code = 404
-        except Exception, e:
-            r.status_code = 500
-            r.reason = e.message
-            import traceback
-            r._content = traceback.format_exc()
-        finally:
-            logging.info("response: %s", r._content)
-            return r
-    raise AssertionError("External request detected: %s" % url)
-
-
-# used in the functional tests only to mock the requests
-# to the web services
-def patch_requests():
-    requests_patcher = mock.patch('requests.get', autospec=True)
-    requests_get = requests_patcher.start()
-    requests_get.side_effect = intercept_requests_to_statics
-    return requests_patcher
 
 
 def assert_not_called(mock):
