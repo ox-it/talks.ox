@@ -11,7 +11,7 @@ from events.views import (homepage, upcoming_events, show_person, create_person,
 from talks.events_search.forms import DateFacetedSearchForm
 from talks.events_search.views import SearchView
 from talks.events_search.conf import sqs
-from api.views import (EventViewSet, suggest_person, suggest_user,
+from api.views import (EventViewSet, suggest_person, suggest_user, api_create_person,
                        save_item, remove_item, get_event_group)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 
     url(r'^api/', include(router.urls)),
     url(r'^api/user/suggest$', suggest_user, name='suggest-user'),
+    url(r'^api/persons/new$', api_create_person, name='api-create-person'),
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
     url(r'^api/eventgroups/id/(?P<event_group_id>\d+)', get_event_group, name='get-event-group'),

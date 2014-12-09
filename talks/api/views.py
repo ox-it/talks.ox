@@ -39,6 +39,16 @@ class IsSuperuserOrContributor(permissions.BasePermission):
 
 # These views are typically used by ajax
 
+@authentication_classes((SessionAuthentication,))
+@permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
+@api_view(["POST"])
+def api_create_person(request):
+    serializer = PersonSerializer(data=request.DATA)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(["GET"])
 def suggest_person(request):
     query = request.GET.get('q', '')

@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
-from .forms import EventForm, EventGroupForm
+from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
 from talks.events.models import ROLES_SPEAKER
@@ -111,7 +111,8 @@ def edit_event(request, event_slug):
     context = {
         'event': event,
         'event_form': form,
-        'is_editing': True
+        'speaker_form': SpeakerQuickAdd,
+        'is_editing': True,
     }
     if request.method == 'POST':
         if form.is_valid():
@@ -139,6 +140,7 @@ def create_event(request, group_slug=None):
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
+            'speaker_form': SpeakerQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid()
         if forms_valid:
@@ -164,6 +166,7 @@ def create_event(request, group_slug=None):
     else:
         context = {
             'event_form': PrefixedEventForm(),
+            'speaker_form': SpeakerQuickAdd(),
             'is_editing': False
         }
     return render(request, 'events/event_form.html', context)
@@ -285,14 +288,10 @@ def contributors_home(request):
 @permission_required('events.add_person', raise_exception=PermissionDenied)
 def create_person(request):
     form = PersonForm(request.POST or None)
-    is_modal = request.GET.get('modal')
     status_code = 200
     if request.method == 'POST':
         if form.is_valid():
             person = form.save()
-            if is_modal:
-                response = json.dumps(serializers.PersonSerializer(person).data)
-                return  HttpResponse(response, status=201, content_type='application/json')
             messages.success(request, "Person was created")
             return redirect(person.get_absolute_url())
         else:
@@ -300,13 +299,9 @@ def create_person(request):
             messages.warning(request, "Please correct errors below")
     context = {
         'form': form,
-        'modal_title': "Add a new Person",
     }
 
-    if is_modal:
-        return render(request, 'events/person_modal_form.html', context, status=status_code)
-    else:
-        return render(request, 'events/person_form.html', context, status=status_code)
+    return render(request, 'events/person_form.html', context, status=status_code)
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
