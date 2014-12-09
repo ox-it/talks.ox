@@ -12,7 +12,7 @@ from django.contrib.staticfiles.finders import find as find_static_file
 from django.contrib.auth.models import User, Group, Permission
 from django.test.client import Client
 
-from . import forms, models, factories, typeahead
+from . import forms, models, factories, typeahead, datasources
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
@@ -940,10 +940,10 @@ class TestDeclaredDataSources(unittest.TestCase):
         location_object = {'id': location_id, 'name': str(mock.sentinel.location_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {'_embedded': {'pois': [location_object]}}
-        forms.LOCATION_DATA_SOURCE.cache.clear()
+        datasources.LOCATION_DATA_SOURCE.cache.clear()
 
-        result = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
-        result_from_cache = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
+        result = datasources.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
+        result_from_cache = datasources.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
 
         self.assertEquals(result, location_object)
         self.assertEquals(result, result_from_cache)
@@ -953,10 +953,10 @@ class TestDeclaredDataSources(unittest.TestCase):
         department_object = {'id': department_id, 'name': str(mock.sentinel.department_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {'_embedded': {'pois': [department_object]}}
-        forms.DEPARTMENT_DATA_SOURCE.cache.clear()
+        datasources.DEPARTMENT_DATA_SOURCE.cache.clear()
 
-        result = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
-        result_from_cache = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
+        result = datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
+        result_from_cache = datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
 
         self.assertEquals(result, department_object)
         self.assertEquals(result, result_from_cache)
@@ -970,10 +970,10 @@ class TestDeclaredDataSources(unittest.TestCase):
                 'concepts': [topic_object],
             },
         }
-        forms.TOPICS_DATA_SOURCE.cache.clear()
+        datasources.TOPICS_DATA_SOURCE.cache.clear()
 
-        result = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
-        result_from_cache = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
+        result = datasources.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
+        result_from_cache = datasources.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
 
         self.assertEquals(result, topic_object)
         self.assertEquals(result, result_from_cache)
@@ -982,7 +982,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         persons = factories.PersonFactory.create_batch(3)
         person = persons[1]
 
-        result = forms.PERSONS_DATA_SOURCE.get_object_by_id(person.id)
+        result = datasources.PERSONS_DATA_SOURCE.get_object_by_id(person.id)
 
         assert_not_called(requests_get)
 
