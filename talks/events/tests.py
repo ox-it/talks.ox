@@ -560,6 +560,7 @@ class TestCreateEventView(AuthTestCase):
         self.assertEquals({t.uri for t in topics}, {t.uri for t in event.topics.all()}, "topics were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
+
 class TestAuthorisation(TestCase):
     """
     Test that events can only be created and edited by users who should be allowed to do so
@@ -625,6 +626,7 @@ class TestAuthorisation(TestCase):
         response = self.client.post("/talks/new", data)
         self.assertEquals(response.status_code, 403)
         self.assertTemplateNotUsed(response, "events/event_form.html")
+
 
 class TestEditEventView(AuthTestCase):
 
@@ -857,7 +859,6 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         requests_get.assert_called_once_with(mock.sentinel.url)
         get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
         self.assertEquals(result, {fetched_id: fetched_object})
-
 
 
 @mock.patch('talks.events.typeahead.DataSource._fetch_objects', autospec=True)
