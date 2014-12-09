@@ -189,6 +189,7 @@ class Event(models.Model):
                                     default=BOOKING_NOT_REQUIRED)
     booking_url = models.URLField(blank=True, default='',
                                   verbose_name="Web address for booking")
+    booking_email = models.EmailField(blank=True, default='', verbose_name="Email address for booking")
     cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
     status = models.TextField(verbose_name="Status",
                               choices=EVENT_STATUS_CHOICES,

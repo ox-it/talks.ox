@@ -41,13 +41,13 @@
 
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</h3>
+        <h3 class="panel-title">{% if event.title %}{{ event.title }}{% else %}Untitled Talk{% endif %}</h3>
     </div>
     <div class="panel-body">
         {% if event.description %}
         <p>{{ event.description_html | safe }}</p>
         {% else %}
-        <i>Description not yet added</i>
+        <i>Abstract not yet added</i>
         {% endif %}
     </div>
     <!-- List group -->
@@ -92,6 +92,9 @@
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>
         {% if event.booking_url %}
             <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>
+        {% endif %}
+        {% if event.booking_email %}
+            <li class="list-group-item"><strong>Booking email</strong>: {{event.booking_email }}</li>
         {% endif %}
         {% if event.cost %}
             <li class="list-group-item"><strong>Cost</strong>: {{ event.cost }} </li>

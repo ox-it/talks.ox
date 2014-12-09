@@ -27,7 +27,11 @@
 {% block content %}
 
 {% if event %}
-<h3>Edit "{{ event.title }}"</h3>
+    {% if event.title %}
+        <h3>Edit "{{ event.title }}"</h3>
+    {% else %}
+        <h3>Edit Untitled Talk</h3>
+    {% endif %}
 {% else %}
 <h3>Add Talk</h3>
 {% endif %}
@@ -46,7 +50,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Group</label>
+        <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Series</label>
         <div class="col-sm-10">
             <div class="checkbox">
                     <label>
@@ -60,7 +64,7 @@
             {{ event_form.group|bootstrap_horizontal }}
         </div>
         <div class="col-sm-2">
-            <a data-url="{% url 'create-event-group' %}?modal=1" class="btn btn-default" id="create-group-button" data-toggle="modal" data-target="#form-modal">New event group</a>
+            <a data-url="{% url 'create-event-group' %}?modal=1" class="btn btn-default" id="create-group-button" data-toggle="modal" data-target="#form-modal">New series</a>
         </div>
     </div>
     {{ event_form.start|bootstrap_horizontal }}
@@ -89,6 +93,7 @@
     {{ event_form.audience|bootstrap_horizontal }}
     {{ event_form.booking_type|bootstrap_horizontal }}
     {{ event_form.booking_url|bootstrap_horizontal }}
+    {{ event_form.booking_email|bootstrap_horizontal }}
     {{ event_form.cost|bootstrap_horizontal }}
     {{ event_form.status|bootstrap_horizontal }}
     {{ event_form.editor_set|bootstrap_horizontal }}
