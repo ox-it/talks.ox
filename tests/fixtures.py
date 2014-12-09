@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from robot.libraries.BuiltIn import BuiltIn
 
 from talks.events import factories
-from talks.events.models import Event, EventGroup, Person, PersonEvent, TopicItem, ROLES_SPEAKER
+from talks.events.models import Event, EventGroup, Person, PersonEvent, TopicItem, ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.users.authentication import GROUP_EDIT_EVENTS
 from django.contrib.contenttypes.models import ContentType
 
@@ -51,8 +51,8 @@ def create_test_data():
     non_contrib_user.groups.add(contributors_group)
     #persons
     person1 = Person.objects.create(name="James Bond", bio="secret agent")
-    person2 = Person.objects.create(name="M", bio="head of MI5")
-
+    person2 = Person.objects.create(name="Luke Skywalker", bio="Jedi")
+    person3 = Person.objects.create(name="Darth Vader", bio="Sith")
     #event group
     event_group = factories.EventGroupFactory.create(title='A maths conference',
                                                      department_organiser='oxpoints:23232627')
@@ -66,7 +66,8 @@ def create_test_data():
                                           department_organiser='oxpoints:23233906')
     event.editor_set.add(contrib_user)
     PersonEvent.objects.create(person=person1, event=event, role=ROLES_SPEAKER)
-
+    PersonEvent.objects.create(person=person2, event=event, role=ROLES_ORGANISER)
+    PersonEvent.objects.create(person=person3, event=event, role=ROLES_HOST)
     event_ct = ContentType.objects.get_for_model(Event)
     TopicItem.objects.create(uri="http://id.worldcat.org/fast/1429860",     # Biodiversity
                              content_type=event_ct,

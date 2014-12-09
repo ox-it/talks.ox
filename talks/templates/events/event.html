@@ -77,7 +77,7 @@
             </li>
         {% endif %}
         {% if event.hosts %}
-            <li class="list-group-item"><strong>Host{{ hosts|pluralize }}</strong>: {% for host in hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
+            <li class="list-group-item"><strong>Host{{ hosts|pluralize }}</strong>: {% for host in hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
             </li>
         {% endif %}
