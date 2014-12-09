@@ -92,7 +92,7 @@ password_field = Element('css=#id_password')
 reveal_create_speaker_link = Element('//*[@person-type="speakers"]//*[@class="js-create-person"]')
 speaker_name_field = Element('//*[@person-type="speakers"]//*[@id="id_name"]')
 speaker_bio_field = Element('//*[@person-type="speakers"]//*[@id="id_bio"]')
-add_speaker_button = Element('//*[@person-type="speakers"]//*[@class="js-submit-person"]')
+add_speaker_button = Element('//*[@person-type="speakers"]//*[contains(@class, "js-submit-person")]')
 
 
 # dynamic elements
