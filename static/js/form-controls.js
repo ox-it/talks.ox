@@ -18,8 +18,17 @@ $(function() {
     }
     function removeItem(e) {
         e.preventDefault();
-        $(this).parents('.list-group-item').prev('input').remove();
+        var input = $(this).parents('.list-group-item').prev('input')
+        var removed_data_id = input.val();
+        var mainInput = input.siblings(".tt-input");
+        input.remove();
         $(this).parents('.list-group-item').remove();
+
+        //remove from the local list
+        var currentValues = mainInput.data('currentValues');
+        var index = currentValues.indexOf(removed_data_id);
+        currentValues.splice(index, 1);
+        console.log(currentValues);
     }
     function showSelectedValue(mainInput, input, suggestion) {
         var valueKey = $(mainInput).data('valueKey');
@@ -32,6 +41,11 @@ $(function() {
         if(!$(mainInput).prop('multiple')) {
             $(mainInput).hide();
         }
+        //add the value to the local list
+        var currentValues = $(mainInput).data('currentValues');
+        var value = String(suggestion[valueKey]);
+        currentValues.push(value);
+        console.log(currentValues);
     }
     function showSelectedValuesForInput() {
         var $this = $(this);
@@ -81,6 +95,15 @@ $(function() {
             attr('value', value);
     }
 
+    var filter = function(suggestions, currentValues) {
+        //Filter the given suggestions, removing any already in the element's list of chosen values
+        var filtered = $.grep(suggestions, function(suggestion) {
+            return $.inArray(String(suggestion.id), currentValues) === -1;
+        });
+        return filtered;
+    }
+
+
     //Select and initialise all typeaheads in the original document. Note that multiple new '.typeahead' elements are created.
     //Those from the original document lack the tt-hint or tt-input classes, so exclude these from the selection
     var typeaheads = $('.typeahead:not(.tt-hint):not(.tt-input)');
@@ -102,6 +125,10 @@ $(function() {
             return;
         }
 
+        //Keep track of current selected values, to enable filtering them out of suggestions
+        var currentValues = [];
+        $this.data('currentValues', currentValues);
+
         var prefetchUrl = $this.data('prefetch-url');
         var bloodhound = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace(sourceConfig.displayKey),
@@ -113,9 +140,13 @@ $(function() {
             remote: {
                 url: sourceConfig.url,
                 filter: sourceConfig.responseExpression && eval("(function(response) { return " + sourceConfig.responseExpression + ";})")
+            },
+            dupDetector: function(remoteMatch, localMatch) {
+                return remoteMatch.id == localMatch.id;
             }
         });
         var name = $this.attr('name');
+        
         $this.data('name', name);
         $this.data('valueKey', sourceConfig.valueKey);
         $this.data('labelKey', sourceConfig.displayKey);
@@ -123,7 +154,12 @@ $(function() {
         $this.removeAttr('name');
         dataSource = {
             displayKey: sourceConfig.displayKey,
-            source: bloodhound.ttAdapter(),
+            //source: bloodhound.ttAdapter(),
+            source: function(query, cb) {
+                bloodhound.get(query, function (suggestions) {
+                    cb(filter(suggestions, currentValues));
+                });
+            },
             templates: {
                 empty: '&nbsp;Nothing matches your query&nbsp;'
             }
