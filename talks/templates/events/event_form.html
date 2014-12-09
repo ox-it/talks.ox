@@ -71,7 +71,7 @@
     {{ event_form.end|bootstrap_horizontal }}
     {{ event_form.speakers|bootstrap_horizontal }}
 
-    {% with form=speaker_form target='#id_event-speakers'%}
+    {% with form=speaker_form role='speakers' %}
     {% include 'events/person_quick_add.html' %}
     {% endwith %}
 
@@ -82,11 +82,12 @@
     {{ event_form.special_message|bootstrap_horizontal }}
     {{ event_form.department_organiser|bootstrap_horizontal }}
     {{ event_form.organisers|bootstrap_horizontal }}
-    {% with form=organiser_form target='#id_event-organisers' %}
+    {% with form=organiser_form role='organisers' %}
     {% include 'events/person_quick_add.html' %}
+    {{ event_form.organiser_email|bootstrap_horizontal }}
     {% endwith %}
     {{ event_form.hosts|bootstrap_horizontal }}
-    {% with form=host_form target='#id_event-hosts' %}
+    {% with form=host_form role='hosts' %}
     {% include 'events/person_quick_add.html' %}
     {% endwith %}
 
