@@ -133,6 +133,10 @@ class EventForm(forms.ModelForm):
             'location_details': forms.TextInput,
             'status': forms.RadioSelect
         }
+        help_texts = {
+            'booking_url': 'Provide a url for a website where users can book a place',
+            'booking_email': 'Alternatively, provide an Email address users should contact to book a place',
+        }
 
     def save(self):
         event = super(EventForm, self).save(commit=False)
