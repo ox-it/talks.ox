@@ -982,7 +982,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         persons = factories.PersonFactory.create_batch(3)
         person = persons[1]
 
-        result = forms.SPEAKERS_DATA_SOURCE.get_object_by_id(person.id)
+        result = forms.PERSONS_DATA_SOURCE.get_object_by_id(person.id)
 
         assert_not_called(requests_get)
 

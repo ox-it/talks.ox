@@ -41,7 +41,7 @@ TOPICS_DATA_SOURCE = typeahead.DataSource(
     id_key='uri',
     response_expression='response._embedded.concepts',
 )
-SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
+PERSONS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     'speakers',
     url='/talks/persons/suggest?q=%QUERY',
     display_key='title',
@@ -83,7 +83,7 @@ class EventForm(forms.ModelForm):
         label="Speakers",
         help_text="Type speaker name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(PERSONS_DATA_SOURCE),
     )
 
     organisers = forms.ModelMultipleChoiceField(
@@ -91,7 +91,7 @@ class EventForm(forms.ModelForm):
         label="Organisers",
         help_text="Type organiser name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(PERSONS_DATA_SOURCE),
     )
 
     hosts = forms.ModelMultipleChoiceField(
@@ -99,7 +99,7 @@ class EventForm(forms.ModelForm):
         label="Hosts",
         help_text="Type host name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(PERSONS_DATA_SOURCE),
     )
 
     topics = TopicsField(
@@ -219,7 +219,7 @@ class EventGroupForm(forms.ModelForm):
         label="Organiser",
         help_text="Type a name and select from the list",
         required=False,
-        widget=typeahead.Typeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.Typeahead(PERSONS_DATA_SOURCE),
     )
 
     class Meta:
