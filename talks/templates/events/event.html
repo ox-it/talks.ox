@@ -83,6 +83,9 @@
         {% if event.booking_url %}
             <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>
         {% endif %}
+        {% if event.booking_email %}
+            <li class="list-group-item"><strong>Booking email</strong>: {{event.booking_email }}</li>
+        {% endif %}
         {% if event.cost %}
             <li class="list-group-item"><strong>Cost</strong>: {{ event.cost }} </li>
         {% endif %}
