@@ -85,6 +85,8 @@ def show_event(request, event_slug):
         # we should use Event.published here...
         ev = Event.objects.select_related(
             'speakers',
+            'hosts',
+            'organisers',
             'location',
             'group',
             'department_organiser').get(slug=event_slug)
@@ -95,6 +97,8 @@ def show_event(request, event_slug):
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
         'location': ev.api_location,
         'speakers': ev.speakers.all(),
+        'hosts': ev.hosts.all(),
+        'organisers': ev.organisers.all(),
     }
     return render(request, 'events/event.html', context)
 
@@ -106,7 +110,9 @@ def edit_event(request, event_slug):
         raise PermissionDenied
     # providing data for topics/speakers as it is not straight from the Model
     initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
-               'speakers': event.speakers.all()}        # different of person_set
+               'speakers': event.speakers.all(),        # different of person_set
+               'organisers': event.organisers.all(),
+               'hosts': event.hosts.all()}
     form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,

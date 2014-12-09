@@ -71,6 +71,16 @@
         {% if event.api_organisation %}
         <li class="list-group-item"><strong>Organising department</strong>: {{ event.api_organisation.name }}</li>
         {% endif %}
+        {% if event.organisers %}
+            <li class="list-group-item"><strong>Organiser{{ organisers|pluralize }}</strong>: {% for organiser in organisers %}<a href="{% url 'show-person' organiser.slug %}">{{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </li>
+        {% endif %}
+        {% if event.hosts %}
+            <li class="list-group-item"><strong>Host{{ hosts|pluralize }}</strong>: {% for host in hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}{% endif %}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </li>
+        {% endif %}
         {% if event.group %}
         <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
         {% endif %}
