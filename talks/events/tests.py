@@ -53,6 +53,8 @@ def intercept_requests_to_statics(url, *a, **k):
     raise AssertionError("External request detected: %s" % url)
 
 
+# used in the functional tests only to mock the requests
+# to the web services
 def patch_requests():
     requests_patcher = mock.patch('requests.get', autospec=True)
     requests_get = requests_patcher.start()
