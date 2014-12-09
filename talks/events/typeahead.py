@@ -8,6 +8,7 @@ from django.core.cache import caches as django_caches
 
 log = logging.getLogger(__name__)
 
+
 class Typeahead(forms.TextInput):
     """
     Form widget converted to typeahead on client side.

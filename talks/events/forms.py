@@ -164,6 +164,7 @@ class EventForm(forms.ModelForm):
                 rel = models.PersonEvent.objects.get(person=person, event=event, role=role)
                 rel.delete()
 
+
 class EventGroupForm(forms.ModelForm):
 
     department_organiser = OxPointField(datasources.DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")

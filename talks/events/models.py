@@ -117,6 +117,7 @@ class EventGroup(models.Model):
         except requests.HTTPError:
             return None
 
+
 class PersonManager(models.Manager):
 
     def suggestions(self, query):
@@ -144,6 +145,7 @@ class Person(models.Model):
 
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
+
 
 class TopicItem(models.Model):
 
