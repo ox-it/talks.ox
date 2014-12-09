@@ -237,7 +237,7 @@ class PersonForm(forms.ModelForm):
         }
 
 
-class SpeakerQuickAdd(forms.ModelForm):
+class PersonQuickAdd(forms.ModelForm):
     class Meta:
         fields = ('name', 'bio')
         model = models.Person
