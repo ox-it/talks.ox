@@ -23,13 +23,13 @@
 {{ form.media }}
 {% endblock %}
 
-{% block title %}{% if event_group %}Edit talk group{% else %}Add talk group{% endif %}{% endblock %}
+{% block title %}{% if event_group %}Edit series{% else %}Add series{% endif %}{% endblock %}
 
 {% block content %}
 {% if event_group %}
 <h3>Editing "{{ event_group.title }}"</h3>
 {% else %}
-<h3>New event group</h3>
+<h3>New series</h3>
 {% endif %}
 
 <form class="form-horizontal" method="post">

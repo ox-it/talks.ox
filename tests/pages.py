@@ -54,14 +54,14 @@ class Element(object):
 
 # pages
 
-add_talk_page = Page('/events/new')
-talk_page = Page('/events/id/')     # TODO this should be a regex
+add_talk_page = Page('/talks/new')
+talk_page = Page('/talks/id/')     # TODO this should be a regex
 login_page = Page('/admin/login/')
 
 # dynamic pages
 
-edit_talk_page = lambda slug: Page('/events/id/%s/edit' % slug)
-show_talk_page = lambda slug: Page('/events/id/%s/' % slug)
+edit_talk_page = lambda slug: Page('/talks/id/%s/edit' % slug)
+show_talk_page = lambda slug: Page('/talks/id/%s/' % slug)
 
 # elements
 
@@ -76,7 +76,7 @@ button_save_add_another = Element('css=#btn-save-add-another')
 checkbox_in_group_section = Element('css=#id_event-group-enabled')
 error_message = Element('//*[contains(@class, "alert-warning")]')
 success_message = Element('//*[contains(@class, "alert-success")]')
-create_group_button = Element("//a[text()='New event group']")
+create_group_button = Element("//a[text()='New series']")
 suggestion_list = Element('css=.js-suggestion')
 suggestion_popup = Element('css=.tt-suggestions')
 modal_dialog = Element('//*[@id="form-modal"]')

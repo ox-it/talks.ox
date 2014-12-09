@@ -117,7 +117,7 @@ def edit_event(request, event_slug):
     if request.method == 'POST':
         if form.is_valid():
             event = form.save()
-            messages.success(request, "Event was updated")
+            messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
@@ -149,7 +149,7 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            messages.success(request, "New event has been created")
+            messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
@@ -185,14 +185,14 @@ def delete_event(request, event_slug):
     # it should not be possible to delete it
     if not request.user.is_superuser:
         if event.already_started:
-            messages.warning(request, "You cannot delete an event that has already started")
+            messages.warning(request, "You cannot delete a talk that has already started")
             return redirect(event.get_absolute_url())
     context = {
         'event': event,
     }
     if request.method == 'POST':
         event.delete()
-        messages.success(request, "Event has been successfully deleted")
+        messages.success(request, "Talk has been successfully deleted")
         return redirect('contributors-events')
     return render(request, "events/delete_event.html", context)
 
@@ -221,7 +221,7 @@ def edit_event_group(request, event_group_slug):
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
-            messages.success(request, "Event group was updated")
+            messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
@@ -244,7 +244,7 @@ def create_event_group(request):
             if is_modal:
                 response = json.dumps(serializers.EventGroupSerializer(event_group).data)
                 return HttpResponse(response, status=201, content_type='application/json')
-            messages.success(request, "Event group was created")
+            messages.success(request, "Series was created")
             return redirect(event_group.get_absolute_url())
         else:
             status_code = 400
@@ -252,7 +252,7 @@ def create_event_group(request):
 
     context = {
         'form': form,
-        'modal_title': "Add a new event group",
+        'modal_title': "Add a new series",
         'is_editing': False
     }
 
@@ -274,7 +274,7 @@ def delete_event_group(request, event_group_slug):
         # first updating all events that were referring to the group to be deleted
         Event.objects.filter(group=event_group).update(group=None)
         event_group.delete()
-        messages.success(request, "Event group has been successfully deleted")
+        messages.success(request, "Series has been successfully deleted")
         return redirect('contributors-events')
     return render(request, "events/delete_event_group.html", context)
 

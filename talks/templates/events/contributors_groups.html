@@ -2,7 +2,7 @@
 
 {% load faceted_navigation %}
 
-{% block title %}Groups Administration{% endblock %}
+{% block title %}Series Administration{% endblock %}
 
 {% block content %}
 
@@ -12,25 +12,25 @@
     }
     </style>
 
-    <h2>Events administration</h2>
+    <h2>Series administration</h2>
 
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
 
             <ul class="nav nav-list well">
-                <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
-                <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Event Groups</a></li>
+                <li><a href="{% url 'contributors-events' %}" class="">Talks</a></li>
+                <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Series</a></li>
                 <li><a href="{% url 'contributors-persons' %}" class="">People</a></li>
             </ul>
         </div>
 
     <div class="col-xs-7">
-    <a class="btn btn-primary navbar-btn" href="{% url 'create-event-group' %}"><span class="glyphicon glyphicon-plus"></span> New Event Group</a>
+    <a class="btn btn-primary navbar-btn" href="{% url 'create-event-group' %}"><span class="glyphicon glyphicon-plus"></span> New Series</a>
     <table class="table table-bordered table-striped">
         <thead>
-            <td>Group Name</td>
-            <td>Group Type</td>
+            <td>Name</td>
+            <td>Type</td>
             <td>Edit</td>
         </thead>
             {% for group in groups %}

@@ -43,7 +43,7 @@ TOPICS_DATA_SOURCE = typeahead.DataSource(
 )
 SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     'speakers',
-    url='/events/persons/suggest?q=%QUERY',
+    url='/talks/persons/suggest?q=%QUERY',
     display_key='title',
     serializer=serializers.PersonSerializer,
 )
@@ -105,9 +105,10 @@ class EventForm(forms.ModelForm):
 
     group = forms.ModelChoiceField(
         models.EventGroup.objects.all(),
-        empty_label="-- select a group --",
+        empty_label="-- select a series --",
         widget=Select(attrs={'class': 'form-control'}),
         required=False,
+        label="Series"
     )
 
     editor_set = forms.ModelMultipleChoiceField(

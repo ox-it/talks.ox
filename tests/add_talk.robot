@@ -25,7 +25,7 @@ Scenario: Add the simplest talk
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
     page should contain text "something"
     page should contain text "something else"
 
@@ -49,7 +49,7 @@ Scenario: Add talk to existing group of talks
     ${datetimepicker[1]} should disappear
     click on ${button done}
     ${success message} should appear
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
     page should contain text "something"
     page should contain text "Part of: foo" 
 
@@ -69,11 +69,11 @@ Scenario: Create new group on the go
     ${group field} should not be displayed
     click on ${checkbox in group section}
     ${group field} should be displayed
-    ${group field} selected item should be "-- select a group --"
+    ${group field} selected item should be "-- select a series --"
     ${create group button} should be displayed
     click on ${create group button}
     ${modal dialog} should appear
-    ${modal dialog title} should contain text "Add a new event group"
+    ${modal dialog title} should contain text "Add a new series"
     type "new group" into ${modal dialog field('Title')}
     type "group description" into ${modal dialog field('Description')}
     click on ${modal dialog submit button}
@@ -158,7 +158,7 @@ Scenario: Properly display typeahead fields in newly created event
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
     page should contain text "Venue: 7-19 Banbury Road"
     page should contain text "Organising department: Chemical Biology"
     page should contain text "Topics: Biodiversity"
@@ -193,7 +193,7 @@ Scenario: Save and add another
     click on ${button save add another}
     current page should be ${add talk page}
     ${success message} should be displayed
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
 
 
 Scenario: Preserve form data after validation
