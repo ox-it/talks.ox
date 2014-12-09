@@ -1,8 +1,8 @@
 import logging
 import json
-
 from datetime import date, timedelta
 from functools import partial
+
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -211,6 +211,7 @@ def show_event_group(request, event_group_slug):
         'event_group': group,
     }
     return render(request, 'events/event-group.html', context)
+
 
 @login_required
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)

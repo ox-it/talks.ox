@@ -52,7 +52,7 @@ It is best practice to not access result.object as this would hit the database f
     {% if page.object_list %}
 
     <div class="col-md-3 col-md-pull-9">
-
+    {% spaceless %}
     <dl>
         {% if facets.fields.speakers %}
             <dt>Speaker</dt>
@@ -77,19 +77,20 @@ It is best practice to not access result.object as this would hit the database f
             {% endfor %}
         {% endif %}
     </dl>
-    {% comment %}
-    TODO needs to be reworked to have ranges e.g. "Past talks", "Last week", "This week", "Next month" etc
     <dl>
-        {% if facets.dates.start %}
+        {% if facet_date %}
             <dt>Start</dt>
-            {% for start, count in facets.dates.start.items %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=start_exact:{{ start|urlencode }}">{{ start }}</a> ({{ count }})</dd>
+            {% for item in facet_date %}
+                {% if item.count > 0 %}
+                    {% comment %}
+                    Cannot use facet.min_count=1 as we use here our own custom function
+                    {% endcomment %}
+                <dd><a href="{{ request.get_full_path }}&amp;filtered_date={{ item.url_param|urlencode }}">{{ item.name }}</a> ({{ item.count }})</dd>
+                {% endif %}
             {% endfor %}
-        {% else %}
-            <p>No start facets.</p>
         {% endif %}
     </dl>
-    {% endcomment %}
+    {% endspaceless %}
     </div>
 
     {% endif %}

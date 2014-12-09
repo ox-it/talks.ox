@@ -2,19 +2,16 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from django_webauth.views import LoginView
-
-from haystack.forms import FacetedSearchForm
-from haystack.query import SearchQuerySet
-from haystack.views import FacetedSearchView
-
 from rest_framework import routers
 
 from events.views import (homepage, upcoming_events, show_person, create_person, edit_person, show_event, edit_event, events_for_day,
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
                           contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic)
-
-from api.views import (EventViewSet, suggest_person, api_create_person, suggest_user,
+from talks.events_search.forms import DateFacetedSearchForm
+from talks.events_search.views import SearchView
+from talks.events_search.conf import sqs
+from api.views import (EventViewSet, suggest_person, suggest_user, api_create_person,
                        save_item, remove_item, get_event_group)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -23,9 +20,6 @@ from users.views import webauth_logout
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
-
-sqs = SearchQuerySet().filter(published=True).facet('speakers', mincount=1).facet('location', mincount=1).facet('topics', mincount=1)
-# .date_facet('start', date(2014,1,1), date(2015,1,1), 'month')   removed for now as we want dynamic dates and range
 
 
 urlpatterns = patterns('',
@@ -39,7 +33,7 @@ urlpatterns = patterns('',
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
     url(r'^api/eventgroups/id/(?P<event_group_id>\d+)', get_event_group, name='get-event-group'),
-    url(r'^search/', FacetedSearchView(form_class=FacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
+    url(r'^search/', SearchView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False), name='haystack_search'),
     url(r'^$', homepage, name='homepage'),
     url(r'^events$', upcoming_events, name='upcoming_events'),
     url(r'^events/persons/new$', create_person, name='create-person'),
