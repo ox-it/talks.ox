@@ -44,6 +44,19 @@ Scenario: remove speaker
     Location should be  ${show_talk_page('${event1_slug}').url}
     page should not contain text "James Bond"
 
+Scenario: remove host and organiser
+    go to ${edit_talk_page('${event1_slug}')}
+    page should appear text "Luke Skywalker"
+    click on ${remove item('event-organisers')}
+    page should not contain text "Luke Skywalker"
+    page should contain text "Darth Vader"
+    click on ${remove item('event-hosts')}
+    page should not contain text "Darth Vader"
+    click on ${button done}
+    Location should be  ${show_talk_page('${event1_slug}').url}
+    page should not contain text "Luke Skywalker"
+    page should not contain text "Darth Vader"
+
 Scenario: remove topic
     go to ${edit_talk_page('${event1_slug}')}
     page should appear text "Biodiversity"

@@ -51,61 +51,61 @@ $(function() {
         }
     })
 
-    $('#create-person-button').data('successCallback', function(newPerson) {
-        $('#id_event-speakers').trigger("addSpeaker", newPerson);
-    })
+    $('.js-create-person-control').each( function() {
+        //reveal the form panel on clicking the reveal link
+        $(this).find('.js-create-person').on('click', function(ev) {
+            ev.preventDefault();
+            var $control = $(ev.target).parent().parent();
+            $control.find('.js-person-panel').slideDown(animationTime);
+        })
 
-    //reveal the speaker quick-add form on clicking the link
-    $('.js-create-speaker').on('click', function(ev) {
-       ev.preventDefault();
-        $('.js-speaker-panel').slideDown(animationTime);
-    });
+        //capture the click on 'Add' and update the relevant control
+        $(this).find('.js-submit-person').on('click', function(ev) {
+            var $control = $(ev.target).parent().parent();
 
-    //add the speaker
-    $('.js-submit-speaker').on('click', function(ev) {
-        var namefield = $('#id_name');
-        var biofield = $('#id_bio');
-        var csrftoken = $.cookie('csrftoken');
-        var $errorMessage=$('.js-speaker-form-errors');
+            var namefield = $control.find('#id_name');
+            var biofield = $control.find('#id_bio');
+            var csrftoken = $.cookie('csrftoken');
+            var $errorMessage = $control.find('.js-person-form-errors');
+            var target = $(this).attr('data-input-target');
+            var $target = $(target);
+            $.ajax({
+                    type: 'POST',
+                    url: '/api/persons/new',
+                    headers: {
+                        "X-CSRFToken": csrftoken,
+                    },
+                    data: {
+                        name: namefield.val(),
+                        bio: biofield.val()
+                    },
 
-
-
-        $.ajax({
-                type: 'POST',
-                url: '/api/persons/new',
-                headers: {
-                    "X-CSRFToken": csrftoken,
-                },
-                data: {
-                    name: namefield.val(),
-                    bio: biofield.val()
-                },
-
-                success: function(response) {
-                    $('#id_event-speakers').trigger("addSpeaker", response);
-                    namefield.val("");
-                    biofield.val("");
-                    //clear error classes
-                    setErrorStateForInput('name', false);
-                    setErrorStateForInput('bio', false);
-                    //clear and hide error message
-                    $errorMessage.addClass("hidden");
-                },
-                error: function(response) {
-                    setErrorStateForInput('name', false);
-                    setErrorStateForInput('bio', false)
-                    for(key in response.responseJSON) {
-                        setErrorStateForInput(key, true)
+                    success: function(response) {
+                        $target.trigger("addPerson", response);
+                        namefield.val("");
+                        biofield.val("");
+                        //clear error classes
+                        setErrorStateForInput($control, 'name', false);
+                        setErrorStateForInput($control, 'bio', false);
+                        //clear and hide error message
+                        $errorMessage.addClass("hidden");
+                    },
+                    error: function(response) {
+                        setErrorStateForInput($control, 'name', false);
+                        setErrorStateForInput($control, 'bio', false)
+                        for(key in response.responseJSON) {
+                            setErrorStateForInput($control, key, true)
+                        }
+                        $errorMessage.removeClass("hidden");
+                        $errorMessage.html("Missing required field");
                     }
-                    $errorMessage.removeClass("hidden");
-                    $errorMessage.html("Missing required field");
                 }
-            }
-        );
+            );
+        })
     });
 
-    function setErrorStateForInput(id, on) {
-        var el = $("#id_"+id).parent().parent();
+    function setErrorStateForInput(control, id, on) {
+        var el = control.find("#id_"+id).parent().parent();
         if(on) {
             el.addClass("has-error");
         }

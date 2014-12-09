@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
-from .forms import EventForm, EventGroupForm, SpeakerQuickAdd
+from .forms import EventForm, EventGroupForm, PersonQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
 from talks.events.models import ROLES_SPEAKER
@@ -85,6 +85,8 @@ def show_event(request, event_slug):
         # we should use Event.published here...
         ev = Event.objects.select_related(
             'speakers',
+            'hosts',
+            'organisers',
             'location',
             'group',
             'department_organiser').get(slug=event_slug)
@@ -95,6 +97,8 @@ def show_event(request, event_slug):
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
         'location': ev.api_location,
         'speakers': ev.speakers.all(),
+        'hosts': ev.hosts.all(),
+        'organisers': ev.organisers.all(),
     }
     return render(request, 'events/event.html', context)
 
@@ -106,12 +110,16 @@ def edit_event(request, event_slug):
         raise PermissionDenied
     # providing data for topics/speakers as it is not straight from the Model
     initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
-               'speakers': event.speakers.all()}        # different of person_set
+               'speakers': event.speakers.all(),        # different of person_set
+               'organisers': event.organisers.all(),
+               'hosts': event.hosts.all()}
     form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,
         'event_form': form,
-        'speaker_form': SpeakerQuickAdd,
+        'speaker_form': PersonQuickAdd(),
+        'organiser_form': PersonQuickAdd(),
+        'host_form': PersonQuickAdd(),
         'is_editing': True,
     }
     if request.method == 'POST':
@@ -140,7 +148,9 @@ def create_event(request, group_slug=None):
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
-            'speaker_form': SpeakerQuickAdd(),
+            'speaker_form': PersonQuickAdd(),
+            'organiser_form': PersonQuickAdd(),
+            'host_form': PersonQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid()
         if forms_valid:
@@ -166,7 +176,9 @@ def create_event(request, group_slug=None):
     else:
         context = {
             'event_form': PrefixedEventForm(),
-            'speaker_form': SpeakerQuickAdd(),
+            'speaker_form': PersonQuickAdd(),
+            'organiser_form': PersonQuickAdd(),
+            'host_form': PersonQuickAdd,
             'is_editing': False
         }
     return render(request, 'events/event_form.html', context)

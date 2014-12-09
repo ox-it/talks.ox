@@ -89,10 +89,10 @@ datetimepicker_current_minute = Element('//*[@class="datetimepicker-minutes"]//*
 button_login = Element('//input[@type="submit"]')
 username_field = Element('css=#id_username')
 password_field = Element('css=#id_password')
-reveal_create_speaker_link = Element('css=.js-create-speaker')
-speaker_name_field = Element('css=#id_name')
-speaker_bio_field = Element('css=#id_bio')
-add_speaker_button = Element('css=.js-submit-speaker')
+reveal_create_speaker_link = Element('//*[@person-type="speakers"]//*[@class="js-create-person"]')
+speaker_name_field = Element('//*[@person-type="speakers"]//*[@id="id_name"]')
+speaker_bio_field = Element('//*[@person-type="speakers"]//*[@id="id_bio"]')
+add_speaker_button = Element('//*[@person-type="speakers"]//*[contains(@class, "js-submit-person")]')
 
 
 # dynamic elements

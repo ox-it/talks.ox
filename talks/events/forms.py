@@ -86,6 +86,22 @@ class EventForm(forms.ModelForm):
         widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
     )
 
+    organisers = forms.ModelMultipleChoiceField(
+        queryset=models.Person.objects.all(),
+        label="Organisers",
+        help_text="Type organiser name and select from the list",
+        required=False,
+        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+    )
+
+    hosts = forms.ModelMultipleChoiceField(
+        queryset=models.Person.objects.all(),
+        label="Hosts",
+        help_text="Type host name and select from the list",
+        required=False,
+        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+    )
+
     topics = TopicsField(
         label="Topics",
         help_text="Type topic name and select from the list",
@@ -135,6 +151,7 @@ class EventForm(forms.ModelForm):
             'status': forms.RadioSelect
         }
         help_texts = {
+            'organiser_email': 'Option email address via which the organiser can be contacted',
             'booking_url': 'Provide a url for a website where users can book a place',
             'booking_email': 'Alternatively, provide an Email address users should contact to book a place',
         }
@@ -150,14 +167,9 @@ class EventForm(forms.ModelForm):
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
 
-        current_speakers = event.speakers
-        form_speakers = self.cleaned_data['speakers']
-        for person in form_speakers:
-            models.PersonEvent.objects.get_or_create(person=person, event=event, role=models.ROLES_SPEAKER)
-        for person in current_speakers:
-            if person not in form_speakers:
-                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
-                rel.delete()
+        self._update_people('speakers', event, models.ROLES_SPEAKER)
+        self._update_people('organisers', event, models.ROLES_ORGANISER)
+        self._update_people('hosts', event, models.ROLES_HOST)
 
         current_topics_uris = [t.uri for t in event.topics.all()]
         form_topics = self.cleaned_data['topics']
@@ -181,6 +193,22 @@ class EventForm(forms.ModelForm):
             raise forms.ValidationError("Either provide title or mark it as not announced")
         return self.cleaned_data
 
+    def _update_people(self, field, event, role):
+        """
+        Update the Persons for the given event model based on this form, creating/deleting PersonEvents as required
+        :param field: the name of the form field and model field, e.g. 'speakers'
+        :param event: the event being updated
+        :param role: the relevant role for the given field
+        :return:
+        """
+        form_people = self.cleaned_data[field]
+        current_people = getattr(event, field)
+        for person in form_people:
+            models.PersonEvent.objects.get_or_create(person=person, event=event, role=role)
+        for person in current_people:
+            if person not in form_people:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=role)
+                rel.delete()
 
 class EventGroupForm(forms.ModelForm):
 
@@ -215,7 +243,7 @@ class PersonForm(forms.ModelForm):
         }
 
 
-class SpeakerQuickAdd(forms.ModelForm):
+class PersonQuickAdd(forms.ModelForm):
     class Meta:
         fields = ('name', 'bio')
         model = models.Person

@@ -128,6 +128,8 @@ Scenario: Lookup speaker
 Scenario: Properly display typeahead fields in newly created event
     create  person  name=James Bond
     create  person  name=Napoleon Solo      bio=IT Services
+    create  person  name=Luke Skywalker     bio=Jedi order
+    create  person  name=Darth Vader
 
     go to ${add_talk_page}
     fill in required fields
@@ -155,6 +157,15 @@ Scenario: Properly display typeahead fields in newly created event
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
+    type "luk" into ${field('Hosts')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Luke Skywalker"
+    click on ${suggestion popup item('Luke Skywalker')}
+    type "dar" into ${field('Organisers')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Darth Vader"
+    click on ${suggestion popup item('Darth Vader')}
+
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
@@ -164,6 +175,8 @@ Scenario: Properly display typeahead fields in newly created event
     page should contain text "Topics: Biodiversity"
     page should contain text "James Bond"
     page should contain text "Napoleon Solo (IT Services)"
+    page should contain text "Luke Skywalker (Jedi order)"
+    page should contain text "Darth Vader"
 
 Scenario: Create speaker on the go
     go to ${add talk page}
@@ -199,6 +212,8 @@ Scenario: Save and add another
 Scenario: Preserve form data after validation
     create  person  name=James Bond
     create  person  name=Napoleon Solo
+    create  person  name=Luke Skywalker
+    create  person  name=Darth Vader
 
     go to ${add_talk_page}
     type "oucs" into ${field('Venue')}
@@ -225,6 +240,14 @@ Scenario: Preserve form data after validation
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
+    type "luk" into ${field('Hosts')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Luke Skywalker"
+    click on ${suggestion popup item('Luke Skywalker')}
+    type "dar" into ${field('Organisers')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Darth Vader"
+    click on ${suggestion popup item('Darth Vader')}
     click on ${button done}
     current page should be ${add talk page}
     ${error message} should appear
@@ -235,6 +258,8 @@ Scenario: Preserve form data after validation
     ${list group item("Animal diversity")} should be displayed
     ${list group item("James Bond")} should be displayed
     ${list group item("Napoleon Solo")} should be displayed
+    ${list group item("Luke Skywalker")} should be displayed
+    ${list group item("Darth Vader")} should be displayed
 
 
 *** Keywords ***

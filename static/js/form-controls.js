@@ -64,7 +64,7 @@ $(function() {
         }
     }
 
-    function onAddSpeaker(e, person) {
+    function onAddPerson(e, person) {
         e.preventDefault();
         e.stopPropagation();
         var name = $(e.target).data('name');
@@ -143,7 +143,7 @@ $(function() {
         var typeahead = $this.typeahead(options, dataSource);
         typeahead.on('typeahead:selected', onChange);
         typeahead.on('eventGroupChanged', onEventGroupChanged);
-        typeahead.on('addSpeaker', onAddSpeaker);
+        typeahead.on('addPerson', onAddPerson);
     });
 
 });
