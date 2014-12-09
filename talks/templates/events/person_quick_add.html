@@ -1,0 +1,17 @@
+{% load bootstrap %}
+
+    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="#" class="js-create-speaker">Create new speaker</a>
+            </div>
+            <div class="panel-body js-speaker-panel" style="display: none">
+                <div class="js-speaker-form form-inline">
+                    {{ form|bootstrap_horizontal }}
+                    <a class="btn btn-primary js-submit-speaker" style="margin-left:40px">Add</a>
+                </div>
+                <div class="js-speaker-form-errors alert alert-danger hidden">
+                </div>
+            </div>
+        </div>
+    </div>
