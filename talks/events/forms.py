@@ -65,7 +65,7 @@ class EventForm(forms.ModelForm):
 
     location = OxPointField(datasources.LOCATION_DATA_SOURCE,
                             label="Venue",
-                            help_text="Type location name and select from the list",
+                            help_text="Type building name and select from the list.",
                             required=False)
 
     department_organiser = OxPointField(datasources.DEPARTMENT_DATA_SOURCE,
