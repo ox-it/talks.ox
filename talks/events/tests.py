@@ -387,7 +387,7 @@ class TestCreateEventView(AuthTestCase):
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
         self.assertIn('event_form', response.context)
-        self.assertEquals(response.context['event_form']['group'].value(), group.id)
+        self.assertEquals(response.context['event_form']['group'].value(), group.slug)
 
     def test_post_valid_save_and_continue_no_group_id(self):
         title = u'cjwnf887y98fw'
@@ -439,7 +439,7 @@ class TestCreateEventView(AuthTestCase):
             'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
             'event-topic_suggest': u'',
             'event-end': VALID_DATE_STRING,
-            'event-group': group.id,
+            'event-group': group.slug,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
             'event-audience': models.AUDIENCE_PUBLIC,
