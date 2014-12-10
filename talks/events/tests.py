@@ -1,5 +1,6 @@
 import unittest
 import logging
+import datetime
 import mock
 import requests
 
@@ -8,9 +9,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.cache.backends.base import BaseCache
 from django.contrib.auth.models import User, Group, Permission
 from django.test.client import Client
+from django.utils import timezone
 
 from . import forms, models, factories, typeahead, datasources
-from talks.events.models import Event, EventGroup, Person
+from talks.events.models import Event, EventGroup, Person, EVENT_IN_PREPARATION, EVENT_PUBLISHED
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 VALID_DATE_STRING = "2014-05-12 12:18"
@@ -160,6 +162,39 @@ class TestEventForm(TestCase):
         self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
         self.assertNotIn('title', form.errors)
         self.assertNotIn('title_not_announced', form.errors)
+
+
+class TestEventProperties(TestCase):
+
+    def test_is_published(self):
+        event = factories.EventFactory.create()
+        event.embargo = True
+        event.status = EVENT_PUBLISHED
+        self.assertFalse(event.is_published)
+        event.embargo = False
+        self.assertTrue(event.is_published)
+
+    def test_already_started(self):
+        old_event = factories.EventFactory.create()
+        old_event.start = timezone.now() - datetime.timedelta(days=1);
+        self.assertTrue(old_event.already_started)
+        new_event = factories.EventFactory.create()
+        new_event.start = timezone.now() + datetime.timedelta(days=1)
+        self.assertFalse(new_event.already_started)
+        current_event = factories.EventFactory.create()
+        current_event.start = timezone.now() - datetime.timedelta(minutes=30)
+        current_event.end = timezone.now() + datetime.timedelta(minutes=30)
+        self.assertTrue(current_event.already_started)
+
+    def test_user_can_edit(self):
+        superuser = User.objects.create_superuser("superuser", password="password", email="superuser@users.com")
+        contrib_user = User.objects.create_user("contrib_user", password="password")
+        contrib_user_editor = User.objects.create_user("contrib_user_editor", password="password")
+        event = factories.EventFactory.create()
+        event.editor_set.add(contrib_user_editor)
+        self.assertTrue(event.user_can_edit(superuser))
+        self.assertTrue(event.user_can_edit(contrib_user_editor))
+        self.assertFalse(event.user_can_edit(contrib_user))
 
 
 class TestEventGroupForm(TestCase):
