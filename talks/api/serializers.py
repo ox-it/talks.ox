@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -44,6 +46,7 @@ class EventGroupSerializer(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField(method_name='formatted_title')
+    slug = serializers.SerializerMethodField(method_name='generate_slug')
 
     def formatted_title(self, obj):
         if obj.bio:
@@ -51,9 +54,15 @@ class PersonSerializer(serializers.ModelSerializer):
         else:
             return obj.name
 
+    def generate_slug(self, obj):
+        if obj.slug:
+            return obj.slug
+        else:
+            return str(uuid.uuid4())
+
     class Meta:
         model = Person
-        fields = ('id', 'name', 'bio', 'title')
+        fields = ('id', 'slug', 'name', 'bio', 'title')
 
 
 class UserSerializer(serializers.ModelSerializer):
