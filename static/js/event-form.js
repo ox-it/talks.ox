@@ -17,29 +17,12 @@ $(function() {
         format: 'dd/mm/yyyy hh:ii',
         autoclose: true,
     });
-    $('#id_event-start.js-datetimepicker').on('changeDate', function(ev) {
+    $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
         //set the end time to 1 hour later
         hours = ev.date.getHours();
         var date = new Date(ev.date);
         date.setHours(date.getHours()+1, date.getMinutes());
-        $('#id_event-end.js-datetimepicker').data('datetimepicker').setDate(date);
-    });
-
-
-    //// Set the default end-date to the start date when it is picked
-    //var startDateTimePicker = $('.js-datetimepicker.event-start');
-    //startDateTimePicker.datetimepicker().on('changeDate', function(ev){
-    //    utcDate = startDateTimePicker.datetimepicker('getUTCDate');
-    //    // Set the StartDate to the current DAY -- don't specify hours
-    //    //
-    //    // Seems like the hours on start dates can cause some TZ issues
-    //    $('.js-datetimepicker.event-end').datetimepicker('setStartDate',
-    //        new Date(utcDate.getFullYear(), utcDate.getMonth(), utcDate.getDate())
-    //    );
-    //});
-
-    $('.js-open-calendar').on('click', function(ev) {
-        $(ev.target).parent().siblings('.js-datetimepicker').datetimepicker('show');
+        $('#event-end.js-datetimepicker').data('datetimepicker').setDate(date);
     });
 
     $('#create-group-button').data('successCallback', function(newGroup) {

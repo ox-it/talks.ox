@@ -23,11 +23,14 @@ class TopicsField(forms.MultipleChoiceField):
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None):
         html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs)
-        html = """<div class="input-group">
-                <span class="input-group-btn">
-                    <button class="btn btn-default js-open-calendar" type="button"><span class="glyphicon glyphicon-calendar"></span></button>
+        html = """<div class="input-group date js-datetimepicker" id='""" + name + """'>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
                 </span>
         """ + html + "</div>"
+
+
+
         return mark_safe(html)
 
 
@@ -96,8 +99,8 @@ class EventForm(forms.ModelForm):
             'description': 'Abstract',
         }
         widgets = {
-            'start': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-start'}),
-            'end': BootstrappedDateTimeWidget(attrs={'readonly': True, 'class': 'js-datetimepicker event-end'}),
+            'start': BootstrappedDateTimeWidget(attrs={'readonly': True}),
+            'end': BootstrappedDateTimeWidget(attrs={'readonly': True}),
             'booking_type': forms.RadioSelect,
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
