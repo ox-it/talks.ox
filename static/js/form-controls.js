@@ -28,7 +28,6 @@ $(function() {
         var currentValues = mainInput.data('currentValues');
         var index = currentValues.indexOf(removed_data_id);
         currentValues.splice(index, 1);
-        console.log(currentValues);
     }
     function showSelectedValue(mainInput, input, suggestion) {
         var valueKey = $(mainInput).data('valueKey');
@@ -45,7 +44,6 @@ $(function() {
         var currentValues = $(mainInput).data('currentValues');
         var value = String(suggestion[valueKey]);
         currentValues.push(value);
-        console.log(currentValues);
     }
     function showSelectedValuesForInput() {
         var $this = $(this);
@@ -95,10 +93,10 @@ $(function() {
             attr('value', value);
     }
 
-    var filter = function(suggestions, currentValues) {
+    var filter = function(suggestions, currentValues, valueKey) {
         //Filter the given suggestions, removing any already in the element's list of chosen values
         var filtered = $.grep(suggestions, function(suggestion) {
-            return $.inArray(String(suggestion.id), currentValues) === -1;
+            return $.inArray(String(suggestion[valueKey]), currentValues) === -1;
         });
         return filtered;
     }
@@ -141,13 +139,11 @@ $(function() {
                 url: sourceConfig.url,
                 filter: sourceConfig.responseExpression && eval("(function(response) { return " + sourceConfig.responseExpression + ";})")
             },
-            dupDetector: function(remoteMatch, localMatch) {
-                return remoteMatch.id == localMatch.id;
-            }
         });
         var name = $this.attr('name');
         
         $this.data('name', name);
+        var value_key = sourceConfig.valueKey;
         $this.data('valueKey', sourceConfig.valueKey);
         $this.data('labelKey', sourceConfig.displayKey);
         $this.data('bloodhound', bloodhound);
@@ -157,7 +153,7 @@ $(function() {
             //source: bloodhound.ttAdapter(),
             source: function(query, cb) {
                 bloodhound.get(query, function (suggestions) {
-                    cb(filter(suggestions, currentValues));
+                    cb(filter(suggestions, currentValues, value_key));
                 });
             },
             templates: {
