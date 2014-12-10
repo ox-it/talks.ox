@@ -117,7 +117,7 @@ $(function() {
             //User has probably selected the 'Please select' option
             return;
         }
-        var url = '/api/eventgroups/id/' + groupID
+        var url = '/api/series/id/' + groupID
 
         //retrieve the ID of the event organiser and apply that to the department field of the form
         $.ajax({

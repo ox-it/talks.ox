@@ -67,9 +67,9 @@ def suggest_user(request):
     return Response(serializer.data)
 
 @api_view(["GET"])
-def get_event_group(request, event_group_id):
+def get_event_group(request, event_group_slug):
     try:
-        eg = EventGroup.objects.get(id=event_group_id)
+        eg = EventGroup.objects.get(slug=event_group_slug)
     except ObjectDoesNotExist:
         return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)

@@ -81,7 +81,8 @@ class EventForm(forms.ModelForm):
         empty_label="-- select a series --",
         widget=Select(attrs={'class': 'form-control'}),
         required=False,
-        label="Series"
+        label="Series",
+        to_field_name="slug"
     )
 
     editor_set = forms.ModelMultipleChoiceField(
