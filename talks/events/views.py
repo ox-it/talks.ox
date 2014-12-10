@@ -102,6 +102,7 @@ def show_event(request, event_slug):
     }
     return render(request, 'events/event.html', context)
 
+
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
 def edit_event(request, event_slug):
@@ -245,6 +246,7 @@ def edit_event_group(request, event_group_slug):
     }
     return render(request, 'events/event_group_form.html', context)
 
+
 @login_required
 @permission_required('events.add_eventgroup', raise_exception=PermissionDenied)
 def create_event_group(request):
@@ -354,7 +356,6 @@ def contributors_events(request):
             args['missing'] = 'location'
             events = events.filter(location='')
 
-
     paginator = Paginator(events, count)
 
     try:
@@ -370,6 +371,7 @@ def contributors_events(request):
     }
 
     return render(request, 'events/contributors_events.html', context)
+
 
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
@@ -391,6 +393,7 @@ def contributors_eventgroups(request):
 
     return render(request, 'events/contributors_groups.html', context)
 
+
 @login_required()
 @permission_required('events.change_person', raise_exception=PermissionDenied)
 def contributors_persons(request):
@@ -406,10 +409,11 @@ def contributors_persons(request):
         return redirect('contributors-persons')
 
     context = {
-        'persons' : persons
+        'persons': persons
     }
 
     return render(request, 'events/contributors_persons.html', context)
+
 
 @login_required()
 def show_person(request, person_slug):

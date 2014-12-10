@@ -1,65 +1,21 @@
-import os
 import unittest
 import logging
 import datetime
-from django.contrib.contenttypes.models import ContentType
-
 import mock
 import requests
-from django.conf import settings
+
 from django.test import TestCase
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache.backends.base import BaseCache
-from django.contrib.staticfiles.finders import find as find_static_file
 from django.contrib.auth.models import User, Group, Permission
 from django.test.client import Client
 from django.utils import timezone
 
-from . import forms, models, factories, typeahead
+from . import forms, models, factories, typeahead, datasources
 from talks.events.models import Event, EventGroup, Person, EVENT_IN_PREPARATION, EVENT_PUBLISHED
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 VALID_DATE_STRING = "2014-05-12 12:18"
-
-
-def intercept_requests_to_statics(url, *a, **k):
-    """
-    Utility function to use with mock.path.
-    Blocks all requests through `requests.get` except for those to local static files.
-    In that case makes `requests.get` return file content without going through `httplib`
-    """
-    logging.info("intercept: %s", url)
-    if url.startswith(settings.STATIC_URL):
-        r = requests.Response()
-        try:
-            path = url[len(settings.STATIC_URL):]
-            path = path.split('?')[0]  # FIXME use urlparse
-            file_path = find_static_file(path)
-            logging.info("path:%r", path)
-            logging.info("file+path:%r", file_path)
-            if file_path and os.path.isfile(file_path):
-                with open(file_path) as f:
-                    r._content = f.read()
-                    r.status_code = 200
-                    logging.info("response: %s", r._content)
-                    logging.info("response: %s", r.content)
-            else:
-                r.status_code = 404
-        except Exception, e:
-            r.status_code = 500
-            r.reason = e.message
-            import traceback
-            r._content = traceback.format_exc()
-        finally:
-            logging.info("response: %s", r._content)
-            return r
-    raise AssertionError("External request detected: %s" % url)
-
-
-def patch_requests():
-    requests_patcher = mock.patch('requests.get', autospec=True)
-    requests_get = requests_patcher.start()
-    requests_get.side_effect = intercept_requests_to_statics
-    return requests_patcher
 
 
 def assert_not_called(mock):
@@ -593,6 +549,7 @@ class TestCreateEventView(AuthTestCase):
         self.assertEquals({t.uri for t in topics}, {t.uri for t in event.topics.all()}, "topics were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
+
 class TestAuthorisation(TestCase):
     """
     Test that events can only be created and edited by users who should be allowed to do so
@@ -658,6 +615,7 @@ class TestAuthorisation(TestCase):
         response = self.client.post("/talks/new", data)
         self.assertEquals(response.status_code, 403)
         self.assertTemplateNotUsed(response, "events/event_form.html")
+
 
 class TestEditEventView(AuthTestCase):
 
@@ -892,7 +850,6 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         self.assertEquals(result, {fetched_id: fetched_object})
 
 
-
 @mock.patch('talks.events.typeahead.DataSource._fetch_objects', autospec=True)
 class TestDataSourceGetObjectById(unittest.TestCase):
     def test_not_found(self, fetch_objects):
@@ -975,10 +932,10 @@ class TestDeclaredDataSources(unittest.TestCase):
         location_object = {'id': location_id, 'name': str(mock.sentinel.location_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {'_embedded': {'pois': [location_object]}}
-        forms.LOCATION_DATA_SOURCE.cache.clear()
+        datasources.LOCATION_DATA_SOURCE.cache.clear()
 
-        result = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
-        result_from_cache = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
+        result = datasources.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
+        result_from_cache = datasources.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
 
         self.assertEquals(result, location_object)
         self.assertEquals(result, result_from_cache)
@@ -988,10 +945,10 @@ class TestDeclaredDataSources(unittest.TestCase):
         department_object = {'id': department_id, 'name': str(mock.sentinel.department_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {'_embedded': {'pois': [department_object]}}
-        forms.DEPARTMENT_DATA_SOURCE.cache.clear()
+        datasources.DEPARTMENT_DATA_SOURCE.cache.clear()
 
-        result = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
-        result_from_cache = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
+        result = datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
+        result_from_cache = datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
 
         self.assertEquals(result, department_object)
         self.assertEquals(result, result_from_cache)
@@ -1005,10 +962,10 @@ class TestDeclaredDataSources(unittest.TestCase):
                 'concepts': [topic_object],
             },
         }
-        forms.TOPICS_DATA_SOURCE.cache.clear()
+        datasources.TOPICS_DATA_SOURCE.cache.clear()
 
-        result = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
-        result_from_cache = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
+        result = datasources.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
+        result_from_cache = datasources.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
 
         self.assertEquals(result, topic_object)
         self.assertEquals(result, result_from_cache)
@@ -1017,7 +974,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         persons = factories.PersonFactory.create_batch(3)
         person = persons[1]
 
-        result = forms.SPEAKERS_DATA_SOURCE.get_object_by_id(person.id)
+        result = datasources.PERSONS_DATA_SOURCE.get_object_by_id(person.id)
 
         assert_not_called(requests_get)
 

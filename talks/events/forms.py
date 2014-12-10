@@ -1,58 +1,12 @@
-from urllib import urlencode
-
 from django import forms
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.forms.widgets import Select
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 
-from talks.api import serializers
-
-from . import models, typeahead
+from talks.events import models, typeahead, datasources
 from talks.users.authentication import GROUP_EDIT_EVENTS
-
-
-class OxPointDataSource(typeahead.DataSource):
-    def __init__(self, **kwargs):
-        _types = kwargs.pop('types', [])
-        url = settings.API_OX_PLACES_URL + "suggest?" + urlencode({'type_exact': _types}, doseq=True) + '&q=%QUERY'
-        super(OxPointDataSource, self).__init__(
-            'oxpoints',
-            url=url,
-            response_expression='response._embedded.pois',
-            # XXX: forcing api to return list if requesting single object
-            get_prefetch_url=lambda values: settings.API_OX_PLACES_URL + ",".join(values) + ","
-        )
-
-LOCATION_DATA_SOURCE = OxPointDataSource(
-    types=['/university/building', '/university/site', '/leisure/museum', '/university/college', '/university/library']
-)
-DEPARTMENT_DATA_SOURCE = OxPointDataSource(
-    types=['/university/department', '/university/museum', '/university/college', '/university/hall',
-           '/university/division']
-)
-TOPICS_DATA_SOURCE = typeahead.DataSource(
-    'topics',
-    url=settings.TOPICS_URL + "suggest?count=10&q=%QUERY",
-    get_prefetch_url=lambda values: ("%sget?%s" % (settings.TOPICS_URL, urlencode({'uri': values}, doseq=True))),
-    display_key='prefLabel',
-    id_key='uri',
-    response_expression='response._embedded.concepts',
-)
-SPEAKERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
-    'speakers',
-    url='/talks/persons/suggest?q=%QUERY',
-    display_key='title',
-    serializer=serializers.PersonSerializer,
-)
-USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
-    'users',
-    url='/api/user/suggest?q=%QUERY',
-    display_key='email',
-    serializer=serializers.UserSerializer
-)
 
 
 class OxPointField(forms.CharField):
@@ -83,7 +37,7 @@ class EventForm(forms.ModelForm):
         label="Speakers",
         help_text="Type speaker name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
     organisers = forms.ModelMultipleChoiceField(
@@ -91,7 +45,7 @@ class EventForm(forms.ModelForm):
         label="Organisers",
         help_text="Type organiser name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
     hosts = forms.ModelMultipleChoiceField(
@@ -99,22 +53,22 @@ class EventForm(forms.ModelForm):
         label="Hosts",
         help_text="Type host name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
     topics = TopicsField(
         label="Topics",
         help_text="Type topic name and select from the list",
         required=False,
-        widget=typeahead.MultipleTypeahead(TOPICS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.TOPICS_DATA_SOURCE),
     )
 
-    location = OxPointField(LOCATION_DATA_SOURCE,
+    location = OxPointField(datasources.LOCATION_DATA_SOURCE,
                             label="Venue",
-                            help_text="Type location name and select from the list",
+                            help_text="Type building name and select from the list.",
                             required=False)
 
-    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE,
+    department_organiser = OxPointField(datasources.DEPARTMENT_DATA_SOURCE,
                                         required=False,
                                         help_text="Type department name and select from the list",
                                         label="Organising department")
@@ -132,7 +86,7 @@ class EventForm(forms.ModelForm):
         label="Other event organisers who can edit this event",
         help_text="Type an event organiser's email address",
         required=False,
-        widget=typeahead.MultipleTypeahead(USERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
 
     class Meta:
@@ -210,16 +164,17 @@ class EventForm(forms.ModelForm):
                 rel = models.PersonEvent.objects.get(person=person, event=event, role=role)
                 rel.delete()
 
+
 class EventGroupForm(forms.ModelForm):
 
-    department_organiser = OxPointField(DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
+    department_organiser = OxPointField(datasources.DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
 
     organiser = forms.ModelChoiceField(
         queryset=models.Person.objects.all(),
         label="Organiser",
         help_text="Type a name and select from the list",
         required=False,
-        widget=typeahead.Typeahead(SPEAKERS_DATA_SOURCE),
+        widget=typeahead.Typeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
     class Meta:
