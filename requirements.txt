@@ -1,4 +1,4 @@
-Django==1.7.1
+Django==1.7.2
 pytz
 djangorestframework==2.3.13
 icalendar==3.6.2
