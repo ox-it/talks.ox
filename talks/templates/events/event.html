@@ -60,6 +60,11 @@
             {% else %}
             <span>Venue to be announced<span>
             {% endif %}
+            {% if event.location_details %}
+            <br><br>
+            <strong>Details</strong>:
+            {{ event.location_details }}
+            {% endif %}
         {% endspaceless %}</li>
         {% spaceless %}
         <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
