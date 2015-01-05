@@ -17,6 +17,7 @@ from .forms import EventForm, EventGroupForm, PersonQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
 from talks.events.models import ROLES_SPEAKER
+from talks.events.datasources import TOPICS_DATA_SOURCE
 
 logger = logging.getLogger(__name__)
 
@@ -430,8 +431,7 @@ def show_person(request, person_slug):
 
 def show_topic(request):
     topic_uri = request.GET.get('uri')
-    from . import forms
-    api_topic = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
+    api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
     events = Event.published.filter(topics__uri=topic_uri)
     context = {
         'topic': api_topic,
