@@ -62,6 +62,9 @@ class TestOldTalks(TestCase):
         self.assertEquals(d["talk[series_id_string]"], "22")
         self.assertEquals(d["talk[abstract]"], event.description+"\n")
         self.assertEquals(d["talk[name_of_speaker]"], s.name)
+        self.assertEquals(d["talk[date_string]"], "2014/01/01")
+        self.assertEquals(d["talk[start_time_string]"], "11:00")
+        self.assertEquals(d["talk[end_time_string]"], "12:00")
 
     def test_group_to_old_series(self):
         group = EventGroup()
