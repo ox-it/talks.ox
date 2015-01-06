@@ -242,6 +242,7 @@ def edit_event_group(request, event_group_slug):
             messages.warning(request, "Please correct errors below")
     context = {
         'form': form,
+        'organiser_form': PersonQuickAdd(),
         'event_group': group,
         'is_editing': True
     }
@@ -268,6 +269,7 @@ def create_event_group(request):
 
     context = {
         'form': form,
+        'organiser_form': PersonQuickAdd(),
         'modal_title': "Add a new series",
         'is_editing': False
     }
