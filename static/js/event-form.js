@@ -98,6 +98,7 @@ $(function() {
     }
 
     function updateEventDepartment(location_id) {
+        if(!location_id) { return; }
         $.ajax({
                     type:'GET',
                     url: 'http://api.m.ox.ac.uk/places/' + location_id,
@@ -117,7 +118,7 @@ $(function() {
             //User has probably selected the 'Please select' option
             return;
         }
-        var url = '/api/eventgroups/id/' + groupID
+        var url = '/api/series/id/' + groupID
 
         //retrieve the ID of the event organiser and apply that to the department field of the form
         $.ajax({
