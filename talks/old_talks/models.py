@@ -44,7 +44,7 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[title]", event.title))
     else:
         data.append(("talk[title]", "To be announced"))
-    event.description = build_abstract(event)
+    data.append(("talk[abstract]", build_abstract(event)))
     if event.start:
         data.append(("talk[date_string]", event.start.strftime("%Y/%m/%d")))
         data.append(("talk[start_time_string]", event.start.strftime("%H:%M")))
