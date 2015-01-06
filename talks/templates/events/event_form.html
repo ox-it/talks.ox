@@ -27,7 +27,11 @@
 {% block content %}
 
 {% if event %}
-<h3>Edit "{{ event.title }}"</h3>
+    {% if event.title %}
+        <h3>Edit "{{ event.title }}"</h3>
+    {% else %}
+        <h3>Edit Untitled Talk</h3>
+    {% endif %}
 {% else %}
 <h3>Add Talk</h3>
 {% endif %}
@@ -40,13 +44,13 @@
         <div class="col-sm-offset-2 col-sm-10">
             <div class="checkbox">
                     <label>
-                        <input autocomplete="off" id="id_event-title_not_announced" name="event-title_not_announced" type="checkbox" {% if event_form.title_not_announced.value %}checked{% endif %}> Title to be announced
+                        <input autocomplete="off" id="id_event-title_not_announced" name="event-title_not_announced" type="checkbox" {% if event_form.title_not_announced.value %}checked{% endif %}> Title TBA
                     </label>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Group</label>
+        <label class="control-label col-sm-2 col-lg-2 " for="id_event-group">Series</label>
         <div class="col-sm-10">
             <div class="checkbox">
                     <label>
@@ -60,71 +64,53 @@
             {{ event_form.group|bootstrap_horizontal }}
         </div>
         <div class="col-sm-2">
-            <a data-url="{% url 'create-event-group' %}?modal=1" class="btn btn-default" id="create-group-button" data-toggle="modal" data-target="#form-modal">New event group</a>
+            <a data-url="{% url 'create-event-group' %}?modal=1" class="btn btn-default" id="create-group-button" data-toggle="modal" data-target="#form-modal">New series</a>
         </div>
     </div>
     {{ event_form.start|bootstrap_horizontal }}
     {{ event_form.end|bootstrap_horizontal }}
-    {{ event_form.description|bootstrap_horizontal }}
-    {{ event_form.location|bootstrap_horizontal }}
-    {{ event_form.location_details|bootstrap_horizontal }}
-    {{ event_form.department_organiser|bootstrap_horizontal }}
-
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-topics-list">
-            {% for topic in selected_topics %}
-            <a href="#" data-id="{{ topic.uri }}" class="list-group-item list-group-item-info fade in">
-                <span class="badge">-</span>{{ topic.name }}
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-    {{ event_form.topics|bootstrap_horizontal }}
-
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-suggested-topics-list">
-        </div>
-    </div>
-
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-speakers-list">
-            {% for speaker in selected_speakers %}
-            <a href="#" data-id="{{ speaker.id }}" class="list-group-item list-group-item-info fade in">
-                <span class="badge">-</span>{{ speaker.name }} - {{ speaker.email_address }}
-            </a>
-            {% endfor %}
-        </div>
-    </div>
     {{ event_form.speakers|bootstrap_horizontal }}
 
-    <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-        <div class="list-group js-suggested-speakers-list">
-        </div>
-    </div>
-    <div class="col-sm-offset-2 col-sm-10">
-        <div class="col-sm-2">
-            <a data-url="{% url 'create-person' %}?modal=1" class="btn btn-default" id="create-person-button" data-toggle="modal" data-target="#form-modal">Create Speaker</a>
-        </div>
-    </div>
+    {% with form=speaker_form role='speakers' %}
+    {% include 'events/person_quick_add.html' %}
+    {% endwith %}
 
+    {{ event_form.location|bootstrap_horizontal }}
+    {{ event_form.location_details|bootstrap_horizontal }}
+    {{ event_form.description|bootstrap_horizontal }}
+    {{ event_form.topics|bootstrap_horizontal }}
+    {{ event_form.special_message|bootstrap_horizontal }}
+    {{ event_form.department_organiser|bootstrap_horizontal }}
+    {{ event_form.organisers|bootstrap_horizontal }}
+    {% with form=organiser_form role='organisers' %}
+    {% include 'events/person_quick_add.html' %}
+    {{ event_form.organiser_email|bootstrap_horizontal }}
+    {% endwith %}
+    {{ event_form.hosts|bootstrap_horizontal }}
+    {% with form=host_form role='hosts' %}
+    {% include 'events/person_quick_add.html' %}
+    {% endwith %}
+
+    {{ event_form.audience|bootstrap_horizontal }}
     {{ event_form.booking_type|bootstrap_horizontal }}
     {{ event_form.booking_url|bootstrap_horizontal }}
+    {{ event_form.booking_email|bootstrap_horizontal }}
     {{ event_form.cost|bootstrap_horizontal }}
-    {{ event_form.audience|bootstrap_horizontal }}
-    {{ event_form.special_message|bootstrap_horizontal }}
     {{ event_form.status|bootstrap_horizontal }}
     {{ event_form.editor_set|bootstrap_horizontal }}
 
     <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
         <div class="form-group">
             <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
-                <button type="submit" id="btn-save-add-another" name="another" value="true" class="btn btn-default">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Save and add another Talk
-                </button>
+                {% if not is_editing %}
+                    <button type="submit" id="btn-save-add-another" name="another" value="true" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Save and add another Talk
+                    </button>
+                {% endif %}
                 <button type="submit" class="btn btn-primary">Done</button>
                 {% if is_editing %}
-                <a class="btn btn-danger" href="{% url 'delete-event' event.slug %}">Delete</a>
+                    <a class="btn btn-danger" href="{% url 'delete-event' event.slug %}">Delete</a>
                 {% endif %}
             </div>
         </div>

@@ -1,8 +1,8 @@
 import logging
 import json
-
 from datetime import date, timedelta
 from functools import partial
+
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -13,9 +13,11 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
-from .forms import EventForm, EventGroupForm
+from .forms import EventForm, EventGroupForm, PersonQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
+from talks.events.models import ROLES_SPEAKER
+from talks.events.datasources import TOPICS_DATA_SOURCE
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +86,8 @@ def show_event(request, event_slug):
         # we should use Event.published here...
         ev = Event.objects.select_related(
             'speakers',
+            'hosts',
+            'organisers',
             'location',
             'group',
             'department_organiser').get(slug=event_slug)
@@ -94,8 +98,11 @@ def show_event(request, event_slug):
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
         'location': ev.api_location,
         'speakers': ev.speakers.all(),
+        'hosts': ev.hosts.all(),
+        'organisers': ev.organisers.all(),
     }
     return render(request, 'events/event.html', context)
+
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
@@ -105,17 +112,22 @@ def edit_event(request, event_slug):
         raise PermissionDenied
     # providing data for topics/speakers as it is not straight from the Model
     initial = {'topics': [t.uri for t in event.topics.all()],   # uses GenericRelation
-               'speakers': event.speakers.all()}        # different of person_set
+               'speakers': event.speakers.all(),        # different of person_set
+               'organisers': event.organisers.all(),
+               'hosts': event.hosts.all()}
     form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
     context = {
         'event': event,
         'event_form': form,
-        'is_editing': True
+        'speaker_form': PersonQuickAdd(),
+        'organiser_form': PersonQuickAdd(),
+        'host_form': PersonQuickAdd(),
+        'is_editing': True,
     }
     if request.method == 'POST':
         if form.is_valid():
             event = form.save()
-            messages.success(request, "Event was updated")
+            messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
@@ -138,6 +150,9 @@ def create_event(request, group_slug=None):
     if request.method == 'POST':
         context = {
             'event_form': PrefixedEventForm(request.POST),
+            'speaker_form': PersonQuickAdd(),
+            'organiser_form': PersonQuickAdd(),
+            'host_form': PersonQuickAdd(),
         }
         forms_valid = context['event_form'].is_valid()
         if forms_valid:
@@ -146,7 +161,7 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            messages.success(request, "New event has been created")
+            messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
                     logger.debug("redirecting to create-event-in-group")
@@ -163,6 +178,9 @@ def create_event(request, group_slug=None):
     else:
         context = {
             'event_form': PrefixedEventForm(),
+            'speaker_form': PersonQuickAdd(),
+            'organiser_form': PersonQuickAdd(),
+            'host_form': PersonQuickAdd,
             'is_editing': False
         }
     return render(request, 'events/event_form.html', context)
@@ -181,14 +199,14 @@ def delete_event(request, event_slug):
     # it should not be possible to delete it
     if not request.user.is_superuser:
         if event.already_started:
-            messages.warning(request, "You cannot delete an event that has already started")
+            messages.warning(request, "You cannot delete a talk that has already started")
             return redirect(event.get_absolute_url())
     context = {
         'event': event,
     }
     if request.method == 'POST':
         event.delete()
-        messages.success(request, "Event has been successfully deleted")
+        messages.success(request, "Talk has been successfully deleted")
         return redirect('contributors-events')
     return render(request, "events/delete_event.html", context)
 
@@ -208,6 +226,7 @@ def show_event_group(request, event_group_slug):
     }
     return render(request, 'events/event-group.html', context)
 
+
 @login_required
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def edit_event_group(request, event_group_slug):
@@ -217,7 +236,7 @@ def edit_event_group(request, event_group_slug):
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
-            messages.success(request, "Event group was updated")
+            messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
@@ -227,6 +246,7 @@ def edit_event_group(request, event_group_slug):
         'is_editing': True
     }
     return render(request, 'events/event_group_form.html', context)
+
 
 @login_required
 @permission_required('events.add_eventgroup', raise_exception=PermissionDenied)
@@ -240,7 +260,7 @@ def create_event_group(request):
             if is_modal:
                 response = json.dumps(serializers.EventGroupSerializer(event_group).data)
                 return HttpResponse(response, status=201, content_type='application/json')
-            messages.success(request, "Event group was created")
+            messages.success(request, "Series was created")
             return redirect(event_group.get_absolute_url())
         else:
             status_code = 400
@@ -248,7 +268,7 @@ def create_event_group(request):
 
     context = {
         'form': form,
-        'modal_title': "Add a new event group",
+        'modal_title': "Add a new series",
         'is_editing': False
     }
 
@@ -270,7 +290,7 @@ def delete_event_group(request, event_group_slug):
         # first updating all events that were referring to the group to be deleted
         Event.objects.filter(group=event_group).update(group=None)
         event_group.delete()
-        messages.success(request, "Event group has been successfully deleted")
+        messages.success(request, "Series has been successfully deleted")
         return redirect('contributors-events')
     return render(request, "events/delete_event_group.html", context)
 
@@ -283,14 +303,10 @@ def contributors_home(request):
 @permission_required('events.add_person', raise_exception=PermissionDenied)
 def create_person(request):
     form = PersonForm(request.POST or None)
-    is_modal = request.GET.get('modal')
     status_code = 200
     if request.method == 'POST':
         if form.is_valid():
             person = form.save()
-            if is_modal:
-                response = json.dumps(serializers.PersonSerializer(person).data)
-                return  HttpResponse(response, status=201, content_type='application/json')
             messages.success(request, "Person was created")
             return redirect(person.get_absolute_url())
         else:
@@ -298,13 +314,9 @@ def create_person(request):
             messages.warning(request, "Please correct errors below")
     context = {
         'form': form,
-        'modal_title': "Add a new Person",
     }
 
-    if is_modal:
-        return render(request, 'events/person_modal_form.html', context, status=status_code)
-    else:
-        return render(request, 'events/person_form.html', context, status=status_code)
+    return render(request, 'events/person_form.html', context, status=status_code)
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
@@ -345,7 +357,6 @@ def contributors_events(request):
             args['missing'] = 'location'
             events = events.filter(location='')
 
-
     paginator = Paginator(events, count)
 
     try:
@@ -361,6 +372,7 @@ def contributors_events(request):
     }
 
     return render(request, 'events/contributors_events.html', context)
+
 
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
@@ -382,6 +394,7 @@ def contributors_eventgroups(request):
 
     return render(request, 'events/contributors_groups.html', context)
 
+
 @login_required()
 @permission_required('events.change_person', raise_exception=PermissionDenied)
 def contributors_persons(request):
@@ -397,19 +410,34 @@ def contributors_persons(request):
         return redirect('contributors-persons')
 
     context = {
-        'persons' : persons
+        'persons': persons
     }
 
     return render(request, 'events/contributors_persons.html', context)
 
+
 @login_required()
 def show_person(request, person_slug):
     person = get_object_or_404(Person, slug=person_slug)
+    events = Event.published.filter(personevent__role=ROLES_SPEAKER,
+                                    personevent__person__slug=person_slug)
 
     context = {
         'person': person,
+        'events': events
     }
     return render(request, 'events/person.html', context)
+
+
+def show_topic(request):
+    topic_uri = request.GET.get('uri')
+    api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
+    events = Event.published.filter(topics__uri=topic_uri)
+    context = {
+        'topic': api_topic,
+        'events': events
+    }
+    return render(request, 'events/topic.html', context)
 
 
 @login_required

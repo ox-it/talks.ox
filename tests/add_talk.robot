@@ -25,7 +25,7 @@ Scenario: Add the simplest talk
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
     page should contain text "something"
     page should contain text "something else"
 
@@ -49,7 +49,7 @@ Scenario: Add talk to existing group of talks
     ${datetimepicker[1]} should disappear
     click on ${button done}
     ${success message} should appear
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
     page should contain text "something"
     page should contain text "Part of: foo" 
 
@@ -69,11 +69,11 @@ Scenario: Create new group on the go
     ${group field} should not be displayed
     click on ${checkbox in group section}
     ${group field} should be displayed
-    ${group field} selected item should be "-- select a group --"
+    ${group field} selected item should be "-- select a series --"
     ${create group button} should be displayed
     click on ${create group button}
     ${modal dialog} should appear
-    ${modal dialog title} should contain text "Add a new event group"
+    ${modal dialog title} should contain text "Add a new series"
     type "new group" into ${modal dialog field('Title')}
     type "group description" into ${modal dialog field('Description')}
     click on ${modal dialog submit button}
@@ -98,12 +98,12 @@ Scenario: Lookup department
     
 Scenario: Lookup topic
     go to ${add_talk_page}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Biodiversity"
     click on ${suggestion popup item('Biodiversity')}
     ${list group item("Biodiversity")} should be displayed
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Animal diversity"
     click on ${suggestion popup item('Animal diversity')}
@@ -114,12 +114,12 @@ Scenario: Lookup speaker
     create  person  name=Napoleon Solo
 
     go to ${add_talk_page}
-    type "bon" into ${field('Speaker')}
+    type "bon" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "James Bond"
     click on ${suggestion popup item('James Bond')}
     ${list group item("James Bond")} should be displayed
-    type "apo" into ${field('Speaker')}
+    type "apo" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
@@ -128,6 +128,8 @@ Scenario: Lookup speaker
 Scenario: Properly display typeahead fields in newly created event
     create  person  name=James Bond
     create  person  name=Napoleon Solo      bio=IT Services
+    create  person  name=Luke Skywalker     bio=Jedi order
+    create  person  name=Darth Vader
 
     go to ${add_talk_page}
     fill in required fields
@@ -139,36 +141,58 @@ Scenario: Properly display typeahead fields in newly created event
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Biodiversity"
     click on ${suggestion popup item('Biodiversity')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Animal diversity"
     click on ${suggestion popup item('Animal diversity')}
-    type "bon" into ${field('Speaker')}
+    type "bon" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "James Bond"
     click on ${suggestion popup item('James Bond')}
-    type "apo" into ${field('Speaker')}
+    type "apo" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
+    type "luk" into ${field('Hosts')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Luke Skywalker"
+    click on ${suggestion popup item('Luke Skywalker')}
+    type "dar" into ${field('Organisers')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Darth Vader"
+    click on ${suggestion popup item('Darth Vader')}
+
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
     page should contain text "Venue: 7-19 Banbury Road"
     page should contain text "Organising department: Chemical Biology"
     page should contain text "Topics: Biodiversity"
     page should contain text "James Bond"
     page should contain text "Napoleon Solo (IT Services)"
+    page should contain text "Luke Skywalker (Jedi order)"
+    page should contain text "Darth Vader"
 
 Scenario: Create speaker on the go
-    [Tags]  todo
-Scenario: Save and add another
+    go to ${add talk page}
+    Fill in required fields
+    click on ${reveal create speaker link}
+    ${speaker name field} should appear
+    type "Albert Einstein" into ${speaker name field}
+    type "Theoretical Physicist" into ${speaker bio field}
+    click on ${add speaker button}
+    page should appear text "Albert Einstein, Theoretical Physicist"
+    click on ${button done}
+    current page should be ${talk page}
+    page should contain text "Albert Einstein"
+    page should contain text "Theoretical Physicist"
 
+Scenario: Save and add another
     go to ${add talk page}
     type "something" into ${title field}
     click on ${start field}
@@ -182,12 +206,14 @@ Scenario: Save and add another
     click on ${button save add another}
     current page should be ${add talk page}
     ${success message} should be displayed
-    ${success message} should contain text "New event has been created"
+    ${success message} should contain text "New talk has been created"
 
 
 Scenario: Preserve form data after validation
     create  person  name=James Bond
     create  person  name=Napoleon Solo
+    create  person  name=Luke Skywalker
+    create  person  name=Darth Vader
 
     go to ${add_talk_page}
     type "oucs" into ${field('Venue')}
@@ -198,22 +224,30 @@ Scenario: Preserve form data after validation
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Chemical Biology"
     click on ${suggestion popup item('Chemical Biology')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Biodiversity"
     click on ${suggestion popup item('Biodiversity')}
-    type "biodiv" into ${field('Topic')}
+    type "biodiv" into ${field('Topics')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Animal diversity"
     click on ${suggestion popup item('Animal diversity')}
-    type "bon" into ${field('Speaker')}
+    type "bon" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "James Bond"
     click on ${suggestion popup item('James Bond')}
-    type "apo" into ${field('Speaker')}
+    type "apo" into ${field('Speakers')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "Napoleon Solo"
     click on ${suggestion popup item('Napoleon Solo')}
+    type "luk" into ${field('Hosts')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Luke Skywalker"
+    click on ${suggestion popup item('Luke Skywalker')}
+    type "dar" into ${field('Organisers')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Darth Vader"
+    click on ${suggestion popup item('Darth Vader')}
     click on ${button done}
     current page should be ${add talk page}
     ${error message} should appear
@@ -224,6 +258,8 @@ Scenario: Preserve form data after validation
     ${list group item("Animal diversity")} should be displayed
     ${list group item("James Bond")} should be displayed
     ${list group item("Napoleon Solo")} should be displayed
+    ${list group item("Luke Skywalker")} should be displayed
+    ${list group item("Darth Vader")} should be displayed
 
 
 *** Keywords ***

@@ -41,27 +41,33 @@
 
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</h3>
+        <h3 class="panel-title">{% if event.title %}{{ event.title }}{% else %}Untitled Talk{% endif %}</h3>
     </div>
     <div class="panel-body">
         {% if event.description %}
         <p>{{ event.description_html | safe }}</p>
         {% else %}
-        <i>Description not yet added</i>
+        <i>Abstract not yet added</i>
         {% endif %}
     </div>
     <!-- List group -->
     <ul class="list-group">
-        <li class="list-group-item"><strong>Date</strong>: {{ event.start }} ({{ event.oxford_date.formatted }})</li>
+        <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location %}
             <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
+            <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
             {% else %}
             <span>Venue to be announced<span>
             {% endif %}
+            {% if event.location_details %}
+            <br><br>
+            <strong>Details</strong>:
+            {{ event.location_details }}
+            {% endif %}
         {% endspaceless %}</li>
         {% spaceless %}
-        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<span>{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}</span>
+        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
             {% empty %}
                 <span>Speaker to be announced</span>
             {% endfor %}
@@ -70,17 +76,31 @@
         {% if event.api_organisation %}
         <li class="list-group-item"><strong>Organising department</strong>: {{ event.api_organisation.name }}</li>
         {% endif %}
+        {% if event.organisers %}
+            <li class="list-group-item"><strong>Organiser{{ organisers|pluralize }}</strong>: {% for organiser in organisers %}<a href="{% url 'show-person' organiser.slug %}">{{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </li>
+        {% endif %}
+        {% if event.organiser_email %} <li class="list-group-item"><strong>Organiser contact email address</strong>: {{event.organiser_email}}</li> {% endif %}
+        {% if event.hosts %}
+            <li class="list-group-item"><strong>Host{{ hosts|pluralize }}</strong>: {% for host in hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </li>
+        {% endif %}
         {% if event.group %}
         <li class="list-group-item"><strong>Part of</strong>: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a></li>
         {% endif %}
         {% spaceless %}
         {% if event.topics.count %}
-        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}<span>{{ topic.prefLabel }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+        <li class="list-group-item"><strong>Topics</strong>: {% for topic in event.api_topics %}<a href="{% url 'show-topic' %}?uri={{ topic.uri }}">{{ topic.prefLabel }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
         {% endif %}
         {% endspaceless %}
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>
         {% if event.booking_url %}
             <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>
+        {% endif %}
+        {% if event.booking_email %}
+            <li class="list-group-item"><strong>Booking email</strong>: {{event.booking_email }}</li>
         {% endif %}
         {% if event.cost %}
             <li class="list-group-item"><strong>Cost</strong>: {{ event.cost }} </li>

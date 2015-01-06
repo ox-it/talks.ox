@@ -2,19 +2,19 @@
 {% load bootstrap %}
 {% load staticfiles %}
 
-{% block title %}Delete event{% endblock %}
+{% block title %}Delete talk{% endblock %}
 
 {% block content %}
 
-    <h3>Delete the event</h3>
+    <h3>Delete the talk</h3>
 
-    <p>You are about to delete the event "{{ event.title }}" (starting {{ event.start }}).</p>
+    <p>You are about to delete the talk "{{ event.title }}" (starting {{ event.start }}).</p>
 
     <p>Do you confirm?</p>
 
     <p><form method="post">
     {% csrf_token %}
-    <input type="submit" value="Yes, delete the event" class="btn btn-danger"></form></p>
-    <p><a href="{{ event.get_absolute_url }}">Cancel, and go back to the event page</a></p>
+    <input type="submit" value="Yes, delete the talk" class="btn btn-danger"></form></p>
+    <p><a href="{{ event.get_absolute_url }}">Cancel, and go back to the talk page</a></p>
 
 {% endblock content %}

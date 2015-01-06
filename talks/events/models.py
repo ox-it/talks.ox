@@ -43,15 +43,15 @@ BOOKING_CHOICES = (
 AUDIENCE_PUBLIC = 'public'
 AUDIENCE_OXFORD = 'oxonly'
 AUDIENCE_CHOICES = (
-    (AUDIENCE_PUBLIC, 'Public'),
     (AUDIENCE_OXFORD, 'Members of the University only'),
+    (AUDIENCE_PUBLIC, 'Public'),
 )
 
 EVENT_PUBLISHED = 'published'
 EVENT_IN_PREPARATION = 'preparation'
 EVENT_STATUS_CHOICES = (
-    (EVENT_PUBLISHED, 'Published'),
     (EVENT_IN_PREPARATION, 'In preparation'),
+    (EVENT_PUBLISHED, 'Published'),
 )
 
 
@@ -82,7 +82,8 @@ class EventGroup(models.Model):
         blank=True,
         null=True,
         max_length=2,
-        choices=EVENT_GROUP_TYPE_CHOICES
+        choices=EVENT_GROUP_TYPE_CHOICES,
+        default=SEMINAR
     )
     organiser = models.ForeignKey("Person", null=True, blank=True)
     occurence = models.TextField(
@@ -116,6 +117,7 @@ class EventGroup(models.Model):
         except requests.HTTPError:
             return None
 
+
 class PersonManager(models.Manager):
 
     def suggestions(self, query):
@@ -126,7 +128,9 @@ class Person(models.Model):
     name = models.CharField(max_length=250)
     slug = models.SlugField()
     bio = models.TextField(verbose_name="Affiliation")
-    email_address = models.EmailField(max_length=254)
+    email_address = models.EmailField(max_length=254,
+                                      null=True,
+                                      blank=True)
 
     objects = PersonManager()
 
@@ -141,6 +145,7 @@ class Person(models.Model):
 
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
+
 
 class TopicItem(models.Model):
 
@@ -186,6 +191,7 @@ class Event(models.Model):
                                     default=BOOKING_NOT_REQUIRED)
     booking_url = models.URLField(blank=True, default='',
                                   verbose_name="Web address for booking")
+    booking_email = models.EmailField(blank=True, default='', verbose_name="Email address for booking")
     cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
     status = models.TextField(verbose_name="Status",
                               choices=EVENT_STATUS_CHOICES,
@@ -204,10 +210,10 @@ class Event(models.Model):
     location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
                                         default='',
-                                        verbose_name='Additional details',
+                                        verbose_name='Venue details',
                                         help_text='e.g.: room number or accessibility information')
     department_organiser = models.TextField(default='', blank=True)
-
+    organiser_email = models.EmailField(blank=True, default='', verbose_name='Organiser contact email')
     topics = GenericRelation(TopicItem)
 
     objects = models.Manager()
@@ -246,27 +252,27 @@ class Event(models.Model):
 
     @property
     def api_location(self):
-        from . import forms
+        from talks.events import datasources
         try:
-            return forms.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
+            return datasources.LOCATION_DATA_SOURCE.get_object_by_id(self.location)
         except requests.HTTPError:
             return None
 
     @property
     def api_organisation(self):
-        from . import forms
+        from talks.events import datasources
         try:
-            return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+            return datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
         except requests.HTTPError:
             return None
 
     @property
     def api_topics(self):
-        from . import forms
+        from talks.events import datasources
         uris = [item.uri for item in self.topics.all()]
         logging.debug("uris:%s", uris)
         try:
-            return forms.TOPICS_DATA_SOURCE.get_object_list(uris)
+            return datasources.TOPICS_DATA_SOURCE.get_object_list(uris)
         except requests.HTTPError:
             return None
 

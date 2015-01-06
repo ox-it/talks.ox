@@ -1,4 +1,4 @@
-Django==1.7.1
+Django==1.7.2
 pytz
 djangorestframework==2.3.13
 icalendar==3.6.2
@@ -8,7 +8,7 @@ git+https://github.com/ox-it/django-haystack.git#egg=django_haystack
 django-bootstrap-form==3.1
 psycopg2==2.5.3
 raven==5.0.0
-git+https://github.com/ox-it/django-webauth.git@0.3.4#egg=django-webauth
+git+https://github.com/ox-it/django-webauth.git@0.4#egg=django-webauth
 python-ldap==2.4.15
 django-reversion==1.8.5
 textile==2.2.1

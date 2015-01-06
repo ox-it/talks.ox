@@ -38,16 +38,16 @@
         <h3 class="panel-title">{{ event_group.title }}</h3>
     </div>
     <div class="panel-body">
-        <p>{% if event_group.description %}{{ event_group.description }}{% else %}<i>This group does not yet have a description</i>{% endif %}</p>
+        <p>{% if event_group.description %}{{ event_group.description }}{% else %}<i>This series does not yet have an abstract</i>{% endif %}</p>
     </div>
     <!-- List group -->
     <ul class="list-group">
         <li class="list-group-item"><strong>Type</strong>: {{ event_group.get_group_type_display }}</li>
     {% if event_group.organiser %}
-        <li class="list-group-item"><strong>Organiser</strong>: {{ event_group.organiser.name }}</li>
+        <li class="list-group-item"><strong>Talk organiser</strong>: {{ event_group.organiser.name }}</li>
     {% endif %}
     {% if event_group.occurence %}
-        <li class="list-group-item"><strong>Occurence</strong>: {{ event_group.occurence }}</li>
+        <li class="list-group-item"><strong>Timing</strong>: {{ event_group.occurence }}</li>
     {% endif %}
     {% if event_group.web_address %}
         <li class="list-group-item"><strong>Web Address</strong>: {{ event_group.web_address }}</li>
@@ -56,7 +56,12 @@
         <li class="list-group-item"><strong>Organising department</strong>: {{ event_group.api_organisation.name }}</li>
     {% endif %}
         {% for event in event_group.events.all %}
-        <li class="list-group-item"><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> ({{ event.start }})</li>
+        <li class="list-group-item"><a href="{{ event.get_absolute_url }}">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</a> ({{ event.formatted_date }})
+        <br>
+        <strong>Speaker{{ event.speakers|pluralize }}</strong>: {% for speaker in event.speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+        {% empty %} TBA
+        {% endfor %}
+        </li>
         {% endfor %}
     </ul>
 </div>

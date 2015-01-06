@@ -19,8 +19,8 @@
             <div class="col-xs-3">
 
             <ul class="nav nav-list well">
-                <li><a href="{% url 'contributors-events' %}" class="">Events</a></li>
-                <li><a href="{% url 'contributors-eventgroups' %}" class="">Event Groups</a></li>
+                <li><a href="{% url 'contributors-events' %}" class="">Talks</a></li>
+                <li><a href="{% url 'contributors-eventgroups' %}" class="">Series</a></li>
                 <li><a href="{% url 'contributors-persons' %}" class="filter-selected">People</a></li>
             </ul>
         </div>
@@ -28,23 +28,31 @@
 
 
     <div class="col-xs-7">
-
+    <a class="btn btn-primary navbar-btn" href="{% url 'create-person' %}"><span class="glyphicon glyphicon-plus"></span> New Person</a>
     <table class="table table-bordered table-striped">
         <thead>
             <td>Name</td>
+            <td>Bio/affiliation</td>
             <td>Email</td>
+            <td>Edit</td>
         </thead>
             {% for person in persons %}
             <tr>
                 <td>
-                    {% if perms.events.change_person %}
-                        <a href="{% url 'edit-person' person.slug %}">{{ person.name }}</a>
-                    {% else %}
-                        {{ person.name }}
-                    {% endif %}
+                    <a href="{% url 'show-person' person.slug %}">{{ person.name }}</a>
+                </td>
+                <td>
+                    {{ person.bio }}
                 </td>
                 <td>
                     {{ person.email_address }}
+                </td>
+                <td>
+                    {% if perms.events.change_person %}
+                        <a class="btn btn-primary" href="{% url 'edit-person' person.slug %}">Edit</a>
+                    {% else %}
+                        Not authorised
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

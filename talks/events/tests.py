@@ -1,63 +1,21 @@
-import os
 import unittest
 import logging
-from django.contrib.contenttypes.models import ContentType
-
+import datetime
 import mock
 import requests
-from django.conf import settings
+
 from django.test import TestCase
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache.backends.base import BaseCache
-from django.contrib.staticfiles.finders import find as find_static_file
 from django.contrib.auth.models import User, Group, Permission
 from django.test.client import Client
+from django.utils import timezone
 
-from . import forms, models, factories, typeahead
-from talks.events.models import Event, EventGroup, Person
+from . import forms, models, factories, typeahead, datasources
+from talks.events.models import Event, EventGroup, Person, EVENT_IN_PREPARATION, EVENT_PUBLISHED
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 VALID_DATE_STRING = "2014-05-12 12:18"
-
-
-def intercept_requests_to_statics(url, *a, **k):
-    """
-    Utility function to use with mock.path.
-    Blocks all requests through `requests.get` except for those to local static files.
-    In that case makes `requests.get` return file content without going through `httplib`
-    """
-    logging.info("intercept: %s", url)
-    if url.startswith(settings.STATIC_URL):
-        r = requests.Response()
-        try:
-            path = url[len(settings.STATIC_URL):]
-            path = path.split('?')[0]  # FIXME use urlparse
-            file_path = find_static_file(path)
-            logging.info("path:%r", path)
-            logging.info("file+path:%r", file_path)
-            if file_path and os.path.isfile(file_path):
-                with open(file_path) as f:
-                    r._content = f.read()
-                    r.status_code = 200
-                    logging.info("response: %s", r._content)
-                    logging.info("response: %s", r.content)
-            else:
-                r.status_code = 404
-        except Exception, e:
-            r.status_code = 500
-            r.reason = e.message
-            import traceback
-            r._content = traceback.format_exc()
-        finally:
-            logging.info("response: %s", r._content)
-            return r
-    raise AssertionError("External request detected: %s" % url)
-
-
-def patch_requests():
-    requests_patcher = mock.patch('requests.get', autospec=True)
-    requests_get = requests_patcher.start()
-    requests_get.side_effect = intercept_requests_to_statics
-    return requests_patcher
 
 
 def assert_not_called(mock):
@@ -206,6 +164,39 @@ class TestEventForm(TestCase):
         self.assertNotIn('title_not_announced', form.errors)
 
 
+class TestEventProperties(TestCase):
+
+    def test_is_published(self):
+        event = factories.EventFactory.create()
+        event.embargo = True
+        event.status = EVENT_PUBLISHED
+        self.assertFalse(event.is_published)
+        event.embargo = False
+        self.assertTrue(event.is_published)
+
+    def test_already_started(self):
+        old_event = factories.EventFactory.create()
+        old_event.start = timezone.now() - datetime.timedelta(days=1);
+        self.assertTrue(old_event.already_started)
+        new_event = factories.EventFactory.create()
+        new_event.start = timezone.now() + datetime.timedelta(days=1)
+        self.assertFalse(new_event.already_started)
+        current_event = factories.EventFactory.create()
+        current_event.start = timezone.now() - datetime.timedelta(minutes=30)
+        current_event.end = timezone.now() + datetime.timedelta(minutes=30)
+        self.assertTrue(current_event.already_started)
+
+    def test_user_can_edit(self):
+        superuser = User.objects.create_superuser("superuser", password="password", email="superuser@users.com")
+        contrib_user = User.objects.create_user("contrib_user", password="password")
+        contrib_user_editor = User.objects.create_user("contrib_user_editor", password="password")
+        event = factories.EventFactory.create()
+        event.editor_set.add(contrib_user_editor)
+        self.assertTrue(event.user_can_edit(superuser))
+        self.assertTrue(event.user_can_edit(contrib_user_editor))
+        self.assertFalse(event.user_can_edit(contrib_user))
+
+
 class TestEventGroupForm(TestCase):
 
     def test_empty(self):
@@ -265,34 +256,34 @@ class AuthTestCase(TestCase):
 class TestEventGroupViews(AuthTestCase):
 
     def test_show_event_group_404(self):
-        response = self.client.get("/events/groups/1")
+        response = self.client.get("/talks/series/1")
         self.assertEquals(response.status_code, 404)
 
     def test_list_event_groups_empty(self):
-        response = self.client.get("/events/groups/")
+        response = self.client.get("/talks/series/")
         self.assertEquals(response.status_code, 200)
 
     def test_list_event_groups_some(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get("/events/groups/")
+        response = self.client.get("/talks/series/")
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
 
     def test_show_event_group_200(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get("/events/groups/id/%s" % group.slug)
+        response = self.client.get("/talks/series/id/%s" % group.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
         self.assertContains(response, group.description)
 
     def test_edit_event_group_404(self):
-        response = self.client.get("/events/groups/id/1/edit")
+        response = self.client.get("/talks/series/id/1/edit")
         self.assertEquals(response.status_code, 404)
         self.assertTemplateNotUsed(response, "events/event_group_form.html")
 
     def test_edit_event_group_200(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get("/events/groups/id/%s/edit" % group.slug)
+        response = self.client.get("/talks/series/id/%s/edit" % group.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
         self.assertContains(response, group.description)
@@ -306,8 +297,8 @@ class TestEventGroupViews(AuthTestCase):
             'group_type': '',
         }
 
-        response = self.client.post("/events/groups/id/%s/edit" % group.slug, data)
-        self.assertRedirects(response, "/events/groups/id/%s" % group.slug)
+        response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
+        self.assertRedirects(response, "/talks/series/id/%s" % group.slug)
         saved_group = models.EventGroup.objects.get(pk=group.id)
         self.assertEquals(saved_group.title, data['title'])
         self.assertEquals(saved_group.description, data['description'])
@@ -326,7 +317,7 @@ class TestEventGroupViews(AuthTestCase):
             'group_type': '',
         }
 
-        response = self.client.post("/events/groups/id/%s/edit" % group.slug, data)
+        response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
         saved_group = models.EventGroup.objects.get(slug=group.slug)
         self.assertFormError(response, 'form', 'title', ['This field is required.'])
         self.assertEquals(saved_group.title, old_title)
@@ -334,7 +325,7 @@ class TestEventGroupViews(AuthTestCase):
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
     def test_create_event_group_200(self):
-        response = self.client.get("/events/groups/new")
+        response = self.client.get("/talks/series/new")
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
@@ -345,9 +336,9 @@ class TestEventGroupViews(AuthTestCase):
             'group_type': '',
         }
 
-        response = self.client.post("/events/groups/new", data)
+        response = self.client.post("/talks/series/new", data)
         saved_group = models.EventGroup.objects.get()
-        self.assertRedirects(response, "/events/groups/id/%s" % saved_group.slug)
+        self.assertRedirects(response, "/talks/series/id/%s" % saved_group.slug)
         self.assertEquals(saved_group.title, data['title'])
         self.assertEquals(saved_group.description, data['description'])
         self.assertTemplateNotUsed(response, "events/event_group_form.html")
@@ -359,7 +350,7 @@ class TestEventGroupViews(AuthTestCase):
             'group_type': '',
         }
 
-        response = self.client.post("/events/groups/new", data)
+        response = self.client.post("/talks/series/new", data)
         self.assertFormError(response, 'form', 'title', ['This field is required.'])
         self.assertQuerysetEqual(models.EventGroup.objects.all(), [])
         self.assertTemplateUsed(response, "events/event_group_form.html")
@@ -368,7 +359,7 @@ class TestEventGroupViews(AuthTestCase):
 class TestCreateEventView(AuthTestCase):
 
     def test_get_happy_no_group_id(self):
-        response = self.client.get('/events/new')
+        response = self.client.get('/talks/new')
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'events/event_form.html')
@@ -377,13 +368,13 @@ class TestCreateEventView(AuthTestCase):
         self.assertIn('event_form', response.context)
 
     def test_get_nonexistent_group(self):
-        response = self.client.get('/events/groups/8475623/new')
+        response = self.client.get('/talks/series/8475623/new')
         self.assertEquals(response.status_code, 404)
         self.assertTemplateNotUsed(response, 'events/event_form.html')
 
     def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()
-        response = self.client.get('/events/groups/%s/new' % group.slug)
+        response = self.client.get('/talks/series/%s/new' % group.slug)
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
         self.assertIn('event_form', response.context)
@@ -415,10 +406,10 @@ class TestCreateEventView(AuthTestCase):
             'event-status': models.EVENT_IN_PREPARATION,
         }
 
-        response = self.client.post('/events/new', data)
+        response = self.client.post('/talks/new', data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
-        self.assertRedirects(response, '/events/new')
+        self.assertRedirects(response, '/talks/new')
         count = models.Event.objects.filter(title=title, description=description).count()
         self.assertEquals(count, 1, msg="Event instance was not saved")
 
@@ -446,10 +437,10 @@ class TestCreateEventView(AuthTestCase):
             'event-status': models.EVENT_IN_PREPARATION,
         }
 
-        response = self.client.post('/events/groups/%s/new' % group.slug, data)
+        response = self.client.post('/talks/series/%s/new' % group.slug, data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
-        self.assertRedirects(response, '/events/groups/%s/new' % group.slug)
+        self.assertRedirects(response, '/talks/series/%s/new' % group.slug)
         count = models.Event.objects.filter(title=title, description=description, group__slug=group.slug).count()
         logging.info("events:%s", models.Event.objects.all())
         self.assertEquals(count, 1, msg="Event instance was not saved")
@@ -476,7 +467,7 @@ class TestCreateEventView(AuthTestCase):
             'event-audience': models.AUDIENCE_OXFORD,
             'event-status': models.EVENT_IN_PREPARATION,
         }
-        response = self.client.post('/events/new', data)
+        response = self.client.post('/talks/new', data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors.as_data())
         try:
@@ -512,7 +503,7 @@ class TestCreateEventView(AuthTestCase):
             'event-audience': models.AUDIENCE_PUBLIC,
             'event-status': models.EVENT_IN_PREPARATION,
         }
-        response = self.client.post('/events/new', data)
+        response = self.client.post('/talks/new', data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
         try:
@@ -547,7 +538,7 @@ class TestCreateEventView(AuthTestCase):
             'event-status': models.EVENT_IN_PREPARATION,
         }
 
-        response = self.client.post('/events/new', data)
+        response = self.client.post('/talks/new', data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
         try:
@@ -557,6 +548,7 @@ class TestCreateEventView(AuthTestCase):
         logging.info("event.topics: %s", [t.uri for t in event.topics.all()])
         self.assertEquals({t.uri for t in topics}, {t.uri for t in event.topics.all()}, "topics were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
+
 
 class TestAuthorisation(TestCase):
     """
@@ -609,7 +601,7 @@ class TestAuthorisation(TestCase):
         data = {
             'event-title': 'lkfjlfkds'
         }
-        response = self.client.post("/events/id/%s/edit" % event.slug, data)
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         self.assertEquals(response.status_code, 403)
         self.assertTemplateNotUsed(response, "events/event_form.html")
 
@@ -620,14 +612,15 @@ class TestAuthorisation(TestCase):
             'event-start': VALID_DATE_STRING,
             'event-end' : VALID_DATE_STRING
         }
-        response = self.client.post("/events/new", data)
+        response = self.client.post("/talks/new", data)
         self.assertEquals(response.status_code, 403)
         self.assertTemplateNotUsed(response, "events/event_form.html")
+
 
 class TestEditEventView(AuthTestCase):
 
     def test_edit_event_404(self):
-        response = self.client.get("/events/id/1/edit")
+        response = self.client.get("/talks/id/1/edit")
         self.assertEquals(response.status_code, 404)
         self.assertTemplateNotUsed(response, "events/event_form.html")
 
@@ -635,7 +628,7 @@ class TestEditEventView(AuthTestCase):
         event = factories.EventFactory.create()
         event.editor_set.add(self.user)
         event.save()
-        response = self.client.get("/events/id/%s/edit" % event.slug)
+        response = self.client.get("/talks/id/%s/edit" % event.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, event.title)
         self.assertContains(response, event.description)
@@ -660,10 +653,10 @@ class TestEditEventView(AuthTestCase):
             'event-end': VALID_DATE_STRING
         }
 
-        response = self.client.post("/events/id/%s/edit" % event.slug, data)
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         if response.context:
             logging.info("Form errors: %s", response.context['event_form'].errors)
-        self.assertRedirects(response, "/events/id/%s/" % event.slug)
+        self.assertRedirects(response, "/talks/id/%s/" % event.slug)
         saved_event = models.Event.objects.get(slug=event.slug)
         self.assertEquals(saved_event.title, data['event-title'])
         self.assertEquals(saved_event.description, data['event-description'])
@@ -685,7 +678,7 @@ class TestEditEventView(AuthTestCase):
             'event-description': 'dflksfoingf',
         }
 
-        response = self.client.post("/events/id/%s/edit" % event.slug, data)
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         saved_event = models.Event.objects.get(slug=event.slug)
         self.assertEquals(response.status_code, 200)
         logging.info("form errors: %s", response.context['event_form'].errors.as_data())
@@ -857,7 +850,6 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         self.assertEquals(result, {fetched_id: fetched_object})
 
 
-
 @mock.patch('talks.events.typeahead.DataSource._fetch_objects', autospec=True)
 class TestDataSourceGetObjectById(unittest.TestCase):
     def test_not_found(self, fetch_objects):
@@ -940,10 +932,10 @@ class TestDeclaredDataSources(unittest.TestCase):
         location_object = {'id': location_id, 'name': str(mock.sentinel.location_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {'_embedded': {'pois': [location_object]}}
-        forms.LOCATION_DATA_SOURCE.cache.clear()
+        datasources.LOCATION_DATA_SOURCE.cache.clear()
 
-        result = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
-        result_from_cache = forms.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
+        result = datasources.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
+        result_from_cache = datasources.LOCATION_DATA_SOURCE.get_object_by_id(location_id)
 
         self.assertEquals(result, location_object)
         self.assertEquals(result, result_from_cache)
@@ -953,10 +945,10 @@ class TestDeclaredDataSources(unittest.TestCase):
         department_object = {'id': department_id, 'name': str(mock.sentinel.department_name)}
         requests_get.return_value = mock.Mock(spec=requests.Response)
         requests_get.return_value.json.return_value = {'_embedded': {'pois': [department_object]}}
-        forms.DEPARTMENT_DATA_SOURCE.cache.clear()
+        datasources.DEPARTMENT_DATA_SOURCE.cache.clear()
 
-        result = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
-        result_from_cache = forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
+        result = datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
+        result_from_cache = datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(department_id)
 
         self.assertEquals(result, department_object)
         self.assertEquals(result, result_from_cache)
@@ -970,10 +962,10 @@ class TestDeclaredDataSources(unittest.TestCase):
                 'concepts': [topic_object],
             },
         }
-        forms.TOPICS_DATA_SOURCE.cache.clear()
+        datasources.TOPICS_DATA_SOURCE.cache.clear()
 
-        result = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
-        result_from_cache = forms.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
+        result = datasources.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
+        result_from_cache = datasources.TOPICS_DATA_SOURCE.get_object_by_id(topic_id)
 
         self.assertEquals(result, topic_object)
         self.assertEquals(result, result_from_cache)
@@ -982,7 +974,7 @@ class TestDeclaredDataSources(unittest.TestCase):
         persons = factories.PersonFactory.create_batch(3)
         person = persons[1]
 
-        result = forms.SPEAKERS_DATA_SOURCE.get_object_by_id(person.id)
+        result = datasources.PERSONS_DATA_SOURCE.get_object_by_id(person.id)
 
         assert_not_called(requests_get)
 

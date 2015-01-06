@@ -17,29 +17,12 @@ $(function() {
         format: 'dd/mm/yyyy hh:ii',
         autoclose: true,
     });
-    $('#id_event-start.js-datetimepicker').on('changeDate', function(ev) {
+    $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
         //set the end time to 1 hour later
         hours = ev.date.getHours();
         var date = new Date(ev.date);
         date.setHours(date.getHours()+1, date.getMinutes());
-        $('#id_event-end.js-datetimepicker').data('datetimepicker').setDate(date);
-    });
-
-
-    //// Set the default end-date to the start date when it is picked
-    //var startDateTimePicker = $('.js-datetimepicker.event-start');
-    //startDateTimePicker.datetimepicker().on('changeDate', function(ev){
-    //    utcDate = startDateTimePicker.datetimepicker('getUTCDate');
-    //    // Set the StartDate to the current DAY -- don't specify hours
-    //    //
-    //    // Seems like the hours on start dates can cause some TZ issues
-    //    $('.js-datetimepicker.event-end').datetimepicker('setStartDate',
-    //        new Date(utcDate.getFullYear(), utcDate.getMonth(), utcDate.getDate())
-    //    );
-    //});
-
-    $('.js-open-calendar').on('click', function(ev) {
-        $(ev.target).parent().siblings('.js-datetimepicker').datetimepicker('show');
+        $('#event-end.js-datetimepicker').data('datetimepicker').setDate(date);
     });
 
     $('#create-group-button').data('successCallback', function(newGroup) {
@@ -51,11 +34,71 @@ $(function() {
         }
     })
 
-    $('#create-person-button').data('successCallback', function(newPerson) {
-        $('#id_event-speakers').trigger("addSpeaker", newPerson);
-    })
+    $('.js-create-person-control').each( function() {
+        //reveal the form panel on clicking the reveal link
+        $(this).find('.js-create-person').on('click', function(ev) {
+            ev.preventDefault();
+            var $control = $(ev.target).parent().parent();
+            $control.find('.js-person-panel').slideDown(animationTime);
+        })
+
+        //capture the click on 'Add' and update the relevant control
+        $(this).find('.js-submit-person').on('click', function(ev) {
+            var $control = $(ev.target).parent().parent();
+
+            var namefield = $control.find('#id_name');
+            var biofield = $control.find('#id_bio');
+            var csrftoken = $.cookie('csrftoken');
+            var $errorMessage = $control.find('.js-person-form-errors');
+            var target = $(this).attr('data-input-target');
+            var $target = $(target);
+            $.ajax({
+                    type: 'POST',
+                    url: '/api/persons/new',
+                    headers: {
+                        "X-CSRFToken": csrftoken,
+                    },
+                    data: {
+                        name: namefield.val(),
+                        bio: biofield.val()
+                    },
+
+                    success: function(response) {
+                        $target.trigger("addPerson", response);
+                        namefield.val("");
+                        biofield.val("");
+                        //clear error classes
+                        setErrorStateForInput($control, 'name', false);
+                        setErrorStateForInput($control, 'bio', false);
+                        //clear and hide error message
+                        $errorMessage.addClass("hidden");
+                    },
+                    error: function(response) {
+                        setErrorStateForInput($control, 'name', false);
+                        setErrorStateForInput($control, 'bio', false)
+                        for(key in response.responseJSON) {
+                            setErrorStateForInput($control, key, true)
+                        }
+                        $errorMessage.removeClass("hidden");
+                        $errorMessage.html("Missing required field");
+                    }
+                }
+            );
+        })
+    });
+
+    function setErrorStateForInput(control, id, on) {
+        var el = control.find("#id_"+id).parent().parent();
+        if(on) {
+            el.addClass("has-error");
+        }
+        else {
+            el.removeClass("has-error");
+        }
+    }
 
     function updateEventDepartment(location_id) {
+        if(!location_id) { return; }
         $.ajax({
                     type:'GET',
                     url: 'http://api.m.ox.ac.uk/places/' + location_id,
@@ -75,7 +118,7 @@ $(function() {
             //User has probably selected the 'Please select' option
             return;
         }
-        var url = '/api/eventgroups/id/' + groupID
+        var url = '/api/series/id/' + groupID
 
         //retrieve the ID of the event organiser and apply that to the department field of the form
         $.ajax({
