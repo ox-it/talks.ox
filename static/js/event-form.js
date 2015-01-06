@@ -115,6 +115,7 @@ $(function() {
     }
 
     function updateEventDepartment(location_id) {
+        if(!location_id) { return; }
         $.ajax({
                     type:'GET',
                     url: 'http://api.m.ox.ac.uk/places/' + location_id,
