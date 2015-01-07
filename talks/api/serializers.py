@@ -79,7 +79,7 @@ class CollectionItemRelatedField(serializers.RelatedField):
     A custom field to use for the `item` generic relationship.
     """
 
-    def to_native(self, value):
+    def to_representation(self, value):
         """
         Serialize event instances using a event serializer,
         """
