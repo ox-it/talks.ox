@@ -26,7 +26,7 @@ def publish_to_old_talks(sender, instance, created, **kwargs):
 
 
 @receiver(models.signals.post_delete, sender=Event)
-def delete_old_talks(sender, instance, created, **kwargs):
+def delete_old_talks(sender, instance, using, **kwargs):
     from .tasks import delete_old_talks
     delete_old_talks(instance)
 
@@ -63,6 +63,11 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
         data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in event.speakers.all()])))
+    # sets the ex_directory status all the time to be sure to be in sync
+    if event.is_published:
+        data.append(("talk[ex_directory]", "0"))
+    else:
+        data.append(("talk[ex_directory]", "1"))
     return data
 
 
@@ -73,7 +78,7 @@ def build_abstract(event):
         abstract += "\n"
     if event.topics.count() > 0:
         topics = event.api_topics
-        abstract += [topic['prefLabel'] for topic in topics]
+        abstract += "Topics: " + ", ".join([topic['prefLabel'] for topic in topics])
     return abstract
 
 
