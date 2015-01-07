@@ -2,16 +2,13 @@
 
 {% csrf_token %}
 
-{{ form.title|bootstrap_horizontal }}
-{{ form.description|bootstrap_horizontal }}
-{{ form.group_type|bootstrap_horizontal }}
-{% if is_editing %}
-    {{ form.organiser|bootstrap_horizontal }}
-{% endif %}
-{{ form.occurence|bootstrap_horizontal }}
-{{ form.web_address|bootstrap_horizontal }}
-{{ form.department_organiser|bootstrap_horizontal }}
-
-{% if not is_editing %}
-<p>More details can be added to the series when it is being edited.</p>
-{% endif %}
+{{ group_form.title|bootstrap_horizontal }}
+{{ group_form.description|bootstrap_horizontal }}
+{{ group_form.group_type|bootstrap_horizontal }}
+{{ group_form.organisers|bootstrap_horizontal }}
+{% with person_form=organiser_form role='organiser' prefix='' %}
+{% include 'events/person_quick_add.html' %}
+{% endwith %}
+{{ group_form.occurence|bootstrap_horizontal }}
+{{ group_form.web_address|bootstrap_horizontal }}
+{{ group_form.department_organiser|bootstrap_horizontal }}
