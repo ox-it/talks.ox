@@ -85,7 +85,7 @@ class CollectionItemRelatedField(serializers.RelatedField):
 
 
 class CollectionItemSerializer(serializers.ModelSerializer):
-    item = CollectionItemRelatedField()
+    item = CollectionItemRelatedField(read_only=True)
 
     class Meta:
         fields = ('id', 'item', 'collection')
