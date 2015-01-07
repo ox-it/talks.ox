@@ -43,7 +43,7 @@ class IsSuperuserOrContributor(permissions.BasePermission):
 @permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
 @api_view(["POST"])
 def api_create_person(request):
-    serializer = PersonSerializer(data=request.DATA)
+    serializer = PersonSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -79,8 +79,8 @@ def get_event_group(request, event_group_id):
 
 
 def item_from_request(request):
-    event_slug = request.DATA.get('event', None)
-    group_id = request.DATA.get('group', None)
+    event_slug = request.data.get('event', None)
+    group_id = request.data.get('group', None)
     # Our JS doesn't support sending both
     assert not(event_slug and group_id)
     try:
