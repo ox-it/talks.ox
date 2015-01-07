@@ -6,11 +6,14 @@ from talks.users.models import CollectionItem
 
 
 class ClassNameField(serializers.Field):
-    def field_to_native(self, obj, field_name):
-        """
-        Serialize the object's class name.
-        """
-        return obj.__class__.__name__
+    """
+    Pass the entire object in the get_attribute method, then render its representation by returning the class name
+    """
+    def get_attribute(self, obj):
+        return obj
+
+    def to_representation(self, value):
+        return value.__class__.__name__
 
 
 class EventSerializer(serializers.ModelSerializer):
