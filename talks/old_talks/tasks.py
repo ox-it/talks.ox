@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def update_old_talks(event):
-    if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
+    if _old_talks_configured():
         if event.group:
             old_series, new_group = OldSeries.objects.get_or_create(group=event.group)
             if new_group:
@@ -52,3 +52,29 @@ def update_old_talks(event):
                     raise Exception("Didn't got the location header so cannot say which talk this is")
         else:
             raise Exception(response.status_code)
+
+
+def delete_old_talks(event):
+    if _old_talks_configured():
+        try:
+            old_talk = OldTalk.objects.get(event=event)
+            url = "{server}/talk/delete/{id}".format(server=settings.OLD_TALKS_SERVER,
+                                                     id=old_talk.old_talk_id)
+
+            logger.debug("POSTing delete request to {url}".format(url=url))
+
+            response = requests.post(url, " ", auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
+                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+        except OldTalk.DoesNotExist:
+            logger.debug("Talk {slug} not ")
+
+
+def _old_talks_configured():
+    """Check if the configuration has all the expected settings for
+    :return:
+    """
+    if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
+        return True
+    else:
+        logger.info("Old talks tasks missing one or more of the following SETTINGS: OLD_TALKS_SERVER, OLD_TALKS_USER, OLD_TALKS_PASSWORD")
+        return False
