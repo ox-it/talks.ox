@@ -186,8 +186,6 @@ class EventGroupForm(forms.ModelForm):
 
         group.organisers.clear()
         for person in self.cleaned_data['organisers']:
-            print "Organiser:"
-            print person
             group.organisers.add(person)
 
         group.save()
