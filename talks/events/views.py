@@ -223,6 +223,7 @@ def show_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
     context = {
         'event_group': group,
+        'organisers': group.organisers.all(),
     }
     return render(request, 'events/event-group.html', context)
 
@@ -241,7 +242,8 @@ def edit_event_group(request, event_group_slug):
         else:
             messages.warning(request, "Please correct errors below")
     context = {
-        'form': form,
+        'group_form': form,
+        'organiser_form': PersonQuickAdd(),
         'event_group': group,
         'is_editing': True
     }
@@ -267,7 +269,8 @@ def create_event_group(request):
             messages.warning(request, "Please correct errors below")
 
     context = {
-        'form': form,
+        'group_form': form,
+        'organiser_form': PersonQuickAdd(),
         'modal_title': "Add a new series",
         'is_editing': False
     }
@@ -313,7 +316,7 @@ def create_person(request):
             status_code = 400
             messages.warning(request, "Please correct errors below")
     context = {
-        'form': form,
+        'person_form': form,
     }
 
     return render(request, 'events/person_form.html', context, status=status_code)
@@ -453,7 +456,7 @@ def edit_person(request, person_slug):
         else:
             messages.warning(request,"Please correct errors below")
     context = {
-        'form': form,
+        'person_form': form,
         'person': person,
     }
     return render(request, 'events/person_form.html', context)
