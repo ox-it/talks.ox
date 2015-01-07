@@ -1,5 +1,5 @@
 Talk Organisers
----------------
+===============
 
 .. toctree::
    :maxdepth: 2
