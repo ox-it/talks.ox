@@ -85,7 +85,7 @@ class EventGroup(models.Model):
         choices=EVENT_GROUP_TYPE_CHOICES,
         default=SEMINAR
     )
-    organiser = models.ForeignKey("Person", null=True, blank=True)
+    organisers = models.ManyToManyField("Person", null=True, blank=True)
     occurence = models.TextField(
         blank=True,
         default='',
