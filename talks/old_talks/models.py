@@ -25,6 +25,12 @@ def publish_to_old_talks(sender, instance, created, **kwargs):
     update_old_talks(instance)
 
 
+@receiver(models.signals.post_delete, sender=Event)
+def delete_old_talks(sender, instance, created, **kwargs):
+    from .tasks import delete_old_talks
+    delete_old_talks(instance)
+
+
 def get_list_id(string):
     """Get the list ID from the response (as a string)
     :param string: response content
