@@ -43,8 +43,9 @@
     <!-- List group -->
     <ul class="list-group">
         <li class="list-group-item"><strong>Type</strong>: {{ event_group.get_group_type_display }}</li>
-    {% if event_group.organiser %}
-        <li class="list-group-item"><strong>Talk organiser</strong>: {{ event_group.organiser.name }}</li>
+    {% if organisers %}
+        <li class="list-group-item"><strong>Talk organiser{{ organisers|pluralize }}</strong>:{% for organiser in organisers %}<a href="{% url 'show-person' organiser.slug %}"> {{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %} </a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}</li>
     {% endif %}
     {% if event_group.occurence %}
         <li class="list-group-item"><strong>Timing</strong>: {{ event_group.occurence }}</li>

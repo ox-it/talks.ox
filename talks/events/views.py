@@ -223,6 +223,7 @@ def show_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
     context = {
         'event_group': group,
+        'organisers': group.organisers.all(),
     }
     return render(request, 'events/event-group.html', context)
 

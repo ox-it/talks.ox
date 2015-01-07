@@ -172,16 +172,29 @@ class EventGroupForm(forms.ModelForm):
 
     department_organiser = OxPointField(datasources.DEPARTMENT_DATA_SOURCE, required=False, label="Organising department")
 
-    organiser = forms.ModelChoiceField(
+    organisers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
-        label="Organiser",
+        label="Organisers",
         help_text="Type a name and select from the list",
         required=False,
-        widget=typeahead.Typeahead(datasources.PERSONS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
+    def save(self):
+        group = super(EventGroupForm, self).save(commit=False)
+        group.save()
+
+        group.organisers.clear()
+        for person in self.cleaned_data['organisers']:
+            print "Organiser:"
+            print person
+            group.organisers.add(person)
+
+        group.save()
+        return group
+
     class Meta:
-        # fields = ('title', 'group_type', 'description', 'organiser', 'occurence', 'web_address')
+        # fields = ('title', 'group_type', 'description', 'organisers', 'occurence', 'web_address')
         exclude = ('slug',)
         model = models.EventGroup
         widgets = {

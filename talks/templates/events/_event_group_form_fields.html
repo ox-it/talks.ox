@@ -6,7 +6,7 @@
 {{ form.description|bootstrap_horizontal }}
 {{ form.group_type|bootstrap_horizontal }}
 {% if is_editing %}
-    {{ form.organiser|bootstrap_horizontal }}
+    {{ form.organisers|bootstrap_horizontal }}
     {% with form=organiser_form role='organiser' prefix='' %}
     {% include 'events/person_quick_add.html' %}
     {% endwith %}
