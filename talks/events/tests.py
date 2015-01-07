@@ -319,7 +319,7 @@ class TestEventGroupViews(AuthTestCase):
 
         response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
         saved_group = models.EventGroup.objects.get(slug=group.slug)
-        self.assertFormError(response, 'form', 'title', ['This field is required.'])
+        self.assertFormError(response, 'group_form', 'title', ['This field is required.'])
         self.assertEquals(saved_group.title, old_title)
         self.assertEquals(saved_group.description, old_description)
         self.assertTemplateUsed(response, "events/event_group_form.html")
@@ -351,7 +351,7 @@ class TestEventGroupViews(AuthTestCase):
         }
 
         response = self.client.post("/talks/series/new", data)
-        self.assertFormError(response, 'form', 'title', ['This field is required.'])
+        self.assertFormError(response, 'group_form', 'title', ['This field is required.'])
         self.assertQuerysetEqual(models.EventGroup.objects.all(), [])
         self.assertTemplateUsed(response, "events/event_group_form.html")
 
