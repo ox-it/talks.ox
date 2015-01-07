@@ -45,7 +45,7 @@ def event_to_old_talk(event, series_id):
     :param event: django model Event
     :return: list of tuples
     """
-    data = [("talk[organiser_email]", "apiuser")]   # TODO pending extension of data model will need to be updated
+    data = [("talk[organiser_email]", event.organiser_email)]
     if event.title:
         data.append(("talk[title]", event.title))
     else:
