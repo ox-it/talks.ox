@@ -78,6 +78,9 @@ def suggest_user(request):
 
 @api_view(["GET"])
 def get_event_group(request, event_group_id):
+    """
+    Used via ajax to retrieve group details when changing selection
+    """
     try:
         eg = EventGroup.objects.get(id=event_group_id)
     except ObjectDoesNotExist:
@@ -85,23 +88,6 @@ def get_event_group(request, event_group_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     serializer = EventGroupSerializer(eg)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-@api_view(["GET"])
-def get_speaker(request, person_slug_list):
-    """
-    Retrieve details on the supplied speakers, including events which they are speaker at
-    :param person_slug_list: a comma-separated list of person slugs
-    """
-    slugs = person_slug_list.split(",")
-    print slugs
-    try:
-        speakers = Person.objects.filter(slug__in=slugs)
-        print speakers
-    except ObjectDoesNotExist:
-        return Response({'error': "Item not found"},
-                        status=status.HTTP_404_NOT_FOUND)
-    serializer = SpeakerSerializer(speakers, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -113,12 +99,12 @@ def api_event_search(request):
         Query which can include the terms
             from=<dd/mm/yy>     -   events starting after this date
             to=<dd/mm/yy>       -   events starting before this date
-            speaker=<speaker_slug>  - events where the given speaker is speaking
-            venue=<oxpoints_id> - events taking place in the specified buildings (or their children)
+            speaker=<speaker_slug>  - event where the given speaker is speaking
+            venue=<oxpoints_id> - events taking place in the specified building (or their children)
             subvenues=<bool=False> - include children of the specified building when searching on venue
-            dept=<oxpoints_id> - events with any of organising_departments set as the specified oxpoints entity
+            dept=<oxpoints_id> - events with any of organising_department set as the specified oxpoints entity
             subdepts=<bool=False> - include children of the specified depts when searching on dept
-            topic=<topic_uri> - events featuring any of the listed topics as FAST URIs
+            topic=<topic_uri> - events featuring the specified listed topic as FAST URIs
     :return:
     """
     queries = []
@@ -139,29 +125,21 @@ def api_event_search(request):
         if to_date:
             queries.append(Q(start__lt=to_date))
 
-    speakers_param = request.GET.get("speakers")
-    if speakers_param:
-        speakers = speakers_param.split(',')
+    speakers = request.GET.getlist("speaker")
+    if speakers:
         queries.append(Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers))
 
-    venues_param = request.GET.get("venues")
-    if venues_param:
-        venues = venues_param.split(',')
+    venues = request.GET.getlist("venue")
+    if venues:
         queries.append(Q(location__in=venues))
 
-    depts_param = request.GET.get("depts")
-    if depts_param:
-        depts = depts_param.split(',')
+    depts = request.GET.getlist("dept")
+    if depts:
         queries.append(Q(department_organiser__in=depts))
 
-    topics_param = request.GET.get("topics")
-    if topics_param:
-        topics = topics_param.split(',')
-        # query = reduce(operator.or_, (Q(topics__contains=topic) for topic in topics))
-        # queries.append(query)
-        topic = topics[0]
+    topics = request.GET.getlist("topic")
+    if topics:
         queries.append(Q(topics__uri__in=topics))
-
 
     final_query = reduce(operator.and_, queries)
     events = Event.objects.filter(final_query)
