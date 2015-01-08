@@ -12,7 +12,7 @@ from talks.api.views import api_event_search
 from talks.events_search.forms import DateFacetedSearchForm
 from talks.events_search.views import SearchView
 from talks.events_search.conf import sqs
-from api.views import (EventViewSet, EventGroupViewSet, get_speaker, suggest_person, suggest_user, api_create_person,
+from api.views import (EventViewSet, EventGroupViewSet, suggest_person, suggest_user, api_create_person,
                        save_item, remove_item, get_event_group)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -33,7 +33,6 @@ urlpatterns = patterns('',
     url(r'^api/events/search$', api_event_search, name='api-search-events'),
     url(r'^api/user/suggest$', suggest_user, name='suggest-user'),
     url(r'^api/persons/new$', api_create_person, name='api-create-person'),
-    url(r'^api/speaker/(?P<person_slug_list>[^/]+)$', get_speaker, name='get-speaker'),
 
     url(r'^api/collections/me/add$', save_item, name="save-item"),
     url(r'^api/collections/me/remove$', remove_item, name="remove-item"),
