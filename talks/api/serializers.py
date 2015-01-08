@@ -19,12 +19,9 @@ class ClassNameField(serializers.Field):
 class EventSerializer(serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url',
                                 read_only=True)
-    formatted_date = serializers.CharField(source='formatted_date',
-                                           read_only=True)
-    formatted_time = serializers.CharField(source='formatted_time',
-                                           read_only=True)
-    happening_today = serializers.BooleanField(source='happening_today',
-                                               read_only=True)
+    formatted_date = serializers.CharField(read_only=True)
+    formatted_time = serializers.CharField(read_only=True)
+    happening_today = serializers.BooleanField(read_only=True)
     class_name = ClassNameField()
 
     class Meta:
