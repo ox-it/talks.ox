@@ -47,6 +47,17 @@ class EventSerializer(serializers.ModelSerializer):
                   'api_organisation', 'api_topics', 'class_name')
         
 
+class SpeakerSerializer(serializers.ModelSerializer):
+    """
+    Serialize a speaker and all the events that they are speaking at
+    """
+    speaker_events=EventSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Person
+        fields = ('name', 'bio', 'speaker_events')
+
+
 class EventGroupSerializer(serializers.ModelSerializer):
     class_name = ClassNameField()
     url = serializers.CharField(source='get_absolute_url',
@@ -60,6 +71,9 @@ class EventGroupSerializer(serializers.ModelSerializer):
 
 
 class EventGroupWithEventsSerializer(serializers.ModelSerializer):
+    """
+    Serialize an event group and include info on all constitutent events
+    """
     events = EventSerializer(many=True, read_only=True)
 
     class Meta:

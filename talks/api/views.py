@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
+from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
@@ -83,6 +83,22 @@ def get_event_group(request, event_group_id):
     serializer = EventGroupSerializer(eg)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(["GET"])
+def get_speaker(request, person_slug_list):
+    """
+    Retrieve details on the supplied speakers, including events which they are speaker at
+    :param person_slug_list: a comma-separated list of person slugs
+    """
+    slugs = person_slug_list.split(",")
+    print slugs
+    try:
+        speakers = Person.objects.filter(slug__in=slugs)
+        print speakers
+    except ObjectDoesNotExist:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+    serializer = SpeakerSerializer(speakers, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 def item_from_request(request):
     event_slug = request.data.get('event', None)

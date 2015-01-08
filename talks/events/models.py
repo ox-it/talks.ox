@@ -146,6 +146,11 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
 
+    @property
+    def speaker_events(self):
+        events = Event.published.filter(personevent__role=ROLES_SPEAKER,
+                                        personevent__person__slug=self.slug)
+        return events
 
 class TopicItem(models.Model):
 
