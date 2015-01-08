@@ -9,11 +9,12 @@ import operator
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
-from talks.events.models import Event, EventGroup, Person
+from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER, TopicItem
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
 from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
@@ -124,10 +125,12 @@ def api_event_search(request):
 
     from_date_param = request.GET.get("from")
     if from_date_param:
-        from_date = datetime.strptime(from_date_param, "%d/%m/%y")
+        if from_date_param == "today":
+            from_date = datetime.today
+        else:
+            from_date = datetime.strptime(from_date_param, "%d/%m/%y")
     else:
-        from_date = datetime.today
-    print from_date
+        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
     queries.append(Q(start__gt=from_date))
 
     to_date_param = request.GET.get("to")
@@ -136,16 +139,35 @@ def api_event_search(request):
         if to_date:
             queries.append(Q(start__lt=to_date))
 
-    # speakers = request.GET.get("speaker").split(',')
-    # venues = request.GET.get("venue").split(',')
-    # depts = request.GET.get("dept").split(',')
-    # topics = request.GET.get("topic").split(',')
+    speakers_param = request.GET.get("speakers")
+    if speakers_param:
+        speakers = speakers_param.split(',')
+        queries.append(Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers))
 
-    finalQuery = reduce(operator.and_, queries)
-    events = Event.objects.filter(finalQuery)
-    print events
+    venues_param = request.GET.get("venues")
+    if venues_param:
+        venues = venues_param.split(',')
+        queries.append(Q(location__in=venues))
+
+    depts_param = request.GET.get("depts")
+    if depts_param:
+        depts = depts_param.split(',')
+        queries.append(Q(department_organiser__in=depts))
+
+    topics_param = request.GET.get("topics")
+    if topics_param:
+        topics = topics_param.split(',')
+        # query = reduce(operator.or_, (Q(topics__contains=topic) for topic in topics))
+        # queries.append(query)
+        topic = topics[0]
+        queries.append(Q(topics__uri__in=topics))
+
+
+    final_query = reduce(operator.and_, queries)
+    events = Event.objects.filter(final_query)
     serializer = EventSerializer(events, many=True, read_only=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 def item_from_request(request):
     event_slug = request.data.get('event', None)
