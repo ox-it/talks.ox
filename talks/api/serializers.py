@@ -18,6 +18,7 @@ class PersonSerializer(serializers.ModelSerializer):
         model = Person
         fields = ('id', 'name', 'bio', 'title')
 
+
 class ClassNameField(serializers.Field):
     """
     Pass the entire object in the get_attribute method, then render its representation by returning the class name

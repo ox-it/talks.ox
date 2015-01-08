@@ -1,8 +1,10 @@
 import logging
+from datetime import datetime
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+import operator
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
@@ -72,6 +74,7 @@ def suggest_user(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
+
 @api_view(["GET"])
 def get_event_group(request, event_group_id):
     try:
@@ -98,6 +101,50 @@ def get_speaker(request, person_slug_list):
         return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)
     serializer = SpeakerSerializer(speakers, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def api_event_search(request):
+    """
+    Return a list of events based on the query term
+    :param query:
+        Query which can include the terms
+            from=<dd/mm/yy>     -   events starting after this date
+            to=<dd/mm/yy>       -   events starting before this date
+            speaker=<speaker_slug>  - events where the given speaker is speaking
+            venue=<oxpoints_id> - events taking place in the specified buildings (or their children)
+            subvenues=<bool=False> - include children of the specified building when searching on venue
+            dept=<oxpoints_id> - events with any of organising_departments set as the specified oxpoints entity
+            subdepts=<bool=False> - include children of the specified depts when searching on dept
+            topic=<topic_uri> - events featuring any of the listed topics as FAST URIs
+    :return:
+    """
+    queries = []
+
+    from_date_param = request.GET.get("from")
+    if from_date_param:
+        from_date = datetime.strptime(from_date_param, "%d/%m/%y")
+    else:
+        from_date = datetime.today
+    print from_date
+    queries.append(Q(start__gt=from_date))
+
+    to_date_param = request.GET.get("to")
+    if to_date_param:
+        to_date = datetime.strptime(to_date_param, "%d/%m/%y")
+        if to_date:
+            queries.append(Q(start__lt=to_date))
+
+    # speakers = request.GET.get("speaker").split(',')
+    # venues = request.GET.get("venue").split(',')
+    # depts = request.GET.get("dept").split(',')
+    # topics = request.GET.get("topic").split(',')
+
+    finalQuery = reduce(operator.and_, queries)
+    events = Event.objects.filter(finalQuery)
+    print events
+    serializer = EventSerializer(events, many=True, read_only=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 def item_from_request(request):

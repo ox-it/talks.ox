@@ -8,6 +8,7 @@ from events.views import (homepage, upcoming_events, show_person, create_person,
                           events_for_month, events_for_year, create_event, list_event_groups,
                           create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
                           contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic)
+from talks.api.views import api_event_search
 from talks.events_search.forms import DateFacetedSearchForm
 from talks.events_search.views import SearchView
 from talks.events_search.conf import sqs
@@ -29,7 +30,7 @@ urlpatterns = patterns('',
 
     url(r'^api/', include(router.urls)),
     url(r'^api/series/id/(?P<event_group_id>\d+)', get_event_group, name='get-event-group'),
-
+    url(r'^api/events/search$', api_event_search, name='api-search-events'),
     url(r'^api/user/suggest$', suggest_user, name='suggest-user'),
     url(r'^api/persons/new$', api_create_person, name='api-create-person'),
     url(r'^api/speaker/(?P<person_slug_list>[^/]+)$', get_speaker, name='get-speaker'),
