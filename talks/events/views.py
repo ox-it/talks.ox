@@ -17,6 +17,7 @@ from .forms import EventForm, EventGroupForm, PersonQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
 from talks.events.models import ROLES_SPEAKER
+from talks.events.signals import event_updated
 from talks.events.datasources import TOPICS_DATA_SOURCE
 
 logger = logging.getLogger(__name__)
@@ -127,6 +128,7 @@ def edit_event(request, event_slug):
     if request.method == 'POST':
         if form.is_valid():
             event = form.save()
+            event_updated.send(Event.__class__, instance=event)
             messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
@@ -161,6 +163,7 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
+            event_updated.send(Event.__class__, instance=event)
             messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
