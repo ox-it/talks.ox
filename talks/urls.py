@@ -11,7 +11,7 @@ from events.views import (homepage, upcoming_events, show_person, create_person,
 from talks.events_search.forms import DateFacetedSearchForm
 from talks.events_search.views import SearchView
 from talks.events_search.conf import sqs
-from api.views import (EventViewSet, suggest_person, suggest_user, api_create_person,
+from api.views import (EventViewSet, EventGroupViewSet, suggest_person, suggest_user, api_create_person,
                        save_item, remove_item, get_event_group)
 
 from audit_trail.urls import urlpatterns as audit_urls
@@ -20,7 +20,7 @@ from users.views import webauth_logout
 
 router = routers.DefaultRouter()
 router.register(r'events', EventViewSet)
-
+router.register(r'series', EventGroupViewSet)
 
 urlpatterns = patterns('',
     # WebAuth login/logout

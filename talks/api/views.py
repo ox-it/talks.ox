@@ -22,13 +22,19 @@ from talks.core.renderers import ICalRenderer
 logger = logging.getLogger(__name__)
 
 
-class EventViewSet(viewsets.ModelViewSet):
+class EventViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint for events
     """
     renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    lookup_field = 'slug'
 
+class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
+    renderer_classes = (ICalRenderer, JSONPRenderer, JSONPRenderer, XMLRenderer)
+    queryset = EventGroup.objects.all()
+    serializer_class = EventGroupSerializer
+    lookup_field = 'slug'
 
 class IsSuperuserOrContributor(permissions.BasePermission):
     """
