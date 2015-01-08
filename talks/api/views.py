@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer, EventGroupSerializer, UserSerializer,
+from talks.api.serializers import (EventSerializer, PersonSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
@@ -33,7 +33,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
 class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
     renderer_classes = (ICalRenderer, JSONPRenderer, JSONPRenderer, XMLRenderer)
     queryset = EventGroup.objects.all()
-    serializer_class = EventGroupSerializer
+    serializer_class = EventGroupWithEventsSerializer
     lookup_field = 'slug'
 
 class IsSuperuserOrContributor(permissions.BasePermission):
