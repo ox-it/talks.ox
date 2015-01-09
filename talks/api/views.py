@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -110,21 +110,15 @@ def api_event_search(request):
     """
     queries = []
 
-    from_date_param = request.GET.get("from")
-    if from_date_param:
-        if from_date_param == "today":
-            from_date = datetime.today
-        else:
-            from_date = datetime.strptime(from_date_param, "%d/%m/%y")
-    else:
+    from_date = parseDate(request.GET.get("from"))
+    if not from_date:
         raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
-    queries.append(Q(start__gt=from_date))
+    else:
+        queries.append(Q(start__gt=from_date))
 
-    to_date_param = request.GET.get("to")
-    if to_date_param:
-        to_date = datetime.strptime(to_date_param, "%d/%m/%y")
-        if to_date:
-            queries.append(Q(start__lt=to_date))
+    to_date = parseDate(request.GET.get("to"))
+    if to_date:
+        queries.append(Q(start__lt=to_date))
 
     speakers = request.GET.getlist("speaker")
     if speakers:
@@ -134,7 +128,7 @@ def api_event_search(request):
     if venues:
         queries.append(Q(location__in=venues))
 
-    depts = request.GET.getlist("dept")
+    depts = request.GET.getlist("organising_department")
     if depts:
         queries.append(Q(department_organiser__in=depts))
 
@@ -143,11 +137,24 @@ def api_event_search(request):
         queries.append(Q(topics__uri__in=topics))
 
     final_query = reduce(operator.and_, queries)
-    events = Event.objects.filter(final_query)
+    events = Event.published.filter(final_query)
     serializer = EventSerializer(events, many=True, read_only=True)
     jsonData = JSONRenderer().render(serializer.data)
     return HttpResponse(jsonData, status=status.HTTP_200_OK, content_type='application/json')
 
+
+def parseDate(date_param):
+    if not date_param:
+        return None
+    if date_param == "any":
+        from_date = datetime.min
+    elif date_param == "today":
+        from_date = datetime.today()
+    elif date_param == "tomorrow":
+        from_date = datetime.today() + timedelta(1)
+    else:
+        from_date = datetime.strptime(date_param, "%d/%m/%y")
+    return from_date
 
 def item_from_request(request):
     event_slug = request.data.get('event', None)
