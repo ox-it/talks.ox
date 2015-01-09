@@ -17,6 +17,15 @@ User Guide
 
     user/*
 
+********
+HTTP API
+********
+
+.. toctree::
+    :glob:
+
+    http_api/*
+    http_api/endpoints/*
 
 ******************
 Indices and tables
