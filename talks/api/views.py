@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 import operator
+from django.http.response import HttpResponse
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
@@ -144,7 +145,8 @@ def api_event_search(request):
     final_query = reduce(operator.and_, queries)
     events = Event.objects.filter(final_query)
     serializer = EventSerializer(events, many=True, read_only=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    jsonData = JSONRenderer().render(serializer.data)
+    return HttpResponse(jsonData, status=status.HTTP_200_OK, content_type='application/json')
 
 
 def item_from_request(request):
