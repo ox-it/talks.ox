@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -34,11 +34,13 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EventSerializer
     lookup_field = 'slug'
 
+
 class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
     renderer_classes = (ICalRenderer, JSONPRenderer, JSONPRenderer, XMLRenderer)
     queryset = EventGroup.objects.all()
     serializer_class = EventGroupWithEventsSerializer
     lookup_field = 'slug'
+
 
 class IsSuperuserOrContributor(permissions.BasePermission):
     """
@@ -47,8 +49,8 @@ class IsSuperuserOrContributor(permissions.BasePermission):
     def has_permission(self, request, view):
         return user_in_group_or_super(request.user)
 
-# These views are typically used by ajax
 
+# These views are typically used by ajax
 @authentication_classes((SessionAuthentication,))
 @permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
 @api_view(["POST"])
@@ -59,12 +61,14 @@ def api_create_person(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(["GET"])
 def suggest_person(request):
     query = request.GET.get('q', '')
     persons = Person.objects.suggestions(query)
     serializer = PersonSerializer(persons, many=True)
     return Response(serializer.data)
+
 
 @api_view(["GET"])
 @authentication_classes((SessionAuthentication,))
@@ -110,13 +114,13 @@ def api_event_search(request):
     """
     queries = []
 
-    from_date = parseDate(request.GET.get("from"))
+    from_date = parse_date(request.GET.get("from"))
     if not from_date:
         raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
     else:
         queries.append(Q(start__gt=from_date))
 
-    to_date = parseDate(request.GET.get("to"))
+    to_date = parse_date(request.GET.get("to"))
     if to_date:
         queries.append(Q(start__lt=to_date))
 
@@ -139,22 +143,36 @@ def api_event_search(request):
     final_query = reduce(operator.and_, queries)
     events = Event.published.filter(final_query)
     serializer = EventSerializer(events, many=True, read_only=True)
-    jsonData = JSONRenderer().render(serializer.data)
-    return HttpResponse(jsonData, status=status.HTTP_200_OK, content_type='application/json')
+    json_data = JSONRenderer().render(serializer.data)
+    return HttpResponse(json_data, status=status.HTTP_200_OK, content_type='application/json')
 
 
-def parseDate(date_param):
+def parse_date(date_param):
+    """
+    Parse the date string parameter
+    :param date_param:
+        Either a keyword:
+            'today', 'tomorrow'
+        or a string in the format 'dd/mm/yy'
+    :return:
+        datetime object
+    """
     if not date_param:
         return None
-    if date_param == "any":
-        from_date = datetime.min
     elif date_param == "today":
-        from_date = datetime.today()
+        from_date = datetime.today().date()
+        print from_date
     elif date_param == "tomorrow":
-        from_date = datetime.today() + timedelta(1)
+        from_date = datetime.today().date() + timedelta(1)
+        print from_date
     else:
-        from_date = datetime.strptime(date_param, "%d/%m/%y")
+        try:
+            from_date = datetime.strptime(date_param, "%d/%m/%y")
+        except Exception as e:
+            # catch the exception and raise an API exception instead, which the user will see
+            raise ParseError(e.message);
     return from_date
+
 
 def item_from_request(request):
     event_slug = request.data.get('event', None)
