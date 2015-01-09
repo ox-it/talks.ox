@@ -54,6 +54,9 @@ API_OX_PLACES_URL = 'https://api.m.ox.ac.uk/places/'
 API_OX_DATES_URL = 'https://api.m.ox.ac.uk/dates/'
 TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
+# Allow cross-origin http GET requests
+CORS_ORIGIN_ALLOW_ALL = True
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -69,6 +72,7 @@ INSTALLED_APPS = (
     'haystack',
     'raven.contrib.django.raven_compat',
     'reversion',
+    'corsheaders',
 
     # WebAuth
     'django_webauth',
@@ -93,6 +97,9 @@ MIDDLEWARE_CLASSES = (
 
     # Oxford Talks
     'talks.users.middleware.TalksUserMiddleware',
+
+    # CorsHeaders
+    'corsheaders.middleware.CorsMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
