@@ -20,6 +20,10 @@ class OldSeries(models.Model):
     old_series_id = models.CharField(max_length=20, null=False, blank=False)
 
 
+@receiver(event_updated, sender=Event)
+def publish_to_old_talks(sender, instance, *args, **kwargs):
+    from talks.old_talks.tasks import update_old_talks
+    update_old_talks(instance)
 
 
 @receiver(models.signals.post_delete, sender=Event)

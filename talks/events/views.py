@@ -128,7 +128,7 @@ def edit_event(request, event_slug):
     if request.method == 'POST':
         if form.is_valid():
             event = form.save()
-            event_updated.send(Event.__class__, instance=event)
+            event_updated.send(event.__class__, instance=event)
             messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
@@ -163,7 +163,7 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            event_updated.send(Event.__class__, instance=event)
+            event_updated.send(event.__class__, instance=event)
             messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
