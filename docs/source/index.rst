@@ -3,21 +3,33 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to talks.ox's documentation!
-====================================
+############
+Oxford Talks
+############
 
-User documentation
-==================
+
+**********
+User Guide
+**********
 
 .. toctree::
     :glob:
 
     user/*
 
+********
+HTTP API
+********
 
+.. toctree::
+    :glob:
 
+    http_api/*
+    http_api/endpoints/*
+
+******************
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`

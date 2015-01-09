@@ -192,7 +192,6 @@ class EventGroupForm(forms.ModelForm):
         return group
 
     class Meta:
-        # fields = ('title', 'group_type', 'description', 'organisers', 'occurence', 'web_address')
         exclude = ('slug',)
         model = models.EventGroup
         widgets = {

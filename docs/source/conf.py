@@ -30,6 +30,7 @@ import os
 # ones.
 extensions = [
     'sphinx.ext.todo',
+    'sphinxcontrib.httpdomain'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -46,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'talks.ox'
-copyright = u'2014, Mobile Oxford Team, Software Solutions, IT Services, University of Oxford'
+copyright = u'2015, Mobile Oxford Team, Software Solutions, IT Services, University of Oxford'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
