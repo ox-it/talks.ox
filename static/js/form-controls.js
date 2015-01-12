@@ -20,7 +20,7 @@ $(function() {
         e.preventDefault();
         var input = $(this).parents('.list-group-item').prev('input')
         var removed_data_id = input.val();
-        var mainInput = input.siblings(".tt-input");
+        var mainInput = input.siblings('.twitter-typeahead').find(".tt-input");
         input.remove();
         $(this).parents('.list-group-item').remove();
 
@@ -29,9 +29,15 @@ $(function() {
         var index = currentValues.indexOf(removed_data_id);
         currentValues.splice(index, 1);
     }
+
     function showSelectedValue(mainInput, input, suggestion) {
+        // Make required changes to the document around mainInput to show the value held in input or given by 'suggestion'
+        // mainInput - jQuery element for the main visible and typeable input textfield
+        // input - jQuery element for the invisible value-holding input field
+        // suggestion - suggestion value picked
         var valueKey = $(mainInput).data('valueKey');
         var labelKey = $(mainInput).data('labelKey');
+        //use the supplied value, else retrieve from document data, else fetch from bloodhound storage
         suggestion = suggestion || $(input).data('suggestion') || getSuggestionById(mainInput, $(input).prop('value'), valueKey);
         var t = _.template('<div data-id="<%= ' + valueKey + ' %>" class="list-group-item list-group-item-info fade in"><a href="#"><span class="glyphicon glyphicon-remove"></span></a><%= ' + labelKey + ' %></div>');
         var item = $(t(suggestion)).insertAfter(input);
@@ -86,8 +92,10 @@ $(function() {
     }
 
     function makeInput(sourceInput, name, value) {
+        //creates a hidden input field to hold the specified value.
+        // This must mirror the location of the hidden inputs created by the bootstrap loader
         return $('<input>').
-            insertBefore(sourceInput).
+            insertBefore($(sourceInput).parent('span')).
             attr('type', 'hidden').
             attr('name', name).
             attr('value', value);
