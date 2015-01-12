@@ -32,13 +32,19 @@ Scenario: change location
     page should contain text "Banbury"
     click on ${remove item('event-location')}
     page should not contain text "Banbury"
-    click on ${button done}
-    page should not contain text "Banbury"
     type "Banbury" into ${field('Venue')}
     ${suggestion popup} should appear
     ${suggestion popup} should contain text "7-19 Banbury Road"
     click on ${suggestion popup item('Banbury Road')}
     ${list group item("7-19 Banbury Road")} should be displayed
+
+Scenario: remove location
+    go to ${edit_talk_page('${event2_slug}')}
+    page should contain text "Banbury"
+    click on ${remove item('event-location')}
+    page should not contain text "Banbury"
+    click on ${button done}
+    page should not contain text "Banbury"
 
 Scenario: remove speaker
     go to ${edit_talk_page('${event1_slug}')}
