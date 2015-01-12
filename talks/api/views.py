@@ -100,17 +100,6 @@ def get_event_group(request, event_group_id):
 def api_event_search(request):
     """
     Return a list of events based on the query term
-    :param query:
-        Query which can include the terms
-            from=<dd/mm/yy>     -   events starting after this date
-            to=<dd/mm/yy>       -   events starting before this date
-            speaker=<speaker_slug>  - event where the given speaker is speaking
-            venue=<oxpoints_id> - events taking place in the specified building (or their children)
-            subvenues=<bool=False> - include children of the specified building when searching on venue
-            dept=<oxpoints_id> - events with any of organising_department set as the specified oxpoints entity
-            subdepts=<bool=False> - include children of the specified depts when searching on dept
-            topic=<topic_uri> - events featuring the specified listed topic as FAST URIs
-    :return:
     """
     queries = []
 

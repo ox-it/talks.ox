@@ -4,7 +4,7 @@ Events search endpoint
 
 Endpoint to search and retrieve information about events.
 
-All the responses are conform to the `HAL specification <http://stateless.co/hal_specification.html>`_.
+All the responses conform to the `HAL specification <http://stateless.co/hal_specification.html>`_.
 
 .. http:get:: /events/search
 
@@ -162,13 +162,28 @@ All the responses are conform to the `HAL specification <http://stateless.co/hal
           "size": 11
         }
 
-    :query from: date to start filtering on (mandatory)
+    :query from: Date to start filtering on (mandatory). Format should be dd/mm/yy OR 'today' or 'tomorrow'
     :type from: string
-    :query to: date to end filterign
+    :query to: Optional date to end filtering. Format should be dd/mm/yy OR 'today' or 'tomorrow'
     :type to: string
-    :query topic: topic URI (can be repeated multiple times)
+    :query subvenues: If true, include all sub-locations of the specified venue within the search
+    :type subvenues: boolean
+    :query subdepartments: If true, include all sub-organisations of the specified department within the search
+    :type subdepartments: boolean
+
+    The below parameters can each be repeated multiple times
+
+    :query topic: Topic URI
     :type topic: string
+    :query venue: Search for talks taking place at the location specified by the oxpoints ID
+    :type venue: string
+    :query organising_department: Search for talks whose organising department is the organisation specified by this oxpoints ID
+    :type organising_department: string
+    :query speaker: Search for talks at which the specified person is a speaker. Supply the unique slug for the person e.g. 'james-bond'
+    :type speaker: string
+
+    The response can be either in XML or JSON dependent on the 'accept' header in the request.
 
     :statuscode 200: query found
-    :statuscode 400: Bad request (could happen if some parameters are missing such as `from`)
+    :statuscode 400: Bad request (could happen if some parameters are missing or incorrectly formed such as `from`)
     :statuscode 503: Service not available
