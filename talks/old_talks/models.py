@@ -85,7 +85,7 @@ def build_abstract(event):
         abstract += "\n"
     if event.topics.count() > 0:
         topics = event.api_topics
-        abstract += "Topics: " + ", ".join([topic['prefLabel'] for topic in topics])
+        abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
     return abstract
 
 
