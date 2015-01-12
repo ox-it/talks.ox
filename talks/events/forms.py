@@ -105,7 +105,8 @@ class EventForm(forms.ModelForm):
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
             'location_details': forms.TextInput,
-            'status': forms.RadioSelect
+            'status': forms.RadioSelect,
+            'special_message': forms.Textarea(attrs={'rows': 2})
         }
         help_texts = {
             'organiser_email': 'Option email address via which the organiser can be contacted',
