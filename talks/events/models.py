@@ -275,7 +275,7 @@ class Event(models.Model):
     def api_topics(self):
         from talks.events import datasources
         uris = [item.uri for item in self.topics.all()]
-        logging.debug("uris:%s", uris)
+        logger.debug("uris:%s", uris)
         try:
             return datasources.TOPICS_DATA_SOURCE.get_object_list(uris)
         except requests.HTTPError:
