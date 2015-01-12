@@ -4,6 +4,20 @@ from rest_framework import serializers
 from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem
 
+class PersonSerializer(serializers.ModelSerializer):
+
+    title = serializers.SerializerMethodField(method_name='formatted_title')
+
+    def formatted_title(self, obj):
+        if obj.bio:
+            return obj.name + ', ' + obj.bio
+        else:
+            return obj.name
+
+    class Meta:
+        model = Person
+        fields = ('id', 'name', 'bio', 'title')
+
 
 class ClassNameField(serializers.Field):
     """
@@ -22,38 +36,51 @@ class EventSerializer(serializers.ModelSerializer):
     formatted_date = serializers.CharField(read_only=True)
     formatted_time = serializers.CharField(read_only=True)
     happening_today = serializers.BooleanField(read_only=True)
+    speakers = PersonSerializer(many=True, read_only=True)
+    organisers = PersonSerializer(many=True, read_only=True)
+    hosts = PersonSerializer(many=True, read_only=True)
     class_name = ClassNameField()
 
     class Meta:
         model = Event
         fields = ('slug', 'url', 'title', 'start', 'end', 'description',
-                  'formatted_date', 'formatted_time', 'happening_today',
-                  'class_name')
+                  'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
+                  'api_organisation', 'api_topics', 'class_name')
+        
+
+class SpeakerSerializer(serializers.ModelSerializer):
+    """
+    Serialize a speaker and all the events that they are speaking at
+    """
+    speaker_events=EventSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Person
+        fields = ('name', 'bio', 'speaker_events')
 
 
 class EventGroupSerializer(serializers.ModelSerializer):
     class_name = ClassNameField()
     url = serializers.CharField(source='get_absolute_url',
                                 read_only=True)
+    organisers = PersonSerializer(many=True, read_only=True)
 
     class Meta:
+
         model = EventGroup
-        fields = ('id', 'slug', 'url', 'title', 'description', 'class_name', 'department_organiser')
+        fields = ('id', 'slug', 'url', 'title', 'description', 'class_name', 'organisers', 'department_organiser')
 
 
-class PersonSerializer(serializers.ModelSerializer):
-
-    title = serializers.SerializerMethodField(method_name='formatted_title')
-
-    def formatted_title(self, obj):
-        if obj.bio:
-            return obj.name + ', ' + obj.bio
-        else:
-            return obj.name
+class EventGroupWithEventsSerializer(serializers.ModelSerializer):
+    """
+    Serialize an event group and include info on all constitutent events
+    """
+    events = EventSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Person
-        fields = ('id', 'name', 'bio', 'title')
+        fields = ('id', 'title', 'description', 'department_organiser', 'events')
+        model = EventGroup
+
 
 
 class UserSerializer(serializers.ModelSerializer):
