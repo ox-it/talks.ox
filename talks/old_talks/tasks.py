@@ -61,15 +61,13 @@ def update_old_series(group, force_update):
                 old_series.save()
             else:
                 raise Exception(response.status_code)
-        else:
+        elif force_update:
             group_xml = group_to_old_series(group)
             group_url = "{server}/list/update/{id}".format(server=settings.OLD_TALKS_SERVER, id=old_series.old_series_id)
             response = requests.post(group_url, group_xml, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
                                      allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
-            if response.status_code == 200:
-                old_series.old_series_id = get_list_id(response.content)
-                old_series.save()
-            else:
+            if not response.status_code == 200:
+                # response is a redirection to an edit page so ignore the content...
                 raise Exception(response.status_code)
         return old_series
     return None
