@@ -143,8 +143,7 @@ def api_event_search(request):
     final_query = reduce(operator.and_, queries)
     events = Event.published.filter(final_query)
     serializer = EventSerializer(events, many=True, read_only=True)
-    json_data = JSONRenderer().render(serializer.data)
-    return HttpResponse(json_data, status=status.HTTP_200_OK, content_type='application/json')
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def parse_date(date_param):
