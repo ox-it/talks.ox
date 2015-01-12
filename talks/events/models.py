@@ -56,6 +56,7 @@ EVENT_STATUS_CHOICES = (
 
 
 class EventGroupManager(models.Manager):
+
     def for_events(self, events):
         """Given a QuerySet of `Event`s return all the `EventGroup` related to
         that QuerySet. This function will evaluate the QuerySet `events`.
@@ -151,6 +152,7 @@ class Person(models.Model):
         events = Event.published.filter(personevent__role=ROLES_SPEAKER,
                                         personevent__person__slug=self.slug)
         return events
+
 
 class TopicItem(models.Model):
 
