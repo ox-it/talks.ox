@@ -32,6 +32,17 @@ Scenario: change location
     page should contain text "Banbury"
     click on ${remove item('event-location')}
     page should not contain text "Banbury"
+    type "Banbury" into ${field('Venue')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "7-19 Banbury Road"
+    click on ${suggestion popup item('Banbury Road')}
+    ${list group item("7-19 Banbury Road")} should be displayed
+
+Scenario: remove location
+    go to ${edit_talk_page('${event2_slug}')}
+    page should contain text "Banbury"
+    click on ${remove item('event-location')}
+    page should not contain text "Banbury"
     click on ${button done}
     page should not contain text "Banbury"
 
@@ -57,7 +68,7 @@ Scenario: remove host and organiser
     page should not contain text "Luke Skywalker"
     page should not contain text "Darth Vader"
 
-Scenario: remove topic
+Scenario: change topic
     go to ${edit_talk_page('${event1_slug}')}
     page should appear text "Biodiversity"
     page should appear text "Aquatic biodiversity"
@@ -66,7 +77,13 @@ Scenario: remove topic
     click on ${remove item('event-topics')}
     page should not contain text "Biodiversity"
     page should not contain text "Aquatic biodiversity"
+    type "Animal diver" into ${field('Topics')}
+    ${suggestion popup} should appear
+    ${suggestion popup} should contain text "Animal diversity"
+    click on ${suggestion popup item('Animal diversity')}
+    ${list group item("Animal diversity")} should be displayed
     click on ${button done}
     Location should be  ${show_talk_page('${event1_slug}').url}
     page should not contain text "Biodiversity"
     page should not contain text "Aquatic biodiversity"
+    page should contain text "Animal diversity"
