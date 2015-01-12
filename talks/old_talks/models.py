@@ -29,7 +29,7 @@ def publish_to_old_talks(sender, instance, *args, **kwargs):
 @receiver(eventgroup_updated, sender=EventGroup)
 def update_series_old_talks(sender, instance, *args, **kwargs):
     from talks.old_talks.tasks import update_old_series
-    update_old_series(instance)
+    update_old_series(instance, True)
 
 
 @receiver(models.signals.post_delete, sender=Event)
