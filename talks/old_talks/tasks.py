@@ -12,18 +12,7 @@ logger = logging.getLogger(__name__)
 def update_old_talks(event):
     if _old_talks_configured():
         if event.group:
-            old_series, new_group = OldSeries.objects.get_or_create(group=event.group)
-            if new_group:
-                group = group_to_old_series(event.group)
-
-                group_url = "{server}/list/api_create".format(server=settings.OLD_TALKS_SERVER)
-                response = requests.post(group_url, group, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                         allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
-                if response.status_code == 200:
-                    old_series.old_series_id = get_list_id(response.content)
-                    old_series.save()
-                else:
-                    raise Exception(response.status_code)
+            old_series = update_old_series(event.group, False)
             data = event_to_old_talk(event, old_series.old_series_id)
         else:
             data = event_to_old_talk(event, None)
@@ -52,6 +41,38 @@ def update_old_talks(event):
                     raise Exception("Didn't got the location header so cannot say which talk this is")
         else:
             raise Exception(response.status_code)
+
+
+def update_old_series(group, force_update):
+    """Update a list/series in the old system
+    :param group: EventGroup instance
+    :param force_update: force the update even if the object is not new
+    :return: OldSeries instance
+    """
+    if _old_talks_configured() and group:
+        old_series, new_group = OldSeries.objects.get_or_create(group=group)
+        if new_group:
+            group_xml = group_to_old_series(group)
+            group_url = "{server}/list/api_create".format(server=settings.OLD_TALKS_SERVER)
+            response = requests.post(group_url, group_xml, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
+                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+            if response.status_code == 200:
+                old_series.old_series_id = get_list_id(response.content)
+                old_series.save()
+            else:
+                raise Exception(response.status_code)
+        else:
+            group_xml = group_to_old_series(group)
+            group_url = "{server}/list/update/{id}".format(server=settings.OLD_TALKS_SERVER, id=old_series.old_series_id)
+            response = requests.post(group_url, group_xml, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
+                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+            if response.status_code == 200:
+                old_series.old_series_id = get_list_id(response.content)
+                old_series.save()
+            else:
+                raise Exception(response.status_code)
+        return old_series
+    return None
 
 
 def delete_old_talks(event):

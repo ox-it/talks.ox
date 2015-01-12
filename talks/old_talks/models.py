@@ -5,7 +5,7 @@ from django.db import models
 from django.dispatch.dispatcher import receiver
 
 from talks.events.models import Event, EventGroup
-from talks.events.signals import event_updated
+from talks.events.signals import event_updated, eventgroup_updated
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +24,12 @@ class OldSeries(models.Model):
 def publish_to_old_talks(sender, instance, *args, **kwargs):
     from talks.old_talks.tasks import update_old_talks
     update_old_talks(instance)
+
+
+@receiver(eventgroup_updated, sender=EventGroup)
+def update_series_old_talks(sender, instance, *args, **kwargs):
+    from talks.old_talks.tasks import update_old_series
+    update_old_series(instance)
 
 
 @receiver(models.signals.post_delete, sender=Event)
