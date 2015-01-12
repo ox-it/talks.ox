@@ -178,7 +178,7 @@ class PublishedEventManager(models.Manager):
     or in preparation.
     """
 
-    def get_query_set(self):
+    def get_queryset(self):
         return super(PublishedEventManager, self).get_query_set().filter(embargo=False,
                                                                          status=EVENT_PUBLISHED)
 
