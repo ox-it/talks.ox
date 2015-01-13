@@ -148,7 +148,7 @@ class EventForm(forms.ModelForm):
 
     def clean(self):
         if not self.cleaned_data['title'] and not self.cleaned_data['title_not_announced']:
-            raise forms.ValidationError("Either provide title or mark it as not announced")
+            raise forms.ValidationError("Either provide the Title or mark it as TBA")
         return self.cleaned_data
 
     def _update_people(self, field, event, role):

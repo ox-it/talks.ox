@@ -17,6 +17,7 @@ from .forms import EventForm, EventGroupForm, PersonQuickAdd
 from talks.api import serializers
 from talks.events.forms import PersonForm
 from talks.events.models import ROLES_SPEAKER
+from talks.events.signals import event_updated, eventgroup_updated
 from talks.events.datasources import TOPICS_DATA_SOURCE
 
 logger = logging.getLogger(__name__)
@@ -127,6 +128,7 @@ def edit_event(request, event_slug):
     if request.method == 'POST':
         if form.is_valid():
             event = form.save()
+            event_updated.send(event.__class__, instance=event)
             messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
@@ -161,6 +163,7 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
+            event_updated.send(event.__class__, instance=event)
             messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
@@ -237,6 +240,7 @@ def edit_event_group(request, event_group_slug):
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
+            eventgroup_updated.send(event_group.__class__, instance=event_group)
             messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
         else:
@@ -259,6 +263,7 @@ def create_event_group(request):
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
+            eventgroup_updated.send(event_group.__class__, instance=event_group)
             if is_modal:
                 response = json.dumps(serializers.EventGroupSerializer(event_group).data)
                 return HttpResponse(response, status=201, content_type='application/json')
@@ -363,6 +368,7 @@ def contributors_events(request):
             args['missing'] = 'speaker'
             events = events.exclude(personevent__role=ROLES_SPEAKER)
 
+    events = events.order_by('start')
     paginator = Paginator(events, count)
 
     try:
@@ -383,7 +389,7 @@ def contributors_events(request):
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def contributors_eventgroups(request):
-    eventgroups = EventGroup.objects.all()
+    eventgroups = EventGroup.objects.all().order_by('title')
     count = request.GET.get('count',20)
     page = request.GET.get('page', 1)
 
@@ -407,6 +413,8 @@ def contributors_persons(request):
     persons = Person.objects.all()
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
+
+    persons = sorted(persons, key=lambda person: person.surname)
 
     paginator = Paginator(persons, count)
 

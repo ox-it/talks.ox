@@ -148,6 +148,11 @@ class Person(models.Model):
         return reverse('show-person', args=[self.slug])
 
     @property
+    def surname(self):
+        # Attempt to extract the surname as the last word of the name. This will be used for sorting on
+        return self.name.split(' ')[-1]
+
+    @property
     def speaker_events(self):
         events = Event.published.filter(personevent__role=ROLES_SPEAKER,
                                         personevent__person__slug=self.slug)

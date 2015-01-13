@@ -61,7 +61,7 @@ Scenario: Title not announced
     ${error message[0]} should be displayed
     ${error message[1]} should be displayed
     ${error message[0]} should contain text "Please correct errors below"
-    ${error message[1]} should contain text "Either provide title or mark it as not announced"
+    ${error message[1]} should contain text "Either provide the Title or mark it as TBA"
 
 Scenario: Create new group on the go
     go to ${add_talk_page}
