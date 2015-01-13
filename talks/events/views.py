@@ -365,6 +365,7 @@ def contributors_events(request):
             args['missing'] = 'location'
             events = events.filter(location='')
 
+    events = events.order_by('start')
     paginator = Paginator(events, count)
 
     try:
@@ -385,7 +386,7 @@ def contributors_events(request):
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def contributors_eventgroups(request):
-    eventgroups = EventGroup.objects.all()
+    eventgroups = EventGroup.objects.all().order_by('title')
     count = request.GET.get('count',20)
     page = request.GET.get('page', 1)
 
@@ -406,7 +407,7 @@ def contributors_eventgroups(request):
 @login_required()
 @permission_required('events.change_person', raise_exception=PermissionDenied)
 def contributors_persons(request):
-    persons = Person.objects.all()
+    persons = Person.objects.all().order_by('name')
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
 
