@@ -109,9 +109,9 @@ class EventForm(forms.ModelForm):
             'special_message': forms.Textarea(attrs={'rows': 2})
         }
         help_texts = {
-            'organiser_email': 'Option email address via which the organiser can be contacted',
-            'booking_url': 'Provide a url for a website where users can book a place e.g. "http://www.ox.ac.uk"',
-            'booking_email': 'Alternatively, provide an Email address users should contact to book a place',
+            'organiser_email': 'Email address for more details',
+            'booking_url': 'Provide a website address for booking e.g. "http://www.ox.ac.uk"',
+            'booking_email': 'Alternatively, provide an email address for booking',
         }
 
     def save(self):

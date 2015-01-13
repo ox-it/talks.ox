@@ -220,7 +220,7 @@ class Event(models.Model):
                                         verbose_name='Venue details',
                                         help_text='e.g.: room number or accessibility information')
     department_organiser = models.TextField(default='', blank=True)
-    organiser_email = models.EmailField(blank=True, default='', verbose_name='Organiser contact email')
+    organiser_email = models.EmailField(blank=True, default='', verbose_name='Contact email')
     topics = GenericRelation(TopicItem)
 
     objects = models.Manager()
