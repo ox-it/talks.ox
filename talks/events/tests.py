@@ -364,7 +364,7 @@ class TestCreateEventView(AuthTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'events/event_form.html')
         self.assertContains(response, "Oxford Talks")
-        self.assertContains(response, "Add Talk")
+        self.assertContains(response, "New Talk")
         self.assertIn('event_form', response.context)
 
     def test_get_nonexistent_group(self):
