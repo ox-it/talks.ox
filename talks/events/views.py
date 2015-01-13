@@ -407,9 +407,11 @@ def contributors_eventgroups(request):
 @login_required()
 @permission_required('events.change_person', raise_exception=PermissionDenied)
 def contributors_persons(request):
-    persons = Person.objects.all().order_by('name')
+    persons = Person.objects.all()
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
+
+    persons = sorted(persons, key=lambda person: person.surname)
 
     paginator = Paginator(persons, count)
 
