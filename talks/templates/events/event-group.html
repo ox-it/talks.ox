@@ -57,11 +57,13 @@
         <li class="list-group-item"><strong>Organising department</strong>: {{ event_group.api_organisation.name }}</li>
     {% endif %}
         {% for event in event_group.events.all %}
-        <li class="list-group-item"><a href="{{ event.get_absolute_url }}">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</a> ({{ event.formatted_date }})
-        <br>
-        <strong>Speaker{{ event.speakers|pluralize }}</strong>: {% for speaker in event.speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
-        {% empty %} TBA
-        {% endfor %}
+        <li class="list-group-item">
+                {% if perms.events.edit_event %}<a class="btn btn-default navbar-btn" style="float:right" href="{% url 'edit-event' event.slug %}">Edit</a>{% endif %}
+                <strong>{{ event.formatted_date }}</strong>{% if perms.events.edit_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>
+                <a href="{{ event.get_absolute_url }}">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</a><br>
+                <strong>Speaker{{ event.speakers|pluralize }}</strong>: {% for speaker in event.speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+                {% empty %} TBA
+                {% endfor %}
         </li>
         {% endfor %}
     </ul>
