@@ -123,7 +123,7 @@ class TestEventForm(TestCase):
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
         self.assertIn('__all__', form.errors)
-        self.assertIn("Either provide title or mark it as not announced", form.errors['__all__'])
+        self.assertIn("Either provide the Title or mark it as TBA", form.errors['__all__'])
         self.assertNotIn('title', form.errors)
         self.assertNotIn('title_not_announced', form.errors)
 
@@ -135,7 +135,7 @@ class TestEventForm(TestCase):
         form = forms.EventForm(data)
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn("Either provide the Title or mark it as TBA", form.errors.get('__all__', []))
         self.assertNotIn('title', form.errors)
         self.assertNotIn('title_not_announced', form.errors)
 
@@ -147,7 +147,7 @@ class TestEventForm(TestCase):
         form = forms.EventForm(data)
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn("Either provide the Title or mark it as TBA", form.errors.get('__all__', []))
         self.assertNotIn('title', form.errors)
         self.assertNotIn('title_not_announced', form.errors)
 
@@ -159,7 +159,7 @@ class TestEventForm(TestCase):
         form = forms.EventForm(data)
         errors = form.errors.as_data()
         logging.info("form errors: %s", errors)
-        self.assertNotIn("Either provide title or mark it as not announced", form.errors.get('__all__', []))
+        self.assertNotIn("Either provide the Title or mark it as TBA", form.errors.get('__all__', []))
         self.assertNotIn('title', form.errors)
         self.assertNotIn('title_not_announced', form.errors)
 
