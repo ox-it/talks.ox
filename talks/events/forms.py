@@ -86,8 +86,8 @@ class EventForm(forms.ModelForm):
 
     editor_set = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
-        label="Other event organisers who can edit this event",
-        help_text="Type an event organiser's email address",
+        label="Other Editors",
+        help_text="Share editing with another Talks Editor by typing in their email address",
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
