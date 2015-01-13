@@ -93,7 +93,7 @@ def _old_talks_configured():
     :return:
     """
     if hasattr(settings, "OLD_TALKS_SERVER") and hasattr(settings, "OLD_TALKS_USER") and hasattr(settings, "OLD_TALKS_PASSWORD"):
-        return True
-    else:
-        logger.info("Old talks tasks missing one or more of the following SETTINGS: OLD_TALKS_SERVER, OLD_TALKS_USER, OLD_TALKS_PASSWORD")
-        return False
+        if settings.OLD_TALKS_SERVER and settings.OLD_TALKS_USER and settings.OLD_TALKS_PASSWORD:
+            return True
+    logger.info("Old talks tasks missing one or more of the following SETTINGS: OLD_TALKS_SERVER, OLD_TALKS_USER, OLD_TALKS_PASSWORD")
+    return False
