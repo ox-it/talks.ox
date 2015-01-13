@@ -58,7 +58,8 @@
 
         <li class="nav-header"><i class="icon-star"></i>Missing Information</li>
         <li><a href="{% facet_single_param missing='title' %}" class="{% facet_selected missing='title' %}">Untitled Talks <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
-        <li><a href="{% facet_single_param missing='location' %}" class="{% facet_selected missing='location' %}">Talks with no Venue <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_single_param missing='location' %}" class="{% facet_selected missing='location' %}">Venue <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_single_param missing='speaker' %}" class="{% facet_selected missing='speaker' %}">Speaker <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
         <li><a href="{% facet_remove_all 'missing' %}" class="{% facet_has_selection param='missing' %}"><span class="glyphicon glyphicon-remove"></span>Remove Filter</a></li>
 
         <li class="nav-header"><i class="icon-time"></i>Date</li>

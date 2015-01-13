@@ -359,6 +359,9 @@ def contributors_events(request):
         elif events_missing == 'location':
             args['missing'] = 'location'
             events = events.filter(location='')
+        elif events_missing == 'speaker':
+            args['missing'] = 'speaker'
+            events = events.exclude(personevent__role=ROLES_SPEAKER)
 
     paginator = Paginator(events, count)
 
