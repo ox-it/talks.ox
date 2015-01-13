@@ -81,6 +81,7 @@ INSTALLED_APPS = (
     'talks.users',
     'talks.events',
     'talks.api_ox',
+    'talks.old_talks'
 )
 
 MIDDLEWARE_CLASSES = (
