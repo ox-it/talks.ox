@@ -6,8 +6,6 @@ from django.db import models, migrations
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'events', '0001_initial'), (b'events', '0002_speaker_email_address'), (b'events', '0003_eventgroup_group_type'), (b'events', '0004_auto_20140715_1013'), (b'events', '0005_auto_20140716_1432'), (b'events', '0006_auto_20141028_1132'), (b'events', '0007_auto_20141028_1746'), (b'events', '0008_auto_20141029_1234'), (b'events', '0006_auto_20141027_1754'), (b'events', '0007_merge'), (b'events', '0009_merge')]
-
     dependencies = [
         ('contenttypes', '__first__'),
         ('api_ox', '__first__'),

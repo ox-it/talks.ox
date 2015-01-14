@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0009_merge'),
+        ('events', '0001_squashed_0009_merge'),
         ('old_talks', '0001_initial'),
     ]
 
