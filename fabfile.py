@@ -26,6 +26,7 @@ def local():
     env.remote_install_dir = '/srv/talks/talks.vm'
     env.remote_git_checkout = '/srv/talks/talks.ox'
     env.requirements = ['requirements.txt']
+    env.secrets_dir = '/etc/puppet/secrets/talks-dev.oucs.ox.ac.uk'
 
 @task
 def staging():
@@ -37,6 +38,7 @@ def staging():
     env.remote_install_dir = '/srv/talks/talks-dev.oucs.ox.ac.uk'
     env.remote_git_checkout = '/srv/talks/talks.ox'
     env.requirements = ['requirements.txt']
+    env.secrets_dir = '/etc/puppet/secrets/talks-dev.oucs.ox.ac.uk'
 
 
 """
@@ -55,8 +57,10 @@ def deploy(version):
     with prefix('source %s' % os.path.join(versioned_path, 'bin', 'activate')):
         install_dir = prepare(versioned_path)
         install(install_dir)
-        run('rm -f %s' % env.remote_install_dir)
-        run('ln -s %s %s' % (versioned_path, env.remote_install_dir))
+    run('rm %s/secrets.py' % install_dir)
+    run('ln -s %s/secrets.py %s/secrets.py' % (env.secrets_dir, install_dir))
+    run('rm -f %s' % env.remote_install_dir)
+    run('ln -s %s %s' % (versioned_path, env.remote_install_dir))
     run('touch %s' % os.path.join(env.remote_install_dir, 'talks', 'wsgi.py'))
 
 
@@ -75,7 +79,6 @@ def install(install_dir):
     with cd(os.path.dirname(install_dir)):
         run('python manage.py syncdb --settings=%s' % env.settings_module)
         run('python manage.py collectstatic --noinput --settings=%s' % env.settings_module)
-
 
 """
 Private methods
