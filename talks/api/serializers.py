@@ -54,6 +54,9 @@ class HALURICharField(Field):
     def to_representation(self, instance):
         return {'href': instance}
 
+    def to_internal_value(self, data):
+        return None
+
 
 class EventLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
@@ -61,7 +64,7 @@ class EventLinksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('self','talks_page')
+        fields = ('self', 'talks_page')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
@@ -71,7 +74,34 @@ class HALEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('title', 'formatted_date', 'formatted_time', 'description', '_links')
+        fields = ('_links', 'title', 'formatted_date', 'formatted_time', 'description')
+
+
+class EventGroupLinksSerializer(serializers.ModelSerializer):
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+
+    class Meta:
+        model = EventGroup
+        fields = ('self', 'talks_page')
+
+
+class EventGroupEmbedsSerializer(serializers.ModelSerializer):
+    events = HALEventSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = EventGroup
+        fields = ('events',)
+
+
+class HALEventGroupSerializer(serializers.ModelSerializer):
+    _links = EventGroupLinksSerializer(source='*', read_only=True)
+    _embedded = EventGroupEmbedsSerializer(source='*', read_only=True)
+
+    class Meta:
+        model = EventGroup
+        fields = ('_links', 'title', 'description', 'occurence', '_embedded')
+
 
 class SpeakerSerializer(serializers.ModelSerializer):
     """

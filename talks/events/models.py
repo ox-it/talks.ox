@@ -110,6 +110,12 @@ class EventGroup(models.Model):
             self.slug = str(uuid.uuid4())
         super(EventGroup, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('show-event-group', args=[self.slug])
+
+    def get_api_url(self):
+        return reverse('eventgroup-detail', args=[self.slug])
+
     @property
     def api_organisation(self):
         from . import forms
