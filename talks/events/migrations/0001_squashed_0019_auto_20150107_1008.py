@@ -91,11 +91,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='events.Person'),
             preserve_default=True,
         ),
-        migrations.RunSQL(
-            sql="INSERT INTO events_personevent (event_id, person_id, affiliation, role, url) SELECT event_id, person_id, '', 'speaker', '' FROM events_event_speakers;",
-            reverse_sql=None,
-            state_operations=None,
-        ),
         migrations.AddField(
             model_name='event',
             name='person_set',
