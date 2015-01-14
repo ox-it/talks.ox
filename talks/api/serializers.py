@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.fields import Field
+from rest_framework.reverse import reverse
 
 from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem
@@ -46,7 +48,30 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ('slug', 'url', 'title', 'start', 'end', 'description',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
                   'api_organisation', 'api_topics', 'class_name')
-        
+
+
+class HALURICharField(Field):
+    def to_representation(self, instance):
+        return {'href': instance}
+
+
+class EventLinksSerializer(serializers.ModelSerializer):
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('self','talks_page')
+
+
+class HALEventSerializer(serializers.ModelSerializer):
+    _links = EventLinksSerializer(source='*', read_only=True)
+    formatted_date = serializers.CharField(read_only=True)
+    formatted_time = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('title', 'formatted_date', 'formatted_time', 'description', '_links')
 
 class SpeakerSerializer(serializers.ModelSerializer):
     """

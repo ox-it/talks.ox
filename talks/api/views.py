@@ -20,7 +20,7 @@ from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
 from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
                                    CollectionItemSerializer,
-                                   get_item_serializer)
+                                   get_item_serializer, HALEventSerializer)
 from talks.core.renderers import ICalRenderer
 
 logger = logging.getLogger(__name__)
@@ -31,12 +31,12 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
     """
     renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
+    serializer_class = HALEventSerializer
     lookup_field = 'slug'
 
 
 class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    renderer_classes = (ICalRenderer, JSONPRenderer, JSONPRenderer, XMLRenderer)
+    renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
     queryset = EventGroup.objects.all()
     serializer_class = EventGroupWithEventsSerializer
     lookup_field = 'slug'

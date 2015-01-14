@@ -311,6 +311,9 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('show-event', args=[str(self.slug)])
 
+    def get_api_url(self):
+        return reverse('event-detail', args=[str(self.slug)])
+
     def formatted_date(self):
         if self.start:
             return date_filter(self.start, settings.EVENT_DATETIME_FORMAT)
