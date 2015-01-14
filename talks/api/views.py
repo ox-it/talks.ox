@@ -36,7 +36,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    renderer_classes = (ICalRenderer, JSONPRenderer, JSONPRenderer, XMLRenderer)
+    renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
     queryset = EventGroup.objects.all()
     serializer_class = EventGroupWithEventsSerializer
     lookup_field = 'slug'
