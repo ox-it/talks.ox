@@ -576,7 +576,6 @@ class TestAuthorisation(TestCase):
         self.nonContribUser = User.objects.create_user(self.username_non_contrib, password=self.password_non_contrib);
         self.nonContribUser.save()
 
-
     def test_edit_event_unauthorised(self):
         #create event and set user1 as an editor
         event = factories.EventFactory.create()
