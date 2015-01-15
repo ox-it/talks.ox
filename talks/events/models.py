@@ -112,9 +112,9 @@ class EventGroup(models.Model):
 
     @property
     def api_organisation(self):
-        from . import forms
+        from . import datasources
         try:
-            return forms.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
+            return datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
         except requests.HTTPError:
             return None
 
