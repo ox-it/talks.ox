@@ -4,10 +4,11 @@ from django.contrib import admin
 from django_webauth.views import LoginView
 from rest_framework import routers
 
-from events.views import (homepage, upcoming_events, show_person, create_person, edit_person, show_event, edit_event, events_for_day,
-                          events_for_month, events_for_year, create_event, list_event_groups,
-                          create_event_group, show_event_group, edit_event_group, contributors_home, contributors_events,
-                          contributors_eventgroups, contributors_persons, delete_event, delete_event_group, show_topic)
+from talks.events.views import (homepage, upcoming_events, show_person, show_event, events_for_day,
+                                events_for_month, events_for_year, list_event_groups,show_event_group, show_topic)
+from talks.contributors.views import (create_person, edit_person, edit_event, create_event, create_event_group,
+                                      edit_event_group, contributors_home, contributors_events,
+                                      contributors_eventgroups, contributors_persons, delete_event, delete_event_group)
 from talks.api.views import api_event_search
 from talks.events_search.forms import DateFacetedSearchForm
 from talks.events_search.views import SearchView
