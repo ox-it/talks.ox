@@ -37,3 +37,8 @@ class TopicItemFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = models.TopicItem
+
+
+class TopicItemFactory_noSubFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.TopicItem

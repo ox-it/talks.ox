@@ -66,14 +66,45 @@ class EventLinksSerializer(serializers.ModelSerializer):
         fields = ('self', 'talks_page')
 
 
+class EmbeddedSpeakerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Person
+        fields = ('name', 'bio')
+
+
+class EmbeddedLocationSerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        maps_url = "//maps.ox.ac.uk/#/places/" + instance['id']
+        return {'name': instance['name'], 'address': instance['address'], 'map_link': maps_url}
+
+
+class EmbeddedTopicSerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        return {'label': instance['prefLabel'], 'uri': instance['uri']}
+
+
+class EventEmbedsSerializer(serializers.ModelSerializer):
+    speakers = EmbeddedSpeakerSerializer(many=True, read_only=True)
+    venue = EmbeddedLocationSerializer(source='api_location', read_only=True)
+    organising_department = EmbeddedLocationSerializer(source='api_organisation', read_only=True)
+    topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('speakers', 'venue', 'organising_department', 'topics')
+
 class HALEventSerializer(serializers.ModelSerializer):
     _links = EventLinksSerializer(source='*', read_only=True)
     formatted_date = serializers.CharField(read_only=True)
     formatted_time = serializers.CharField(read_only=True)
+    _embedded = EventEmbedsSerializer(source='*', read_only=True)
 
     class Meta:
         model = Event
-        fields = ('_links', 'title', 'formatted_date', 'formatted_time', 'description')
+        fields = ('_links', 'title', 'formatted_date', 'formatted_time', 'description', '_embedded')
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):
@@ -125,7 +156,6 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
         fields = ('_links', 'title', 'description', 'occurence', '_embedded')
 
 
-        fields = ('_links', 'title', 'slug', 'description', 'occurence', '_embedded')
 class SpeakerSerializer(serializers.ModelSerializer):
     """
     Serialize a speaker and all the events that they are speaking at
