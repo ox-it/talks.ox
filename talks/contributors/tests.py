@@ -673,3 +673,29 @@ class TestEditEventView(AuthTestCase):
         self.assertEquals(saved_event.title, old_title)
         self.assertEquals(saved_event.description, old_description)
         self.assertTemplateUsed(response, "contributors/event_form.html")
+
+    def test_edit_remove_editor(self):
+        #create event and set user1 as an editor
+        event = factories.EventFactory.create()
+        event.editor_set.add(self.user)
+        event.save()
+
+        # emptying all the editors
+        data = {
+            'event-title': 'lkfjlfkds',
+            'event-description': 'dflksfoingf',
+            'event-group_type': '',
+            'event-booking_type': models.BOOKING_REQUIRED,
+            'event-audience': models.AUDIENCE_OXFORD,
+            'event-status': models.EVENT_IN_PREPARATION,
+            'event-start': VALID_DATE_STRING,
+            'event-end': VALID_DATE_STRING,
+            'event-editor_set': [],
+        }
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
+        self.assertRedirects(response, "/talks/id/%s/" % event.slug)
+        result = Event.objects.get(slug=event.slug)
+        self.assertIn(self.user, result.editor_set.all())
+        self.assertTrue(result.user_can_edit(self.user))

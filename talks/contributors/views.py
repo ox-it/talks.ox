@@ -41,6 +41,9 @@ def edit_event(request, event_slug):
     if request.method == 'POST':
         if form.is_valid():
             event = form.save()
+            if request.user not in event.editor_set.all():
+                event.editor_set.add(request.user)
+                event.save()
             event_updated.send(event.__class__, instance=event)
             messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
