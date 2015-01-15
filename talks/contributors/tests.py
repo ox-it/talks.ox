@@ -12,6 +12,7 @@ from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 VALID_DATE_STRING = "2014-05-12 12:18"
+CSRF_TOKEN = u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM'
 
 
 class TestEventForm(TestCase):
@@ -353,7 +354,7 @@ class TestCreateEventView(AuthTestCase):
             'event-group-event_group_select': u'',
             'event-speakers': [],
             'event-group-group_type': u'',
-            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'csrfmiddlewaretoken': CSRF_TOKEN,
             'event-group-select_create': u'CRE',
             'event-end': VALID_DATE_STRING,
             'event-group-title': u'',
@@ -383,7 +384,7 @@ class TestCreateEventView(AuthTestCase):
             'event-topics': [],
             'event-department_organiser': u'',
             'event-speakers': [],
-            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'csrfmiddlewaretoken': CSRF_TOKEN,
             'event-topic_suggest': u'',
             'event-end': VALID_DATE_STRING,
             'event-group': group.id,
@@ -414,7 +415,7 @@ class TestCreateEventView(AuthTestCase):
             'event-start': VALID_DATE_STRING,
             'event-topics': [],
             'event-speakers': [],
-            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'csrfmiddlewaretoken': CSRF_TOKEN,
             'event-department_organiser': u'',
             'event-end': VALID_DATE_STRING,
             'name': u'',
@@ -450,7 +451,7 @@ class TestCreateEventView(AuthTestCase):
             'event-topics': [],
             'event-department_organiser': u'',
             'event-speakers': [str(s.pk) for s in speakers],
-            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'csrfmiddlewaretoken': CSRF_TOKEN,
             'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
@@ -483,7 +484,7 @@ class TestCreateEventView(AuthTestCase):
             'event-topics': [t.uri for t in topics],
             'event-department_organiser': u'',
             'event-speakers': [],
-            'csrfmiddlewaretoken': u'3kHyJXv0HDO8sJPLlpvQhnBqM04cIJAM',
+            'csrfmiddlewaretoken': CSRF_TOKEN,
             'event-end': VALID_DATE_STRING,
             'name': u'',
             'event-booking_type': models.BOOKING_NOT_REQUIRED,
