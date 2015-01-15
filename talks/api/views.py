@@ -20,7 +20,8 @@ from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
 from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
                                    CollectionItemSerializer,
-                                   get_item_serializer, HALEventSerializer, HALEventGroupSerializer)
+                                   get_item_serializer, HALEventSerializer, HALEventGroupSerializer,
+                                   HALSearchResultSerializer)
 from talks.core.renderers import ICalRenderer
 
 logger = logging.getLogger(__name__)
@@ -131,7 +132,7 @@ def api_event_search(request):
 
     final_query = reduce(operator.and_, queries)
     events = Event.published.filter(final_query)
-    serializer = EventSerializer(events, many=True, read_only=True)
+    serializer = HALSearchResultSerializer(events, read_only=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -149,10 +150,8 @@ def parse_date(date_param):
         return None
     elif date_param == "today":
         from_date = datetime.today().date()
-        print from_date
     elif date_param == "tomorrow":
         from_date = datetime.today().date() + timedelta(1)
-        print from_date
     else:
         try:
             from_date = datetime.strptime(date_param, "%d/%m/%y")

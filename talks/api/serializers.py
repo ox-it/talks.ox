@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.fields import Field
-from rest_framework.reverse import reverse
 
 from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem
@@ -75,6 +74,29 @@ class HALEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('_links', 'title', 'formatted_date', 'formatted_time', 'description')
+
+
+class SearchResultEmbedsSerializer(serializers.Serializer):
+    talks = HALEventSerializer(source='*', many=True, read_only=True)
+
+
+class SearchResultLinksSerializer(serializers.Serializer):
+    self = serializers.SerializerMethodField()
+
+    def get_self(self, obj):
+        req = self.context.get('request')
+        link = req.build_absolute_uri()
+        return {'href': link}
+
+
+class HALSearchResultSerializer(serializers.Serializer):
+    _links = serializers.SerializerMethodField(method_name='get_links')
+    _embedded = SearchResultEmbedsSerializer(source='*')
+
+    def get_links(self, obj):
+        # Return a SearchResultLinksSerializer, but pass the context on by using it a method field
+        serializer = SearchResultLinksSerializer(obj, many=True, context=self.context)
+        return serializer.data
 
 
 class EventGroupLinksSerializer(serializers.ModelSerializer):
