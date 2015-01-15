@@ -245,7 +245,7 @@ class TestEventGroupViews(AuthTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
         self.assertContains(response, group.description)
-        self.assertTemplateUsed(response, "events/event_group_form.html")
+        self.assertTemplateUsed(response, "contributors/event_group_form.html")
 
     def test_edit_event_group_post_happy(self):
         group = factories.EventGroupFactory.create()
@@ -280,12 +280,12 @@ class TestEventGroupViews(AuthTestCase):
         self.assertFormError(response, 'group_form', 'title', ['This field is required.'])
         self.assertEquals(saved_group.title, old_title)
         self.assertEquals(saved_group.description, old_description)
-        self.assertTemplateUsed(response, "events/event_group_form.html")
+        self.assertTemplateUsed(response, "contributors/event_group_form.html")
 
     def test_create_event_group_200(self):
         response = self.client.get("/talks/series/new")
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "events/event_group_form.html")
+        self.assertTemplateUsed(response, "contributors/event_group_form.html")
 
     def test_create_event_group_post_happy(self):
         data = {
@@ -311,7 +311,7 @@ class TestEventGroupViews(AuthTestCase):
         response = self.client.post("/talks/series/new", data)
         self.assertFormError(response, 'group_form', 'title', ['This field is required.'])
         self.assertQuerysetEqual(models.EventGroup.objects.all(), [])
-        self.assertTemplateUsed(response, "events/event_group_form.html")
+        self.assertTemplateUsed(response, "contributors/event_group_form.html")
 
 
 class TestCreateEventView(AuthTestCase):
@@ -320,7 +320,7 @@ class TestCreateEventView(AuthTestCase):
         response = self.client.get('/talks/new')
         logging.info("Form errors: %s", response.context['event_form'].errors)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'events/event_form.html')
+        self.assertTemplateUsed(response, 'contributors/event_form.html')
         self.assertContains(response, "Oxford Talks")
         self.assertContains(response, "New Talk")
         self.assertIn('event_form', response.context)
@@ -587,7 +587,7 @@ class TestEditEventView(AuthTestCase):
         self.assertContains(response, event.description)
         self.assertContains(response, event.start)
         self.assertContains(response, event.end)
-        self.assertTemplateUsed(response, "events/event_form.html")
+        self.assertTemplateUsed(response, "contributors/event_form.html")
 
     @mock.patch('requests.get', autospec=True)
     def test_edit_event_post_happy(self, requests_get):
@@ -639,4 +639,4 @@ class TestEditEventView(AuthTestCase):
         self.assertFormError(response, 'event_form', 'audience', ['This field is required.'])
         self.assertEquals(saved_event.title, old_title)
         self.assertEquals(saved_event.description, old_description)
-        self.assertTemplateUsed(response, "events/event_form.html")
+        self.assertTemplateUsed(response, "contributors/event_form.html")

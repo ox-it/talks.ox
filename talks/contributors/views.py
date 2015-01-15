@@ -46,7 +46,7 @@ def edit_event(request, event_slug):
             return redirect(event.get_absolute_url())
         else:
             messages.warning(request, "Please correct errors below")
-    return render(request, "events/event_form.html", context)
+    return render(request, "contributors/event_form.html", context)
 
 @login_required
 @permission_required("events.add_event", raise_exception=PermissionDenied)
@@ -99,7 +99,7 @@ def create_event(request, group_slug=None):
             'host_form': PersonQuickAdd,
             'is_editing': False
         }
-    return render(request, 'events/event_form.html', context)
+    return render(request, 'contributors/event_form.html', context)
 
 
 @login_required
@@ -124,7 +124,7 @@ def delete_event(request, event_slug):
         event.delete()
         messages.success(request, "Talk has been successfully deleted")
         return redirect('contributors-events')
-    return render(request, "events/delete_event.html", context)
+    return render(request, "contributors/delete_event.html", context)
 
 @login_required
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
@@ -146,7 +146,7 @@ def edit_event_group(request, event_group_slug):
         'event_group': group,
         'is_editing': True
     }
-    return render(request, 'events/event_group_form.html', context)
+    return render(request, 'contributors/event_group_form.html', context)
 
 
 @login_required
@@ -176,9 +176,9 @@ def create_event_group(request):
     }
 
     if is_modal:
-        return render(request, 'events/event_group_modal_form.html', context, status=status_code)
+        return render(request, 'contributors/event_group_modal_form.html', context, status=status_code)
     else:
-        return render(request, 'events/event_group_form.html', context, status=status_code)
+        return render(request, 'contributors/event_group_form.html', context, status=status_code)
 
 
 @login_required
@@ -195,7 +195,7 @@ def delete_event_group(request, event_group_slug):
         event_group.delete()
         messages.success(request, "Series has been successfully deleted")
         return redirect('contributors-events')
-    return render(request, "events/delete_event_group.html", context)
+    return render(request, "contributors/delete_event_group.html", context)
 
 
 def contributors_home(request):
@@ -219,7 +219,7 @@ def create_person(request):
         'person_form': form,
     }
 
-    return render(request, 'events/person_form.html', context, status=status_code)
+    return render(request, 'contributors/person_form.html', context, status=status_code)
 
 @login_required
 @permission_required('events.change_event', raise_exception=PermissionDenied)
@@ -278,7 +278,7 @@ def contributors_events(request):
         'fragment': fragment
     }
 
-    return render(request, 'events/contributors_events.html', context)
+    return render(request, 'contributors/contributors_events.html', context)
 
 
 @login_required()
@@ -299,7 +299,7 @@ def contributors_eventgroups(request):
         'groups': eventgroups
     }
 
-    return render(request, 'events/contributors_groups.html', context)
+    return render(request, 'contributors/contributors_groups.html', context)
 
 
 @login_required()
@@ -322,7 +322,7 @@ def contributors_persons(request):
         'persons': persons
     }
 
-    return render(request, 'events/contributors_persons.html', context)
+    return render(request, 'contributors/contributors_persons.html', context)
 
 
 @login_required
@@ -341,4 +341,4 @@ def edit_person(request, person_slug):
         'person_form': form,
         'person': person,
     }
-    return render(request, 'events/person_form.html', context)
+    return render(request, 'contributors/person_form.html', context)
