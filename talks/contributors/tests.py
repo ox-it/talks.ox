@@ -503,6 +503,39 @@ class TestCreateEventView(AuthTestCase):
         self.assertEquals({t.uri for t in topics}, {t.uri for t in event.topics.all()}, "topics were not assigned properly")
         self.assertRedirects(response, event.get_absolute_url())
 
+    def test_post_editor_set(self):
+        title = u'cjwnf887y98fw'
+        description = u'kfjdnsf'
+        data = {
+            'event-description': description,
+            'another': u'false',
+            'event-title': title,
+            'event-location': u'',
+            'event-start': VALID_DATE_STRING,
+            'event-topics': [],
+            'event-group-description': u'',
+            'event-department_organiser': u'',
+            'event-group-event_group_select': u'',
+            'event-speakers': [],
+            'event-group-group_type': u'',
+            'csrfmiddlewaretoken': CSRF_TOKEN,
+            'event-group-select_create': u'CRE',
+            'event-end': VALID_DATE_STRING,
+            'event-group-title': u'',
+            'name': u'',
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
+        }
+
+        response = self.client.post('/talks/new', data)
+        if response.context:
+            logging.info("Form errors: %s", response.context['event_form'].errors)
+        event = models.Event.objects.get(title=title, description=description)
+        # expects logged in user to have been added to the list of editors
+        self.assertIn(self.user, event.editor_set.all())
+        self.assertTrue(event.user_can_edit(self.user))
+
 
 class TestAuthorisation(TestCase):
     """
