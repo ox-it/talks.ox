@@ -245,4 +245,7 @@ CACHES = {
     'topics': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
+    'department_descendant': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
 }
