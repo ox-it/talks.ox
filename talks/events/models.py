@@ -105,7 +105,7 @@ class EventGroup(models.Model):
         return reverse('show-event-group', args=[self.slug])
     
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
         super(EventGroup, self).save(*args, **kwargs)
@@ -142,7 +142,7 @@ class Person(models.Model):
     objects = PersonManager()
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
         super(Person, self).save(*args, **kwargs)

@@ -23,6 +23,11 @@ class PersonFactory(factory.django.DjangoModelFactory):
         model = models.Person
 
 
+class PersonEventFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.PersonEvent
+
+
 class TopicItemFactory(factory.django.DjangoModelFactory):
     item = factory.SubFactory(EventFactory)
 

@@ -125,6 +125,7 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
         fields = ('_links', 'title', 'description', 'occurence', '_embedded')
 
 
+        fields = ('_links', 'title', 'slug', 'description', 'occurence', '_embedded')
 class SpeakerSerializer(serializers.ModelSerializer):
     """
     Serialize a speaker and all the events that they are speaking at

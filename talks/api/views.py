@@ -30,14 +30,14 @@ logger = logging.getLogger(__name__)
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint for events
     """
-    renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
-    queryset = Event.objects.all()
+    renderer_classes = (JSONRenderer, JSONPRenderer, XMLRenderer, ICalRenderer)
+    queryset = Event.published.all()
     serializer_class = HALEventSerializer
     lookup_field = 'slug'
 
 
 class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
+    renderer_classes = (JSONRenderer, JSONPRenderer, XMLRenderer, ICalRenderer)
     queryset = EventGroup.objects.all()
     serializer_class = HALEventGroupSerializer
     lookup_field = 'slug'
