@@ -7,12 +7,6 @@
 
 {% block content %}
 
-    <style type="text/css">
-    .filter-selected {
-         background-color: #ddd;
-    }
-    </style>
-
     <h2>Talks administration</h2>
 
     <div class="container">
@@ -20,31 +14,32 @@
             <div class="col-xs-3">
 
         <ul class="nav nav-list well">
-            <li><a href="{% url 'contributors-events' %}?date=future" class="filter-selected">Talks</a></li>
-            <li><a href="{% url 'contributors-eventgroups' %}">Series</a></li>
-            <li><a href="{% url 'contributors-persons' %}" class="">People</a></li>
+            <li><a href="{% url 'contributors-events' %}?date=future" class="filter-selected">Talks  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+            <li><a href="{% url 'contributors-eventgroups' %}">Series  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+            <li><a href="{% url 'contributors-persons' %}" class="">People  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
         </ul>
-
+        <strong>Filters</strong></li>
       <ul class="nav nav-list well">
-
         <li class="nav-header"><i class="icon-star"></i>Talk status</li>
-        <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published</a></li>
-        <li><a href="{% facet_single_param status='preparation' %}" class="{% facet_selected status='preparation' %}">In preparation</a></li>
-        <li><a href="{% facet_remove_all 'status' %}">All</a></li>
+        <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published <span class="glyphicon glyphicon-ok filter-active"></span></a>
+        </li>
+        <li><a href="{% facet_single_param status='preparation' %}" class="{% facet_selected status='preparation' %}">In preparation <span class="glyphicon glyphicon-ok filter-active"></span> </a></li>
+        <li><a href="{% facet_remove_all 'status' %}" class="{% facet_has_selection param='status' %}"><span class="glyphicon glyphicon-remove"></span>Remove Filter</a></li>
 
-        <li class="nav-header"><i class="icon-star"></i>Missing properties</li>
-        <li><a href="{% facet_single_param missing='title' %}" class="{% facet_selected missing='title' %}">Title TBA</a></li>
-        <li><a href="{% facet_single_param missing='location' %}" class="{% facet_selected missing='location' %}">Location</a></li>
-        <li><a href="{% facet_remove_all 'missing' %}">All</a></li>
+        <li class="nav-header"><i class="icon-star"></i>Missing Information</li>
+        <li><a href="{% facet_single_param missing='title' %}" class="{% facet_selected missing='title' %}">Untitled Talks <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_single_param missing='location' %}" class="{% facet_selected missing='location' %}">Venue <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_single_param missing='speaker' %}" class="{% facet_selected missing='speaker' %}">Speaker <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_remove_all 'missing' %}" class="{% facet_has_selection param='missing' %}"><span class="glyphicon glyphicon-remove"></span>Remove Filter</a></li>
 
         <li class="nav-header"><i class="icon-time"></i>Date</li>
-        <li><a href="{% facet_single_param date='future' %}" class="{% facet_selected date='future' %}">Future events</a></li>
-        <li><a href="{% facet_single_param date='past' %}" class="{% facet_selected date='past' %}">Past events</a></li>
-        <li><a href="{% facet_remove_all 'date' %}">All</a></li>
+        <li><a href="{% facet_single_param date='future' %}" class="{% facet_selected date='future' %}">Future events <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_single_param date='past' %}" class="{% facet_selected date='past' %}">Past events <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+        <li><a href="{% facet_remove_all 'date' %}" class="{% facet_has_selection param='date' %}"><span class="glyphicon glyphicon-remove"></span>Remove Filter</a></li>
 
         <li class="nav-headder"><i class="icon-star"></i>Show Editable Talks</li>
-          <li><a href="{% facet_single_param editable='true' %}" class="{% facet_selected editable='true' %}">Editable by me</a></li>
-          <li><a href="{% facet_remove_all 'editable' %}">All</a></li>
+          <li><a href="{% facet_single_param editable='true' %}" class="{% facet_selected editable='true' %}">Editable by me <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+          <li><a href="{% facet_remove_all 'editable' %}" class="{% facet_has_selection param='editable' %}"><span class="glyphicon glyphicon-remove"></span> Remove Filter</a></li>
 
       </ul>
     </div>

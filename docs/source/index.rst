@@ -26,6 +26,7 @@ HTTP API
 
     http_api/*
     http_api/endpoints/*
+    http_api/endpoints/Search/*
 
 ******************
 Indices and tables
