@@ -35,7 +35,7 @@ TOPICS_DATA_SOURCE = typeahead.DataSource(
 )
 PERSONS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     'speakers',
-    url='/talks/persons/suggest?q=%QUERY',
+    url='/api/persons/suggest?q=%QUERY',
     display_key='title',
     serializer=serializers.PersonSerializer,
 )
