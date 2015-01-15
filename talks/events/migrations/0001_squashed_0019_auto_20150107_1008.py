@@ -33,6 +33,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=250)),
                 ('slug', models.SlugField()),
                 ('bio', models.TextField()),
+                ('email_address', models.EmailField(max_length=254, null=True, blank=True))
             ],
             options={
             },
@@ -90,11 +91,6 @@ class Migration(migrations.Migration):
             name='person',
             field=models.ForeignKey(to='events.Person'),
             preserve_default=True,
-        ),
-        migrations.RunSQL(
-            sql="INSERT INTO events_personevent (event_id, person_id, affiliation, role, url) SELECT event_id, person_id, '', 'speaker', '' FROM events_event_speakers;",
-            reverse_sql=None,
-            state_operations=None,
         ),
         migrations.AddField(
             model_name='event',
@@ -260,12 +256,6 @@ class Migration(migrations.Migration):
             model_name='person',
             name='bio',
             field=models.TextField(verbose_name=b'Affiliation'),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='person',
-            name='email_address',
-            field=models.EmailField(max_length=254, null=True, blank=True),
             preserve_default=True,
         ),
         migrations.AddField(
