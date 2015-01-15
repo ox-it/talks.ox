@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER
-from talks.events.datasources import TOPICS_DATA_SOURCE
+from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE
 
 logger = logging.getLogger(__name__)
 
@@ -134,3 +134,13 @@ def show_topic(request):
         'events': events
     }
     return render(request, 'events/topic.html', context)
+
+
+def show_department_organiser(request, org_id):
+    org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
+    events = Event.published.filter(department_organiser=org_id)
+    context = {
+        'org': org,
+        'events': events
+    }
+    return render(request, 'events/department.html', context)
