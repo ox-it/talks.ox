@@ -1,5 +1,4 @@
 import logging
-from datetime import date, datetime, timedelta
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -22,6 +21,7 @@ from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSer
                                    CollectionItemSerializer,
                                    get_item_serializer)
 from talks.core.renderers import ICalRenderer
+from talks.core.utils import parse_date
 
 logger = logging.getLogger(__name__)
 
@@ -133,33 +133,6 @@ def api_event_search(request):
     events = Event.published.filter(final_query)
     serializer = EventSerializer(events, many=True, read_only=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-def parse_date(date_param):
-    """
-    Parse the date string parameter
-    :param date_param:
-        Either a keyword:
-            'today', 'tomorrow'
-        or a string in the format 'dd/mm/yy'
-    :return:
-        datetime object
-    """
-    if not date_param:
-        return None
-    elif date_param == "today":
-        from_date = datetime.today().date()
-        print from_date
-    elif date_param == "tomorrow":
-        from_date = datetime.today().date() + timedelta(1)
-        print from_date
-    else:
-        try:
-            from_date = datetime.strptime(date_param, "%d/%m/%y")
-        except Exception as e:
-            # catch the exception and raise an API exception instead, which the user will see
-            raise ParseError(e.message);
-    return from_date
 
 
 def item_from_request(request):
