@@ -34,10 +34,16 @@ The **Abstract** field uses the Textile markup language - the basics are very ea
 
 **Links**
 
+A web address should convert into a link automatically when you save the talk. To give the link a title rather than just show the web address:
+
 ::
 
-     "Link Title":http://www.ox.ac.uk  
-     "$":http://www.ox.ac.uk
+     "Oxford University":http://www.ox.ac.uk 
+
+To make an email clickable use the following:
+
+::
+
      "$":mailto:joe.blogs@ox.ac.uk
 
 If you need more, there is a comprehensive manual on `txstyle.org <http://txstyle.org>`_ 

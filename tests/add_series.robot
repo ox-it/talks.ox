@@ -26,7 +26,7 @@ Scenario: Create Person inline
     type "James Bond" into ${series create person name}
     type "MI5" into ${series create person bio}
     click on ${series create person submit}
-    ${list group item("James Bond, MI5")} should be displayed
+    ${list group item("James Bond, MI5")} should appear
     click on ${button done}
     page should contain text "James Bond (MI5)"
 
