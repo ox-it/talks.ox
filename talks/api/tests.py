@@ -96,31 +96,31 @@ class TestAPI(TestCase):
         self.assertContains(response, "_embedded")
         self.assertContains(response, "A future event")
 
-    # def test_retrieve_event_invalid(self):
-    #     # retrieve an event which doesn't exist. Check response is as expected
-    #     response = self.client.get('/api/events/foo/')
-    #     self.assertEquals(response.status_code, 404)
-    #
-    # def test_retrieve_series_happy(self):
-    #     response = self.client.get('/api/series/' + self.group1_slug + '/')
-    #     # response = self.client.get('/api/series/')
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "talks conference")
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #     self.assertContains(response, "A future event")
-    #
-    # def test_retrieve_series_invalid(self):
-    #     response = self.client.get('/api/series/foo/')
-    #     self.assertEquals(response.status_code, 404)
-    #
-    # def test_search_no_results(self):
-    #     # ensure _links section still exists
-    #     # ensure _embedded section still exists with empty talks field
-    #     response = self.client.get('/api/events/search?from=01/01/15&to=02/01/15')
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
+    def test_retrieve_event_404(self):
+        response = self.client.get('/api/events/foo/')
+        self.assertEquals(response.status_code, 404)
+
+    @mock.patch('requests.get', autospec=True)
+    def test_retrieve_series_happy(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/series/' + self.group1_slug)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "talks conference")
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, "A future event")
+
+    def test_retrieve_series_invalid(self):
+        response = self.client.get('/api/series/foo/')
+        self.assertEquals(response.status_code, 404)
+
+    def test_search_no_results(self):
+        # ensure _links section still exists
+        # ensure _embedded section still exists with empty talks field
+        response = self.client.get('/api/events/search?from=01/01/15&to=02/01/15')
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
     #
     # def test_search_from_to(self):
     #     #test the from and to search fields
