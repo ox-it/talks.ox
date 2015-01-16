@@ -112,7 +112,6 @@ def show_event_group(request, event_group_slug):
     return render(request, 'events/event-group.html', context)
 
 
-@login_required()
 def show_person(request, person_slug):
     person = get_object_or_404(Person, slug=person_slug)
     events = Event.published.filter(personevent__role=ROLES_SPEAKER,
