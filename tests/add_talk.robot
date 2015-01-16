@@ -39,7 +39,7 @@ Scenario: Add talk to existing group of talks
     ${group field} should be displayed
     ${create group button} should be displayed
     Select from list  ${group field.locator}  foo
-    page should contain text "Chemical Biology"
+    page should appear text "Chemical Biology"
     click on ${start field}
     ${datetimepicker[0]} should appear
     Select current date and time for ${datetimepicker[0]}
