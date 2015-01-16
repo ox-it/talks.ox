@@ -50,7 +50,8 @@ class TestAPI(TestCase):
             start=FUTURE_DATE_STRING,
             end=FUTURE_DATE_STRING,
             status=EVENT_PUBLISHED,
-            # location=self.location1,
+            location=self.location1,
+            department_organiser=self.department1,
             group=group1,
         )
         past_event = factories.EventFactory.create(
@@ -96,68 +97,77 @@ class TestAPI(TestCase):
         self.assertContains(response, "_embedded")
         self.assertContains(response, "A future event")
 
-    # def test_retrieve_event_invalid(self):
-    #     # retrieve an event which doesn't exist. Check response is as expected
-    #     response = self.client.get('/api/events/foo/')
-    #     self.assertEquals(response.status_code, 404)
-    #
-    # def test_retrieve_series_happy(self):
-    #     response = self.client.get('/api/series/' + self.group1_slug + '/')
-    #     # response = self.client.get('/api/series/')
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "talks conference")
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #     self.assertContains(response, "A future event")
-    #
-    # def test_retrieve_series_invalid(self):
-    #     response = self.client.get('/api/series/foo/')
-    #     self.assertEquals(response.status_code, 404)
-    #
-    # def test_search_no_results(self):
-    #     # ensure _links section still exists
-    #     # ensure _embedded section still exists with empty talks field
-    #     response = self.client.get('/api/events/search?from=01/01/15&to=02/01/15')
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #
-    # def test_search_from_to(self):
-    #     #test the from and to search fields
-    #     #expect only the future search
-    #     response = self.client.get('/api/events/search?from=01/01/15&to=01/01/20')
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #     self.assertContains(response, "A future event")
-    #     #expect 2 results for this search
-    #     response = self.client.get('/api/events/search?from=01/01/01')
-    #     self.assertContains(response, "title", 2)
-    #
-    # def test_search_speaker(self):
-    #     response = self.client.get('/api/events/search?from=01/01/01&speaker=' + self.speaker1_slug )
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #
-    #     # Note = currently failing since we don't yet embed speakers in event response
-    #     self.assertContains(response, "James Bond")
-    #
-    #     self.assertContains(response, "A future event")
-    #
-    # def test_search_venue(self):
-    #     response = self.client.get('/api/events/search?from=01/01/01&venue=' + self.location1)
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #     self.assertContains(response, "Banbury Road")
-    #
-    # def test_search_organising_department(self):
-    #     response = self.client.get('/api/events/search?from=01/01/01&organising_department=' + self.department1)
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertContains(response, "_links")
-    #     self.assertContains(response, "_embedded")
-    #     self.assertContains(response, "Chemical Biology")
+    def test_retrieve_event_404(self):
+        response = self.client.get('/api/events/foo/')
+        self.assertEquals(response.status_code, 404)
+
+    @mock.patch('requests.get', autospec=True)
+    def test_retrieve_series_happy(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/series/' + self.group1_slug)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "talks conference")
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, "A future event")
+
+    def test_retrieve_series_invalid(self):
+        response = self.client.get('/api/series/foo/')
+        self.assertEquals(response.status_code, 404)
+
+    def test_search_no_results(self):
+        # ensure _links section still exists
+        # ensure _embedded section still exists with empty talks field
+        response = self.client.get('/api/events/search?from=01/01/15&to=02/01/15')
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+
+    @mock.patch('requests.get', autospec=True)
+    def test_search_from_to(self, requests_get):
+        #test the from and to search fields
+        #expect only the future search
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/events/search?from=01/01/15&to=01/01/20')
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, "A future event")
+        #expect 2 results for this search
+        response = self.client.get('/api/events/search?from=01/01/01')
+        self.assertContains(response, "title", 2)
+
+    @mock.patch('requests.get', autospec=True)
+    def test_search_speaker(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/events/search?from=01/01/01&speaker=' + self.speaker1_slug )
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+
+        # Note = currently failing since we don't yet embed speakers in event response
+        self.assertContains(response, "James Bond")
+        self.assertContains(response, "A future event")
+
+    @mock.patch('requests.get', autospec=True)
+    def test_search_venue(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/events/search?from=01/01/01&venue=' + self.location1)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        # TODO expose venue in response, will need further mockup
+        #self.assertContains(response, "Banbury Road")
+
+    @mock.patch('requests.get', autospec=True)
+    def test_search_organising_department(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/events/search?from=01/01/01&organising_department=' + self.department1)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        # TODO expose dept in response, will need further mockup
+        #self.assertContains(response, "Chemical Biology")
 
     @mock.patch('requests.get', autospec=True)
     def test_search_topic(self, requests_get):
