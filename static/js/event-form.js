@@ -101,7 +101,7 @@ $(function() {
         if(!location_id) { return; }
         $.ajax({
                     type:'GET',
-                    url: 'http://api.m.ox.ac.uk/places/' + location_id,
+                    url: '//api.m.ox.ac.uk/places/' + location_id,
                     success: function(response) {
                         $('#id_event-department_organiser').trigger("eventGroupChanged", response);
                     },
