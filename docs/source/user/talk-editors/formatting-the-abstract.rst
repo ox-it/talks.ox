@@ -36,6 +36,52 @@ The **Abstract** field uses the Textile markup language - the basics are very ea
 
 ::
 
-     "Link Title":http://www.ox.ac.uk
+     "Link Title":http://www.ox.ac.uk  
+     "$":http://www.ox.ac.uk
+     "$":mailto:joe.blogs@ox.ac.uk
 
-If you need more, there is a comprehensive manual on `txstyle.org <http://txstyle.org>`_ .
+If you need more, there is a comprehensive manual on `txstyle.org <http://txstyle.org>`_ 
+
+Pasting from Word
+-----------------
+
+You can copy and paste from Word, but you will need to format the text again.
+
+If you have a number of abstracts and lots of formatting, then try:
+
+* adjusting the styles in your Word document following the guidelines below
+* saving your Word document as a plain text file 
+* opening the file in a plain text editor (e.g.: Notepad) and copying from there
+
+**Headings**
+
+* Format > Style > Modify > Numbering ...
+* Choose Numbering, click any numbering style and click the Customize ... button
+* Set the Number style to None and type 'h1' in the Number format box
+
+**Bullet Points**
+
+* Format > Bullets and Numbering
+* Click the Customize ... button
+* Select an asterisk from the Bullet Character options
+
+**Numbered Lists**
+
+* Format > Bullets and Numbering
+* Click the Customize ... button
+* Set the Number style to None and type '#' in the Number format box
+
+
+
+
+
+
+
+
+
+Other useful tools
+------------------
+
+* `Table converter <http://txstyle.org/tools/50/data-converter>`_ - turning a CSV file (e.g.: exported from Excel) into a Textile table of information
+* `Pandoc <http://johnmacfarlane.net/pandoc/index.html>`_ - open source software to convert to Textile from other formats
+
