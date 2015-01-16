@@ -1,3 +1,5 @@
+import mock
+
 from django.contrib.contenttypes.models import ContentType
 from django.test.testcases import TestCase
 from rest_framework.test import APIRequestFactory, APIClient
@@ -6,6 +8,8 @@ from talks.events.models import EVENT_PUBLISHED, PersonEvent, ROLES_SPEAKER
 
 FUTURE_DATE_STRING = "2018-01-01 19:00"
 PAST_DATE_STRING = "2011-01-01 20:00"
+
+TOPIC_1429860_MOCK_RESPONSE = {"_links":{"self":{"href":"/search?uri=http://id.worldcat.org/fast/1429860"}},"_embedded":{"concepts":[{"uri":"http://id.worldcat.org/fast/1429860","prefLabel":"Biodiversity","altLabels":["Biotic diversity","Diversification, Biological","Diversity, Biotic","Biological diversity","Diversity, Biological","Biological diversification"],"related":[{"label":"Biology","uri":"http://id.worldcat.org/fast/832383"},{"label":"Ecological heterogeneity","uri":"http://id.worldcat.org/fast/901453"}]}]}}
 
 
 class TestAPI(TestCase):
@@ -80,21 +84,17 @@ class TestAPI(TestCase):
         #                                             object_id=future_event.id)
         ti.save()
         future_event.save()
-        print future_event.topics.all()
-        print "topic Item:"
-        print ti.object_id
-        print ti.uri
-        print ti.content_type
         self.req_factory = APIRequestFactory()
         self.client = APIClient()
 
-    def test_retrieve_event_happy(self):
-        response = self.client.get('/api/events/' + self.event1_slug + '/')
-        print response
+    @mock.patch('requests.get', autospec=True)
+    def test_retrieve_event_happy(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
+        response = self.client.get('/api/events/' + self.event1_slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
-        # self.assertContains(response, "_embedded")
-        self.assertContains(response, "A future eventfeeee")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, "A future event")
 
     # def test_retrieve_event_invalid(self):
     #     # retrieve an event which doesn't exist. Check response is as expected
@@ -158,11 +158,12 @@ class TestAPI(TestCase):
     #     self.assertContains(response, "_links")
     #     self.assertContains(response, "_embedded")
     #     self.assertContains(response, "Chemical Biology")
-    #
-    def test_search_topic(self):
+
+    @mock.patch('requests.get', autospec=True)
+    def test_search_topic(self, requests_get):
+        requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
         response = self.client.get('/api/events/search?from=01/01/01&topic=' + self.topic1_uri)
-        print response
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
-        self.assertContains(response, "Animal diversity")
+        self.assertContains(response, "Biodiversity")
