@@ -82,6 +82,7 @@ INSTALLED_APPS = (
     # Oxford Talks
     'talks.users',
     'talks.events',
+    'talks.contributors',
     'talks.api_ox',
     'talks.old_talks'
 )

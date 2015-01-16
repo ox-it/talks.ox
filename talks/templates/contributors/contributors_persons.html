@@ -6,12 +6,6 @@
 
 {% block content %}
 
-    <style type="text/css">
-    .filter-selected {
-         background-color: #ddd;
-    }
-    </style>
-
     <h2>People administration</h2>
 
     <div class="container">
@@ -19,9 +13,9 @@
             <div class="col-xs-3">
 
             <ul class="nav nav-list well">
-                <li><a href="{% url 'contributors-events' %}?date=future" class="">Talks</a></li>
-                <li><a href="{% url 'contributors-eventgroups' %}" class="">Series</a></li>
-                <li><a href="{% url 'contributors-persons' %}" class="filter-selected">People</a></li>
+                <li><a href="{% url 'contributors-events' %}?date=future" class="">Talks  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+                <li><a href="{% url 'contributors-eventgroups' %}" class="">Series  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+                <li><a href="{% url 'contributors-persons' %}" class="filter-selected">People  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
             </ul>
         </div>
 

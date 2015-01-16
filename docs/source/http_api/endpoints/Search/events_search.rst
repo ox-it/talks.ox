@@ -1,6 +1,6 @@
-**********************
-Events search endpoint
-**********************
+*************
+Search Events
+*************
 
 Endpoint to search and retrieve information about events.
 

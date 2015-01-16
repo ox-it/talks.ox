@@ -42,6 +42,17 @@ def facet_selected(context, **kwargs):
             return kwargs.get('return_value', "filter-selected")
     return ""
 
+@register.simple_tag(takes_context=True)
+def facet_has_selection(context, **kwargs):
+    """
+    Returns the return_value as specified if the key is present in the query string with any value
+    """
+    request = context['request']
+    param = kwargs['param']
+    query_String = request.META['QUERY_STRING']
+    if _parameter_present(query_String, param):
+        return kwargs.get('return_value', "filter-exists")
+    return "filter-absent"
 
 def _set_parameter(query_string, key, value):
     """
@@ -90,11 +101,19 @@ def _remove_all_parameter(query_string, *args):
     return '?%s' % '&'.join(parameters)
 
 
-def _parameter_present(query_string, key, value):
+def _parameter_present(query_string, key, value=None):
+    """
+    Check whether the given key/value pair is present in the query string.
+    If the value is blank, it simply checks for the presence of the key
+    """
     already_there = False
     if query_string:
         for p in query_string.split('&'):
             k, v = p.split('=')
-            if str(k) == str(key) and str(v) == str(value):
-                already_there = True
+            if str(k) == str(key):
+                if value:
+                    if str(v) == str(value):
+                        already_there = True
+                else:
+                    already_there = True
     return already_there

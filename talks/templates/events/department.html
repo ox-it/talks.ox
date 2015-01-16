@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ org.name }}{% endblock %}
+
+
+{% block content %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ org.name }}</h3>
+    </div>
+
+    <ul class="list-group">
+        {% for event in events.all %}
+        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+<p><a href="//maps.ox.ac.uk/#/places/{{ org.id }}" target="_blank">See {{ org.name }} on <strong>maps.ox</strong></a></p>
+
+{% endblock %}

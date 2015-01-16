@@ -6,8 +6,8 @@
 {{ group_form.description|bootstrap_horizontal }}
 {{ group_form.group_type|bootstrap_horizontal }}
 {{ group_form.organisers|bootstrap_horizontal }}
-{% with person_form=organiser_form role='organiser' prefix='' %}
-{% include 'events/person_quick_add.html' %}
+{% with person_form=organiser_form role='organisers' prefix='' %}
+{% include 'contributors/person_quick_add.html' %}
 {% endwith %}
 {{ group_form.occurence|bootstrap_horizontal }}
 {{ group_form.web_address|bootstrap_horizontal }}
