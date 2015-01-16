@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
+from rest_framework import serializers, pagination
 from rest_framework.fields import Field
 
 from talks.events.models import Event, Person, EventGroup
@@ -111,8 +111,28 @@ class SearchResultEmbedsSerializer(serializers.Serializer):
     talks = HALEventSerializer(source='*', many=True, read_only=True)
 
 
+class HALPreviousPageField(pagination.PreviousPageField):
+
+    def to_representation(self, value):
+        if value.has_previous():
+            return {'href': super(HALPreviousPageField, self).to_representation(value)}
+        return None
+
+
+class HALNextPageField(pagination.NextPageField):
+
+    def to_representation(self, value):
+        if value.has_next():
+            return {'href': super(HALNextPageField, self).to_representation(value)}
+        return None
+
+
 class SearchResultLinksSerializer(serializers.Serializer):
     self = serializers.SerializerMethodField()
+    next = HALNextPageField(source='*')
+    prev = HALPreviousPageField(source='*')
+    results = None
+
 
     def get_self(self, obj):
         req = self.context.get('request')
@@ -126,7 +146,7 @@ class HALSearchResultSerializer(serializers.Serializer):
 
     def get_links(self, obj):
         # Return a SearchResultLinksSerializer, but pass the context on by using it a method field
-        serializer = SearchResultLinksSerializer(obj, many=True, context=self.context)
+        serializer = SearchResultLinksSerializer(obj, context=self.context)
         return serializer.data
 
 

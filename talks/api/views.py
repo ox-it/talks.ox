@@ -2,6 +2,7 @@ import logging
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 import operator
 from django.http.response import HttpResponse
@@ -132,7 +133,18 @@ def api_event_search(request):
 
     final_query = reduce(operator.and_, queries)
     events = Event.published.filter(final_query)
-    serializer = HALSearchResultSerializer(events, read_only=True, context={'request': request})
+
+    count = request.GET.get('count', 20)
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(events, count)
+    try:
+        page = paginator.page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    serializer = HALSearchResultSerializer(page, read_only=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
