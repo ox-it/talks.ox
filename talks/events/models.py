@@ -303,7 +303,7 @@ class Event(models.Model):
 
     @property
     def description_html(self):
-        return textile_restricted(self.description)
+        return textile_restricted(self.description, auto_link=True)
 
     def __unicode__(self):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
