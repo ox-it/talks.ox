@@ -1,11 +1,25 @@
 from django.conf.urls import patterns, include, url
 
 from rest_framework import routers
+from rest_framework.routers import Route
 
 from .views import (api_event_search, EventViewSet, EventGroupViewSet, suggest_user, api_create_person,
                     save_item, remove_item, get_event_group, suggest_person)
 
-router = routers.DefaultRouter()
+class TalksAPIRouter(routers.DefaultRouter):
+    """
+    Custom router which is read only, and only provides the retrieve endpoint, not the lists or
+    """
+    routes = [
+        Route(
+            url=r'{prefix}/{lookup}$',
+            mapping={'get': 'retrieve'},
+            name='{basename}-detail',
+            initkwargs={'suffix': 'Detail'}
+        ),
+    ]
+
+router = TalksAPIRouter()
 router.register(r'events', EventViewSet)
 router.register(r'series', EventGroupViewSet)
 
