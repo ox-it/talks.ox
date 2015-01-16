@@ -30,7 +30,7 @@ Scenario: Add the simplest talk
     page should contain text "something else"
 
 Scenario: Add talk to existing group of talks
-    create  event group  title=foo
+    create  event group  title=foo  department_organiser=oxpoints:23232503
 
     go to ${add_talk_page}
     type "something" into ${title field}
@@ -39,6 +39,7 @@ Scenario: Add talk to existing group of talks
     ${group field} should be displayed
     ${create group button} should be displayed
     Select from list  ${group field.locator}  foo
+    page should contain text "Chemical Biology"
     click on ${start field}
     ${datetimepicker[0]} should appear
     Select current date and time for ${datetimepicker[0]}
