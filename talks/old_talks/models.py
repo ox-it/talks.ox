@@ -82,7 +82,7 @@ def build_abstract(event):
     abstract = ""
     if event.description:
         abstract += event.description
-        abstract += "\n"
+        abstract += "\n\n"
     if event.topics.count() > 0:
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
@@ -114,7 +114,7 @@ def group_to_old_series(group):
 
     description = group.description
     if group.organisers.count() > 0:
-        description += "\n\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
+        description += "\n\n\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
 
     data.append(('list[details]', description))
     return data
