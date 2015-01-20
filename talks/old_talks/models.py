@@ -87,9 +87,9 @@ def build_abstract(event):
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
     if event.hosts.count() > 0:
-        abstract += "\nHosts: " + ", ".join([host.title for host in event.hosts])
+        abstract += "\nHosts: " + ", ".join([host.name for host in event.hosts.all()])
     if event.organisers.count() > 0:
-        abstract += "\nOrganisers: " + ", ".join([organiser.title for organiser in event.organisers])
+        abstract += "\nOrganisers: " + ", ".join([organiser.name for organiser in event.organisers.all()])
     if event.organiser_email:
         abstract += "\nContact email: " + event.organiser_email
     abstract += "\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
@@ -101,9 +101,6 @@ def build_abstract(event):
     if event.cost:
         abstract += "\nCost: " + event.cost
 
-
-    print abstract
-
     return abstract
 
 
@@ -114,4 +111,10 @@ def group_to_old_series(group):
     """
     data = []
     data.append(('list[name]', group.title))
+
+    description = group.description
+    if group.organisers.count() > 0:
+        description += "\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
+
+    data.append(('list[description]', description))
     return data
