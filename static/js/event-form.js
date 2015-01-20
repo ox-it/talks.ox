@@ -17,10 +17,17 @@ $(function() {
         format: 'dd/mm/yyyy hh:ii',
         autoclose: true,
     });
+
     $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
-        //set the end time to 1 hour later
-        hours = ev.date.getHours();
+        //correct for daylight savings - the widget assumes we're picking in GMT
         var date = new Date(ev.date);
+        var gmt_offset = date.getTimezoneOffset();
+        date.setMinutes( date.getMinutes() + gmt_offset );
+        var picker = $(ev.target).data('datetimepicker');
+        picker.setDate(date);
+
+        //set the end time to 1 hour later
+        var end_date = new Date(date);
         date.setHours(date.getHours()+1, date.getMinutes());
         $('#event-end.js-datetimepicker').data('datetimepicker').setDate(date);
     });
