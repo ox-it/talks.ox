@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 from django.db import models
 from django.dispatch.dispatcher import receiver
 
-from talks.events.models import Event, EventGroup
+from talks.events.models import Event, EventGroup, AUDIENCE_CHOICES, AUDIENCE_OXFORD, BOOKING_CHOICES
 from talks.events.signals import event_updated, eventgroup_updated
 
 logger = logging.getLogger(__name__)
@@ -86,6 +86,24 @@ def build_abstract(event):
     if event.topics.count() > 0:
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
+    if event.hosts.count() > 0:
+        abstract += "\nHosts: " + ", ".join([host.title for host in event.hosts])
+    if event.organisers.count() > 0:
+        abstract += "\nOrganisers: " + ", ".join([organiser.title for organiser in event.organisers])
+    if event.organiser_email:
+        abstract += "\nContact email: " + event.organiser_email
+    abstract += "\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
+    abstract += "\nBooking: " + dict(BOOKING_CHOICES)[event.booking_type]
+    if event.booking_url:
+        abstract += "\nWeb address for booking: " + event.booking_url
+    if event.booking_email:
+        abstract += "\nEmail address for booking: " + event.booking_email
+    if event.cost:
+        abstract += "\nCost: " + event.cost
+
+
+    print abstract
+
     return abstract
 
 
