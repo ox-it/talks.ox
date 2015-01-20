@@ -116,5 +116,5 @@ def group_to_old_series(group):
     if group.organisers.count() > 0:
         description += "\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
 
-    data.append(('list[description]', description))
+    data.append(('list[details]', description))
     return data
