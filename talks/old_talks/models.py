@@ -87,19 +87,19 @@ def build_abstract(event):
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
     if event.hosts.count() > 0:
-        abstract += "\nHosts: " + ", ".join([host.name for host in event.hosts.all()])
+        abstract += "\n\nHosts: " + ", ".join([host.name for host in event.hosts.all()])
     if event.organisers.count() > 0:
-        abstract += "\nOrganisers: " + ", ".join([organiser.name for organiser in event.organisers.all()])
+        abstract += "\n\nOrganisers: " + ", ".join([organiser.name for organiser in event.organisers.all()])
     if event.organiser_email:
-        abstract += "\nContact email: " + event.organiser_email
-    abstract += "\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
-    abstract += "\nBooking: " + dict(BOOKING_CHOICES)[event.booking_type]
+        abstract += "\n\nContact email: " + event.organiser_email
+    abstract += "\n\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
+    abstract += "\n\nBooking: " + dict(BOOKING_CHOICES)[event.booking_type]
     if event.booking_url:
-        abstract += "\nWeb address for booking: " + event.booking_url
+        abstract += "\n\nWeb address for booking: " + event.booking_url
     if event.booking_email:
-        abstract += "\nEmail address for booking: " + event.booking_email
+        abstract += "\n\nEmail address for booking: " + event.booking_email
     if event.cost:
-        abstract += "\nCost: " + event.cost
+        abstract += "\n\nCost: " + event.cost
 
     return abstract
 
@@ -114,7 +114,7 @@ def group_to_old_series(group):
 
     description = group.description
     if group.organisers.count() > 0:
-        description += "\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
+        description += "\n\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
 
     data.append(('list[details]', description))
     return data
