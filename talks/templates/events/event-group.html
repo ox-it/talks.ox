@@ -21,12 +21,14 @@
 
 {% if perms.events.change_eventgroup %}
     <div class="container-fluid">
+      {% if request.user|can_edit_group:event_group %}
     <div class="row bg-primary">
       <div class="col-md-11"></div>
       <div class="col-md-1">
         <a class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit</a>
       </div>
     </div>
+      {% endif %}
     </div>
 {% endif %}
 
