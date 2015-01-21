@@ -295,9 +295,19 @@ def contributors_events(request):
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def contributors_eventgroups(request):
-    eventgroups = EventGroup.objects.all().order_by('title')
+    groups_editable = request.GET.get('editable', None)
     count = request.GET.get('count',20)
     page = request.GET.get('page', 1)
+
+    args={'count': count}
+
+    if groups_editable and not request.user.is_superuser:
+        eventgroups = EventGroup.objects.filter(editor_set__in=[request.user])
+        args['editable'] = 'true'
+    else:
+        eventgroups = EventGroup.objects.all()
+
+    eventgroups = eventgroups.order_by('title')
 
     paginator = Paginator(eventgroups, count)
 
@@ -306,8 +316,11 @@ def contributors_eventgroups(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-eventgroups')
 
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+
     context = {
-        'groups': eventgroups
+        'groups': eventgroups,
+        'fragment': fragment
     }
 
     return render(request, 'contributors/contributors_groups.html', context)
