@@ -91,7 +91,6 @@ Scenario: change topic
 Scenario: inherit organisers from event group
     go to ${edit_talk_page('${event2_slug}')}
     page should contain text "Luke Skywalker"
-    capture page screenshot  filename=selenium-_before.png
     click on ${checkbox in group section}
     ${group field} should be displayed
     ${create group button} should be displayed
@@ -99,4 +98,3 @@ Scenario: inherit organisers from event group
     page should contain text "James Bond"
     ${list group item("Luke Skywalker")} should be present 1 times
     ${list group item("James Bond")} should be present 1 times
-    capture page screenshot  filename=selenium-_inherited.png
