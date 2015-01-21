@@ -205,7 +205,7 @@ class EventGroupForm(forms.ModelForm):
 class PersonForm(forms.ModelForm):
 
     class Meta:
-        fields = ('name', 'bio',)
+        fields = ('name', 'bio', 'web_address')
         model = models.Person
         widgets = {
             'bio': forms.TextInput(),
@@ -214,18 +214,21 @@ class PersonForm(forms.ModelForm):
 
 class PersonQuickAdd(forms.ModelForm):
     class Meta:
-        fields = ('name', 'bio')
+        fields = ('name', 'bio', 'web_address')
         model = models.Person
         widgets = {
             # For an inline form, a placeholder works better than a label
             'name': forms.TextInput(attrs={'placeholder':'Enter Name'}),
             'bio': forms.TextInput(attrs={'placeholder':'Enter Affiliation'}),
+            'web_address': forms.TextInput(attrs={'placeholder': 'Enter relevant web address'}),
         }
         labels = {
             'name': "",
             'bio': "",
+            'web_address': "",
         }
         help_texts = {
             'name': "e.g. Dr Joseph Bloggs",
-            'bio': "e.g. University of Oxford"
+            'bio': "e.g. University of Oxford",
+            'web_address': "http://en.wikipedia.org/wiki/Example"
         }

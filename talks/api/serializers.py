@@ -16,7 +16,7 @@ class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = ('id', 'name', 'bio', 'title')
+        fields = ('id', 'name', 'bio', 'title', 'web_address')
 
 
 class ClassNameField(serializers.Field):

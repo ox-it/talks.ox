@@ -48,6 +48,7 @@ $(function() {
 
             var namefield = $control.find('#id_name');
             var biofield = $control.find('#id_bio');
+            var webaddressfield = $control.find('#id_web_address')
             var csrftoken = $.cookie('csrftoken');
             var $errorMessage = $control.find('.js-person-form-errors');
             var target = $(this).attr('data-input-target');
@@ -60,23 +61,27 @@ $(function() {
                     },
                     data: {
                         name: namefield.val(),
-                        bio: biofield.val()
+                        bio: biofield.val(),
+                        web_address: webaddressfield.val()
                     },
 
                     success: function(response) {
                         $target.trigger("addPerson", response);
                         namefield.val("");
                         biofield.val("");
+                        webaddressfield.val("");
                         //clear error classes
                         setErrorStateForInput($control, 'name', false);
                         setErrorStateForInput($control, 'bio', false);
+                        setErrorStateForInput($control, 'web_address', false);
                         //clear and hide error message
                         $errorMessage.addClass("hidden");
                     },
                     error: function(response) {
                         setErrorStateForInput($control, 'name', false);
                         setErrorStateForInput($control, 'bio', false)
-                        for(key in response.responseJSON) {
+                        setErrorStateForInput($control, 'web_address', false);
+                        for(var key in response.responseJSON) {
                             setErrorStateForInput($control, key, true)
                         }
                         $errorMessage.removeClass("hidden");

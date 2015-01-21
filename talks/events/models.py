@@ -132,6 +132,9 @@ class Person(models.Model):
     email_address = models.EmailField(max_length=254,
                                       null=True,
                                       blank=True)
+    web_address = models.URLField(verbose_name="Web address",
+                                  null=True,
+                                  blank=True)
 
     objects = PersonManager()
 

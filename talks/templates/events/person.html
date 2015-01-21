@@ -13,6 +13,9 @@
     <div class="panel-body">
         <a class="pull-right btn btn-default" role="button" href="{% url 'edit-person' person.slug %}">edit</a>
         <p>{{ person.bio }}</p>
+        {% if person.web_address %}
+        <p><a href="{{ person.web_address }}" target="_blank">{{ person.web_address }}</a></p>
+        {% endif %}
     </div>
 
     <ul class="list-group">
