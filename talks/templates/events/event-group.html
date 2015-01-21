@@ -60,11 +60,22 @@
         {% if perms.events.change_event %}
         <li class="list-group-item">
                 <div style="float:right">{% if request.user|can_edit:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
-                <strong>{{ event.formatted_date }}</strong>{% if perms.events.edit_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>
+                <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }})
+                {% if perms.events.edit_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>
                 <a href="{{ event.get_absolute_url }}">{% if event.title %}{{ event.title }}{% else %}Untitled Event{% endif %}</a><br>
                 <strong>Speaker{{ event.speakers|pluralize }}</strong>: {% for speaker in event.speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% empty %} TBA
-                {% endfor %}
+                {% endfor %}<br>
+                {% if event.location %}
+                <strong>Venue</strong>:<a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                {% endif %}
+                <strong>Organiser{{ event.organisers|pluralize }}</strong>: {% for org in event.organisers %}<a href="{% url 'show-person' org.slug %}">{{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+                {% empty %} TBA
+                {% endfor %}<br>
+                <strong>Host{{ event.hosts|pluralize }}</strong>: {% for host in event.hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+                {% empty %} TBA
+                {% endfor %}<br>
+
         </li>
         {% endif %}
         {% endfor %}

@@ -323,6 +323,12 @@ class Event(models.Model):
         else:
             return None
 
+    def formatted_endtime(self):
+        if self.start:
+            return date_filter(self.end, settings.EVENT_TIME_FORMAT)
+        else:
+            return None
+
     def happening_today(self):
         if self.start:
             return self.start.date() == date.today()
