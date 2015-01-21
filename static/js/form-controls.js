@@ -64,8 +64,12 @@ $(function() {
         e.stopPropagation();
         var value = suggestion[$(e.target).data('valueKey')];
         var name = $(e.target).data('name');
-        var $input = $('input[name="' + name + '"]', $(e.target).parents('form'));
-        $input = makeInput(e.target, name, value);
+
+        //clear the internal query value, so that the box is blank after losing focus
+        var $typeahead = $('.tt-input', $(e.target).parents('.twitter-typeahead'));
+        $typeahead.typeahead('val','');
+
+        var $input = makeInput(e.target, name, value);
         showSelectedValue($(e.target), $input, suggestion);
     }
     function onEventGroupChanged(e, department) {
