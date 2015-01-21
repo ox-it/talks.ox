@@ -75,7 +75,7 @@ $(function() {
     function onEventDepartmentChanged(e, department) {
         //update to use the supplied department ID, if it doesn't currently have one set
         existingValues = $(this).siblings('.list-group-item');
-        if(existingValues.length()==0) {
+        if(existingValues.length==0) {
             e.preventDefault();
             e.stopPropagation();
             var value = department;
