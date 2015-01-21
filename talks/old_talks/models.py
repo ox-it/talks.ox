@@ -65,7 +65,10 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[end_time_string]", event.end.strftime("%H:%M")))
     if event.location:
         location = event.api_location
-        data.append(("talk[venue_name]", "{name} - ({details}), {address}".format(name=location['name'], details=event.location_details, address=location.get('address', ''))))
+        name = location['name']
+        if event.location_details:
+            name += " (" + event.location_details + ")"
+        data.append(("talk[venue_name]", "{name}, {address}".format(name=name, address=location.get('address', ''))))
     if series_id:
         data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
