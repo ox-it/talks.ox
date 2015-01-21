@@ -181,9 +181,22 @@ class EventGroupForm(forms.ModelForm):
         widget=typeahead.MultipleTypeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
+    editor_set = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
+        label="Other Editors",
+        help_text="Share editing with another Talks Editor by typing in their email address",
+        required=False,
+        widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
+    )
+
     def save(self):
         group = super(EventGroupForm, self).save(commit=False)
         group.save()
+
+        # clear the list of editors and repopulate with the contents of the form
+        group.editor_set.clear()
+        for user in self.cleaned_data['editor_set']:
+            group.editor_set.add(user)
 
         group.organisers.clear()
         for person in self.cleaned_data['organisers']:

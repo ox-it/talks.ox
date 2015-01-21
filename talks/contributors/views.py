@@ -138,6 +138,9 @@ def edit_event_group(request, event_group_slug):
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
+            if request.user not in event_group.editor_set.all():
+                event_group.editor_set.add(request.user)
+                event_group.save()
             eventgroup_updated.send(event_group.__class__, instance=event_group)
             messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
