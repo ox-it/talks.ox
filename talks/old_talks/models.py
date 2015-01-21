@@ -65,12 +65,17 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[end_time_string]", event.end.strftime("%H:%M")))
     if event.location:
         location = event.api_location
-        data.append(("talk[venue_name]", "{name}, {address}".format(name=location['name'], address=location.get('address', ''))))
+        name = location['name']
+        if event.location_details:
+            name += " (" + event.location_details + ")"
+        data.append(("talk[venue_name]", "{name}, {address}".format(name=name, address=location.get('address', ''))))
     if series_id:
         data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
-        data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in event.speakers.all()])))
+        data.append(("talk[name_of_speaker]", ", ".join([speaker.name + ' (' + speaker.bio + ')' for speaker in event.speakers.all()])))
     # sets the ex_directory status all the time to be sure to be in sync
+    if event.special_message:
+        data.append(("talk[special_message]", event.special_message))
     if event.is_published:
         data.append(("talk[ex_directory]", "0"))
     else:
@@ -87,9 +92,9 @@ def build_abstract(event):
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
     if event.hosts.count() > 0:
-        abstract += "\n\nHosts: " + ", ".join([host.name for host in event.hosts.all()])
+        abstract += "\n\nHosts: " + ", ".join([host.name + ' (' + host.bio + ')' for host in event.hosts.all()])
     if event.organisers.count() > 0:
-        abstract += "\n\nOrganisers: " + ", ".join([organiser.name for organiser in event.organisers.all()])
+        abstract += "\n\nOrganisers: " + ", ".join([organiser.name + ' (' + organiser.bio + ')' for organiser in event.organisers.all()])
     if event.organiser_email:
         abstract += "\n\nContact email: " + event.organiser_email
     abstract += "\n\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
@@ -114,7 +119,7 @@ def group_to_old_series(group):
 
     description = group.description
     if group.organisers.count() > 0:
-        description += "\n\n\nOrganisers: " + ", ".join([organiser.name for organiser in group.organisers.all()])
+        description += "\n\n\nOrganisers: " + ", ".join([organiser.name + ' (' + organiser.bio + ')' for organiser in group.organisers.all()])
 
     data.append(('list[details]', description))
     return data
