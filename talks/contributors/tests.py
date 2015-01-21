@@ -570,6 +570,13 @@ class TestAuthorisation(TestCase):
         self.contrib_user2.groups.add(self.group)
         self.contrib_user2.save()
 
+        #user 3 who is a member of contributors group
+        self.username_contrib3 = 'c3'
+        self.password_contrib3 = 'c3'
+        self.contrib_user3 = User.objects.create_user(self.username_contrib3, password=self.password_contrib3)
+        self.contrib_user3.groups.add(self.group)
+        self.contrib_user3.save()
+
         #a non-contributing user
         self.username_non_contrib = "nc"
         self.password_non_contrib = "nc"
@@ -594,13 +601,78 @@ class TestAuthorisation(TestCase):
     def test_create_event_unauthorised(self):
         self.client.login(username=self.username_non_contrib, password=self.password_non_contrib)
         data = {
-            'name' : u'',
+            'name': u'',
             'event-start': VALID_DATE_STRING,
-            'event-end' : VALID_DATE_STRING
+            'event-end': VALID_DATE_STRING
         }
         response = self.client.post("/talks/new", data)
         self.assertEquals(response.status_code, 403)
         self.assertTemplateNotUsed(response, "events/event_form.html")
+
+    def test_create_group_unauthorised(self):
+        self.client.login(username=self.username_non_contrib, password=self.password_non_contrib)
+        data = {
+            'title': u'Test series',
+        }
+        response = self.client.post("/talks/series/new", data)
+        self.assertEquals(response.status_code, 403)
+        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+
+    def test_edit_group_unauthorised(self):
+        group = factories.EventGroupFactory.create()
+        group.editor_set.add(self.contrib_user1)
+        group.save()
+
+        self.client.login(username=self.username_contrib2, password=self.password_contrib2)
+        data = {
+            'description': u'Test edit to group'
+        }
+        response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
+        self.assertEquals(response.status_code, 403)
+        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+
+    def test_edit_group_authorised(self):
+        group = factories.EventGroupFactory.create()
+        group.editor_set.add(self.contrib_user1)
+        group.save()
+
+        self.client.login(username=self.username_contrib1, password=self.password_contrib1)
+        data = {
+            'description': u'foo'
+        }
+        response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "events/event_group_form.html")
+
+
+    def test_group_editor_can_edit_event(self):
+        group = factories.EventGroupFactory.create()
+        group.editor_set.add(self.contrib_user1)
+        group.save()
+
+        event = factories.EventFactory.create(group=group)
+        event.editor_set.add(self.contrib_user2)
+        event.save()
+
+        #attempt to edit the event as contrib user3
+        self.client.login(username=self.username_contrib3, password=self.password_contrib3)
+        data = {
+            'event-title': 'foo'
+        }
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        self.assertEquals(response.status_code, 403)
+        self.assertTemplateNotUsed(response, "events/event_form.html")
+        self.client.logout()
+
+        #attempt to edit the event as contrib_user1
+        self.client.login(username=self.username_contrib1, password=self.password_contrib1)
+        data = {
+            'event-title': 'bar'
+        }
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "events/event_form.html")
+
 
 
 class TestEditEventView(AuthTestCase):
