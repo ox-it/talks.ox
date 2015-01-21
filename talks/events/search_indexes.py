@@ -85,6 +85,8 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             suggest_content.extend(topics_pref_labels)
         if topic_alt_labels:
             full_text_content.extend(topic_alt_labels)
+        if obj.group:
+            full_text_content.append(obj.group.title)
         suggest_content.extend(speakers_names)
         full_text_content.extend(speakers_names)
 
