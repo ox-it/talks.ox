@@ -12,10 +12,13 @@ $(function() {
         }
     });
 
+    var today_eleven_am = new Date();
+    today_eleven_am.setHours(11);
     // Initialise datetimepicker's
     $('.js-datetimepicker').datetimepicker({
         format: 'dd/mm/yyyy hh:ii',
         autoclose: true,
+        initialDate: today_eleven_am
     });
 
     $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
