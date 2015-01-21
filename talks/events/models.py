@@ -375,11 +375,14 @@ class Event(models.Model):
         """
         Check if the given django User is authorised to edit this event.
         They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        Users can also edit an event if they are an editor of the series it belongs to
         :param user: The django user wishing to edit the event
         :return: True if the user is allowed to edit this event, False otherwise
         """
-        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
-
+        can_edit = self.editor_set.filter(id=user.id).exists() or user.is_superuser
+        if self.group:
+            can_edit = can_edit or self.group.user_can_edit(user)
+        return can_edit
 
 reversion.register(Event)
 reversion.register(EventGroup)

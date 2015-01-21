@@ -133,6 +133,9 @@ def delete_event(request, event_slug):
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def edit_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
+    if not group.user_can_edit(request.user):
+        raise PermissionDenied
+
     form = EventGroupForm(request.POST or None, instance=group)
     if request.method == 'POST':
         logging.debug("incoming post: %s", request.POST)
@@ -191,6 +194,8 @@ def create_event_group(request):
 @permission_required('events.delete_eventgroup', raise_exception=PermissionDenied)
 def delete_event_group(request, event_group_slug):
     event_group = get_object_or_404(EventGroup, slug=event_group_slug)
+    if not event_group.user_can_edit(request.user):
+        raise PermissionDenied
     context = {
         'event_group': event_group,
         'events': event_group.events.all()

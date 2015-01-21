@@ -238,10 +238,11 @@ class TestEventGroupViews(AuthTestCase):
     def test_edit_event_group_404(self):
         response = self.client.get("/talks/series/id/1/edit")
         self.assertEquals(response.status_code, 404)
-        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_group_form.html")
 
     def test_edit_event_group_200(self):
         group = factories.EventGroupFactory.create()
+        group.editor_set.add(self.user)
         response = self.client.get("/talks/series/id/%s/edit" % group.slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, group.title)
@@ -250,6 +251,7 @@ class TestEventGroupViews(AuthTestCase):
 
     def test_edit_event_group_post_happy(self):
         group = factories.EventGroupFactory.create()
+        group.editor_set.add(self.user)
         data = {
             'title': 'lkfjlfkds',
             'description': 'dflksfoingf',
@@ -261,7 +263,7 @@ class TestEventGroupViews(AuthTestCase):
         saved_group = models.EventGroup.objects.get(pk=group.id)
         self.assertEquals(saved_group.title, data['title'])
         self.assertEquals(saved_group.description, data['description'])
-        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_group_form.html")
 
     def test_edit_event_group_post_invalid(self):
         old_title = 'some_old_title'
@@ -270,6 +272,7 @@ class TestEventGroupViews(AuthTestCase):
             title=old_title,
             description=old_description
         )
+        group.editor_set.add(self.user)
         data = {
             'title': '',
             'description': 'dflksfoingf',
@@ -300,7 +303,7 @@ class TestEventGroupViews(AuthTestCase):
         self.assertRedirects(response, "/talks/series/id/%s" % saved_group.slug)
         self.assertEquals(saved_group.title, data['title'])
         self.assertEquals(saved_group.description, data['description'])
-        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_group_form.html")
 
     def test_create_event_group_post_invalid(self):
         data = {
@@ -329,7 +332,7 @@ class TestCreateEventView(AuthTestCase):
     def test_get_nonexistent_group(self):
         response = self.client.get('/talks/series/8475623/new')
         self.assertEquals(response.status_code, 404)
-        self.assertTemplateNotUsed(response, 'events/event_form.html')
+        self.assertTemplateNotUsed(response, 'contributors/event_form.html')
 
     def test_get_happy_for_existing_group(self):
         group = factories.EventGroupFactory.create()
@@ -596,7 +599,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         self.assertEquals(response.status_code, 403)
-        self.assertTemplateNotUsed(response, "events/event_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_form.html")
 
     def test_create_event_unauthorised(self):
         self.client.login(username=self.username_non_contrib, password=self.password_non_contrib)
@@ -607,7 +610,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/new", data)
         self.assertEquals(response.status_code, 403)
-        self.assertTemplateNotUsed(response, "events/event_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_form.html")
 
     def test_create_group_unauthorised(self):
         self.client.login(username=self.username_non_contrib, password=self.password_non_contrib)
@@ -616,7 +619,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/series/new", data)
         self.assertEquals(response.status_code, 403)
-        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_group_form.html")
 
     def test_edit_group_unauthorised(self):
         group = factories.EventGroupFactory.create()
@@ -629,7 +632,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
         self.assertEquals(response.status_code, 403)
-        self.assertTemplateNotUsed(response, "events/event_group_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_group_form.html")
 
     def test_edit_group_authorised(self):
         group = factories.EventGroupFactory.create()
@@ -642,7 +645,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/series/id/%s/edit" % group.slug, data)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "events/event_group_form.html")
+        self.assertTemplateUsed(response, "contributors/event_group_form.html")
 
 
     def test_group_editor_can_edit_event(self):
@@ -661,7 +664,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         self.assertEquals(response.status_code, 403)
-        self.assertTemplateNotUsed(response, "events/event_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_form.html")
         self.client.logout()
 
         #attempt to edit the event as contrib_user1
@@ -671,7 +674,7 @@ class TestAuthorisation(TestCase):
         }
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "events/event_form.html")
+        self.assertTemplateUsed(response, "contributors/event_form.html")
 
 
 
@@ -680,7 +683,7 @@ class TestEditEventView(AuthTestCase):
     def test_edit_event_404(self):
         response = self.client.get("/talks/id/1/edit")
         self.assertEquals(response.status_code, 404)
-        self.assertTemplateNotUsed(response, "events/event_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_form.html")
 
     def test_edit_event_200(self):
         event = factories.EventFactory.create()
@@ -720,7 +723,7 @@ class TestEditEventView(AuthTestCase):
         self.assertEquals(saved_event.description, data['event-description'])
         self.assertEquals(saved_event.booking_type, data['event-booking_type'])
         self.assertEquals(saved_event.audience, data['event-audience'])
-        self.assertTemplateNotUsed(response, "events/event_form.html")
+        self.assertTemplateNotUsed(response, "contributors/event_form.html")
 
     def test_edit_event_post_invalid(self):
         old_title = u'some_old_title'
