@@ -2,7 +2,7 @@ from datetime import datetime
 from django.test import TestCase
 
 from talks.events.models import (Event, Person, PersonEvent,
-                                 ROLES_SPEAKER, EventGroup, EVENT_PUBLISHED)
+                                 ROLES_SPEAKER, EventGroup, EVENT_PUBLISHED, AUDIENCE_OXFORD, ROLES_HOST)
 from .models import (event_to_old_talk, group_to_old_series,
                      get_list_id)
 
@@ -15,6 +15,8 @@ class TestOldTalks(TestCase):
         event.start = datetime(2014, 1, 1, 10, 30)
         event.end = datetime(2014, 1, 1, 11, 30)
         event.embargo = True
+        event.booking_email = "test@test.com"
+        event.audience = AUDIENCE_OXFORD
         event.save()
 
         s1 = Person()
@@ -25,10 +27,15 @@ class TestOldTalks(TestCase):
         s2.name = "B"
         s2.save()
 
+        s3 = Person()
+        s3.name = "C"
+        s3.save()
+
         event.save()
 
         PersonEvent.objects.create(person=s1, event=event, role=ROLES_SPEAKER)
         PersonEvent.objects.create(person=s2, event=event, role=ROLES_SPEAKER)
+        PersonEvent.objects.create(person=s3, event=event, role=ROLES_HOST)
 
         data = event_to_old_talk(event, None)
         d = dict(data)
@@ -36,7 +43,11 @@ class TestOldTalks(TestCase):
         self.assertEquals(len(data), 8)
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[name_of_speaker]"], "A, B")
-        self.assertEquals(d["talk[abstract]"], "")
+        self.assertTrue("Email address for booking: test@test.com" in d["talk[abstract]"])
+        self.assertTrue("Members of the University only" in d["talk[abstract]"])
+        self.assertTrue("Booking: Not required" in d["talk[abstract]"])
+        self.assertTrue("Hosts: C" in d["talk[abstract]"])
+        self.assertFalse("Organisers:" in d["talk[abstract]"])
         self.assertEquals(d["talk[date_string]"], "2014/01/01")
         self.assertEquals(d["talk[start_time_string]"], "10:30")
         self.assertEquals(d["talk[end_time_string]"], "11:30")
@@ -54,8 +65,12 @@ class TestOldTalks(TestCase):
         s = Person()
         s.name = "Personne"
         s.save()
-
         PersonEvent.objects.create(person=s, event=event, role=ROLES_SPEAKER)
+
+        p = Person()
+        p.name = "H"
+        p.save()
+        PersonEvent.objects.create(person=p, event=event, role=ROLES_HOST)
 
         data = event_to_old_talk(event, "22")
         d = dict(data)
@@ -63,7 +78,9 @@ class TestOldTalks(TestCase):
         self.assertEquals(len(data), 9)
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[series_id_string]"], "22")
-        self.assertEquals(d["talk[abstract]"], event.description+"\n")
+        self.assertTrue(event.description+"\n" in d["talk[abstract]"])
+        self.assertTrue("Hosts: H" in d["talk[abstract]"])
+        self.assertFalse("Organisers: " in d["talk[abstract]"])
         self.assertEquals(d["talk[name_of_speaker]"], s.name)
         self.assertEquals(d["talk[date_string]"], "2014/01/01")
         self.assertEquals(d["talk[start_time_string]"], "11:00")
@@ -73,13 +90,23 @@ class TestOldTalks(TestCase):
     def test_group_to_old_series(self):
         group = EventGroup()
         group.title = "Group"
+        group.description = "group description"
+        group.save()
+
+        o = Person()
+        o.name = "Organising person"
+        o.save()
+        group.organisers.add(o)
+
         group.save()
 
         data = group_to_old_series(group)
         d = dict(data)
 
-        self.assertEquals(len(data), 1)
+        self.assertEquals(len(data), 2)
         self.assertEquals(d["list[name]"], group.title)
+        self.assertTrue(group.description+"\n" in d["list[details]"])
+        self.assertTrue("Organisers: Organising person" in d["list[details]"])
 
     def test_get_list_id(self):
         doc = """<?xml version="1.0" encoding="UTF-8"?>
