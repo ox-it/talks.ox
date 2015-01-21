@@ -5,3 +5,5 @@ event2_location = "oxpoints:40002001"
 
 event1_slug = "a-maths-talk"
 event1_title = "A maths talk"
+
+group1_title = "A maths conference"

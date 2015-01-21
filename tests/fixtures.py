@@ -54,9 +54,10 @@ def create_test_data():
     person2 = Person.objects.create(name="Luke Skywalker", bio="Jedi")
     person3 = Person.objects.create(name="Darth Vader", bio="Sith")
     #event group
-    event_group = factories.EventGroupFactory.create(title='A maths conference',
-                                                     department_organiser='oxpoints:23232627')
-    event_group.organiser = person2
+    event_group = factories.EventGroupFactory.create(title=group1_title,
+                                                     department_organiser='oxpoints:23232627',)
+    event_group.organisers.add(person1)
+    event_group.organisers.add(person2)
     event_group.save()
 
     #event
@@ -81,3 +82,6 @@ def create_test_data():
                                     slug=event2_slug,
                                     description=event2_description,
                                     location=event2_location)
+    event2.save()
+    PersonEvent.objects.create(person=person2, event=event2, role=ROLES_ORGANISER)
+

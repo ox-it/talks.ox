@@ -103,12 +103,17 @@ $(function() {
                     type:'GET',
                     url: '//api.m.ox.ac.uk/places/' + location_id,
                     success: function(response) {
-                        $('#id_event-department_organiser').trigger("eventGroupChanged", response);
+                        $('#id_event-department_organiser').trigger("eventDepartmentChanged", response);
                     },
                     error: function(err) {
                         console.log(err);
                     }
                 })
+    }
+
+    function updateEventOrganisers(organisers) {
+        if(!organisers) { return; }
+        $('#id_event-organisers').trigger("eventOrganisersChanged", organisers);
     }
 
     //On picking a new event group, retrieve the information and set the value of the department organiser field
@@ -127,6 +132,7 @@ $(function() {
             success: function(response) {
                 //retrieve the name of the location in question
                 updateEventDepartment(response.department_organiser);
+                updateEventOrganisers([response.organisers]);
             },
             error: function(err) {
                 console.log(err);

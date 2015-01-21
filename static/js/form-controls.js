@@ -72,10 +72,10 @@ $(function() {
         var $input = makeInput(e.target, name, value);
         showSelectedValue($(e.target), $input, suggestion);
     }
-    function onEventGroupChanged(e, department) {
+    function onEventDepartmentChanged(e, department) {
         //update to use the supplied department ID, if it doesn't currently have one set
         existingValues = $(this).siblings('.list-group-item');
-        if(existingValues.length==0) {
+        if(existingValues.length()==0) {
             e.preventDefault();
             e.stopPropagation();
             var value = department;
@@ -83,6 +83,25 @@ $(function() {
             var $input = $('input[name="' + name + '"]', $(e.target).parents('form'));
             $input = makeInput(e.target, name, value.id);
             showSelectedValue($(e.target), $input, department);
+        }
+    }
+
+    function onEventOrganisersChanged(e, organisers) {
+        //append the list of organisers to the current list
+        var currentValues = $(e.target).data('currentValues');
+        for(var i=0; i<organisers.length; i++) {
+            var organiser = organisers[i];
+            var index = currentValues.indexOf(String(organiser.id));
+            if(index>=0) {
+                //already on the list
+                continue;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            var name = $(e.target).data('name');
+            var $input = $('input[name="' + name + '"]', $(e.target).parents('form'));
+            $input = makeInput(e.target, name, organiser.id);
+            showSelectedValue($(e.target), $input, organiser);
         }
     }
 
@@ -186,7 +205,8 @@ $(function() {
 
         var typeahead = $this.typeahead(options, dataSource);
         typeahead.on('typeahead:selected', onChange);
-        typeahead.on('eventGroupChanged', onEventGroupChanged);
+        typeahead.on('eventDepartmentChanged', onEventDepartmentChanged);
+        typeahead.on('eventOrganisersChanged', onEventOrganisersChanged);
         typeahead.on('addPerson', onAddPerson);
     });
 
