@@ -105,8 +105,8 @@ class TestOldTalks(TestCase):
 
         self.assertEquals(len(data), 2)
         self.assertEquals(d["list[name]"], group.title)
-        self.assertTrue(group.description+"\n" in d["list[description]"])
-        self.assertTrue("Organisers: Organising person" in d["list[description]"])
+        self.assertTrue(group.description+"\n" in d["list[details]"])
+        self.assertTrue("Organisers: Organising person" in d["list[details]"])
 
     def test_get_list_id(self):
         doc = """<?xml version="1.0" encoding="UTF-8"?>
