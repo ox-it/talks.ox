@@ -71,6 +71,8 @@ def event_to_old_talk(event, series_id):
     if len(event.speakers.all()) > 0:
         data.append(("talk[name_of_speaker]", ", ".join([speaker.name + ' (' + speaker.bio + ')' for speaker in event.speakers.all()])))
     # sets the ex_directory status all the time to be sure to be in sync
+    if event.special_message:
+        data.append(("talk[special_message]", event.special_message))
     if event.is_published:
         data.append(("talk[ex_directory]", "0"))
     else:
