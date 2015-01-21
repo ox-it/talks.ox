@@ -91,6 +91,7 @@ Scenario: change topic
 Scenario: inherit organisers from event group
     go to ${edit_talk_page('${event2_slug}')}
     page should contain text "Luke Skywalker"
+    page should not contain text "James Bond"
     click on ${checkbox in group section}
     ${group field} should be displayed
     ${create group button} should be displayed
