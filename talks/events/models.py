@@ -111,6 +111,10 @@ class EventGroup(models.Model):
         super(EventGroup, self).save(*args, **kwargs)
 
     @property
+    def description_html(self):
+        return textile_restricted(self.description, auto_link=True)
+
+    @property
     def api_organisation(self):
         from . import datasources
         try:

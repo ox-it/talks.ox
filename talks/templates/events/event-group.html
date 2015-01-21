@@ -38,7 +38,7 @@
         <h3 class="panel-title">{{ event_group.title }}</h3>
     </div>
     <div class="panel-body">
-        <p>{% if event_group.description %}{{ event_group.description }}{% else %}<i>This series does not yet have an abstract</i>{% endif %}</p>
+        <p>{% if event_group.description %}{{ event_group.description_html | safe }}{% else %}<i>This series does not yet have an abstract</i>{% endif %}</p>
     </div>
     <!-- List group -->
     <ul class="list-group">
