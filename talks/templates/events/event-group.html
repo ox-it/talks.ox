@@ -44,14 +44,14 @@
     <ul class="list-group">
         <li class="list-group-item"><strong>Type</strong>: {{ event_group.get_group_type_display }}</li>
     {% if organisers %}
-        <li class="list-group-item"><strong>Talk organiser{{ organisers|pluralize }}</strong>:{% for organiser in organisers %}<a href="{% url 'show-person' organiser.slug %}"> {{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %} </a>{% if not forloop.last %}, {% endif %}
+        <li class="list-group-item"><strong>Series organiser{{ organisers|pluralize }}</strong>:{% for organiser in organisers %}<a href="{% url 'show-person' organiser.slug %}"> {{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %} </a>{% if not forloop.last %}, {% endif %}
         {% endfor %}</li>
     {% endif %}
     {% if event_group.occurence %}
         <li class="list-group-item"><strong>Timing</strong>: {{ event_group.occurence }}</li>
     {% endif %}
     {% if event_group.web_address %}
-        <li class="list-group-item"><strong>Web Address</strong>: {{ event_group.web_address }}</li>
+        <li class="list-group-item"><strong>Web Address</strong>: <a href="{{ event_group.web_address }}">{{ event_group.web_address }}</a></li>
     {% endif %}
     {% if event_group.api_organisation %}
         <li class="list-group-item"><strong>Organising department</strong>: {{ event_group.api_organisation.name }}</li>
