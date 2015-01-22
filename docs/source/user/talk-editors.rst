@@ -10,3 +10,5 @@ Talk Editors
    talk-editors/publicizing-your-talk.rst
    talk-editors/prepare-and-publish.rst
    talk-editors/share-editing.rst
+   talk-editors/people-details.rst
+   talk-editors/contact.rst
