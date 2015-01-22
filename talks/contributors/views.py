@@ -29,7 +29,7 @@ def edit_event(request, event_slug):
                'speakers': event.speakers.all(),        # different of person_set
                'organisers': event.organisers.all(),
                'hosts': event.hosts.all()}
-    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
+    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event', user=request.user)
     context = {
         'event': event,
         'event_form': form,
@@ -63,7 +63,9 @@ def create_event(request, group_slug=None):
             'group': event_group,
         }
 
-    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial)
+    print request.user
+
+    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial, user=request.user)
 
     if request.method == 'POST':
         context = {

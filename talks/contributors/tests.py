@@ -378,6 +378,7 @@ class TestCreateEventView(AuthTestCase):
         title = u'cjwnf887y98fw'
         description = u'kfjdnsf'
         group = factories.EventGroupFactory.create()
+        group.editor_set.add(self.user)
         data = {
             'event-description': description,
             'another': u'true',
@@ -684,17 +685,23 @@ class TestAuthorisation(TestCase):
 
         #create event and set user1 as an editor
         event = factories.EventFactory.create(title='event title')
-        event.editor_set.add(self.contrib_user2)
+        event.editor_set.add(self.contrib_user1)
         event.save()
         data = {
-            'group': group.slug
+            'event-title': 'event title',
+            'event-group': group.id,
+            'event-start': VALID_DATE_STRING,
+            'event-end': VALID_DATE_STRING,
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         self.client.login(username=self.username_contrib1, password=self.password_contrib1)
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
-        self.assertEquals(response.status_code,200)
+        self.assertRedirects(response, "/talks/id/%s/" % event.slug)
         self.assertTemplateNotUsed("contributors/event_form.html")
         saved_event = models.Event.objects.get(slug=event.slug)
-        self.assertEquals(saved_event.group, data['group'])
+        self.assertEquals(saved_event.group.id, data['event-group'])
 
     def test_assign_talk_to_event_group_unauthorised(self):
         group = factories.EventGroupFactory.create(
@@ -705,15 +712,21 @@ class TestAuthorisation(TestCase):
 
         #create event and set user1 as an editor
         event = factories.EventFactory.create(title='event title')
-        event.editor_set.add(self.contrib_user1)
+        event.editor_set.add(self.contrib_user2)
         event.save()
         data = {
-            'group': group.slug
+            'event-title': 'event title',
+            'event-group': group.id,
+            'event-start': VALID_DATE_STRING,
+            'event-end': VALID_DATE_STRING,
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         self.client.login(username=self.username_contrib2, password=self.password_contrib2)
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
         self.assertEquals(response.status_code, 200)
-        self.assertFormError(response, 'event_form', 'group', 'You may not add this talk to the chosen series')
+        self.assertFormError(response, 'event_form', 'group', 'Select a valid choice. That choice is not one of the available choices.')
         saved_event = models.Event.objects.get(slug=event.slug)
         self.assertEquals(saved_event.group, None)
 
@@ -729,13 +742,19 @@ class TestAuthorisation(TestCase):
         event.group = group
         event.save()
         data = {
-            'group': None
+            'event-title': 'event title',
+            'event-group': '',
+            'event-start': VALID_DATE_STRING,
+            'event-end': VALID_DATE_STRING,
+            'event-booking_type': models.BOOKING_NOT_REQUIRED,
+            'event-audience': models.AUDIENCE_PUBLIC,
+            'event-status': models.EVENT_IN_PREPARATION,
         }
         self.client.login(username=self.username_contrib2, password=self.username_contrib2)
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        print response
         self.assertEquals(response.status_code, 200)
-        self.assertFormError(response, 'event_form', 'group', 'You may not remove this talk from its current series')
-        self.assertTrue(False)
+        self.assertFormError(response, 'event_form', 'group', 'Select a valid choice. That choice is not one of the available choices.')
         saved_event = models.Event.objects.get(slug=event.slug)
         self.assertEquals(saved_event.group, group.slug)
 
