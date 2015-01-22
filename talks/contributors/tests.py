@@ -647,7 +647,6 @@ class TestAuthorisation(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "contributors/event_group_form.html")
 
-
     def test_group_editor_can_edit_event(self):
         group = factories.EventGroupFactory.create()
         group.editor_set.add(self.contrib_user1)
@@ -676,6 +675,69 @@ class TestAuthorisation(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "contributors/event_form.html")
 
+    def test_assign_talk_to_event_group_authorised(self):
+        group = factories.EventGroupFactory.create(
+            title='series title',
+        )
+        group.editor_set.add(self.contrib_user1)
+        group.save()
+
+        #create event and set user1 as an editor
+        event = factories.EventFactory.create(title='event title')
+        event.editor_set.add(self.contrib_user2)
+        event.save()
+        data = {
+            'group': group.slug
+        }
+        self.client.login(username=self.username_contrib1, password=self.password_contrib1)
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        self.assertEquals(response.status_code,200)
+        self.assertTemplateNotUsed("contributors/event_form.html")
+        saved_event = models.Event.objects.get(slug=event.slug)
+        self.assertEquals(saved_event.group, data['group'])
+
+    def test_assign_talk_to_event_group_unauthorised(self):
+        group = factories.EventGroupFactory.create(
+            title='series title',
+        )
+        group.editor_set.add(self.contrib_user1)
+        group.save()
+
+        #create event and set user1 as an editor
+        event = factories.EventFactory.create(title='event title')
+        event.editor_set.add(self.contrib_user1)
+        event.save()
+        data = {
+            'group': group.slug
+        }
+        self.client.login(username=self.username_contrib2, password=self.password_contrib2)
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        self.assertEquals(response.status_code, 200)
+        self.assertFormError(response, 'event_form', 'group', 'You may not add this talk to the chosen series')
+        saved_event = models.Event.objects.get(slug=event.slug)
+        self.assertEquals(saved_event.group, None)
+
+    def test_unassign_talk_from_group_unauthorised(self):
+        group = factories.EventGroupFactory.create(
+            title='series title',
+        )
+        group.editor_set.add(self.contrib_user1)
+        group.save()
+        #create event and set user1 as an editor
+        event = factories.EventFactory.create(title='event title')
+        event.editor_set.add(self.contrib_user2)
+        event.group = group
+        event.save()
+        data = {
+            'group': None
+        }
+        self.client.login(username=self.username_contrib2, password=self.username_contrib2)
+        response = self.client.post("/talks/id/%s/edit" % event.slug, data)
+        self.assertEquals(response.status_code, 200)
+        self.assertFormError(response, 'event_form', 'group', 'You may not remove this talk from its current series')
+        self.assertTrue(False)
+        saved_event = models.Event.objects.get(slug=event.slug)
+        self.assertEquals(saved_event.group, group.slug)
 
 
 class TestEditEventView(AuthTestCase):
