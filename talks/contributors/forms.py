@@ -38,17 +38,17 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
 class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        self.user = kwargs.pop('user', None)
         super(EventForm, self).__init__(*args, **kwargs)
         # Customise the group selector so that:
         #  - It's only possible to pick talks which the user has edit permissions for
         #  - It's not possible to unassign or reassign the group
-        if not self.instance.group or self.instance.group.user_can_edit(user):
+        if not self.instance.group or self.instance.group.user_can_edit(self.user):
             #user may change the group. Populate the list with only the available choices
-            if user and user.is_superuser:
+            if self.user and self.user.is_superuser:
                 self.fields['group'].queryset = models.EventGroup.objects.all()
             else:
-                query = Q(editor_set__in=[user])
+                query = Q(editor_set__in=[self.user])
                 if self.instance.group:
                     query = query | Q(slug=self.instance.group.slug)
                 self.fields['group'].queryset = models.EventGroup.objects.filter(query).distinct()
@@ -175,6 +175,12 @@ class EventForm(forms.ModelForm):
     def clean(self):
         if not self.cleaned_data['title'] and not self.cleaned_data['title_not_announced']:
             raise forms.ValidationError("Either provide the Title or mark it as TBA")
+
+        if self.instance.group and not self.instance.group.user_can_edit(self.user):
+            if not self.cleaned_data['group'] is self.instance.group.id:
+                #don't allow this user to clear the group
+                raise forms.ValidationError("You do not have permission to move this talk from its current series")
+
         return self.cleaned_data
 
     def _update_people(self, field, event, role):

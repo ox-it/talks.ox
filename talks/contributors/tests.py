@@ -752,11 +752,10 @@ class TestAuthorisation(TestCase):
         }
         self.client.login(username=self.username_contrib2, password=self.username_contrib2)
         response = self.client.post("/talks/id/%s/edit" % event.slug, data)
-        print response
         self.assertEquals(response.status_code, 200)
-        self.assertFormError(response, 'event_form', 'group', 'Select a valid choice. That choice is not one of the available choices.')
+        self.assertFormError(response, 'event_form', None, 'You do not have permission to move this talk from its current series')
         saved_event = models.Event.objects.get(slug=event.slug)
-        self.assertEquals(saved_event.group, group.slug)
+        self.assertEquals(saved_event.group.slug, group.slug)
 
 
 class TestEditEventView(AuthTestCase):
