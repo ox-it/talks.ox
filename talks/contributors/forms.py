@@ -58,7 +58,7 @@ class EventForm(forms.ModelForm):
 
         # Amend help text if no groups to choose from
         if (not self.fields['group'].queryset) or self.fields['group'].queryset.count <= 0:
-            self.fields['group'].empty_label = "---There are no series which you can add this talk to---"
+            self.fields['group'].empty_label = "-- There are no series which you can add this talk to --"
 
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),

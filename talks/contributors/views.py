@@ -169,6 +169,9 @@ def create_event_group(request):
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
+            if request.user not in event_group.editor_set.all():
+                event_group.editor_set.add(request.user)
+                event_group.save()
             eventgroup_updated.send(event_group.__class__, instance=event_group)
             if is_modal:
                 response = json.dumps(serializers.EventGroupSerializer(event_group).data)

@@ -70,7 +70,7 @@ Scenario: Create new group on the go
     ${group field} should not be displayed
     click on ${checkbox in group section}
     ${group field} should be displayed
-    ${group field} selected item should be "-- select a series --"
+    ${group field} selected item should be "-- There are no series which you can add this talk to --"
     ${create group button} should be displayed
     click on ${create group button}
     ${modal dialog} should appear
