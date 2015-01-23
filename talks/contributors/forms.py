@@ -245,6 +245,9 @@ class EventGroupForm(forms.ModelForm):
             'description': forms.Textarea(),
             'occurence': forms.TextInput(),
         }
+        labels = {
+            'group_type': 'Series type'
+        }
 
 
 class PersonForm(forms.ModelForm):
