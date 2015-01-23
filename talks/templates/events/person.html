@@ -19,11 +19,33 @@
     </div>
 
     <ul class="list-group">
-        {% for event in events.all %}
-        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a></li>
+        {% if speaker_events %}
+        <li class="list-group-item">
+        <strong>Events this person is speaking at:</strong><br>
+        {% for event in speaker_events %}
+            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}} <br>
         {% endfor %}
-    </ul>
+        </li>
+        {% endif %}
 
+        {% if host_events %}
+        <li class="list-group-item">
+        <strong>Events this person is hosting:</strong><br>
+        {% for event in host_events %}
+            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}}<br>
+        {% endfor %}
+        </li>
+        {% endif %}
+
+        {% if organiser_events %}
+        <li class="list-group-item">
+        <strong>Events this person is organising:</strong><br>
+        {% for event in organiser_events %}
+            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}}<br>
+        {% endfor %}
+        </li>
+        {% endif %}
+    </ul>
 
 </div>
 
