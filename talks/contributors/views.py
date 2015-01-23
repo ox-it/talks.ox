@@ -29,7 +29,7 @@ def edit_event(request, event_slug):
                'speakers': event.speakers.all(),        # different of person_set
                'organisers': event.organisers.all(),
                'hosts': event.hosts.all()}
-    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
+    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event', user=request.user)
     context = {
         'event': event,
         'event_form': form,
@@ -63,7 +63,9 @@ def create_event(request, group_slug=None):
             'group': event_group,
         }
 
-    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial)
+    print request.user
+
+    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial, user=request.user)
 
     if request.method == 'POST':
         context = {
@@ -133,11 +135,17 @@ def delete_event(request, event_slug):
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def edit_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
+    if not group.user_can_edit(request.user):
+        raise PermissionDenied
+
     form = EventGroupForm(request.POST or None, instance=group)
     if request.method == 'POST':
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
+            if request.user not in event_group.editor_set.all():
+                event_group.editor_set.add(request.user)
+                event_group.save()
             eventgroup_updated.send(event_group.__class__, instance=event_group)
             messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
@@ -161,6 +169,9 @@ def create_event_group(request):
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
+            if request.user not in event_group.editor_set.all():
+                event_group.editor_set.add(request.user)
+                event_group.save()
             eventgroup_updated.send(event_group.__class__, instance=event_group)
             if is_modal:
                 response = json.dumps(serializers.EventGroupSerializer(event_group).data)
@@ -188,6 +199,8 @@ def create_event_group(request):
 @permission_required('events.delete_eventgroup', raise_exception=PermissionDenied)
 def delete_event_group(request, event_group_slug):
     event_group = get_object_or_404(EventGroup, slug=event_group_slug)
+    if not event_group.user_can_edit(request.user):
+        raise PermissionDenied
     context = {
         'event_group': event_group,
         'events': event_group.events.all()
@@ -287,9 +300,19 @@ def contributors_events(request):
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def contributors_eventgroups(request):
-    eventgroups = EventGroup.objects.all().order_by('title')
+    groups_editable = request.GET.get('editable', None)
     count = request.GET.get('count',20)
     page = request.GET.get('page', 1)
+
+    args={'count': count}
+
+    if groups_editable and not request.user.is_superuser:
+        eventgroups = EventGroup.objects.filter(editor_set__in=[request.user])
+        args['editable'] = 'true'
+    else:
+        eventgroups = EventGroup.objects.all()
+
+    eventgroups = eventgroups.order_by('title')
 
     paginator = Paginator(eventgroups, count)
 
@@ -298,8 +321,11 @@ def contributors_eventgroups(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-eventgroups')
 
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+
     context = {
-        'groups': eventgroups
+        'groups': eventgroups,
+        'fragment': fragment
     }
 
     return render(request, 'contributors/contributors_groups.html', context)

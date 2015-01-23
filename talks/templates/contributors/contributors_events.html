@@ -60,7 +60,7 @@
                 <td>{{ event.start }}</td>
                 <td>{{ event.status }}</td>
                 <td>
-                    {% if request.user|can_edit:event %}
+                    {% if request.user|can_edit_event:event %}
                         <a class="btn btn-primary" href="{% url 'edit-event' event.slug %}">Edit</a>
                     {% else %}
                         Not authorised

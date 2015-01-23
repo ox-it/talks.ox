@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 
 from talks.events import models, typeahead, datasources
+from talks.events.models import EventGroup
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 
@@ -35,6 +36,30 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
 
 
 class EventForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(EventForm, self).__init__(*args, **kwargs)
+        # Customise the group selector so that:
+        #  - It's only possible to pick talks which the user has edit permissions for
+        #  - It's not possible to unassign or reassign the group
+        if not self.instance.group or self.instance.group.user_can_edit(self.user):
+            #user may change the group. Populate the list with only the available choices
+            if self.user and self.user.is_superuser:
+                self.fields['group'].queryset = models.EventGroup.objects.all()
+            else:
+                query = Q(editor_set__in=[self.user])
+                if self.instance.group:
+                    query = query | Q(slug=self.instance.group.slug)
+                self.fields['group'].queryset = models.EventGroup.objects.filter(query).distinct()
+        else:
+            #user should be able to see the field but not be able to edit it
+            self.fields['group'].widget.attrs['readonly'] = True
+
+        # Amend help text if no groups to choose from
+        if (not self.fields['group'].queryset) or self.fields['group'].queryset.count <= 0:
+            self.fields['group'].empty_label = "-- There are no series which you can add this talk to --"
+
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
         label="Speakers",
@@ -77,11 +102,12 @@ class EventForm(forms.ModelForm):
                                         label="Organising department")
 
     group = forms.ModelChoiceField(
-        models.EventGroup.objects.all(),
+        EventGroup.objects.none(),
         empty_label="-- select a series --",
         widget=Select(attrs={'class': 'form-control'}),
         required=False,
-        label="Series"
+        label="Series",
+        help_text="Select from series which you have permission to edit"
     )
 
     editor_set = forms.ModelMultipleChoiceField(
@@ -149,6 +175,12 @@ class EventForm(forms.ModelForm):
     def clean(self):
         if not self.cleaned_data['title'] and not self.cleaned_data['title_not_announced']:
             raise forms.ValidationError("Either provide the Title or mark it as TBA")
+
+        if self.instance.group and not self.instance.group.user_can_edit(self.user):
+            if not self.cleaned_data['group'] is self.instance.group.id:
+                #don't allow this user to clear the group
+                raise forms.ValidationError("You do not have permission to move this talk from its current series")
+
         return self.cleaned_data
 
     def _update_people(self, field, event, role):
@@ -181,9 +213,22 @@ class EventGroupForm(forms.ModelForm):
         widget=typeahead.MultipleTypeahead(datasources.PERSONS_DATA_SOURCE),
     )
 
+    editor_set = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(Q(is_superuser=True) | Q(groups__name=GROUP_EDIT_EVENTS)).distinct(),
+        label="Other Editors",
+        help_text="Share editing with another Talks Editor by typing in their email address",
+        required=False,
+        widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
+    )
+
     def save(self):
         group = super(EventGroupForm, self).save(commit=False)
         group.save()
+
+        # clear the list of editors and repopulate with the contents of the form
+        group.editor_set.clear()
+        for user in self.cleaned_data['editor_set']:
+            group.editor_set.add(user)
 
         group.organisers.clear()
         for person in self.cleaned_data['organisers']:
