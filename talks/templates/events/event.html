@@ -87,7 +87,7 @@
             {% endfor %}
             </li>
         {% endif %}
-        {% if event.organiser_email %} <li class="list-group-item"><strong>Organiser contact email address</strong>: {{event.organiser_email}}</li> {% endif %}
+        {% if event.organiser_email %} <li class="list-group-item"><strong>Organiser contact email address</strong>: <a href="mailto:{{event.organiser_email}}">{{event.organiser_email}}</a></li> {% endif %}
         {% if event.hosts %}
             <li class="list-group-item"><strong>Host{{ hosts|pluralize }}</strong>: {% for host in hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
@@ -103,10 +103,10 @@
         {% endspaceless %}
         <li class="list-group-item"><strong>Booking required?</strong>: {{ event.get_booking_type_display }} </li>
         {% if event.booking_url %}
-            <li class="list-group-item"><strong>Booking url</strong>: {{ event.booking_url }} </li>
+            <li class="list-group-item"><strong>Booking url</strong>: <a target="_blank" href="{{ event.booking_url }}">{{ event.booking_url }}</a></li>
         {% endif %}
         {% if event.booking_email %}
-            <li class="list-group-item"><strong>Booking email</strong>: {{event.booking_email }}</li>
+            <li class="list-group-item"><strong>Booking email</strong>: <a href="mailto:{{ event.booking_email }}">{{ event.booking_email }}</a></li>
         {% endif %}
         {% if event.cost %}
             <li class="list-group-item"><strong>Cost</strong>: {{ event.cost }} </li>
