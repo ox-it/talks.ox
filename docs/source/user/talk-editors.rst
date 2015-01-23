@@ -1,14 +1,16 @@
 Talk Editors
-===============
+============
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 0
    
-   talk-editors/create-a-series.rst
-   talk-editors/create-a-talk.rst
-   talk-editors/formatting-the-abstract.rst
-   talk-editors/publicizing-your-talk.rst
-   talk-editors/prepare-and-publish.rst
-   talk-editors/share-editing.rst
-   talk-editors/people-details.rst
-   talk-editors/contact.rst
+   talk-editors/sign-up
+   talk-editors/create-a-talk
+   talk-editors/create-a-series
+   talk-editors/formatting-the-abstract
+   talk-editors/publicizing-your-talk
+   talk-editors/prepare-and-publish
+   talk-editors/last-minute-changes   
+   talk-editors/share-editing
+   talk-editors/people-details
+   talk-editors/contact

@@ -13,20 +13,19 @@ User Guide
 **********
 
 .. toctree::
+    :maxdepth: 2
     :glob:
 
     user/*
 
-********
-HTTP API
-********
+***********************
+Developer Documentation
+***********************
 
 .. toctree::
     :glob:
 
-    http_api/*
-    http_api/endpoints/*
-    http_api/endpoints/Search/*
+    developer
 
 ******************
 Indices and tables
