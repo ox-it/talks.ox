@@ -1,10 +1,10 @@
-Formatting the Abstract
+Formatting the abstract
 =======================
 
 Keywords in the talk abstract will be used for searching, so please add the abstract if you have it. 
 
-Textile Markup
---------------
+Formatting using the Textile markup language
+--------------------------------------------
 
 The **Abstract** field uses the Textile markup language - the basics are very easy to remember:
 
@@ -76,14 +76,6 @@ If you have a number of abstracts and lots of formatting, then try:
 * Format > Bullets and Numbering
 * Click the Customize ... button
 * Set the Number style to None and type '#' in the Number format box
-
-
-
-
-
-
-
-
 
 Other useful tools
 ------------------
