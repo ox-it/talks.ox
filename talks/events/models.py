@@ -95,6 +95,7 @@ class EventGroup(models.Model):
     )
     web_address = models.URLField(blank=True, default='', verbose_name='Web address')
     department_organiser = models.TextField(default='', blank=True, verbose_name='Organising Department')
+    editor_set = models.ManyToManyField(User, blank=True)
 
     objects = EventGroupManager()
 
@@ -117,12 +118,25 @@ class EventGroup(models.Model):
         return reverse('eventgroup-detail', args=[self.slug])
 
     @property
+    def description_html(self):
+        return textile_restricted(self.description, auto_link=True)
+
+    @property
     def api_organisation(self):
         from . import datasources
         try:
             return datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
         except requests.HTTPError:
             return None
+
+    def user_can_edit(self, user):
+        """
+        Check if the given django User is authorised to edit this event.
+        They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        :param user: The django user wishing to edit the event
+        :return: True if the user is allowed to edit this event, False otherwise
+        """
+        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
 
 
 class PersonManager(models.Manager):
@@ -138,6 +152,9 @@ class Person(models.Model):
     email_address = models.EmailField(max_length=254,
                                       null=True,
                                       blank=True)
+    web_address = models.URLField(verbose_name="Web address",
+                                  null=True,
+                                  blank=True)
 
     objects = PersonManager()
 
@@ -309,7 +326,7 @@ class Event(models.Model):
 
     @property
     def description_html(self):
-        return textile_restricted(self.description)
+        return textile_restricted(self.description, auto_link=True)
 
     def __unicode__(self):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
@@ -329,6 +346,12 @@ class Event(models.Model):
     def formatted_time(self):
         if self.start:
             return date_filter(self.start, settings.EVENT_TIME_FORMAT)
+        else:
+            return None
+
+    def formatted_endtime(self):
+        if self.start:
+            return date_filter(self.end, settings.EVENT_TIME_FORMAT)
         else:
             return None
 
@@ -361,11 +384,14 @@ class Event(models.Model):
         """
         Check if the given django User is authorised to edit this event.
         They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        Users can also edit an event if they are an editor of the series it belongs to
         :param user: The django user wishing to edit the event
         :return: True if the user is allowed to edit this event, False otherwise
         """
-        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
-
+        can_edit = self.editor_set.filter(id=user.id).exists() or user.is_superuser
+        if self.group:
+            can_edit = can_edit or self.group.user_can_edit(user)
+        return can_edit
 
 reversion.register(Event)
 reversion.register(EventGroup)

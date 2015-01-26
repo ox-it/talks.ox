@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ person.name }}{% endblock %}
+
+
+{% block content %}
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ person.name }}</h3>
+    </div>
+    <div class="panel-body">
+        <a class="pull-right btn btn-default" role="button" href="{% url 'edit-person' person.slug %}">edit</a>
+        <p>{{ person.bio }}</p>
+        {% if person.web_address %}
+        <p><a href="{{ person.web_address }}" target="_blank">{{ person.web_address }}</a></p>
+        {% endif %}
+    </div>
+
+    <ul class="list-group">
+        {% if speaker_events %}
+        <li class="list-group-item">
+        <strong>Events this person is speaking at:</strong><br>
+        {% for event in speaker_events %}
+            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}} <br>
+        {% endfor %}
+        </li>
+        {% endif %}
+
+        {% if host_events %}
+        <li class="list-group-item">
+        <strong>Events this person is hosting:</strong><br>
+        {% for event in host_events %}
+            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}}<br>
+        {% endfor %}
+        </li>
+        {% endif %}
+
+        {% if organiser_events %}
+        <li class="list-group-item">
+        <strong>Events this person is organising:</strong><br>
+        {% for event in organiser_events %}
+            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}}<br>
+        {% endfor %}
+        </li>
+        {% endif %}
+    </ul>
+
+</div>
+
+{% endblock %}

@@ -22,6 +22,9 @@
                 <span class="glyphicon glyphicon-plus"></span>
                 Save and add another
             </button>
+            {% else %}
+
+            <p class="bg-warning" style="padding:10px 25px">Be careful! Changes made here will trickle down to every talk this person has been assigned to - including past talks and talks owned by other editors.<br> If someone has moved department or been promoted, it is perfectly OK to create a new person entry.</p>
             {% endif %}
             <button type="submit" class="btn btn-primary">Done</button>
         </div>

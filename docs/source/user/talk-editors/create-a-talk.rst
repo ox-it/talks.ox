@@ -33,6 +33,8 @@ Get started immediately by typing the **Title**.
 
 If you don't yet know the title you can leave the **Title** field blank and tick the **Title TBA** box. 
 
+.. note::
+
 For more information on scheduling talks before you have all the information see the :doc:`Prepare and publish <prepare-and-publish>` section of this guide.
 
 Start and End
@@ -47,7 +49,7 @@ Start and End
 
 Clicking anywhere in the **Start** field will make the calendar picker appear.
 
-Once you save the **Start **date and time, the **End** field will automatically be set to an hour later. You can change this by clicking in the End field.
+Once you save the **Start** date and time, the **End** field will automatically be set to an hour later. You can change this by clicking in the End field.
 
 Speakers
 --------
@@ -77,7 +79,7 @@ Venue
 #. Start typing the name of a building or location and it should be found in the University's OxPoints system. The address and map information will be looked up automatically and displayed with the rest of the talk information.
 #. Specific details - the room name or number, or information about how to gain entry - can be added in the box below.
 
-You will find that the Organising department can be added in a similar way. Scroll down to find that field.
+You will find that the **Organising department** can be added in a similar way. Scroll down to find that field.
 
 Saving
 ------
@@ -93,6 +95,8 @@ When you're ready, save the talk by clicking either:
 
 * **Save and add another Talk** to go straight to a new Add Talk form
 * **Done** to preview the talk you've just created
+
+If you want to cancel your changes (before you save them) then just hit the **back** button in your browser.
 
 More Information
 ----------------

@@ -26,8 +26,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <td>Name</td>
-            <td>Bio/affiliation</td>
-            <td>Email</td>
+            <td>Affiliation</td>
             <td>Edit</td>
         </thead>
             {% for person in persons %}
@@ -37,9 +36,6 @@
                 </td>
                 <td>
                     {{ person.bio }}
-                </td>
-                <td>
-                    {{ person.email_address }}
                 </td>
                 <td>
                     {% if perms.events.change_person %}

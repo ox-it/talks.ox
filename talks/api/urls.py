@@ -33,3 +33,4 @@ urlpatterns = patterns('',
     url(r'^collections/me/remove$', remove_item, name="remove-item"),
     url(r'^', include(router.urls)),    # comes last to avoid events/search being treated as a slug
 )
+

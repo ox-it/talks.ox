@@ -57,6 +57,8 @@ class Element(object):
 add_talk_page = Page('/talks/new')
 talk_page = Page('/talks/id/')     # TODO this should be a regex
 login_page = Page('/admin/login/')
+add_series_page = Page('/talks/series/new')
+series_page = Page('/talks/series/id/')
 
 # dynamic pages
 
@@ -94,6 +96,14 @@ speaker_name_field = Element('//*[@person-type="speakers"]//*[@id="id_name"]')
 speaker_bio_field = Element('//*[@person-type="speakers"]//*[@id="id_bio"]')
 add_speaker_button = Element('//*[@person-type="speakers"]//*[contains(@class, "js-submit-person")]')
 
+series_title_field = Element('css=#id_title')
+series_description_field = Element('css=#id_description')
+series_occurence_field = Element('css=#id_occurence')
+series_create_person = Element('css=.js-create-person')
+series_create_person_name = Element('css=#id_name')
+series_create_person_bio = Element('css=#id_bio')
+series_create_person_submit = Element('css=.js-submit-person')
+series_organisers_list = Element('css=')
 
 # dynamic elements
 
