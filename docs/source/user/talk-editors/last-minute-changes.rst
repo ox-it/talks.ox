@@ -15,6 +15,10 @@ Special message field
 
 The **Special message** field is intended just for this purpose. Messages here will appear prominently in the talk display.
 
-.. todo::
+.. image:: images/last-minute-changes/91bd3220-3b40-4e06-9621-e6a465321bde.png
+   :alt: 
+   :height: 370px
+   :width: 567px
+   :align: center
 
-Screenshot of where the message will appear
+

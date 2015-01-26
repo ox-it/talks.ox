@@ -36,11 +36,11 @@ Check details
 
 Click through to review details of their talks. Any changes you make to their entry will be reflected in **all these talks**.
 
-Person edit form
+Person Edit form
 ----------------
 
 .. image:: images/people-details/person-edit-form.png
-   :alt: Person edit form
+   :alt: Person Edit form
    :height: 229px
    :width: 614px
    :align: center

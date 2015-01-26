@@ -1,14 +1,14 @@
-Formatting the abstract
-=======================
-
-Keywords in the talk abstract will be used for searching, so please add the abstract if you have it. 
+Formatting text
+===============
 
 Formatting using the Textile markup language
 --------------------------------------------
 
-The **Abstract** field uses the Textile markup language - the basics are very easy to remember:
+Text in the Talk **Abstract** field and the Series **Description** field can be formatted using Textile markup.
 
-**Headings**
+The basics are very easy to remember:
+
+**Headings** (Abstract only)
 
 ::
 
@@ -23,7 +23,14 @@ The **Abstract** field uses the Textile markup language - the basics are very ea
      
      This is a new paragraph.
 
-**Bullet Points and Numbered Lists**
+**Bold and Italic**
+
+::
+
+     *This will create bold text*
+     _This will create italics_
+
+**Bullet Points and Numbered Lists** (Abstract only)
 
 ::
 

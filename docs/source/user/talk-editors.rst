@@ -2,7 +2,6 @@ Talk Editors
 ============
 
 .. toctree::
-   :maxdepth: 0
    
    talk-editors/sign-up
    talk-editors/create-a-talk
