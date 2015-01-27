@@ -28,6 +28,10 @@ The ``solrconfig.xml`` file is available in the ``solr`` directory at the root o
 
 Both files (``schema.xml`` and ``solrconfig.xml``) need to be put in your core's (default is ``collection1``) ``conf`` directory.
 
+If you have ``Docker`` and ``Fig`` installed, you can start Solr by typing (assuming solr schema):
+
+    fig up solr
+
 Developers
 ----------
 

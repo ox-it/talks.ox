@@ -2,4 +2,7 @@ solr:
     build: .
     ports:
         - "8983:8983"
-
+db:
+    image: postgres
+    ports:
+        - "5432:5432"
