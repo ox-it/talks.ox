@@ -34,18 +34,6 @@ Run all tests:
 
     make test
 
-### Generating the schema for Apache Solr
+### Using Solr
 
-The file ``schema.xml`` needs to be generated using:
-
-    python manage.py build_solr_schema
-
-### Running Solr
-
-If you have ``Docker`` and ``Fig`` installed, you can start Solr by typing (assuming solr schema):
-
-    fig up solr
-
-The ``solrconfig.xml`` file is available in the ``solr`` directory at the root of the repository.
-
-Both files (``schema.xml`` and ``solrconfig.xml``) need to be put in your core's (default is ``collection1``) ``conf`` directory.
+See `solr/README.md`
