@@ -73,3 +73,6 @@ output.xml
 log.html
 ghostdriver.log
 selenium-screenshot-*
+
+.env
+
