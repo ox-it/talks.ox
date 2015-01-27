@@ -100,10 +100,6 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
 
 class HALEventSerializer(serializers.ModelSerializer):
     _links = EventLinksSerializer(source='*', read_only=True)
-    formatted_date = serializers.CharField(read_only=True)
-    formatted_time = serializers.CharField(read_only=True)
-    start = serializers.DateTimeField(read_only=True)
-    end = serializers.DateTimeField(read_only=True)
     _embedded = EventEmbedsSerializer(source='*', read_only=True)
 
     class Meta:
