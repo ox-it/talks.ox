@@ -96,15 +96,18 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('speakers', 'venue', 'organising_department', 'topics')
 
+
 class HALEventSerializer(serializers.ModelSerializer):
     _links = EventLinksSerializer(source='*', read_only=True)
     formatted_date = serializers.CharField(read_only=True)
     formatted_time = serializers.CharField(read_only=True)
+    start = serializers.DateTimeField(read_only=True)
+    end = serializers.DateTimeField(read_only=True)
     _embedded = EventEmbedsSerializer(source='*', read_only=True)
 
     class Meta:
         model = Event
-        fields = ('_links', 'title', 'formatted_date', 'formatted_time', 'description', '_embedded')
+        fields = ('_links', 'title', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):

@@ -32,7 +32,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint for events
     """
     renderer_classes = (JSONRenderer, JSONPRenderer, XMLRenderer, ICalRenderer)
-    queryset = Event.published.all()
+    queryset = Event.published.all().order_by('start')
     serializer_class = HALEventSerializer
     lookup_field = 'slug'
 
@@ -132,7 +132,7 @@ def api_event_search(request):
         queries.append(Q(topics__uri__in=topics))
 
     final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query)
+    events = Event.published.filter(final_query).order_by('start')
 
     count = request.GET.get('count', 20)
     page_number = request.GET.get('page', 1)
