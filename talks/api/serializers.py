@@ -5,6 +5,7 @@ from rest_framework.fields import Field
 from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem
 
+
 class PersonSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField(method_name='formatted_title')
