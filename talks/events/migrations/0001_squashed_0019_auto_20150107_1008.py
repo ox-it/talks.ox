@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='cost',
-            field=models.TextField(default=b'', help_text=b'If _oplicable', verbose_name=b'Cost', blank=True),
+            field=models.TextField(default=b'', help_text=b'If applicable', verbose_name=b'Cost', blank=True),
             preserve_default=True,
         ),
         migrations.AddField(
