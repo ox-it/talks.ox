@@ -78,7 +78,12 @@ class EmbeddedLocationSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         maps_url = "//maps.ox.ac.uk/#/places/" + instance['id']
-        return {'name': instance['name'], 'address': instance['address'], 'map_link': maps_url}
+        data = {}
+        data['name'] = instance['name']
+        data['map_link'] = maps_url
+        if 'address' in instance:
+            data['address'] = instance['address']
+        return data
 
 
 class EmbeddedTopicSerializer(serializers.Serializer):
