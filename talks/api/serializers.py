@@ -133,7 +133,6 @@ class SearchResultLinksSerializer(serializers.Serializer):
     prev = HALPreviousPageField(source='*')
     results = None
 
-
     def get_self(self, obj):
         req = self.context.get('request')
         link = req.build_absolute_uri()
@@ -208,7 +207,6 @@ class EventGroupWithEventsSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'title', 'description', 'department_organiser', 'events')
         model = EventGroup
-
 
 
 class UserSerializer(serializers.ModelSerializer):
