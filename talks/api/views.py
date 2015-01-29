@@ -130,7 +130,7 @@ def api_event_search(request):
         queries.append(Q(topics__uri__in=topics))
 
     final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query)
+    events = Event.published.filter(final_query).distinct()
     serializer = EventSerializer(events, many=True, read_only=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
