@@ -129,7 +129,7 @@ def api_event_search(request):
             queries.append(orm_mapping(value))
 
     final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query).order_by('start')
+    events = Event.published.filter(final_query).distinct().order_by('start')
 
     count = request.GET.get('count', 20)
     page_number = request.GET.get('page', 1)
