@@ -74,15 +74,17 @@ class EmbeddedSpeakerSerializer(serializers.ModelSerializer):
         fields = ('name', 'bio')
 
 
-class EmbeddedLocationSerializer(serializers.Serializer):
+class EmbeddedOxpointsSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         maps_url = "//maps.ox.ac.uk/#/places/" + instance['id']
+        api_url = "//api.m.ox.ac.uk/places/" + instance['id']
         data = {}
         data['name'] = instance['name']
         data['map_link'] = maps_url
         if 'address' in instance:
             data['address'] = instance['address']
+        data['_links'] = {'self': {'href': api_url}}
         return data
 
 
@@ -94,8 +96,8 @@ class EmbeddedTopicSerializer(serializers.Serializer):
 
 class EventEmbedsSerializer(serializers.ModelSerializer):
     speakers = EmbeddedSpeakerSerializer(many=True, read_only=True)
-    venue = EmbeddedLocationSerializer(source='api_location', read_only=True)
-    organising_department = EmbeddedLocationSerializer(source='api_organisation', read_only=True)
+    venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
+    organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
     topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
 
     class Meta:
