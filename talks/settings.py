@@ -55,6 +55,8 @@ LOGIN_URL = '/login'
 # Allow cross-origin http GET requests
 CORS_ORIGIN_ALLOW_ALL = True
 
+SESSION_COOKIE_AGE = 43200      # 12 hours
+
 # Application definition
 
 INSTALLED_APPS = (

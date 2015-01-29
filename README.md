@@ -1,38 +1,39 @@
-talks.ox
-========
+# talks.ox
 [![Build Status](https://travis-ci.org/ox-it/talks.ox.svg?branch=master)](https://travis-ci.org/ox-it/talks.ox)
 [![Documentation Status](https://readthedocs.org/projects/talksox/badge/?version=latest)](https://readthedocs.org/projects/talksox/?badge=latest)
 
 New version of Oxford Talks
 
-Requirements
-------------
+## Developers
 
-See requirements.txt
+System requirements:
+ * python 2.7
+ * virtualenv (recommended)
+ * sqlite (recommended, or alternatively PostgreSQL)
+ * phantomjs (mandatory to run functional tests)
+ * [Apache Solr](http://lucene.apache.org/solr/) (search server)
 
-Currently using Django 1.7 beta 4
+Install python dependencies:
 
+    pip install -r requirements.txt
+    pip install -r requirements_dev.txt
 
-Use of Apache Solr
-------------------
+Create the database:
 
-Apache Solr is used to provide the search functionnalities of the website.
+    python manage.py migrate --settings=talks.settings_dev
 
-You can download it from the [main website](http://lucene.apache.org/solr/).
+Load fixtures (test events):
 
-The ``schema.xml`` needs to be generated using:
-  
-    python manage.py build_solr_schema
+    python manage.py loaddata talks/events/fixtures/dev_data.yaml --settings=talks.settings_dev
 
-The ``solrconfig.xml`` file is available in the ``solr`` directory at the root of the repository.
+Run development web server:
 
-Both files (``schema.xml`` and ``solrconfig.xml``) need to be put in your core's (default is ``collection1``) ``conf`` directory.
+    make local
 
-Developers
-----------
+Run all tests:
 
-* Requirements: python 2.7, virtualenv, sqlite
-* Install dependencies: ``pip install -r requirements.txt`` && ``pip install -r requirements_dev.txt``
-* Create the database: ``python manage.py migrate --settings=talks.settings_dev``
-* Load fixtures (test events): ``./manage.py loaddata talks/events/fixtures/dev_data.yaml --settings=talks.settings_dev``
-* Run web server: ``./manage.py runserver --settings=talks.settings_dev``
+    make test
+
+### Using Solr
+
+See `solr/README.md`
