@@ -4,24 +4,22 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-import operator
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
-from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER
+from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, get_item_serializer, HALEventSerializer,
                                    HALEventGroupSerializer, HALSearchResultSerializer)
+from talks.api.services import events_search
 from talks.core.renderers import ICalRenderer
-from talks.core.utils import parse_date
 
 logger = logging.getLogger(__name__)
 
@@ -101,33 +99,8 @@ def api_event_search(request):
     """
     Return a list of events based on the query term
     """
+    events = events_search(request)
     queries = []
-
-    from_date = parse_date(request.GET.get("from"))
-    if not from_date:
-        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
-    else:
-        queries.append(Q(start__gt=from_date))
-
-    to_date = parse_date(request.GET.get("to"))
-    if to_date:
-        queries.append(Q(start__lt=to_date))
-
-    # map between URL query parameters and their corresponding django ORM query
-    list_parameters = {
-        'speaker': lambda speakers: Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers),
-        'venue': lambda venues: Q(location__in=venues),
-        'organising_department': lambda depts: Q(department_organiser__in=depts),
-        'topic': lambda topics: Q(topics__uri__in=topics)
-    }
-
-    for url_query_parameter, orm_mapping in list_parameters.iteritems():
-        value = request.GET.getlist(url_query_parameter)
-        if value:
-            queries.append(orm_mapping(value))
-
-    final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query).distinct().order_by('start')
 
     count = request.GET.get('count', 20)
     page_number = request.GET.get('page', 1)
