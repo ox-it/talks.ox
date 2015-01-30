@@ -26,6 +26,8 @@ class ICalRenderer(renderers.BaseRenderer):
             event.add('description', e['description'])
         if 'start' in e:
             event.add('dtstart', dt_string_to_object(e['start']))
+        if 'end' in e:
+            event.add('dtend', dt_string_to_object(e['end']))
         if 'url' in e:
             event.add('url', e['url'])
             event.add('uid', e['url'])
