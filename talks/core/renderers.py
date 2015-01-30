@@ -7,15 +7,11 @@ class ICalRenderer(renderers.BaseRenderer):
     format = 'ical'
 
     def render(self, data, media_type=None, renderer_context=None):
-        if '_embedded' not in data:
-            results = [data]
-        else:
-            results = data.get('_embedded', list())
         cal = Calendar()
         cal.add('prodid', 'talks.ox.ac.uk')
         cal.add('version', '2.0')
 
-        for e in results:
+        for e in data:
             cal.add_component(self._event_to_ics(e))
         return cal.to_ical()
 

@@ -18,7 +18,7 @@ class ICalSerializerTest(TestCase):
                   {'url': 'http://oxtalks.com/test/2',
                    'title': 'Talk 2',
                    'description': ''}]
-        data = renderer.render({'results': events})
+        data = renderer.render(events)
         cal = Calendar.from_ical(data)
         self.assertEquals(len(cal.subcomponents), 2)
         self.assertEquals(cal.subcomponents[0]['SUMMARY'], 'Talk 1')
@@ -36,9 +36,8 @@ class ICalSerializerTest(TestCase):
                   {'url': 'http://oxtalks.com/test/2',
                    'title': 'Talk 2',
                    'description': ''}]
-        data = renderer.render({'results': events})
+        data = renderer.render(events)
         cal = Calendar.from_ical(data)
-        print cal
         self.assertEquals(len(cal.subcomponents), 2)
         self.assertEquals(cal.subcomponents[0]['SUMMARY'], 'Talk 1')
         self.assertEquals(cal.subcomponents[0]['DESCRIPTION'], 'Description')
