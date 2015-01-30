@@ -5,7 +5,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 import operator
-from django.http.response import HttpResponse
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
@@ -15,13 +14,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
-from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER, TopicItem
+from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
-                                   CollectionItemSerializer,
-                                   get_item_serializer, HALEventSerializer, HALEventGroupSerializer,
-                                   HALSearchResultSerializer)
+from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
+                                   CollectionItemSerializer, get_item_serializer, HALEventSerializer,
+                                   HALEventGroupSerializer, HALSearchResultSerializer)
 from talks.core.renderers import ICalRenderer
 from talks.core.utils import parse_date
 
