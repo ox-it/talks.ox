@@ -13,6 +13,9 @@ class ICalRenderer(renderers.BaseRenderer):
         cal.add('prodid', 'talks.ox.ac.uk')
         cal.add('version', '2.0')
 
+        if not isinstance(data, list):
+            data = [data]
+
         for e in data:
             cal.add_component(self._event_to_ics(e))
         return cal.to_ical()

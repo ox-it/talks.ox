@@ -166,11 +166,11 @@ class EventGroupLinksSerializer(serializers.ModelSerializer):
 
 
 class EventGroupEmbedsSerializer(serializers.ModelSerializer):
-    events = HALEventSerializer(many=True, read_only=True)
+    talks = HALEventSerializer(many=True, read_only=True, source='events')
 
     class Meta:
         model = EventGroup
-        fields = ('events',)
+        fields = ('talks',)
 
 
 class HALEventGroupSerializer(serializers.ModelSerializer):

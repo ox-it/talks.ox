@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from django.http.response import Http404
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
@@ -18,19 +19,10 @@ from talks.users.models import Collection
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, get_item_serializer, HALEventSerializer,
                                    HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer)
-from talks.api.services import events_search
+from talks.api.services import events_search, get_event_by_slug
 from talks.core.renderers import ICalRenderer
 
 logger = logging.getLogger(__name__)
-
-
-class EventViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint for events
-    """
-    renderer_classes = (JSONRenderer, JSONPRenderer, XMLRenderer, ICalRenderer)
-    queryset = Event.published.all().order_by('start')
-    serializer_class = HALEventSerializer
-    lookup_field = 'slug'
 
 
 class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
@@ -125,9 +117,28 @@ def api_event_search_ics(request):
     """
     events = events_search(request)
     serializer = EventSerializer(events, many=True)
-    ics_renderer = ICalRenderer()
     return Response(serializer.data,
-                    status=status.HTTP_200_OK, content_type=ics_renderer.media_type)
+                    status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
+
+
+@api_view(["GET"])
+def api_event_get(request, slug):
+    event = get_event_by_slug(slug)
+    if not event:
+        raise Http404
+    serializer = HALEventSerializer(event, read_only=True, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_event_get_ics(request, slug):
+    event = get_event_by_slug(slug)
+    if not event:
+        raise Http404
+    serializer = EventSerializer(event)
+    return Response(serializer.data,
+                    status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
 
 
 def item_from_request(request):

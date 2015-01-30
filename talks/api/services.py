@@ -40,3 +40,14 @@ def events_search(request):
     events = Event.published.filter(final_query).distinct().order_by('start')
 
     return events
+
+
+def get_event_by_slug(slug):
+    """Get an event by its slug
+    :param slug: Event.slug
+    :return: Event or None if slug does not exist
+    """
+    try:
+        return Event.published.get(slug=slug)
+    except Event.DoesNotExist:
+        return None

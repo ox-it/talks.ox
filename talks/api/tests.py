@@ -91,14 +91,14 @@ class TestAPI(TestCase):
     @mock.patch('requests.get', autospec=True)
     def test_retrieve_event_happy(self, requests_get):
         requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
-        response = self.client.get('/api/events/' + self.event1_slug)
+        response = self.client.get('/api/talks/' + self.event1_slug)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
         self.assertContains(response, "A future event")
 
     def test_retrieve_event_404(self):
-        response = self.client.get('/api/events/foo/')
+        response = self.client.get('/api/talks/foo')
         self.assertEquals(response.status_code, 404)
 
     @mock.patch('requests.get', autospec=True)
@@ -118,7 +118,7 @@ class TestAPI(TestCase):
     def test_search_no_results(self):
         # ensure _links section still exists
         # ensure _embedded section still exists with empty talks field
-        response = self.client.get('/api/events/search?from=01/01/15&to=02/01/15')
+        response = self.client.get('/api/talks/search?from=01/01/15&to=02/01/15')
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
@@ -128,19 +128,19 @@ class TestAPI(TestCase):
         #test the from and to search fields
         #expect only the future search
         requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
-        response = self.client.get('/api/events/search?from=01/01/15&to=01/01/20')
+        response = self.client.get('/api/talks/search?from=01/01/15&to=01/01/20')
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
         self.assertContains(response, "A future event")
         #expect 2 results for this search
-        response = self.client.get('/api/events/search?from=01/01/01')
+        response = self.client.get('/api/talks/search?from=01/01/01')
         self.assertContains(response, "title", 2)
 
     @mock.patch('requests.get', autospec=True)
     def test_search_speaker(self, requests_get):
         requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
-        response = self.client.get('/api/events/search?from=01/01/01&speaker=' + self.speaker1_slug )
+        response = self.client.get('/api/talks/search?from=01/01/01&speaker=' + self.speaker1_slug )
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
@@ -152,7 +152,7 @@ class TestAPI(TestCase):
     @mock.patch('requests.get', autospec=True)
     def test_search_venue(self, requests_get):
         requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
-        response = self.client.get('/api/events/search?from=01/01/01&venue=' + self.location1)
+        response = self.client.get('/api/talks/search?from=01/01/01&venue=' + self.location1)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
@@ -162,7 +162,7 @@ class TestAPI(TestCase):
     @mock.patch('requests.get', autospec=True)
     def test_search_organising_department(self, requests_get):
         requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
-        response = self.client.get('/api/events/search?from=01/01/01&organising_department=' + self.department1)
+        response = self.client.get('/api/talks/search?from=01/01/01&organising_department=' + self.department1)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
@@ -172,7 +172,7 @@ class TestAPI(TestCase):
     @mock.patch('requests.get', autospec=True)
     def test_search_topic(self, requests_get):
         requests_get.return_value.json.return_value = TOPIC_1429860_MOCK_RESPONSE
-        response = self.client.get('/api/events/search?from=01/01/01&topic=' + self.topic1_uri)
+        response = self.client.get('/api/talks/search?from=01/01/01&topic=' + self.topic1_uri)
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
