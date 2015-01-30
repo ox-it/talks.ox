@@ -17,6 +17,7 @@ Retrieve Series
     **Example response**
 
       .. sourcecode:: xml
+
         <root>
         <id>1</id>
           <title>A conference</title>
