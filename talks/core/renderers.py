@@ -22,8 +22,8 @@ class ICalRenderer(renderers.BaseRenderer):
         event = Event()
         if 'title' in e:
             event.add('summary', e['title'])
-#        if 'description' in e:
-#            event.add('description', e['description'])
+        if 'description' in e:
+            event.add('description', e['description'])
         if 'start' in e:
             # 2015-01-29T18:00:00Z
             event.add('dtstart', datetime.strptime(e['start'], "%Y-%m-%dT%H:%M:%SZ"))
