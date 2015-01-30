@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
@@ -17,7 +17,7 @@ from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, get_item_serializer, HALEventSerializer,
-                                   HALEventGroupSerializer, HALSearchResultSerializer)
+                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer)
 from talks.api.services import events_search
 from talks.core.renderers import ICalRenderer
 
@@ -95,12 +95,12 @@ def get_event_group(request, event_group_id):
 
 
 @api_view(["GET"])
-def api_event_search(request):
+def api_event_search_hal(request):
     """
-    Return a list of events based on the query term
+    Return a list of events using the HAL serialisation,
+    based on the query terms
     """
     events = events_search(request)
-    queries = []
 
     count = request.GET.get('count', 20)
     page_number = request.GET.get('page', 1)
@@ -114,6 +114,20 @@ def api_event_search(request):
 
     serializer = HALSearchResultSerializer(page, read_only=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_event_search_ics(request):
+    """
+    Return a list of events using the iCAl serialisation,
+    based on the query terms
+    """
+    events = events_search(request)
+    serializer = EventSerializer(events, many=True)
+    ics_renderer = ICalRenderer()
+    return Response(serializer.data,
+                    status=status.HTTP_200_OK, content_type=ics_renderer.media_type)
 
 
 def item_from_request(request):

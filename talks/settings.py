@@ -174,6 +174,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.JSONPRenderer',
         'rest_framework.renderers.XMLRenderer',
+        'talks.core.renderers.ICalRenderer'
     )
 }
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import renderers
 from icalendar import Calendar, Event
 
@@ -20,10 +22,11 @@ class ICalRenderer(renderers.BaseRenderer):
         event = Event()
         if 'title' in e:
             event.add('summary', e['title'])
-        if 'description' in e:
-            event.add('description', e['description'])
+#        if 'description' in e:
+#            event.add('description', e['description'])
         if 'start' in e:
-            event.add('dtstart', e['start'])
+            # 2015-01-29T18:00:00Z
+            event.add('dtstart', datetime.strptime(e['start'], "%Y-%m-%dT%H:%M:%SZ"))
         if 'url' in e:
             event.add('url', e['url'])
             event.add('uid', e['url'])
