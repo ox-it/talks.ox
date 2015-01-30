@@ -4,7 +4,7 @@ from icalendar import Calendar, Event
 
 class ICalRenderer(renderers.BaseRenderer):
     media_type = 'text/calendar'
-    format = 'ical'
+    format = 'ics'
 
     def render(self, data, media_type=None, renderer_context=None):
         cal = Calendar()
