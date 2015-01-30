@@ -25,10 +25,17 @@ class ICalRenderer(renderers.BaseRenderer):
         if 'description' in e:
             event.add('description', e['description'])
         if 'start' in e:
-            # 2015-01-29T18:00:00Z
-            event.add('dtstart', datetime.strptime(e['start'], "%Y-%m-%dT%H:%M:%SZ"))
+            event.add('dtstart', dt_string_to_object(e['start']))
         if 'url' in e:
             event.add('url', e['url'])
             event.add('uid', e['url'])
         # TODO add location field
         return event
+
+
+def dt_string_to_object(string):
+    """Transforms a string date into a datetime object
+    :param string: string representing a date/time
+    :return: python datetime object
+    """
+    return datetime.strptime(string, "%Y-%m-%dT%H:%M:%SZ")
