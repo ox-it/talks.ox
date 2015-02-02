@@ -12,10 +12,10 @@ class ICalSerializerTest(TestCase):
 
     def test_data(self):
         renderer = ICalRenderer()
-        events = [{'url': 'http://oxtalks.com/test/1',
+        events = [{'full_url': 'http://oxtalks.com/test/1',
                    'title': 'Talk 1',
                    'description': 'Description'},
-                  {'url': 'http://oxtalks.com/test/2',
+                  {'full_url': 'http://oxtalks.com/test/2',
                    'title': 'Talk 2',
                    'description': ''}]
         data = renderer.render(events)
@@ -30,7 +30,7 @@ class ICalSerializerTest(TestCase):
 
     def test_event_to_ics(self):
         renderer = ICalRenderer()
-        events = {'url': 'http://oxtalks.com/test/1',
+        events = {'full_url': 'http://oxtalks.com/test/1',
                   'title': 'Talk 1',
                   'description': 'Description'}
         data = renderer.render(events)
