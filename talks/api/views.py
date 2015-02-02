@@ -2,44 +2,26 @@ import logging
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-import operator
-from django.http.response import HttpResponse
+from django.http.response import Http404
 
-from rest_framework import viewsets, status, permissions
+from rest_framework import status, permissions
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.exceptions import ParseError
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
-from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER, TopicItem
+from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection
-from talks.api.serializers import (EventSerializer, PersonSerializer, SpeakerSerializer, EventGroupSerializer, EventGroupWithEventsSerializer, UserSerializer,
-                                   CollectionItemSerializer,
-                                   get_item_serializer)
+from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
+                                   CollectionItemSerializer, get_item_serializer, HALEventSerializer,
+                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer)
+from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
-from talks.core.utils import parse_date
 
 logger = logging.getLogger(__name__)
-
-
-class EventViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint for events
-    """
-    renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-    lookup_field = 'slug'
-
-
-class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    renderer_classes = (ICalRenderer, JSONRenderer, JSONPRenderer, XMLRenderer)
-    queryset = EventGroup.objects.all()
-    serializer_class = EventGroupWithEventsSerializer
-    lookup_field = 'slug'
 
 
 class IsSuperuserOrContributor(permissions.BasePermission):
@@ -97,42 +79,89 @@ def get_event_group(request, event_group_id):
 
 
 @api_view(["GET"])
-def api_event_search(request):
+def api_event_group(request, event_group_slug):
+    """Serialise an EventGroup
+    :param request: DRF request object
+    :param event_group_slug: event group slug
+    :return: DRF response object
     """
-    Return a list of events based on the query term
-    """
-    queries = []
+    eg = get_eventgroup_by_slug(event_group_slug)
+    if not eg:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
 
-    from_date = parse_date(request.GET.get("from"))
-    if not from_date:
-        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
-    else:
-        queries.append(Q(start__gt=from_date))
-
-    to_date = parse_date(request.GET.get("to"))
-    if to_date:
-        queries.append(Q(start__lt=to_date))
-
-    speakers = request.GET.getlist("speaker")
-    if speakers:
-        queries.append(Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers))
-
-    venues = request.GET.getlist("venue")
-    if venues:
-        queries.append(Q(location__in=venues))
-
-    depts = request.GET.getlist("organising_department")
-    if depts:
-        queries.append(Q(department_organiser__in=depts))
-
-    topics = request.GET.getlist("topic")
-    if topics:
-        queries.append(Q(topics__uri__in=topics))
-
-    final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query).distinct()
-    serializer = EventSerializer(events, many=True, read_only=True)
+    serializer = HALEventGroupSerializer(eg)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_event_group_ics(request, event_group_slug):
+    """Get events from an eventgroup to be displayed
+    as an iCal feed
+    """
+    eg = get_eventgroup_by_slug(event_group_slug)
+    if not eg:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    serializer = EventSerializer(eg.events, many=True, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def api_event_search_hal(request):
+    """
+    Return a list of events using the HAL serialisation,
+    based on the query terms
+    """
+    events = events_search(request)
+
+    count = request.GET.get('count', 20)
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(events, count)
+    try:
+        page = paginator.page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    serializer = HALSearchResultSerializer(page, read_only=True, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_event_search_ics(request):
+    """
+    Return a list of events using the iCAl serialisation,
+    based on the query terms
+    """
+    events = events_search(request)
+    serializer = EventSerializer(events, many=True, context={'request': request})
+    return Response(serializer.data,
+                    status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
+
+
+@api_view(["GET"])
+def api_event_get(request, slug):
+    event = get_event_by_slug(slug)
+    if not event:
+        raise Http404
+    serializer = HALEventSerializer(event, read_only=True, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_event_get_ics(request, slug):
+    event = get_event_by_slug(slug)
+    if not event:
+        raise Http404
+    serializer = EventSerializer(event)
+    return Response(serializer.data,
+                    status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
 
 
 def item_from_request(request):

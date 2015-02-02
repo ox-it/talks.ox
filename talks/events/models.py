@@ -106,10 +106,16 @@ class EventGroup(models.Model):
         return reverse('show-event-group', args=[self.slug])
     
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
         super(EventGroup, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('show-event-group', args=[self.slug])
+
+    def get_api_url(self):
+        return reverse('api-event-group', args=[self.slug])
 
     @property
     def description_html(self):
@@ -153,7 +159,7 @@ class Person(models.Model):
     objects = PersonManager()
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
         super(Person, self).save(*args, **kwargs)
@@ -327,6 +333,9 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('show-event', args=[str(self.slug)])
+
+    def get_api_url(self):
+        return reverse('event-detail', args=[str(self.slug)])
 
     def formatted_date(self):
         if self.start:

@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
+from rest_framework import serializers, pagination
+from rest_framework.fields import Field
 
 from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem
+
 
 class PersonSerializer(serializers.ModelSerializer):
 
@@ -33,6 +35,7 @@ class ClassNameField(serializers.Field):
 class EventSerializer(serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url',
                                 read_only=True)
+    full_url = serializers.SerializerMethodField()
     formatted_date = serializers.CharField(read_only=True)
     formatted_time = serializers.CharField(read_only=True)
     happening_today = serializers.BooleanField(read_only=True)
@@ -40,13 +43,162 @@ class EventSerializer(serializers.ModelSerializer):
     organisers = PersonSerializer(many=True, read_only=True)
     hosts = PersonSerializer(many=True, read_only=True)
     class_name = ClassNameField()
+    location = serializers.SerializerMethodField()
+
+    def get_full_url(self, obj):
+        if 'request' in self.context:
+            request = self.context['request']
+            return request.build_absolute_uri(obj.get_absolute_url())
+        else:
+            return obj.get_absolute_url()
+
+    def get_location(self, obj):
+        location = obj.api_location
+        if location:
+            if 'address' in location and location['address'] != '':
+                return location['address']
+            elif 'name' in location and location['name'] != '':
+                return location['name']
+        return "Venue to be announced"
 
     class Meta:
         model = Event
         fields = ('slug', 'url', 'title', 'start', 'end', 'description',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name')
-        
+                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location')
+
+
+class HALURICharField(Field):
+    def to_representation(self, instance):
+        return {'href': instance}
+
+    def to_internal_value(self, data):
+        return None
+
+
+class EventLinksSerializer(serializers.ModelSerializer):
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('self', 'talks_page')
+
+
+class EmbeddedSpeakerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Person
+        fields = ('name', 'bio')
+
+
+class EmbeddedOxpointsSerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        maps_url = "//maps.ox.ac.uk/#/places/" + instance['id']
+        api_url = "//api.m.ox.ac.uk/places/" + instance['id']
+        data = {}
+        data['name'] = instance['name']
+        data['map_link'] = maps_url
+        if 'address' in instance:
+            data['address'] = instance['address']
+        data['_links'] = {'self': {'href': api_url}}
+        return data
+
+
+class EmbeddedTopicSerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        return {'label': instance['prefLabel'], 'uri': instance['uri']}
+
+
+class EventEmbedsSerializer(serializers.ModelSerializer):
+    speakers = EmbeddedSpeakerSerializer(many=True, read_only=True)
+    venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
+    organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
+    topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('speakers', 'venue', 'organising_department', 'topics')
+
+
+class HALEventSerializer(serializers.ModelSerializer):
+    _links = EventLinksSerializer(source='*', read_only=True)
+    _embedded = EventEmbedsSerializer(source='*', read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('_links', 'title', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
+
+
+class SearchResultEmbedsSerializer(serializers.Serializer):
+    talks = HALEventSerializer(source='*', many=True, read_only=True)
+
+
+class HALPreviousPageField(pagination.PreviousPageField):
+
+    def to_representation(self, value):
+        if value.has_previous():
+            return {'href': super(HALPreviousPageField, self).to_representation(value)}
+        return None
+
+
+class HALNextPageField(pagination.NextPageField):
+
+    def to_representation(self, value):
+        if value.has_next():
+            return {'href': super(HALNextPageField, self).to_representation(value)}
+        return None
+
+
+class SearchResultLinksSerializer(serializers.Serializer):
+    self = serializers.SerializerMethodField()
+    next = HALNextPageField(source='*')
+    prev = HALPreviousPageField(source='*')
+    results = None
+
+    def get_self(self, obj):
+        req = self.context.get('request')
+        link = req.build_absolute_uri()
+        return {'href': link}
+
+
+class HALSearchResultSerializer(serializers.Serializer):
+    _links = serializers.SerializerMethodField(method_name='get_links')
+    _embedded = SearchResultEmbedsSerializer(source='*')
+
+    def get_links(self, obj):
+        # Return a SearchResultLinksSerializer, but pass the context on by using it a method field
+        serializer = SearchResultLinksSerializer(obj, context=self.context)
+        return serializer.data
+
+
+class EventGroupLinksSerializer(serializers.ModelSerializer):
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+
+    class Meta:
+        model = EventGroup
+        fields = ('self', 'talks_page')
+
+
+class EventGroupEmbedsSerializer(serializers.ModelSerializer):
+    talks = HALEventSerializer(many=True, read_only=True, source='events')
+
+    class Meta:
+        model = EventGroup
+        fields = ('talks',)
+
+
+class HALEventGroupSerializer(serializers.ModelSerializer):
+    _links = EventGroupLinksSerializer(source='*', read_only=True)
+    _embedded = EventGroupEmbedsSerializer(source='*', read_only=True)
+
+    class Meta:
+        model = EventGroup
+        fields = ('_links', 'title', 'description', 'occurence', '_embedded')
+
 
 class SpeakerSerializer(serializers.ModelSerializer):
     """
@@ -80,7 +232,6 @@ class EventGroupWithEventsSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'title', 'description', 'department_organiser', 'events')
         model = EventGroup
-
 
 
 class UserSerializer(serializers.ModelSerializer):
