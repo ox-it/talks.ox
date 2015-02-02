@@ -35,6 +35,7 @@ class ClassNameField(serializers.Field):
 class EventSerializer(serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url',
                                 read_only=True)
+    full_url = serializers.SerializerMethodField()
     formatted_date = serializers.CharField(read_only=True)
     formatted_time = serializers.CharField(read_only=True)
     happening_today = serializers.BooleanField(read_only=True)
@@ -43,11 +44,18 @@ class EventSerializer(serializers.ModelSerializer):
     hosts = PersonSerializer(many=True, read_only=True)
     class_name = ClassNameField()
 
+    def get_full_url(self, obj):
+        if 'request' in self.context:
+            request = self.context['request']
+            return request.build_absolute_uri(obj.get_absolute_url())
+        else:
+            return obj.get_absolute_url()
+
     class Meta:
         model = Event
         fields = ('slug', 'url', 'title', 'start', 'end', 'description',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name')
+                  'api_organisation', 'api_topics', 'class_name', 'full_url')
 
 
 class HALURICharField(Field):

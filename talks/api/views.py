@@ -106,7 +106,7 @@ def api_event_group_ics(request, event_group_slug):
         return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)
 
-    serializer = EventSerializer(eg.events, many=True)
+    serializer = EventSerializer(eg.events, many=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -140,7 +140,7 @@ def api_event_search_ics(request):
     based on the query terms
     """
     events = events_search(request)
-    serializer = EventSerializer(events, many=True)
+    serializer = EventSerializer(events, many=True, context={'request': request})
     return Response(serializer.data,
                     status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
 
