@@ -36,7 +36,8 @@ class ICalRenderer(renderers.BaseRenderer):
         if 'full_url' in e:
             event.add('url', e['full_url'])
             event.add('uid', e['full_url'])
-        # TODO add location field
+        if 'location' in e:
+            event.add('location', e['location'])
         return event
 
 

@@ -43,6 +43,7 @@ class EventSerializer(serializers.ModelSerializer):
     organisers = PersonSerializer(many=True, read_only=True)
     hosts = PersonSerializer(many=True, read_only=True)
     class_name = ClassNameField()
+    location = serializers.SerializerMethodField()
 
     def get_full_url(self, obj):
         if 'request' in self.context:
@@ -51,11 +52,20 @@ class EventSerializer(serializers.ModelSerializer):
         else:
             return obj.get_absolute_url()
 
+    def get_location(self, obj):
+        location = obj.api_location
+        if location:
+            if 'address' in location and location['address'] != '':
+                return location['address']
+            elif 'name' in location and location['name'] != '':
+                return location['name']
+        return "Venue to be announced"
+
     class Meta:
         model = Event
         fields = ('slug', 'url', 'title', 'start', 'end', 'description',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name', 'full_url')
+                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location')
 
 
 class HALURICharField(Field):
