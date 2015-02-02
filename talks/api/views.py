@@ -75,8 +75,7 @@ def get_event_group(request, event_group_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     serializer = EventGroupSerializer(eg)
-    return Response(serializer.data,
-                    status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
