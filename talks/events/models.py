@@ -115,7 +115,7 @@ class EventGroup(models.Model):
         return reverse('show-event-group', args=[self.slug])
 
     def get_api_url(self):
-        return reverse('eventgroup-detail', args=[self.slug])
+        return reverse('api-event-group', args=[self.slug])
 
     @property
     def description_html(self):

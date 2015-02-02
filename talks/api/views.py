@@ -6,11 +6,10 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.http.response import Http404
 
-from rest_framework import viewsets, status, permissions
+from rest_framework import status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer, JSONPRenderer, XMLRenderer
 from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
@@ -19,17 +18,10 @@ from talks.users.models import Collection
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, get_item_serializer, HALEventSerializer,
                                    HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer)
-from talks.api.services import events_search, get_event_by_slug
+from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
 
 logger = logging.getLogger(__name__)
-
-
-class EventGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    renderer_classes = (JSONRenderer, JSONPRenderer, XMLRenderer, ICalRenderer)
-    queryset = EventGroup.objects.all()
-    serializer_class = HALEventGroupSerializer
-    lookup_field = 'slug'
 
 
 class IsSuperuserOrContributor(permissions.BasePermission):
@@ -83,6 +75,38 @@ def get_event_group(request, event_group_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     serializer = EventGroupSerializer(eg)
+    return Response(serializer.data,
+                    status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
+
+
+@api_view(["GET"])
+def api_event_group(request, event_group_slug):
+    """Serialise an EventGroup
+    :param request: DRF request object
+    :param event_group_slug: event group slug
+    :return: DRF response object
+    """
+    eg = get_eventgroup_by_slug(event_group_slug)
+    if not eg:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    serializer = HALEventGroupSerializer(eg)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_event_group_ics(request, event_group_slug):
+    """Get events from an eventgroup to be displayed
+    as an iCal feed
+    """
+    eg = get_eventgroup_by_slug(event_group_slug)
+    if not eg:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    serializer = EventSerializer(eg.events, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

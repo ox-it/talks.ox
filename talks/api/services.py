@@ -2,7 +2,7 @@ from django.db.models.query_utils import Q
 import operator
 from rest_framework.exceptions import ParseError
 from talks.core.utils import parse_date
-from talks.events.models import ROLES_SPEAKER, Event
+from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 
 
 def events_search(request):
@@ -50,4 +50,15 @@ def get_event_by_slug(slug):
     try:
         return Event.published.get(slug=slug)
     except Event.DoesNotExist:
+        return None
+
+
+def get_eventgroup_by_slug(slug):
+    """Get an eventgroup by its slug
+    :param slug: EventGroup.slug
+    :return: EventGroup or None if slug does not exist
+    """
+    try:
+        return EventGroup.objects.get(slug=slug)
+    except EventGroup.DoesNotExist:
         return None
