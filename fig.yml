@@ -1,5 +1,5 @@
 solr:
-    build: .
+    build: solr
     ports:
         - "8983:8983"
 db:
