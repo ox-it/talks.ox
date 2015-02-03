@@ -1,8 +1,19 @@
 solr:
-    build: .
+    build: solr
     ports:
         - "8983:8983"
 db:
     image: postgres
     ports:
         - "5432:5432"
+web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000 --settings=talks.settings_docker
+    volumes:
+        - .:/code
+    ports:
+        - "8000:8000"
+    links:
+        - db
+        - solr
+
