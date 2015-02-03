@@ -77,11 +77,10 @@ class HALURICharField(Field):
 
 
 class EventLinksSerializer(serializers.ModelSerializer):
-    self = serializers.SerializerMethodField(method_name='get_self_link')
-    # talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    self = serializers.SerializerMethodField()
     talks_page = serializers.SerializerMethodField()
 
-    def get_self_link(self, obj):
+    def get_self(self, obj):
         req = self.context.get('request')
         url = req.build_absolute_uri(obj.get_api_url())
         field = HALURICharField()
