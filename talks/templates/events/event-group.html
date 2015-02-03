@@ -59,9 +59,10 @@
         <li class="list-group-item"><strong>Organising department</strong>: {{ event_group.api_organisation.name }}</li>
     {% endif %}
         {% for event in events %}
-        {% if perms.events.change_event %}
         <li class="list-group-item">
+                {% if perms.events.change_event %}
                 <div style="float:right">{% if request.user|can_edit_event:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
+                {% endif %}
                 <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }})
                 {% if perms.events.change_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.is_published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>
                 <a href="{{ event.get_absolute_url }}">{{ event.title_display }}</a><br>
@@ -79,7 +80,6 @@
                 {% endfor %}<br>
 
         </li>
-        {% endif %}
         {% endfor %}
     </ul>
 </div>
