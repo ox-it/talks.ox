@@ -23,7 +23,7 @@
         <li class="list-group-item">
         <strong>Events this person is speaking at:</strong><br>
         {% for event in speaker_events %}
-            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}} <br>
+            <a href="{% url 'show-event' event.slug %}">{{ event.title_display}}</a> - {{ event.formatted_date}} <br>
         {% endfor %}
         </li>
         {% endif %}
@@ -32,7 +32,7 @@
         <li class="list-group-item">
         <strong>Events this person is hosting:</strong><br>
         {% for event in host_events %}
-            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}}<br>
+            <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a> - {{ event.formatted_date}}<br>
         {% endfor %}
         </li>
         {% endif %}
@@ -41,7 +41,7 @@
         <li class="list-group-item">
         <strong>Events this person is organising:</strong><br>
         {% for event in organiser_events %}
-            <a href="{% url 'show-event' event.slug %}">{{ event.title }}</a> - {{ event.formatted_date}}<br>
+            <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a> - {{ event.formatted_date}}<br>
         {% endfor %}
         </li>
         {% endif %}
