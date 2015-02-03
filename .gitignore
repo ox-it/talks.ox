@@ -62,8 +62,6 @@ docs/build/
 
 talks/local_settings.py
 
-solr/schema.xml
-
 # Vim
 .*.swp
 
