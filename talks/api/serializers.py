@@ -81,14 +81,20 @@ class EventLinksSerializer(serializers.ModelSerializer):
     talks_page = serializers.SerializerMethodField()
 
     def get_self(self, obj):
-        req = self.context.get('request')
-        url = req.build_absolute_uri(obj.get_api_url())
+        if 'request' in self.context:
+            req = self.context.get('request')
+            url = req.build_absolute_uri(obj.get_api_url())
+        else:
+            url = obj.get_api_url()
         field = HALURICharField()
         return field.to_representation(url)
 
     def get_talks_page(self, obj):
-        req = self.context.get('request')
-        url = req.build_absolute_uri(obj.get_absolute_url())
+        if 'request' in self.context:
+            req = self.context.get('request')
+            url = req.build_absolute_uri(obj.get_absolute_url())
+        else:
+            url = obj.get_absolute_url()
         field = HALURICharField()
         return field.to_representation(url)
 
