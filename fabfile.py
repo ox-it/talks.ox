@@ -40,6 +40,18 @@ def staging():
     env.requirements = ['requirements.txt']
     env.secrets_dir = '/etc/puppet/secrets/talks-dev.oucs.ox.ac.uk'
 
+@task
+def production():
+    env.environment = 'production'
+    env.repo = "https://github.com/ox-it/talks.ox.git"
+    env.hosts = ['talks-prod.oucs.ox.ac.uk']
+    env.user = 'talks'
+    env.settings_module = 'talks.settings'
+    env.remote_install_dir = '/srv/talks/talks-prod.oucs.ox.ac.uk'
+    env.remote_git_checkout = '/srv/talks/talks.ox'
+    env.requirements = ['requirements.txt']
+    env.secrets_dir = '/etc/puppet/secrets/talks-prod.oucs.ox.ac.uk'
+
 
 """
 Methods
