@@ -77,8 +77,20 @@ class HALURICharField(Field):
 
 
 class EventLinksSerializer(serializers.ModelSerializer):
-    self = HALURICharField(source='get_api_url', read_only=True)
-    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    self = serializers.SerializerMethodField()
+    talks_page = serializers.SerializerMethodField()
+
+    def get_self(self, obj):
+        req = self.context.get('request')
+        url = req.build_absolute_uri(obj.get_api_url())
+        field = HALURICharField()
+        return field.to_representation(url)
+
+    def get_talks_page(self, obj):
+        req = self.context.get('request')
+        url = req.build_absolute_uri(obj.get_absolute_url())
+        field = HALURICharField()
+        return field.to_representation(url)
 
     class Meta:
         model = Event
@@ -124,8 +136,13 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
 
 
 class HALEventSerializer(serializers.ModelSerializer):
-    _links = EventLinksSerializer(source='*', read_only=True)
+    _links = serializers.SerializerMethodField(method_name='get_links')
     _embedded = EventEmbedsSerializer(source='*', read_only=True)
+
+    def get_links(self, obj):
+        # Return a links serializer, but pass on the context
+        serializer = EventLinksSerializer(obj, read_only=True, context=self.context)
+        return serializer.data
 
     class Meta:
         model = Event
@@ -166,13 +183,17 @@ class SearchResultLinksSerializer(serializers.Serializer):
 
 class HALSearchResultSerializer(serializers.Serializer):
     _links = serializers.SerializerMethodField(method_name='get_links')
-    _embedded = SearchResultEmbedsSerializer(source='*')
+    _embedded = serializers.SerializerMethodField(method_name='get_embedded')
 
     def get_links(self, obj):
         # Return a SearchResultLinksSerializer, but pass the context on by using it a method field
         serializer = SearchResultLinksSerializer(obj, context=self.context)
         return serializer.data
 
+    def get_embedded(self,obj):
+        # Pass the context
+        serializer = SearchResultEmbedsSerializer(obj, context=self.context)
+        return serializer.data
 
 class EventGroupLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
