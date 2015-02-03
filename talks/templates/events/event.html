@@ -41,7 +41,7 @@
 
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">{% if event.title %}{{ event.title }}{% else %}Untitled Talk{% endif %}</h3>
+        <h3 class="panel-title">{{ event.title_display }}</h3>
         {% if event.special_message %}
         <br>
         <div class="alert alert-info">

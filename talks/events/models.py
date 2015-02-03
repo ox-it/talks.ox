@@ -380,6 +380,17 @@ class Event(models.Model):
             return True
         return False
 
+    @property
+    def title_display(self):
+        """Useful in templates to always have the
+        same default string
+        :return: title or a default string
+        """
+        if self.title:
+            return self.title
+        else:
+            return "Untitled talk"
+
     def user_can_edit(self, user):
         """
         Check if the given django User is authorised to edit this event.
