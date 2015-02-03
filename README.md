@@ -57,9 +57,12 @@ Go at the root of your project directory (probably `talks.ox`):
 After a few seconds (minutes if it is building the instance for the first time), you should be able to visit
 in your web browser: `http://<IP ADDRESS>:8000` and visualise Oxford Talks.
 
+If you have a user account (see below), the correct login page is `http://<IP ADDRESS>:8000/admin/login`,
+the `Login` link won't work.
+
 Any modification done in the python code/CSS/templates should immediately be visible when you refresh
 the page in the web browser.
-    
+
 ### Creating the database
 
 Type the following command at the root of your project directory:
