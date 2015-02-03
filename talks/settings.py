@@ -46,7 +46,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['talks-dev.oucs.ox.ac.uk']
+ALLOWED_HOSTS = ['talks-dev.oucs.ox.ac.uk', 'new.talks.ox.ac.uk']
 
 LOGIN_REDIRECT_URL = '/'
 
