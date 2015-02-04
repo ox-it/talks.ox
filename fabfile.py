@@ -38,7 +38,7 @@ def staging():
     env.remote_install_dir = '/srv/talks/talks-dev.oucs.ox.ac.uk'
     env.remote_git_checkout = '/srv/talks/talks.ox'
     env.requirements = ['requirements.txt']
-    env.secrets_dir = '/srv/%/secrets' % (env.user)
+    env.secrets_dir = '/srv/%s/secrets' % (env.user)
 
 @task
 def production():
@@ -50,7 +50,7 @@ def production():
     env.remote_install_dir = '/srv/talks/talks-prod.oucs.ox.ac.uk'
     env.remote_git_checkout = '/srv/talks/talks.ox'
     env.requirements = ['requirements.txt']
-    env.secrets_dir = '/srv/%/secrets/' % (env.user)
+    env.secrets_dir = '/srv/%s/secrets' % (env.user)
 
 
 """
