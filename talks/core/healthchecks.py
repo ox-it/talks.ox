@@ -1,7 +1,4 @@
 import logging
-from haystack.query import SearchQuerySet
-
-import requests
 
 from django.http.response import HttpResponse
 from django.conf import settings
@@ -10,6 +7,12 @@ logger = logging.getLogger(__name__)
 
 
 def healthcheck(request):
+    """Simple view to display the result of defined
+    healthchecks
+    :param request: django request
+    :return: Django response containing text/plain
+    """
+    # dictionary containing functions to be called
     checks = {'DB': _test_db_connection,
               'Topics': _test_topics_connection,
               'Events search': _test_events_search}
@@ -17,6 +20,7 @@ def healthcheck(request):
     overall_ok = True
     for name, service in checks.iteritems():
         try:
+            # run the healthcheck function
             ok, message = service()
         except Exception as e:
             ok = False
@@ -37,6 +41,10 @@ def healthcheck(request):
 
 
 def _test_db_connection():
+    """Test the database connection, by doing a
+    SELECT COUNT(*) on Event, which should never be empty
+    :return: True/False, message
+    """
     from talks.events.models import Event
     try:
         count = Event.objects.count()
@@ -49,8 +57,10 @@ def _test_db_connection():
 
 
 def _test_topics_connection():
-    """Performs a healthcheck to the configured client
+    """Do an HTTP GET request to the configured topics service
+    :return: True/False, message
     """
+    import requests
     if not settings.TOPICS_URL:
         return False, "TOPICS_URL is not configured"
     try:
@@ -63,8 +73,13 @@ def _test_topics_connection():
 
 
 def _test_events_search():
+    """Test the connection to Solr by doing a count query
+    :return: True/False, message
+    """
+    from haystack.query import SearchQuerySet
     try:
-        SearchQuerySet().filter(content='*:*').count()
+        count = SearchQuerySet().filter(content='*:*').count()
+        print count
         return True, "OK"
     except Exception as e:
         return False, e.message
