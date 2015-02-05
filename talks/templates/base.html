@@ -7,11 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %} - Oxford Talks</title>
 
-        <!-- Events custom stylesheet -->
-        <link rel="stylesheet" href="{% static 'css/custom.css'%}">
-
         <!-- Bootstrap -->
         <link href="{% static "bootstrap/css/bootstrap.min.css"%}" rel="stylesheet">
+
+        <!-- Events custom stylesheet -->
+        <link rel="stylesheet" href="{% static 'css/custom.css'%}">
 
         <!-- jQuery -->
         <script src="{% static "js/jquery-1.11.1.min.js"%}"></script>
@@ -43,6 +43,7 @@
                     {% url 'create-event' as create_event %}
                     {% url 'contributors-events' as contributors_homepage %}
                     <div class="navbar-header">
+                        <a id="navbar-oxford-brandmark" href="http://www.ox.ac.uk"><img src="{% static "images/ox_brand6_rev_rect.gif"%}"></a>
                         <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
                     </div>
                     <ul class="nav navbar-nav">
