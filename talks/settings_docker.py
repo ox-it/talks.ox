@@ -48,7 +48,7 @@ LOGGING = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://soslr:8983/solr/collection1',
+        'URL': 'http://solr:8983/solr/collection1',
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False
     },
