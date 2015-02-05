@@ -23,10 +23,7 @@ class ICalRenderer(renderers.BaseRenderer):
     @staticmethod
     def _event_to_ics(e):
         event = Event()
-        if 'title' in e and e['title'] != '':
-            event.add('summary', e['title'])
-        else:
-            event.add('summary', 'Untitled talks.ox')
+        event.add('summary', e['title_display'])
         if 'description' in e:
             event.add('description', e['description'])
         if 'start' in e:

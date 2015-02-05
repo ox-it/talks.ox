@@ -63,7 +63,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('slug', 'url', 'title', 'start', 'end', 'description',
+        fields = ('slug', 'url', 'title_display', 'start', 'end', 'description',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
                   'api_organisation', 'api_topics', 'class_name', 'full_url', 'location')
 
@@ -152,7 +152,7 @@ class HALEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('_links', 'title', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
+        fields = ('_links', 'title_display', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):
