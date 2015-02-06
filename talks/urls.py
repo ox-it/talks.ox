@@ -28,5 +28,5 @@ urlpatterns = patterns('',
     url(r'^audit/', include(audit_urls, namespace='audit')),
     url(r'^api/', include(api_urls)),
     url(r'^contributors/', include(contributors_urls)),
-    url(r'^_health', healthcheck, name='healthcheck')
+    url(r'^_health$', healthcheck, name='healthcheck')
 )
