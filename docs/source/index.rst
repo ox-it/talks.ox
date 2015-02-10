@@ -8,6 +8,7 @@ Oxford Talks
 ############
 
 
+
 **********
 User Guide
 **********
@@ -16,7 +17,7 @@ User Guide
     :maxdepth: 2
     :glob:
 
-    user/*
+    user/*    
 
 ***********************
 Developer Documentation

@@ -8,24 +8,24 @@ via Add Talk
 
 .. image:: images/create-a-series/via-add-talk.png
    :alt: via Add Talk
-   :height: 314px
-   :width: 674px
+   :height: 307px
+   :width: 741px
    :align: center
 
 
-#. Click **Add Talk** on the toolbar and start adding your talk information
+#. Click **New Talk** on the toolbar and start adding your talk information
 #. Tick the **Series** box.
 #. Click the **New series** button.
-#. The **Add a new series** form will pop up.
-#. Not all information about a series can be added via the pop up form - so you may need to go to the **Dashboard** to add further information later.
+
+The **Add a new series** form will pop up.  Not all information about a series can be added via the pop up form - so you may need to go to the **Dashboard** to add further information later.
 
 via the Dashboard
 -----------------
 
 .. image:: images/create-a-series/via-the-dashboard.png
    :alt: via the Dashboard
-   :height: 241px
-   :width: 555px
+   :height: 256px
+   :width: 590px
    :align: center
 
 
@@ -33,8 +33,7 @@ Creating a series via the **Dashboard** means you can add all the information ab
 
 #. Click **Dashboard** at the top of the screen
 #. Select **Series** from the filter on the left hand side
-#. The **New series** button should appear
-#. Click this to get the **New Series** form
+#. The **New series** button should appear. Click this to get the **New Series** form
 
 Title and Description
 ---------------------
@@ -91,4 +90,4 @@ When you're ready, save the series by clicking either:
 * **Save and add another** to go straight to another New series form
 * **Done** to preview the series you've just created
 
-If you want to cancel your changes (before you save them) then just hit the **back** button in your browser.
+If you want to cancel your changes (before you save them) then just click the **back** button in your browser.
