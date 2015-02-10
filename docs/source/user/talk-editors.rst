@@ -14,5 +14,6 @@ Talk Editors
    talk-editors/share-editing
    talk-editors/people-details
    talk-editors/contact
+   talk-editors/differences
 
    
