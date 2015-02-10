@@ -40,6 +40,8 @@ def update_old_talks(event):
                 else:
                     raise Exception("Didn't got the location header so cannot say which talk this is")
         else:
+            logger.error("Got response {status}: {message}".format(status=response.status_code,
+                                                                   message=response.content))
             raise Exception(response.status_code)
 
 
