@@ -70,6 +70,7 @@ def event_to_old_talk(event, series_id):
             name += " (" + event.location_details + ")"
         data.append(("talk[venue_name]", "{name}, {address}".format(name=name, address=location.get('address', ''))))
     if series_id:
+        data.append(("talk[list_id_strings][]", series_id))
         data.append(("talk[series_id_string]", series_id))
     else:
         # empty string means no series, useful if the talk is not associated anymore
