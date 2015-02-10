@@ -119,7 +119,7 @@ class EventGroup(models.Model):
 
     @property
     def description_html(self):
-        return textile_restricted(self.description, auto_link=True)
+        return textile_restricted(self.description, auto_link=True, lite=False)
 
     @property
     def api_organisation(self):
