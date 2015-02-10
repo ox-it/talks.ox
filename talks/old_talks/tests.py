@@ -44,7 +44,7 @@ class TestOldTalks(TestCase):
         data = event_to_old_talk(event, None)
         d = dict(data)
 
-        self.assertEquals(len(data), 8)
+        self.assertEquals(len(data), 9)
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[name_of_speaker]"], "A (Abio), B (Bbio)")
         self.assertTrue("Email address for booking: test@test.com" in d["talk[abstract]"])
@@ -81,7 +81,7 @@ class TestOldTalks(TestCase):
         data = event_to_old_talk(event, "22")
         d = dict(data)
 
-        self.assertEquals(len(data), 9)
+        self.assertEquals(len(data), 10)
         self.assertEquals(d["talk[title]"], event.title)
         self.assertEquals(d["talk[series_id_string]"], "22")
         self.assertTrue(event.description+"\n" in d["talk[abstract]"])
