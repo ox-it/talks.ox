@@ -17,6 +17,8 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     location = indexes.CharField(faceted=True, null=True)
     topics = indexes.MultiValueField(faceted=True, null=True)
     published = indexes.BooleanField(null=False)
+    group = indexes.CharField(faceted=True, null=True)
+    group_slug = indexes.CharField(null=True)
 
     # suggestions: used for spellchecking
     suggestions = indexes.SuggestionField()
@@ -71,6 +73,11 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         # Published status
         self.prepared_data[self.published.index_fieldname] = obj.is_published
 
+        # Series name
+        if obj.group:
+            self.prepared_data[self.group.index_fieldname] = obj.group.title
+            self.prepared_data[self.group_slug.index_fieldname] = obj.group.slug
+
         suggest_content = []        # used when providing suggestions
         full_text_content = []      # used when searching full text
 
@@ -87,6 +94,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             full_text_content.extend(topic_alt_labels)
         if obj.group:
             full_text_content.append(obj.group.title)
+
         suggest_content.extend(speakers_names)
         full_text_content.extend(speakers_names)
 
