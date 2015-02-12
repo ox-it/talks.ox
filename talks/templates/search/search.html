@@ -27,13 +27,17 @@
 return Speakers as main results -- if it was something that we wanted to do.
 It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
 {% endcomment %}
-            {{ result.start|date:"D, d M" }}
+            <b>{{ result.start|date:"D, d M" }}</b>
             {% if result.speakers %}
                 {{ result.speakers|join:", " }}
             {% else %}
                 <em>Speaker to be announced</em>
             {% endif %}
             <a href="{% url 'show-event' result.slug %}">{{ result.title }}</a>
+            {% if result.group %}
+              Part of <a href="{% url 'show-event-group' result.group_slug %}">{{ result.group }}</a>
+            {% endif %}
+
         </p>
     {% empty %}
         <p>No results found.</p>
@@ -74,6 +78,14 @@ It is best practice to not access result.object as this would hit the database f
             <dt>Topics</dt>
             {% for topic in facets.fields.topics|slice:":10" %}
                 <dd><a href="{{ request.get_full_path }}&amp;selected_facets=topics_exact:{{ topic.0|urlencode }}">{{ topic.0 }}</a> ({{ topic.1 }})</dd>
+            {% endfor %}
+        {% endif %}
+    </dl>
+    <dl>
+        {% if facets.fields.group %}
+            <dt>Series</dt>
+            {% for group in facets.fields.group|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=group_exact:{{ group.0|urlencode }}">{{ group.0 }}</a> ({{ group.1 }})</dd>
             {% endfor %}
         {% endif %}
     </dl>

@@ -154,15 +154,21 @@
 
     <field name="topics" type="text_en" indexed="true" stored="true" multiValued="true"  />
 
+    <field name="published" type="boolean" indexed="true" stored="true" multiValued="false"  />
+
     <field name="suggestions" type="textSpell" indexed="true" stored="false" multiValued="true" omitTermFreqAndPositions="true" />
 
     <field name="location_exact" type="string" indexed="true" stored="true" multiValued="false"  />
 
     <field name="topics_exact" type="string" indexed="true" stored="true" multiValued="true"  />
 
+    <field name="group_exact" type="string" indexed="true" stored="true" multiValued="false"  />
+
     <field name="slug" type="text_en" indexed="true" stored="true" multiValued="false"  />
 
     <field name="speakers" type="text_en" indexed="true" stored="true" multiValued="true"  />
+
+    <field name="group" type="text_en" indexed="true" stored="true" multiValued="false"  />
 
     <field name="department_exact" type="string" indexed="true" stored="true" multiValued="false"  />
 
@@ -174,7 +180,7 @@
 
     <field name="location" type="text_en" indexed="true" stored="true" multiValued="false"  />
 
-    <field name="published" type="boolean" indexed="true" stored="true" multiValued="false"  />
+    <field name="group_slug" type="text_en" indexed="true" stored="true" multiValued="false"  />
 
     <field name="department" type="text_en" indexed="true" stored="true" multiValued="false"  />
 
