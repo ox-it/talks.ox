@@ -35,6 +35,12 @@ $(function() {
         $('#event-end.js-datetimepicker').data('datetimepicker').setDate(date);
     });
 
+    //prepend a message div to the given element, containing the given text.
+    // type is 'warning', 'error', 'info', 'success' as specified in Bootstrap.
+    var addMessage = function($el, type, text) {
+        $el.prepend($("<div class='alert alert-" + type + "'>" + text + "</div>"));
+    };
+
     $('#create-group-button').data('successCallback', function(newGroup) {
         $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_event-group').prop('selected', true);
 
@@ -42,6 +48,16 @@ $(function() {
         if (newGroup.department_organiser != null) {
             updateEventDepartment(newGroup.department_organiser);
         }
+
+        var messageEl = $('.event-group');
+        //tell the user that the series was created
+        addMessage(messageEl, 'success', "New series created");
+
+        //if the push to old talks failed. Warn the user
+        if(newGroup.push_to_old_talks_error) {
+            addMessage(messageEl, 'warning', "Timed out connecting to old talks. The new series will not appear on the old site until it is edited again here.");
+        }
+
     })
 
     $('.js-create-person-control').each( function() {

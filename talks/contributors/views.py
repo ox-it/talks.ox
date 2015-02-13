@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from requests.exceptions import Timeout
 
 from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER
 from talks.contributors.forms import EventForm, EventGroupForm, PersonQuickAdd, PersonForm
@@ -44,7 +45,10 @@ def edit_event(request, event_slug):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            event_updated.send(event.__class__, instance=event)
+            try:
+                event_updated.send(event.__class__, instance=event)
+            except Timeout:
+                messages.warning(request, "Timed out connecting to old talks. This update won't appear on the old talks website.")
             messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
@@ -81,7 +85,10 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            event_updated.send(event.__class__, instance=event)
+            try:
+                event_updated.send(event.__class__, instance=event)
+            except Timeout:
+                messages.warning(request, "Timed out connecting to Old Talks. This talk won't appear on the old site")
             messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
@@ -146,7 +153,10 @@ def edit_event_group(request, event_group_slug):
             if request.user not in event_group.editor_set.all():
                 event_group.editor_set.add(request.user)
                 event_group.save()
-            eventgroup_updated.send(event_group.__class__, instance=event_group)
+            try:
+                eventgroup_updated.send(event_group.__class__, instance=event_group)
+            except Timeout:
+                messages.warning(request, "Timed out connecting to Old Talks. The series will not be updated on the old site.")
             messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
         else:
@@ -172,10 +182,25 @@ def create_event_group(request):
             if request.user not in event_group.editor_set.all():
                 event_group.editor_set.add(request.user)
                 event_group.save()
-            eventgroup_updated.send(event_group.__class__, instance=event_group)
+
+            showTimeoutWarning = False
+            try:
+                eventgroup_updated.send(event_group.__class__, instance=event_group)
+            except Timeout:
+                showTimeoutWarning = True
             if is_modal:
-                response = json.dumps(serializers.EventGroupSerializer(event_group).data)
+                group_data = serializers.EventGroupSerializer(event_group).data
+                if showTimeoutWarning:
+                    group_data['push_to_old_talks_error'] = 'Timeout'
+                response = json.dumps(group_data)
+                print "MODAL SERIES CREATED - RESPONSE"
+                print response
+                if showTimeoutWarning:
+                    # messages.warning(response, "Timed out connecting to Old Talks. This series will not appear on that site until it is edited again.")
+                    return HttpResponse(response, status=201, content_type='application/json')
                 return HttpResponse(response, status=201, content_type='application/json')
+            if showTimeoutWarning:
+                messages.warning(request, "Timed out connecting to Old Talks. This series will not appear on that site until it is edited again.")
             messages.success(request, "Series was created")
             return redirect(event_group.get_absolute_url())
         else:
