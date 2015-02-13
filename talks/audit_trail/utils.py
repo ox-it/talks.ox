@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 IGNORE_FIELDS = ['password', 'id']
 
 
@@ -31,7 +33,10 @@ def find_user_friendly_rel(field, value):
     :return string representation of the value
     """
     if value:
-        obj = field.rel.to.objects.get(id=value)
+        try:
+            obj = field.rel.to.objects.get(id=value)
+        except ObjectDoesNotExist:
+            return "Deleted Object"
         if hasattr(obj, 'text'):
             return obj.text
         elif hasattr(obj, 'name'):
