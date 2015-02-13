@@ -1,5 +1,7 @@
 import django
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
@@ -11,7 +13,7 @@ from .utils import (compare_dicts, find_user_friendly_rel, find_user_friendly_ma
                     find_user_friendly_display_name)
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def database_usage(request):
     INITIAL_PAGE = 1
     DEFAULT_COUNT = 20
@@ -55,7 +57,7 @@ def database_usage(request):
     return render_to_response('audit_trail/database_usage.html', context)
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def revision_details(request, revision_id):
     revision = Revision.objects.get(id=revision_id)
 
