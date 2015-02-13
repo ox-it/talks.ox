@@ -1,6 +1,4 @@
 import django
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render_to_response, redirect
