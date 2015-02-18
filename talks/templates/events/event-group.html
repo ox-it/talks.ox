@@ -70,7 +70,10 @@
                 {% empty %} TBA
                 {% endfor %}<br>
                 {% if event.location %}
-                <strong>Venue</strong>:<a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                <strong>Venue</strong>: <a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                {% endif %}
+                {% if event.location_details %}
+                <strong>Venue Details</strong>: {{event.location_details}}<br>
                 {% endif %}
                 <strong>Organiser{{ event.organisers|pluralize }}</strong>: {% for org in event.organisers %}<a href="{% url 'show-person' org.slug %}">{{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% empty %} TBA
