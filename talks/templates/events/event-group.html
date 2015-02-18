@@ -23,9 +23,10 @@
     <div class="container-fluid">
       {% if request.user|can_edit_group:event_group %}
     <div class="row bg-primary">
-      <div class="col-md-11"></div>
-      <div class="col-md-1">
-        <a class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit</a>
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <a class="btn btn-default navbar-btn" href="{% url 'create-event' %}"><span class="glyphicon glyphicon-plus"></span> Add a talk to this series</a>
+        <a style="margin-left: 10px" class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit series</a>
       </div>
     </div>
       {% endif %}
