@@ -29,8 +29,8 @@ def update_old_talks(event):
 
         logger.debug("POSTing {data} to {url}".format(data=data, url=url))
 
-        response = requests.post(url, data, auth=(settings.OLD_TALKS_USER, CONTACT_OLD_TALKS_TIMEOUT),
-                                 allow_redirects=True, stream=False, headers={"Accept": "application/xml"}, timeout=settings.OLD_TALKS_TIMEOUT)
+        response = requests.post(url, data, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
+                                 allow_redirects=True, stream=False, headers={"Accept": "application/xml"}, timeout=CONTACT_OLD_TALKS_TIMEOUT)
 
         if response.status_code == 200:
             if is_new:
