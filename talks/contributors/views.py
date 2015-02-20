@@ -63,8 +63,10 @@ def create_event(request, group_slug=None):
     logger.debug("group_id:%s", group_slug)
     if group_slug:
         event_group = get_object_or_404(EventGroup, slug=group_slug)
+        organising_dept = event_group.department_organiser
         initial = {
             'group': event_group,
+            'department_organiser': organising_dept,
         }
 
     print request.user
