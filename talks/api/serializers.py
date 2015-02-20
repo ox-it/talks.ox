@@ -107,7 +107,7 @@ class EmbeddedSpeakerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = ('name', 'bio')
+        fields = ('name', 'bio', 'slug')
 
 
 class EmbeddedOxpointsSerializer(serializers.Serializer):
@@ -152,7 +152,7 @@ class HALEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('_links', 'title_display', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
+        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):
