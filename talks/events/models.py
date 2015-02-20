@@ -162,6 +162,10 @@ class Person(models.Model):
         if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
+
+        if self.name:
+            self.name = self.name.strip()
+
         super(Person, self).save(*args, **kwargs)
 
     def __unicode__(self):
