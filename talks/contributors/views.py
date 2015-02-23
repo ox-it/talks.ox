@@ -365,15 +365,14 @@ def contributors_persons(request):
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
     letter = request.GET.get('letter', None)
+    if letter == 'None':
+        letter = None
 
     args = {'count': count, 'letter': letter}
 
-    if(letter):
+    if letter:
         # filter by letter
-        print letter
         persons = persons.filter(lastname__istartswith=letter)
-
-    print persons
 
     persons = persons.order_by('lastname')
 
@@ -385,7 +384,6 @@ def contributors_persons(request):
         return redirect('contributors-persons')
 
     letters = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z'.split(',')
-    print letters
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
 
@@ -395,8 +393,6 @@ def contributors_persons(request):
         'letter': letter,
         'fragment': fragment
     }
-
-
 
     return render(request, 'contributors/contributors_persons.html', context)
 
