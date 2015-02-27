@@ -4,11 +4,7 @@ Summary
 
 Formats: JSON, XML
 
-The API is able to return either XML or JSON, depending on the ‘Accept’ header in the request.
-
-By default a web browser will specify XML in the request. 
-
-curl doesn’t specify any preference, so the API will respond with json.
+The API is able to return either XML or JSON, depending on the ‘Accept’ header in the request. By default a web browser will specify XML in the request. Note curl doesn’t specify any preference, so the API will respond with json.
 
 To ensure you get xml back then add an Accept header to your request::
 
