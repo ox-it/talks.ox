@@ -119,7 +119,7 @@ class EventGroup(models.Model):
 
     @property
     def description_html(self):
-        return textile_restricted(self.description, auto_link=True, lite=False)
+        return textile_restricted(self.description, auto_link=True, lite=False, noimage=False)
 
     @property
     def api_organisation(self):
@@ -333,7 +333,7 @@ class Event(models.Model):
 
     @property
     def description_html(self):
-        return textile_restricted(self.description, auto_link=True, lite=False)
+        return textile_restricted(self.description, auto_link=True, lite=False, noimage=False)
 
     def __unicode__(self):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
