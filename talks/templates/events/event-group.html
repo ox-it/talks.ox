@@ -23,9 +23,10 @@
     <div class="container-fluid">
       {% if request.user|can_edit_group:event_group %}
     <div class="row bg-primary">
-      <div class="col-md-11"></div>
-      <div class="col-md-1">
-        <a class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit</a>
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <a class="btn btn-default navbar-btn" href="{% url 'create-event-in-group' event_group.slug %}"><span class="glyphicon glyphicon-plus"></span> Add a talk to this series</a>
+        <a style="margin-left: 10px" class="btn btn-default navbar-btn" href="{% url 'edit-event-group' event_group.slug %}">Edit series</a>
       </div>
     </div>
       {% endif %}
@@ -70,7 +71,10 @@
                 {% empty %} TBA
                 {% endfor %}<br>
                 {% if event.location %}
-                <strong>Venue</strong>:<a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                <strong>Venue</strong>: <a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                {% endif %}
+                {% if event.location_details %}
+                <strong>Venue Details</strong>: {{event.location_details}}<br>
                 {% endif %}
                 <strong>Organiser{{ event.organisers|pluralize }}</strong>: {% for org in event.organisers %}<a href="{% url 'show-person' org.slug %}">{{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% empty %} TBA

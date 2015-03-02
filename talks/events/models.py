@@ -147,6 +147,7 @@ class PersonManager(models.Manager):
 
 class Person(models.Model):
     name = models.CharField(max_length=250)
+    lastname = models.CharField(max_length=250, blank=True)
     slug = models.SlugField()
     bio = models.TextField(verbose_name="Affiliation")
     email_address = models.EmailField(max_length=254,
@@ -155,13 +156,19 @@ class Person(models.Model):
     web_address = models.URLField(verbose_name="Web address",
                                   null=True,
                                   blank=True)
-
     objects = PersonManager()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
+
+        if self.name:
+            self.name = self.name.strip()
+
+        # extract surname as the last word of the name
+        self.lastname = self.name.split(' ')[-1]
+
         super(Person, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -170,10 +177,10 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
 
-    @property
-    def surname(self):
-        # Attempt to extract the surname as the last word of the name. This will be used for sorting on
-        return self.name.split(' ')[-1]
+    # @property
+    # def surname(self):
+    #     # Attempt to extract the surname as the last word of the name. This will be used for sorting on
+    #     return self.name.split(' ')[-1]
 
     @property
     def speaker_events(self):
