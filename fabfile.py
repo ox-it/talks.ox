@@ -92,6 +92,11 @@ def install(install_dir):
         run('python manage.py syncdb --settings=%s' % env.settings_module)
         run('python manage.py collectstatic --noinput --settings=%s' % env.settings_module)
 
+@task
+def rebuild_index():
+    with cd(env.remote_install_dir):
+        run('bin/python manage.py rebuild_index')
+
 """
 Private methods
 """
