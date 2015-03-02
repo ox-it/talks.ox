@@ -7,7 +7,7 @@ All members of the University are entitled to be a Talks Editor, if you are a st
 
 There are two steps:
 
-1. :doc:`Log in <log-in>` to Oxford Talks (this will create an ordinary user account for you)
+1. :doc:`Log in <log-in>` to Oxford Talks (this will create an ordinary user account for you) at http://new.talks.ox.ac.uk
 2. Send an email to oxtalks-contact@it.ox.ac.uk with the following:
 
   * Your Name
