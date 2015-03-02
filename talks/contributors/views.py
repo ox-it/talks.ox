@@ -69,8 +69,6 @@ def create_event(request, group_slug=None):
             'department_organiser': organising_dept,
         }
 
-    print request.user
-
     PrefixedEventForm = partial(EventForm, prefix='event', initial=initial, user=request.user)
 
     if request.method == 'POST':
@@ -195,8 +193,7 @@ def create_event_group(request):
                 if showTimeoutWarning:
                     group_data['push_to_old_talks_error'] = 'Timeout'
                 response = json.dumps(group_data)
-                print "MODAL SERIES CREATED - RESPONSE"
-                print response
+
                 if showTimeoutWarning:
                     # messages.warning(response, "Timed out connecting to Old Talks. This series will not appear on that site until it is edited again.")
                     return HttpResponse(response, status=201, content_type='application/json')
