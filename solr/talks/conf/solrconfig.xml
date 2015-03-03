@@ -495,4 +495,7 @@
     <defaultQuery>*:*</defaultQuery>
   </admin>
 
+  <!-- Added for SolrCloud -->
+  <requestHandler name="/replication" class="solr.ReplicationHandler" startup="lazy" />
+
 </config>
