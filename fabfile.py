@@ -29,6 +29,18 @@ def local():
     env.secrets_dir = '/etc/puppet/secrets/talks-dev.oucs.ox.ac.uk'
 
 @task
+def virtual():
+    env.environment = 'dev'
+    env.repo = "https://github.com/ox-it/talks.ox.git"
+    env.hosts = ['192.168.33.178']
+    env.user = 'talks'
+    env.settings_module = 'talks.settings'
+    env.remote_install_dir = '/srv/talks/talks-dev.oucs.ox.ac.uk'
+    env.remote_git_checkout = '/srv/talks/talks.ox'
+    env.requirements = ['requirements.txt']
+    env.secrets_dir = '/srv/%s/secrets' % (env.user)
+
+@task
 def staging():
     env.environment = 'staging'
     env.repo = "https://github.com/ox-it/talks.ox.git"
