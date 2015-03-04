@@ -181,7 +181,7 @@ REST_FRAMEWORK = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr/talks',
+        'URL': 'http://solr-lb:8983/solr/talks',
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False
     },
