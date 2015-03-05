@@ -12,7 +12,8 @@ from secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import yaml
+from talks.core.utils import read_yaml_param
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -180,24 +181,12 @@ REST_FRAMEWORK = {
 }
 
 # load the collection name from the local file
-try:
-    stream = open("talks/solr_location.yaml", "r")
-    doc = yaml.load(stream)
-    stream.close()
-    solr_location = doc['url']
-except IOError:
-    print "Failed to find solr configuration file"
-    raise Exception("Unable to configure Solr")
-except KeyError:
-    print "Failed to find key 'solr' in configuration file"
-    raise Exception("Unable to configure Solr")
 
-print solr_location
 
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': solr_location,
+        'URL': read_yaml_param('solr_location', 'url'),
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False
     },
