@@ -145,14 +145,32 @@ class HALEventSerializer(serializers.ModelSerializer):
     _links = serializers.SerializerMethodField(method_name='get_links')
     _embedded = EventEmbedsSerializer(source='*', read_only=True)
 
+    location_summary = serializers.SerializerMethodField()
+    series = serializers.SerializerMethodField()
+
     def get_links(self, obj):
         # Return a links serializer, but pass on the context
         serializer = EventLinksSerializer(obj, read_only=True, context=self.context)
         return serializer.data
 
+    def get_location_summary(self, obj):
+        api_loc = obj.api_location
+        if(api_loc):
+            summary = api_loc['name']
+            if(obj.location_details):
+                summary = summary + ", " + obj.location_details
+            summary = summary + ", " + api_loc['address']
+            return summary
+        return None
+
+    def get_series(self, obj):
+        if obj.group:
+            return { 'title': obj.group.title, 'slug': obj.group.slug }
+        return None
+
     class Meta:
         model = Event
-        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'description', '_embedded')
+        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'description', 'location_details', 'location_summary', 'series', '_embedded')
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):
