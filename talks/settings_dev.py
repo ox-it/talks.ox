@@ -10,6 +10,13 @@ DATABASES = {
     }
 }
 
+HAYSTACK_CONNECTIONS = {
+    # Use Haystack's 'simple' 'indexing' (just db queries) in local testing env
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine'
+    },
+}
+
 RAVEN_CONFIG = {}
 
 LOGIN_URL = '/admin/login'

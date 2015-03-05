@@ -1,5 +1,6 @@
 Django==1.7.3
 pytz
+pyaml
 djangorestframework==3.0.3
 icalendar==3.6.2
 requests==2.3.0
