@@ -12,6 +12,8 @@ from secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from talks.core.utils import read_yaml_param
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -178,10 +180,13 @@ REST_FRAMEWORK = {
     )
 }
 
+# load the collection name from the local file
+
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://solr-lb:8983/solr/talks',
+        'URL': read_yaml_param('/srv/talks/talks-configuration', 'solrLocation'),
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False
     },
