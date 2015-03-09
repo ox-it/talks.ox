@@ -20,4 +20,11 @@
 
 <p><a href="//maps.ox.ac.uk/#/places/{{ org.id }}" target="_blank">See {{ org.name }} on <strong>maps.ox</strong></a></p>
 
+
+<ul>
+    {% for org in sub_orgs %}
+        <li>{{ org.title }}</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

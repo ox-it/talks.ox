@@ -241,11 +241,13 @@ CACHES = {
     },
     'oxpoints': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'oxpoints'
     },
     'topics': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
     'department_descendant': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'department_descendants'
     }
 }

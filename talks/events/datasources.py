@@ -53,7 +53,7 @@ DEPARTMENT_DESCENDANT_DATA_SOURCE = typeahead.DataSource(
     get_prefetch_url=lambda values: settings.API_OX_PLACES_URL + values.pop() + "/organisation-descendants",
     id_key='id',
     display_key='title',
-    response_expression='response.descendants'
+    response_expression='response'
 )
 
 def get_descendants(org_id):

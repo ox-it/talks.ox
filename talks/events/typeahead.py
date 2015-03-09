@@ -73,6 +73,10 @@ def get_objects_from_response(response, expression=None):
     while properties:
         prop = properties.pop(0)
         json = json[prop]
+
+    # Convert to a list if necessary
+    if not isinstance(json, list):
+        return [json]
     return json
 
 
