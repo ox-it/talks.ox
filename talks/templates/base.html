@@ -7,11 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %} - Oxford Talks</title>
 
-        <!-- Events custom stylesheet -->
-        <link rel="stylesheet" href="{% static 'css/events.css'%}">
-
         <!-- Bootstrap -->
         <link href="{% static "bootstrap/css/bootstrap.min.css"%}" rel="stylesheet">
+
+        <!-- Events custom stylesheet -->
+        <link rel="stylesheet" href="{% static 'css/custom.css'%}">
 
         <!-- jQuery -->
         <script src="{% static "js/jquery-1.11.1.min.js"%}"></script>
@@ -43,6 +43,7 @@
                     {% url 'create-event' as create_event %}
                     {% url 'contributors-events' as contributors_homepage %}
                     <div class="navbar-header">
+                        <a id="navbar-oxford-brandmark" href="http://www.ox.ac.uk"><img src="{% static "images/ox_brand6_rev_rect.gif"%}"></a>
                         <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
                     </div>
                     <ul class="nav navbar-nav">
@@ -53,13 +54,27 @@
                             <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
                         {% endif %}
                     </ul>
-                    <form class="navbar-form navbar-right" role="search" method="get" action="{% url 'haystack_search' %}">
+                    <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'haystack_search' %}">
                         <div class="form-group">
                             <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" value="{% block search_query %}{% endblock search_query %}" />
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
-
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if perms.events.change_event or perms.events.add_event %}
+                            <li><a href="http://talksox.readthedocs.org/en/latest/user/talk-editors.html" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> Help</a></li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            {% if user.first_name and user.last_name %}
+                            <li><p class="navbar-text"><i class="glyphicon glyphicon-user"></i> {{ user.first_name }} {{ user.last_name }}</p></li>
+                            {% elif user.email %}
+                            <li><p class="navbar-text"><i class="glyphicon glyphicon-user"></i> {{ user.email }}</p></li>
+                            {% endif %}
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        {% endif %}
+                    </ul>
                 </div><!--/.container-fluid -->
             </div>
             {% if messages %}

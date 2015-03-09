@@ -30,7 +30,7 @@ Scenario: Add the simplest talk
     page should contain text "something else"
 
 Scenario: Add talk to existing group of talks
-    create  event group  title=foo
+    create  event group  title=foo  department_organiser=oxpoints:23232503
 
     go to ${add_talk_page}
     type "something" into ${title field}
@@ -39,6 +39,7 @@ Scenario: Add talk to existing group of talks
     ${group field} should be displayed
     ${create group button} should be displayed
     Select from list  ${group field.locator}  foo
+    page should appear text "Chemical Biology"
     click on ${start field}
     ${datetimepicker[0]} should appear
     Select current date and time for ${datetimepicker[0]}
@@ -69,7 +70,7 @@ Scenario: Create new group on the go
     ${group field} should not be displayed
     click on ${checkbox in group section}
     ${group field} should be displayed
-    ${group field} selected item should be "-- select a series --"
+    ${group field} selected item should be "-- There are no series which you can add this talk to --"
     ${create group button} should be displayed
     click on ${create group button}
     ${modal dialog} should appear

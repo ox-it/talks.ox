@@ -9,6 +9,8 @@ from talks.old_talks.models import (OldTalk, OldSeries, event_to_old_talk,
 logger = logging.getLogger(__name__)
 
 
+CONTACT_OLD_TALKS_TIMEOUT = 30.0
+
 def update_old_talks(event):
     if _old_talks_configured():
         if event.group:
@@ -28,7 +30,7 @@ def update_old_talks(event):
         logger.debug("POSTing {data} to {url}".format(data=data, url=url))
 
         response = requests.post(url, data, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                 allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+                                 allow_redirects=True, stream=False, headers={"Accept": "application/xml"}, timeout=CONTACT_OLD_TALKS_TIMEOUT)
 
         if response.status_code == 200:
             if is_new:
@@ -40,6 +42,8 @@ def update_old_talks(event):
                 else:
                     raise Exception("Didn't got the location header so cannot say which talk this is")
         else:
+            logger.error("Got response {status}: {message}".format(status=response.status_code,
+                                                                   message=response.content))
             raise Exception(response.status_code)
 
 
@@ -55,7 +59,7 @@ def update_old_series(group, force_update):
             group_xml = group_to_old_series(group)
             group_url = "{server}/list/api_create".format(server=settings.OLD_TALKS_SERVER)
             response = requests.post(group_url, group_xml, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"}, timeout=CONTACT_OLD_TALKS_TIMEOUT)
             if response.status_code == 200:
                 old_series.old_series_id = get_list_id(response.content)
                 old_series.save()
@@ -65,7 +69,7 @@ def update_old_series(group, force_update):
             group_xml = group_to_old_series(group)
             group_url = "{server}/list/update/{id}".format(server=settings.OLD_TALKS_SERVER, id=old_series.old_series_id)
             response = requests.post(group_url, group_xml, auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"}, timeout=CONTACT_OLD_TALKS_TIMEOUT)
             if not response.status_code == 200:
                 # response is a redirection to an edit page so ignore the content...
                 raise Exception(response.status_code)
@@ -83,7 +87,7 @@ def delete_old_talks(event):
             logger.debug("POSTing delete request to {url}".format(url=url))
 
             response = requests.post(url, " ", auth=(settings.OLD_TALKS_USER, settings.OLD_TALKS_PASSWORD),
-                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"})
+                                     allow_redirects=True, stream=False, headers={"Accept": "application/xml"}, timeout=CONTACT_OLD_TALKS_TIMEOUT)
         except OldTalk.DoesNotExist:
             logger.debug("Talk {slug} not ")
 

@@ -6,8 +6,7 @@
   model: events.person
   pk: 1
 - fields:
-    bio: Professor of Department of Reconstructive & Plastic Surgery, Keio University,
-      Tokyo
+    bio: Department of Reconstructive & Plastic Surgery
     email_address: 'email@email.com'
     name: Professor Kazuo Kishi
     slug: prof-kazuo-kishi

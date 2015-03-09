@@ -23,6 +23,11 @@ class PersonFactory(factory.django.DjangoModelFactory):
         model = models.Person
 
 
+class PersonEventFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.PersonEvent
+
+
 class TopicItemFactory(factory.django.DjangoModelFactory):
     item = factory.SubFactory(EventFactory)
 
@@ -30,5 +35,10 @@ class TopicItemFactory(factory.django.DjangoModelFactory):
     def uri(n):
         return "http://example.com/%s" % n
 
+    class Meta:
+        model = models.TopicItem
+
+
+class TopicItemFactory_noSubFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.TopicItem

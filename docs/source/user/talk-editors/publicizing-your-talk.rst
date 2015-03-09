@@ -37,7 +37,12 @@ Once you've assigned a department or unit to a Series it will be automatically a
 
 If you choose a sub-department or unit, then the talk will also appear in the parent department and division listings.
 
-Public Lists [To Do]
---------------------
+Adding an abstract
+------------------
+
+Keywords in the talk abstract will be used for searching, so please add the abstract if you have it. 
+
+Public lists (coming soon)
+--------------------------
 
 As well as topic and department listings, there may be some more ad hoc listings you would like your talk to be included in.  In the next version of Oxford Talks, public lists can be created to collect together talks relevant to a particular theme, enterprise or project within the University - Athena Swan is a good example.

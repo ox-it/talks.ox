@@ -1,38 +1,113 @@
-talks.ox
-========
+# talks.ox
 [![Build Status](https://travis-ci.org/ox-it/talks.ox.svg?branch=master)](https://travis-ci.org/ox-it/talks.ox)
 [![Documentation Status](https://readthedocs.org/projects/talksox/badge/?version=latest)](https://readthedocs.org/projects/talksox/?badge=latest)
 
 New version of Oxford Talks
 
-Requirements
-------------
+## Start a local instance quickly on OS X
 
-See requirements.txt
+### Initial setup
 
-Currently using Django 1.7 beta 4
+Assuming that [VirtualBox](https://www.virtualbox.org) and [HomeBrew](http://brew.sh) are installed.
 
+Make sure that you have the latest version of formulas in homebrew:
 
-Use of Apache Solr
-------------------
+    brew update
 
-Apache Solr is used to provide the search functionnalities of the website.
+Install docker:
 
-You can download it from the [main website](http://lucene.apache.org/solr/).
+    brew install docker boot2docker fig
 
-The ``schema.xml`` needs to be generated using:
-  
-    python manage.py build_solr_schema
+Initialise the virtual machine:
 
-The ``solrconfig.xml`` file is available in the ``solr`` directory at the root of the repository.
+    boot2docker init
 
-Both files (``schema.xml`` and ``solrconfig.xml``) need to be put in your core's (default is ``collection1``) ``conf`` directory.
+You will eventually be asked to stick some environments variables in your bash profile.
 
-Developers
-----------
+### Starting the virtual machine when required
 
-* Requirements: python 2.7, virtualenv, sqlite
-* Install dependencies: ``pip install -r requirements.txt`` && ``pip install -r requirements_dev.txt``
-* Create the database: ``python manage.py migrate --settings=talks.settings_dev``
-* Load fixtures (test events): ``./manage.py loaddata talks/events/fixtures/dev_data.yaml --settings=talks.settings_dev``
-* Run web server: ``./manage.py runserver --settings=talks.settings_dev``
+Start the virtual machine:
+
+    boot2docker up
+
+### Starting the virtual machine automatically
+
+If you want to have the virtual machine starting automatically when you start your computer:
+
+    cp /usr/local/Cellar/boot2docker/1.4.1/homebrew.mxcl.boot2docker.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.boot2docker.plist
+    
+The path `/usr/local/Cellar/boot2docker/1.4.1` might change if you are using a newer version of `boot2docker`.
+
+### Starting the project instance when required
+
+This requires the virtual machine to be up (either manually started or when your computer starts).
+
+Type the following command in a terminal:
+
+    boot2docker ip
+    
+This will give you the IP address of the virtual machine (e.g. `192.168.59.103`), you will need
+this information later.
+
+Go at the root of your project directory (probably `talks.ox`):
+
+    fig up
+    
+After a few seconds (minutes if it is building the instance for the first time), you should be able to visit
+in your web browser: `http://<IP ADDRESS>:8000` and visualise Oxford Talks.
+
+If you have a user account (see below), the correct login page is `http://<IP ADDRESS>:8000/admin/login`,
+the `Login` link won't work.
+
+Any modification done in the python code/CSS/templates should immediately be visible when you refresh
+the page in the web browser.
+
+### Creating the database
+
+Type the following command at the root of your project directory:
+
+    fig run web python manage.py migrate --settings=talks.settings_docker
+
+### Creating a user account
+
+Type the following command at the root of your project directory:
+
+    fig run web python manage.py createsuperuser --username=myusername --email=my@email.com --settings=talks.settings_docker
+
+You will interactively be asked for a password.
+
+## Developers
+
+If you do not want to use the docker setup, make sure that you have the following dependencies available:
+
+ * python 2.7
+ * virtualenv (recommended)
+ * sqlite (recommended, or alternatively PostgreSQL)
+ * phantomjs (mandatory to run functional tests)
+ * [Apache Solr](http://lucene.apache.org/solr/) (search server)
+
+Install python dependencies:
+
+    pip install -r requirements.txt
+    pip install -r requirements_dev.txt
+
+Create the database:
+
+    python manage.py migrate --settings=talks.settings_dev
+
+Load fixtures (test events):
+
+    python manage.py loaddata talks/events/fixtures/dev_data.yaml --settings=talks.settings_dev
+
+Run development web server:
+
+    make local
+
+Run all tests:
+
+    make test
+
+## Using Solr
+
+See `solr/README.md`

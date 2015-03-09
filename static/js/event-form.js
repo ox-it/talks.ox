@@ -12,18 +12,34 @@ $(function() {
         }
     });
 
+    var today_eleven_am = new Date();
+    today_eleven_am.setHours(11);
     // Initialise datetimepicker's
     $('.js-datetimepicker').datetimepicker({
         format: 'dd/mm/yyyy hh:ii',
         autoclose: true,
+        initialDate: today_eleven_am
     });
+
     $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
-        //set the end time to 1 hour later
-        hours = ev.date.getHours();
+        //correct for daylight savings - the widget assumes we're picking in GMT
         var date = new Date(ev.date);
+        var gmt_offset = date.getTimezoneOffset();
+        date.setMinutes( date.getMinutes() + gmt_offset );
+        var picker = $(ev.target).data('datetimepicker');
+        picker.setDate(date);
+
+        //set the end time to 1 hour later
+        var end_date = new Date(date);
         date.setHours(date.getHours()+1, date.getMinutes());
         $('#event-end.js-datetimepicker').data('datetimepicker').setDate(date);
     });
+
+    //prepend a message div to the given element, containing the given text.
+    // type is 'warning', 'error', 'info', 'success' as specified in Bootstrap.
+    var addMessage = function($el, type, text) {
+        $el.prepend($("<div class='alert alert-" + type + "'>" + text + "</div>"));
+    };
 
     $('#create-group-button').data('successCallback', function(newGroup) {
         $('<option>').attr('value', newGroup.id).text(newGroup.title).appendTo('#id_event-group').prop('selected', true);
@@ -32,6 +48,16 @@ $(function() {
         if (newGroup.department_organiser != null) {
             updateEventDepartment(newGroup.department_organiser);
         }
+
+        var messageEl = $('.event-group');
+        //tell the user that the series was created
+        addMessage(messageEl, 'success', "New series created");
+
+        //if the push to old talks failed. Warn the user
+        if(newGroup.push_to_old_talks_error) {
+            addMessage(messageEl, 'warning', "Timed out connecting to old talks. The new series will not appear on the old site until it is edited again here.");
+        }
+
     })
 
     $('.js-create-person-control').each( function() {
@@ -48,6 +74,7 @@ $(function() {
 
             var namefield = $control.find('#id_name');
             var biofield = $control.find('#id_bio');
+            var webaddressfield = $control.find('#id_web_address')
             var csrftoken = $.cookie('csrftoken');
             var $errorMessage = $control.find('.js-person-form-errors');
             var target = $(this).attr('data-input-target');
@@ -60,23 +87,27 @@ $(function() {
                     },
                     data: {
                         name: namefield.val(),
-                        bio: biofield.val()
+                        bio: biofield.val(),
+                        web_address: webaddressfield.val()
                     },
 
                     success: function(response) {
                         $target.trigger("addPerson", response);
                         namefield.val("");
                         biofield.val("");
+                        webaddressfield.val("");
                         //clear error classes
                         setErrorStateForInput($control, 'name', false);
                         setErrorStateForInput($control, 'bio', false);
+                        setErrorStateForInput($control, 'web_address', false);
                         //clear and hide error message
                         $errorMessage.addClass("hidden");
                     },
                     error: function(response) {
                         setErrorStateForInput($control, 'name', false);
                         setErrorStateForInput($control, 'bio', false)
-                        for(key in response.responseJSON) {
+                        setErrorStateForInput($control, 'web_address', false);
+                        for(var key in response.responseJSON) {
                             setErrorStateForInput($control, key, true)
                         }
                         $errorMessage.removeClass("hidden");
@@ -101,14 +132,19 @@ $(function() {
         if(!location_id) { return; }
         $.ajax({
                     type:'GET',
-                    url: 'http://api.m.ox.ac.uk/places/' + location_id,
+                    url: '//api.m.ox.ac.uk/places/' + location_id,
                     success: function(response) {
-                        $('#id_event-department_organiser').trigger("eventGroupChanged", response);
+                        $('#id_event-department_organiser').trigger("eventDepartmentChanged", response);
                     },
                     error: function(err) {
                         console.log(err);
                     }
                 })
+    }
+
+    function updateEventOrganisers(organisers) {
+        if(!organisers) { return; }
+        $('#id_event-organisers').trigger("eventOrganisersChanged", organisers);
     }
 
     //On picking a new event group, retrieve the information and set the value of the department organiser field
@@ -127,6 +163,7 @@ $(function() {
             success: function(response) {
                 //retrieve the name of the location in question
                 updateEventDepartment(response.department_organiser);
+                updateEventOrganisers([response.organisers]);
             },
             error: function(err) {
                 console.log(err);

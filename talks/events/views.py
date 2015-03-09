@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from .models import Event, EventGroup, Person
-from talks.events.models import ROLES_SPEAKER
+from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
 
 logger = logging.getLogger(__name__)
@@ -105,22 +105,32 @@ def list_event_groups(request):
 
 def show_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
+    events = group.events.order_by('start')
     context = {
         'event_group': group,
+        'events': events,
         'organisers': group.organisers.all(),
     }
     return render(request, 'events/event-group.html', context)
 
 
-@login_required()
 def show_person(request, person_slug):
     person = get_object_or_404(Person, slug=person_slug)
-    events = Event.published.filter(personevent__role=ROLES_SPEAKER,
-                                    personevent__person__slug=person_slug)
+
+    if request.user.has_perm('events.change_person'):
+        events = Event.objects.order_by('start')
+    else:
+        events = Event.published.order_by('start')
+
+    host_events = events.filter(personevent__role=ROLES_HOST, personevent__person__slug=person.slug)
+    speaker_events = events.filter(personevent__role=ROLES_SPEAKER, personevent__person__slug=person.slug)
+    organiser_events = events.filter(personevent__role=ROLES_ORGANISER, personevent__person__slug=person.slug)
 
     context = {
         'person': person,
-        'events': events
+        'host_events': host_events,
+        'speaker_events': speaker_events,
+        'organiser_events': organiser_events,
     }
     return render(request, 'events/person.html', context)
 

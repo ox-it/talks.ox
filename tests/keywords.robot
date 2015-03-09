@@ -60,6 +60,9 @@ ${element} should not contain text "${text}"
 ${element} should appear text "${text}"
     Wait until keyword succeeds     3s   0.2s    ${element} should contain text "${text}"
 
+${element} should be present ${n} times
+    Selenium2Library.Xpath Should Match X Times     ${element.locator}  ${n}
+
 ${element} selected item should be "${label}"
     Element should be visible  ${element.locator}
     ${v}=  get selected list label  ${element.locator}

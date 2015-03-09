@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ('contenttypes', '__first__'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api_ox', '__first__'),
     ]
 
     operations = [
@@ -49,8 +48,8 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField()),
                 ('description', models.TextField()),
                 ('group', models.ForeignKey(to_field='id', blank=True, to='events.EventGroup', null=True)),
-                ('location', models.ForeignKey(to_field='id', blank=True, to='api_ox.Location', null=True)),
-                ('department_organiser', models.ForeignKey(to_field='id', blank=True, to='api_ox.Organisation', null=True)),
+                ('location', models.TextField(default=b'', blank=True)),
+                ('department_organiser', models.TextField(default=b'', blank=True)),
             ],
             options={
             },
@@ -169,18 +168,6 @@ class Migration(migrations.Migration):
             name='uri',
             field=models.URLField(default='', db_index=True),
             preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='event',
-            name='department_organiser',
-            field=models.TextField(default=b'', blank=True),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='event',
-            name='location',
-            field=models.TextField(blank=True),
-            preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
             name='topicitem',

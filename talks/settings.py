@@ -46,18 +46,16 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['talks-dev.oucs.ox.ac.uk']
+ALLOWED_HOSTS = ['talks-dev.oucs.ox.ac.uk', 'new.talks.ox.ac.uk']
 
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
-API_OX_PLACES_URL = 'https://api.m.ox.ac.uk/places/'
-API_OX_DATES_URL = 'https://api.m.ox.ac.uk/dates/'
-TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
-
 # Allow cross-origin http GET requests
 CORS_ORIGIN_ALLOW_ALL = True
+
+SESSION_COOKIE_AGE = 43200      # 12 hours
 
 # Application definition
 
@@ -176,6 +174,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.JSONPRenderer',
         'rest_framework.renderers.XMLRenderer',
+        'talks.core.renderers.ICalRenderer'
     )
 }
 
@@ -183,7 +182,8 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://127.0.0.1:8983/solr/talks',
-        'INCLUDE_SPELLING': True
+        'INCLUDE_SPELLING': True,
+        'SILENTLY_FAIL': False
     },
 }
 

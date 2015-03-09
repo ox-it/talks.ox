@@ -19,15 +19,16 @@
             </ul>
         </div>
 
-
+    {% if letter %}
+    <h3>Showing Surnames beginning with '{{ letter|upper }}'</h3>
+    {% endif %}
 
     <div class="col-xs-7">
     <a class="btn btn-primary navbar-btn" href="{% url 'create-person' %}"><span class="glyphicon glyphicon-plus"></span> New Person</a>
     <table class="table table-bordered table-striped">
         <thead>
             <td>Name</td>
-            <td>Bio/affiliation</td>
-            <td>Email</td>
+            <td>Affiliation</td>
             <td>Edit</td>
         </thead>
             {% for person in persons %}
@@ -39,20 +40,25 @@
                     {{ person.bio }}
                 </td>
                 <td>
-                    {{ person.email_address }}
-                </td>
-                <td>
                     {% if perms.events.change_person %}
                         <a class="btn btn-primary" href="{% url 'edit-person' person.slug %}">Edit</a>
                     {% else %}
                         Not authorised
                     {% endif %}
                 </td>
+
             </tr>
             {% endfor %}
     </table>
 
-
+    Filter by first letter of last name:
+    <div class="container-fluid">
+    {% for l in letters %}
+        <a href="{% facet_single_param letter=l %}" class="{% facet_selected letter=l %}">{{l}}</a>
+    {% endfor %}
+    {% if letter %} - <a href="{% facet_remove_all 'letter' %}">Show all</a>{% endif %}
+    </div>
+    <br>
     {% with persons as page %}
         {% include 'events/_pagination.html' %}
     {% endwith %}

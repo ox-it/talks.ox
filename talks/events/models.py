@@ -95,6 +95,7 @@ class EventGroup(models.Model):
     )
     web_address = models.URLField(blank=True, default='', verbose_name='Web address')
     department_organiser = models.TextField(default='', blank=True, verbose_name='Organising Department')
+    editor_set = models.ManyToManyField(User, blank=True)
 
     objects = EventGroupManager()
 
@@ -105,10 +106,20 @@ class EventGroup(models.Model):
         return reverse('show-event-group', args=[self.slug])
     
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
         super(EventGroup, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('show-event-group', args=[self.slug])
+
+    def get_api_url(self):
+        return reverse('api-event-group', args=[self.slug])
+
+    @property
+    def description_html(self):
+        return textile_restricted(self.description, auto_link=True, lite=False)
 
     @property
     def api_organisation(self):
@@ -117,6 +128,15 @@ class EventGroup(models.Model):
             return datasources.DEPARTMENT_DATA_SOURCE.get_object_by_id(self.department_organiser)
         except requests.HTTPError:
             return None
+
+    def user_can_edit(self, user):
+        """
+        Check if the given django User is authorised to edit this event.
+        They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        :param user: The django user wishing to edit the event
+        :return: True if the user is allowed to edit this event, False otherwise
+        """
+        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
 
 
 class PersonManager(models.Manager):
@@ -127,18 +147,28 @@ class PersonManager(models.Manager):
 
 class Person(models.Model):
     name = models.CharField(max_length=250)
+    lastname = models.CharField(max_length=250, blank=True)
     slug = models.SlugField()
     bio = models.TextField(verbose_name="Affiliation")
     email_address = models.EmailField(max_length=254,
                                       null=True,
                                       blank=True)
-
+    web_address = models.URLField(verbose_name="Web address",
+                                  null=True,
+                                  blank=True)
     objects = PersonManager()
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and not self.slug:
             # Newly created object, so set slug
             self.slug = str(uuid.uuid4())
+
+        if self.name:
+            self.name = self.name.strip()
+
+        # extract surname as the last word of the name
+        self.lastname = self.name.split(' ')[-1]
+
         super(Person, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -147,10 +177,10 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
 
-    @property
-    def surname(self):
-        # Attempt to extract the surname as the last word of the name. This will be used for sorting on
-        return self.name.split(' ')[-1]
+    # @property
+    # def surname(self):
+    #     # Attempt to extract the surname as the last word of the name. This will be used for sorting on
+    #     return self.name.split(' ')[-1]
 
     @property
     def speaker_events(self):
@@ -303,13 +333,16 @@ class Event(models.Model):
 
     @property
     def description_html(self):
-        return textile_restricted(self.description)
+        return textile_restricted(self.description, auto_link=True, lite=False)
 
     def __unicode__(self):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
         return reverse('show-event', args=[str(self.slug)])
+
+    def get_api_url(self):
+        return reverse('event-detail', args=[str(self.slug)])
 
     def formatted_date(self):
         if self.start:
@@ -320,6 +353,12 @@ class Event(models.Model):
     def formatted_time(self):
         if self.start:
             return date_filter(self.start, settings.EVENT_TIME_FORMAT)
+        else:
+            return None
+
+    def formatted_endtime(self):
+        if self.start:
+            return date_filter(self.end, settings.EVENT_TIME_FORMAT)
         else:
             return None
 
@@ -348,15 +387,29 @@ class Event(models.Model):
             return True
         return False
 
+    @property
+    def title_display(self):
+        """Useful in templates to always have the
+        same default string
+        :return: title or a default string
+        """
+        if self.title:
+            return self.title
+        else:
+            return "Untitled talk"
+
     def user_can_edit(self, user):
         """
         Check if the given django User is authorised to edit this event.
         They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        Users can also edit an event if they are an editor of the series it belongs to
         :param user: The django user wishing to edit the event
         :return: True if the user is allowed to edit this event, False otherwise
         """
-        return self.editor_set.filter(id=user.id).exists() or user.is_superuser
-
+        can_edit = self.editor_set.filter(id=user.id).exists() or user.is_superuser
+        if self.group:
+            can_edit = can_edit or self.group.user_can_edit(user)
+        return can_edit
 
 reversion.register(Event)
 reversion.register(EventGroup)

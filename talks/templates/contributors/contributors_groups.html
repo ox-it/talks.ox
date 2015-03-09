@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load faceted_navigation %}
+{% load users %}
 
 {% block title %}Series Administration{% endblock %}
 
@@ -17,6 +18,12 @@
                 <li><a href="{% url 'contributors-events' %}?date=future" class="">Talks  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
                 <li><a href="{% url 'contributors-eventgroups' %}" class="filter-selected">Series  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
                 <li><a href="{% url 'contributors-persons' %}" class="">People  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+            </ul>
+            <strong>Filters</strong>
+            <ul class="nav nav-list well">
+                <li class="nav-header"><i class="icon-star"></i>Show Editable Series</li>
+                <li><a href="{% facet_single_param editable='true' %}" class="{% facet_selected editable='true' %}">Editable by me <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
+                <li><a href="{% facet_remove_all 'editable' %}" class="{% facet_has_selection param='editable' %}"><span class="glyphicon glyphicon-remove"></span> Remove Filter</a></li>
             </ul>
         </div>
 
@@ -37,7 +44,7 @@
                     {{ group.get_group_type_display }}
                 </td>
                 <td>
-                    {% if perms.events.change_eventgroup %}
+                    {% if request.user|can_edit_group:group %}
                         <a class="btn btn-primary" href="{% url 'edit-event-group' group.slug %}">Edit</a>
                     {% else %}
                         Not authorised

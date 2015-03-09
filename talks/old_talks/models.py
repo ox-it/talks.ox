@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 from django.db import models
 from django.dispatch.dispatcher import receiver
 
-from talks.events.models import Event, EventGroup
+from talks.events.models import Event, EventGroup, AUDIENCE_CHOICES, AUDIENCE_OXFORD, BOOKING_CHOICES
 from talks.events.signals import event_updated, eventgroup_updated
 
 logger = logging.getLogger(__name__)
@@ -65,12 +65,21 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[end_time_string]", event.end.strftime("%H:%M")))
     if event.location:
         location = event.api_location
-        data.append(("talk[venue_name]", "{name}, {address}".format(name=location['name'], address=location.get('address', ''))))
+        name = location['name']
+        if event.location_details:
+            name += " (" + event.location_details + ")"
+        data.append(("talk[venue_name]", "{name}, {address}".format(name=name, address=location.get('address', ''))))
+    elif event.location_details:
+        name = event.location_details
+        data.append(("talk[venue_name]", "{name}".format(name=name)))
     if series_id:
+        data.append(("talk[list_id_strings][]", series_id))
         data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
-        data.append(("talk[name_of_speaker]", ", ".join([speaker.name for speaker in event.speakers.all()])))
+        data.append(("talk[name_of_speaker]", ", ".join([speaker.name + ' (' + speaker.bio + ')' for speaker in event.speakers.all()])))
     # sets the ex_directory status all the time to be sure to be in sync
+    if event.special_message:
+        data.append(("talk[special_message]", event.special_message))
     if event.is_published:
         data.append(("talk[ex_directory]", "0"))
     else:
@@ -82,10 +91,25 @@ def build_abstract(event):
     abstract = ""
     if event.description:
         abstract += event.description
-        abstract += "\n"
+        abstract += "\n\n"
     if event.topics.count() > 0:
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
+    if event.hosts.count() > 0:
+        abstract += "\n\nHosts: " + ", ".join([host.name + ' (' + host.bio + ')' for host in event.hosts.all()])
+    if event.organisers.count() > 0:
+        abstract += "\n\nOrganisers: " + ", ".join([organiser.name + ' (' + organiser.bio + ')' for organiser in event.organisers.all()])
+    if event.organiser_email:
+        abstract += "\n\nContact email: " + event.organiser_email
+    abstract += "\n\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
+    abstract += "\n\nBooking: " + dict(BOOKING_CHOICES)[event.booking_type]
+    if event.booking_url:
+        abstract += "\n\nWeb address for booking: " + event.booking_url
+    if event.booking_email:
+        abstract += "\n\nEmail address for booking: " + event.booking_email
+    if event.cost:
+        abstract += "\n\nCost: " + event.cost
+
     return abstract
 
 
@@ -96,4 +120,10 @@ def group_to_old_series(group):
     """
     data = []
     data.append(('list[name]', group.title))
+
+    description = group.description
+    if group.organisers.count() > 0:
+        description += "\n\n\nOrganisers: " + ", ".join([organiser.name + ' (' + organiser.bio + ')' for organiser in group.organisers.all()])
+
+    data.append(('list[details]', description))
     return data

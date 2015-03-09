@@ -38,7 +38,19 @@ def staging():
     env.remote_install_dir = '/srv/talks/talks-dev.oucs.ox.ac.uk'
     env.remote_git_checkout = '/srv/talks/talks.ox'
     env.requirements = ['requirements.txt']
-    env.secrets_dir = '/etc/puppet/secrets/talks-dev.oucs.ox.ac.uk'
+    env.secrets_dir = '/srv/%s/secrets' % (env.user)
+
+@task
+def production():
+    env.environment = 'production'
+    env.repo = "https://github.com/ox-it/talks.ox.git"
+    env.hosts = ['talks-prod.oucs.ox.ac.uk']
+    env.user = 'talks'
+    env.settings_module = 'talks.settings'
+    env.remote_install_dir = '/srv/talks/talks-prod.oucs.ox.ac.uk'
+    env.remote_git_checkout = '/srv/talks/talks.ox'
+    env.requirements = ['requirements.txt']
+    env.secrets_dir = '/srv/%s/secrets' % (env.user)
 
 
 """
@@ -79,6 +91,11 @@ def install(install_dir):
     with cd(os.path.dirname(install_dir)):
         run('python manage.py syncdb --settings=%s' % env.settings_module)
         run('python manage.py collectstatic --noinput --settings=%s' % env.settings_module)
+
+@task
+def rebuild_index():
+    with cd(env.remote_install_dir):
+        run('bin/python manage.py rebuild_index')
 
 """
 Private methods

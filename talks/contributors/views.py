@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from requests.exceptions import Timeout
 
 from talks.events.models import Event, EventGroup, Person, ROLES_SPEAKER
 from talks.contributors.forms import EventForm, EventGroupForm, PersonQuickAdd, PersonForm
@@ -29,7 +30,7 @@ def edit_event(request, event_slug):
                'speakers': event.speakers.all(),        # different of person_set
                'organisers': event.organisers.all(),
                'hosts': event.hosts.all()}
-    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event')
+    form = EventForm(request.POST or None, instance=event, initial=initial, prefix='event', user=request.user)
     context = {
         'event': event,
         'event_form': form,
@@ -44,7 +45,10 @@ def edit_event(request, event_slug):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            event_updated.send(event.__class__, instance=event)
+            try:
+                event_updated.send(event.__class__, instance=event)
+            except Timeout:
+                messages.warning(request, "Timed out connecting to old talks. This update won't appear on the old talks website.")
             messages.success(request, "Talk was updated")
             return redirect(event.get_absolute_url())
         else:
@@ -59,11 +63,13 @@ def create_event(request, group_slug=None):
     logger.debug("group_id:%s", group_slug)
     if group_slug:
         event_group = get_object_or_404(EventGroup, slug=group_slug)
+        organising_dept = event_group.department_organiser
         initial = {
             'group': event_group,
+            'department_organiser': organising_dept,
         }
 
-    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial)
+    PrefixedEventForm = partial(EventForm, prefix='event', initial=initial, user=request.user)
 
     if request.method == 'POST':
         context = {
@@ -79,7 +85,10 @@ def create_event(request, group_slug=None):
             if request.user not in event.editor_set.all():
                 event.editor_set.add(request.user)
                 event.save()
-            event_updated.send(event.__class__, instance=event)
+            try:
+                event_updated.send(event.__class__, instance=event)
+            except Timeout:
+                messages.warning(request, "Timed out connecting to Old Talks. This talk won't appear on the old site")
             messages.success(request, "New talk has been created")
             if 'another' in request.POST:
                 if event_group:
@@ -133,12 +142,21 @@ def delete_event(request, event_slug):
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def edit_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
+    if not group.user_can_edit(request.user):
+        raise PermissionDenied
+
     form = EventGroupForm(request.POST or None, instance=group)
     if request.method == 'POST':
         logging.debug("incoming post: %s", request.POST)
         if form.is_valid():
             event_group = form.save()
-            eventgroup_updated.send(event_group.__class__, instance=event_group)
+            if request.user not in event_group.editor_set.all():
+                event_group.editor_set.add(request.user)
+                event_group.save()
+            try:
+                eventgroup_updated.send(event_group.__class__, instance=event_group)
+            except Timeout:
+                messages.warning(request, "Timed out connecting to Old Talks. The series will not be updated on the old site.")
             messages.success(request, "Series was updated")
             return redirect(event_group.get_absolute_url())
         else:
@@ -161,10 +179,27 @@ def create_event_group(request):
     if request.method == 'POST':
         if form.is_valid():
             event_group = form.save()
-            eventgroup_updated.send(event_group.__class__, instance=event_group)
+            if request.user not in event_group.editor_set.all():
+                event_group.editor_set.add(request.user)
+                event_group.save()
+
+            showTimeoutWarning = False
+            try:
+                eventgroup_updated.send(event_group.__class__, instance=event_group)
+            except Timeout:
+                showTimeoutWarning = True
             if is_modal:
-                response = json.dumps(serializers.EventGroupSerializer(event_group).data)
+                group_data = serializers.EventGroupSerializer(event_group).data
+                if showTimeoutWarning:
+                    group_data['push_to_old_talks_error'] = 'Timeout'
+                response = json.dumps(group_data)
+
+                if showTimeoutWarning:
+                    # messages.warning(response, "Timed out connecting to Old Talks. This series will not appear on that site until it is edited again.")
+                    return HttpResponse(response, status=201, content_type='application/json')
                 return HttpResponse(response, status=201, content_type='application/json')
+            if showTimeoutWarning:
+                messages.warning(request, "Timed out connecting to Old Talks. This series will not appear on that site until it is edited again.")
             messages.success(request, "Series was created")
             return redirect(event_group.get_absolute_url())
         else:
@@ -188,6 +223,8 @@ def create_event_group(request):
 @permission_required('events.delete_eventgroup', raise_exception=PermissionDenied)
 def delete_event_group(request, event_group_slug):
     event_group = get_object_or_404(EventGroup, slug=event_group_slug)
+    if not event_group.user_can_edit(request.user):
+        raise PermissionDenied
     context = {
         'event_group': event_group,
         'events': event_group.events.all()
@@ -287,9 +324,19 @@ def contributors_events(request):
 @login_required()
 @permission_required('events.change_eventgroup', raise_exception=PermissionDenied)
 def contributors_eventgroups(request):
-    eventgroups = EventGroup.objects.all().order_by('title')
+    groups_editable = request.GET.get('editable', None)
     count = request.GET.get('count',20)
     page = request.GET.get('page', 1)
+
+    args={'count': count}
+
+    if groups_editable and not request.user.is_superuser:
+        eventgroups = EventGroup.objects.filter(editor_set__in=[request.user])
+        args['editable'] = 'true'
+    else:
+        eventgroups = EventGroup.objects.all()
+
+    eventgroups = eventgroups.order_by('title')
 
     paginator = Paginator(eventgroups, count)
 
@@ -298,8 +345,11 @@ def contributors_eventgroups(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-eventgroups')
 
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+
     context = {
-        'groups': eventgroups
+        'groups': eventgroups,
+        'fragment': fragment
     }
 
     return render(request, 'contributors/contributors_groups.html', context)
@@ -311,8 +361,17 @@ def contributors_persons(request):
     persons = Person.objects.all()
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
+    letter = request.GET.get('letter', None)
+    if letter == 'None':
+        letter = None
 
-    persons = sorted(persons, key=lambda person: person.surname)
+    args = {'count': count, 'letter': letter}
+
+    if letter:
+        # filter by letter
+        persons = persons.filter(lastname__istartswith=letter)
+
+    persons = persons.order_by('lastname')
 
     paginator = Paginator(persons, count)
 
@@ -321,8 +380,15 @@ def contributors_persons(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-persons')
 
+    letters = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z'.split(',')
+
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+
     context = {
-        'persons': persons
+        'persons': persons,
+        'letters': letters,
+        'letter': letter,
+        'fragment': fragment
     }
 
     return render(request, 'contributors/contributors_persons.html', context)
