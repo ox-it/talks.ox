@@ -38,10 +38,10 @@ def read_yaml_param(fname, key):
         stream.close()
         value = doc[key]
     except IOError:
-        print "Failed to load file:", fullname, ".yaml"
+        print "Failed to load file:", fullname
         return ""
     except KeyError:
-        print "Failed to find key", key, "in file", fullname, ".yaml"
+        print "Failed to find key", key, "in file", fullname
         value = ""
 
     return value
