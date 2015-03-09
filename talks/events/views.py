@@ -158,12 +158,9 @@ def show_department_organiser(request, org_id):
 
 def show_department_descendant(request, org_id):
     org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
-    print org
-    print "GETTING DEPT DESCENDANTS"
     results = DEPARTMENT_DESCENDANT_DATA_SOURCE.get_object_by_id(org_id)
     descendants = results['descendants']
     sub_orgs = descendants
-    print sub_orgs
     ids = [o['id'] for o in sub_orgs]
     events = Event.published.filter(department_organiser__in=ids)
     context = {
