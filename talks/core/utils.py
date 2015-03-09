@@ -31,16 +31,17 @@ def parse_date(date_param):
 
 
 def read_yaml_param(fname, key):
+    fullname = fname + ".yaml"
     try:
-        stream = open(fname + ".yaml", "r")
+        stream = open(fullname, "r")
         doc = yaml.load(stream)
         stream.close()
         value = doc[key]
     except IOError:
-        print "Failed to load file:", fname, ".yaml"
+        print "Failed to load file:", fullname, ".yaml"
         return ""
     except KeyError:
-        print "Failed to find key", key, "in file", fname, ".yaml"
+        print "Failed to find key", key, "in file", fullname, ".yaml"
         value = ""
 
     return value
