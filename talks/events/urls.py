@@ -26,6 +26,5 @@ urlpatterns = patterns('',
     url(r'^series/id/(?P<event_group_slug>[^/]+)/edit$', edit_event_group, name='edit-event-group'),
     url(r'^series/id/(?P<event_group_slug>[^/]+)/delete', delete_event_group, name='delete-event-group'),
     url(r'^topics/id/$', show_topic, name="show-topic"),
-    url(r'^department/id/(?P<org_id>[^/]+)$', show_department_organiser, name="show-department"),
-    url(r'^department/id/(?P<org_id>[^/]+)/descendants$', show_department_descendant, name="show-department"),
+    url(r'^department/id/(?P<org_id>[^/]+)$', show_department_descendant, name="show-department"),
 )
