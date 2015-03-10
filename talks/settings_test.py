@@ -31,6 +31,9 @@ CACHES = {
     'topics': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     },
+    'department_descendant': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
 }
 
 DEBUG = True
