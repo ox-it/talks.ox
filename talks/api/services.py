@@ -24,11 +24,19 @@ def events_search(request):
     if to_date:
         queries.append(Q(start__lt=to_date))
 
+    include_sub_departments = True
+    subdepartments = request.GET.get("subdepartments")
+    print subdepartments
+    if subdepartments and subdepartments == 'false':
+        print "no subdepartments"
+        include_sub_departments = False
+
+    print include_sub_departments
     # map between URL query parameters and their corresponding django ORM query
     list_parameters = {
         'speaker': lambda speakers: Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers),
         'venue': lambda venues: Q(location__in=venues),
-        'organising_department': lambda depts: Q(department_organiser__in=get_all_department_ids(depts, True)),
+        'organising_department': lambda depts: Q(department_organiser__in=get_all_department_ids(depts, include_sub_departments)),
         'topic': lambda topics: Q(topics__uri__in=topics)
     }
 
