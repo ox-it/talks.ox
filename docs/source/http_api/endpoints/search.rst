@@ -81,9 +81,7 @@ Retrieve Talks via Search
     :type from: string
     :query to: Optional date to end filtering. Format should be dd/mm/yy OR 'today' or 'tomorrow'
     :type to: string
-    :query subvenues: If true, include all sub-locations of the specified venue within the search
-    :type subvenues: boolean
-    :query subdepartments: If true, include all sub-organisations of the specified department within the search
+    :query subdepartments: Optional. Defaults to true. If true, include all sub-organisations of the specified department within the search
     :type subdepartments: boolean
 
     The below parameters can each be repeated multiple times
