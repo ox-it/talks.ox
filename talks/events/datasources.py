@@ -45,3 +45,17 @@ USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='email',
     serializer=serializers.UserSerializer
 )
+
+# not doing what we want as we want to treat the response as one document...
+DEPARTMENT_DESCENDANT_DATA_SOURCE = typeahead.DataSource(
+    'department_descendant',
+    url=settings.API_OX_PLACES_URL + "suggest?q=%QUERY",
+    get_prefetch_url=lambda values: settings.API_OX_PLACES_URL + values.pop() + "/organisation-descendants",
+    id_key='id',
+    display_key='title',
+    response_expression='response',
+    as_list=True
+)
+
+def get_descendants(org_id):
+    url = settings.API_OX_PLACES_URL + org_id + "/organisation-descendants"

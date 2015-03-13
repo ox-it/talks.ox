@@ -109,7 +109,7 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         cache.get_many.assert_called_once_with([fetched_id])
         cache.set_many.assert_called_once_with({fetched_id: fetched_object})
         requests_get.assert_called_once_with(mock.sentinel.url)
-        get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
+        get_objects_from_response.assert_called_once_with(requests_get.return_value, None, False)
         self.assertEquals(result, {fetched_id: fetched_object})
 
     def test_fetched_from_cache(self, requests_get, cache, get_objects_from_response):
@@ -151,7 +151,7 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         assert_not_called(cache.set_many)
         assert_not_called(cache.set_many)
         requests_get.assert_called_once_with(mock.sentinel.url)
-        get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
+        get_objects_from_response.assert_called_once_with(requests_get.return_value, None, False)
         self.assertEquals(result, {})
 
     def test_remote_404(self, requests_get, cache, get_objects_from_response):
@@ -186,7 +186,7 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         cache.get_many.assert_called_once_with([cached_id, fetched_id])
         cache.set_many.assert_called_once_with({fetched_id: fetched_object})
         requests_get.assert_called_once_with(mock.sentinel.url)
-        get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
+        get_objects_from_response.assert_called_once_with(requests_get.return_value, None, False)
         self.assertEquals(result, {
             cached_id: cached_object,
             fetched_id: fetched_object
@@ -207,7 +207,7 @@ class TestDataSourceFetchObjects(unittest.TestCase):
         cache.get_many.assert_called_once_with([fetched_id])
         cache.set_many.assert_called_once_with({fetched_id: fetched_object})
         requests_get.assert_called_once_with(mock.sentinel.url)
-        get_objects_from_response.assert_called_once_with(requests_get.return_value, None)
+        get_objects_from_response.assert_called_once_with(requests_get.return_value, None, False)
         self.assertEquals(result, {fetched_id: fetched_object})
 
 

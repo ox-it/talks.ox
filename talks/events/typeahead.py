@@ -58,7 +58,7 @@ class MultipleTypeahead(Typeahead):
         return data.get(name, None)
 
 
-def get_objects_from_response(response, expression=None):
+def get_objects_from_response(response, expression=None, as_list=False):
     """
     Return list of dicts representing json decoded objects. Supports only json response.
 
@@ -73,6 +73,10 @@ def get_objects_from_response(response, expression=None):
     while properties:
         prop = properties.pop(0)
         json = json[prop]
+
+    # Convert to a list if necessary
+    if not isinstance(json, list) and as_list:
+        return [json]
     return json
 
 
@@ -83,7 +87,7 @@ class DataSource(object):
     """
 
     def __init__(self, cache_key=None, url=None, get_prefetch_url=None, local=None, id_key=None, display_key=None,
-                 response_expression=None, prefetch_response_expression=None, templates=None):
+                 response_expression=None, prefetch_response_expression=None, templates=None, as_list=False):
         """
         :param cache_key: cache name to use
         :param url: url for fetching suggestions
@@ -94,6 +98,7 @@ class DataSource(object):
         :param response_expression: javascript expression retrieving an array of objects from suggestion response
         :param prefetch_response_expression: same as `response_expression` but for prefetch response
         :param templates: dictionary of template strings to configure typeahead
+        :param as_list: if true, convert a single result to a list of one
         """
         self.cache_key = cache_key
         self.url = url
@@ -104,6 +109,7 @@ class DataSource(object):
         self.templates = templates or {}
         self.response_expression = response_expression
         self.prefetch_response_expression = prefetch_response_expression or response_expression
+        self.as_list = as_list
 
     @property
     def is_local(self):
@@ -136,8 +142,9 @@ class DataSource(object):
             log.debug("prefetch_url: %s", url)
             response = requests.get(url)
             response.raise_for_status()
-            fetched = get_objects_from_response(response, self.prefetch_response_expression)
+            fetched = get_objects_from_response(response, self.prefetch_response_expression, self.as_list)
             log.debug("fetched from response: %s", fetched)
+            log.debug("as list?: %r", self.as_list)
             mapped = {obj[self.id_key]: obj for obj in fetched if obj[self.id_key] in id_list}
             if mapped:
                 if self.cache:
