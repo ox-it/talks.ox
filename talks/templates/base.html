@@ -48,7 +48,7 @@
                     </div>
                     <ul class="nav navbar-nav">
                         {% if perms.events.change_event %}
-                            <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}?date=future">Dashboard</a></li>
+                            <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}?date=future&editable=true">Dashboard</a></li>
                         {% endif %}
                         {% if perms.events.add_event %}
                             <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
