@@ -37,7 +37,11 @@
                     <a href="{% url 'show-person' person.slug %}">{{ person.name }}</a>
                 </td>
                 <td>
+                    {% if person.bio %}
                     {{ person.bio }}
+                    {% else %}
+                    <i>N/A</i>
+                    {% endif %}
                 </td>
                 <td>
                     {% if perms.events.change_person %}

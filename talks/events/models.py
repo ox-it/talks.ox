@@ -149,7 +149,7 @@ class Person(models.Model):
     name = models.CharField(max_length=250)
     lastname = models.CharField(max_length=250, blank=True)
     slug = models.SlugField()
-    bio = models.TextField(verbose_name="Affiliation")
+    bio = models.TextField(verbose_name="Affiliation", null=True, blank=True)
     email_address = models.EmailField(max_length=254,
                                       null=True,
                                       blank=True)
