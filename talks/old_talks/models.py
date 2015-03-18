@@ -76,7 +76,7 @@ def event_to_old_talk(event, series_id):
         data.append(("talk[list_id_strings][]", series_id))
         data.append(("talk[series_id_string]", series_id))
     if len(event.speakers.all()) > 0:
-        data.append(("talk[name_of_speaker]", ", ".join([speaker.name + ' (' + speaker.bio + ')' for speaker in event.speakers.all()])))
+        data.append(("talk[name_of_speaker]", ", ".join([get_person_string(speaker) for speaker in event.speakers.all()])))
     # sets the ex_directory status all the time to be sure to be in sync
     if event.special_message:
         data.append(("talk[special_message]", event.special_message))
@@ -96,9 +96,9 @@ def build_abstract(event):
         topics = event.api_topics
         abstract += "\nTopics: " + ", ".join([topic['prefLabel'] for topic in topics])
     if event.hosts.count() > 0:
-        abstract += "\n\nHosts: " + ", ".join([host.name + ' (' + host.bio + ')' for host in event.hosts.all()])
+        abstract += "\n\nHosts: " + ", ".join([get_person_string(host) for host in event.hosts.all()])
     if event.organisers.count() > 0:
-        abstract += "\n\nOrganisers: " + ", ".join([organiser.name + ' (' + organiser.bio + ')' for organiser in event.organisers.all()])
+        abstract += "\n\nOrganisers: " + ", ".join([get_person_string(organiser) for organiser in event.organisers.all()])
     if event.organiser_email:
         abstract += "\n\nContact email: " + event.organiser_email
     abstract += "\n\nAudience: " + dict(AUDIENCE_CHOICES)[event.audience]
@@ -112,6 +112,11 @@ def build_abstract(event):
 
     return abstract
 
+def get_person_string(person):
+    out = person.name
+    if person.bio:
+        out = out + ' (' + person.bio + ')'
+    return out
 
 def group_to_old_series(group):
     """Provide list data in old talks format
@@ -123,7 +128,7 @@ def group_to_old_series(group):
 
     description = group.description
     if group.organisers.count() > 0:
-        description += "\n\n\nOrganisers: " + ", ".join([organiser.name + ' (' + organiser.bio + ')' for organiser in group.organisers.all()])
+        description += "\n\n\nOrganisers: " + ", ".join([get_person_string(organiser) for organiser in group.organisers.all()])
 
     data.append(('list[details]', description))
     return data
