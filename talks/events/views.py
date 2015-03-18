@@ -106,10 +106,16 @@ def list_event_groups(request):
 def show_event_group(request, event_group_slug):
     group = get_object_or_404(EventGroup, slug=event_group_slug)
     events = group.events.order_by('start')
+    show_all = request.GET.get('show_all', False)
+
+    if not show_all:
+        events = events.filter(start__gte=date.today())
+
     context = {
         'event_group': group,
         'events': events,
         'organisers': group.organisers.all(),
+        'show_all': show_all,
     }
     return render(request, 'events/event-group.html', context)
 

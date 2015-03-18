@@ -85,6 +85,13 @@
 
         </li>
         {% endfor %}
+        <div class="panel-body">
+        {% if show_all %}
+        <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn pull-right" href="{% url 'show-event-group' event_group.slug %}">Show upcoming talks only</a>
+        {% else %}
+        <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn pull-right" href="{% url 'show-event-group' event_group.slug %}?show_all=true">Show all talks in this series</a>
+        {% endif %}
+        </div>
     </ul>
 </div>
 {% endblock %}
