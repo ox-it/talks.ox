@@ -17,6 +17,12 @@
                 <li><a href="{% url 'contributors-eventgroups' %}" class="">Series  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
                 <li><a href="{% url 'contributors-persons' %}" class="filter-selected">People  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
             </ul>
+            <strong>Filters</strong>
+            <ul class="nav nav-list well">
+                <li class="nav-header"><i class="icon-star"></i>Missing Information</li>
+                <li><a href="{% facet_single_param missing='affiliation' %}" class="{% facet_selected missing='affiliation' %}">Affiliation <span class="glyphicon glyphicon-ok filter-active"></span></a> </li>
+                <li><a href="{% facet_remove_all 'missing' %}" class="{% facet_has_selection param='missing' %}"><span class="glyphicon glyphicon-remove"></span>Remove Filter </a> </li>
+            </ul>
         </div>
 
     {% if letter %}
@@ -37,7 +43,11 @@
                     <a href="{% url 'show-person' person.slug %}">{{ person.name }}</a>
                 </td>
                 <td>
+                    {% if person.bio %}
                     {{ person.bio }}
+                    {% else %}
+                    <i>N/A</i>
+                    {% endif %}
                 </td>
                 <td>
                     {% if perms.events.change_person %}
