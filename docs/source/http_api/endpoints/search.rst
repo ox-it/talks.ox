@@ -4,13 +4,13 @@ Retrieve Talks via Search
 
 .. http:get:: /talks/search
 
-    Search for events
+    Search for Talks
 
     **Example request**:
 
     .. sourcecode:: http
 
-		GET /api/events/search?from=today&topic=X HTTP/1.1
+		GET /api/talks/search?from=today&topic=X HTTP/1.1
 		Host: talks.ox.ac.uk
 		Accept: application/json
 
@@ -24,7 +24,7 @@ Retrieve Talks via Search
         {
             "_links": {
                 "self": {
-                    "href": "http://127.0.0.1:8000/api/talks/search?from=01/01/01"
+                    "href": "http://talks.ox.ac.uk/api/talks/search?from=01/01/01"
                 },
                 "next": null,
                 "prev": null
@@ -92,7 +92,7 @@ Retrieve Talks via Search
     :type venue: string
     :query organising_department: Search for talks whose organising department is the organisation specified by this oxpoints ID
     :type organising_department: string
-    :query speaker: Search for talks at which the specified person is a speaker. Supply the unique slug for the person e.g. 'james-bond'
+    :query speaker: Search for talks at which the specified person is a speaker. Supply the unique slug for the person e.g. 'd47e2458-af73-4bc1-bf04-3c275e1c1254'
     :type speaker: string
 
     The response can be either in XML or JSON dependent on the 'accept' header in the request.
