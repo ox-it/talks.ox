@@ -17,7 +17,13 @@ User Guide
     :maxdepth: 2
     :glob:
 
-    user/*    
+    user/*   
+    
+****************************
+Web Managers and Integrators
+****************************
+
+:ref:`Using the Oxford Talks JavaScript Widget <widget:widget-index>`
 
 ***********************
 Developer Documentation
