@@ -23,7 +23,15 @@ User Guide
 Web Managers and Integrators
 ****************************
 
-:ref:`Using the Oxford Talks JavaScript Widget <widget:widget-index>`
+An example widget to get you started with embedding talks in your own webpages can be found here:
+
+`https://github.com/ox-it/talks.ox-js-widget <https://github.com/ox-it/talks.ox-js-widget>`_
+
+The widget uses JavaScript to write a table, list or calendar view of selected talks to an HTML page. You can specify the criteria to select the talks you want.
+
+* :ref:`Widget Documentation Overview <widget:widget-index>`
+* :ref:`Parameters Reference <widget:parameters>`
+
 
 ***********************
 Developer Documentation
