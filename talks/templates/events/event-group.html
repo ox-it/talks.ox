@@ -81,10 +81,25 @@
                 {% endfor %}<br>
                 <strong>Host{{ event.hosts|pluralize }}</strong>: {% for host in event.hosts %}<a href="{% url 'show-person' host.slug %}">{{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% empty %} TBA
-                {% endfor %}<br>
+            {% endfor %}<br>
 
         </li>
+        {% empty %}
+        <div class="panel-footer">
+        {% if show_all %}
+        There are no talks for this series yet
+        {% else %}
+        No upcoming talks to display for this series. Press the button below to show all talks.
+        {% endif %}
+        </div>
         {% endfor %}
+        <div class="panel-footer">
+        {% if show_all %}
+        <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-event-group' event_group.slug %}">Show upcoming talks only</a>
+        {% else %}
+        <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-event-group' event_group.slug %}?show_all=true">Show all talks in this series</a>
+        {% endif %}
+        </div>
     </ul>
 </div>
 {% endblock %}

@@ -159,7 +159,8 @@ class HALEventSerializer(serializers.ModelSerializer):
             summary = api_loc['name']
             if(obj.location_details):
                 summary = summary + ", " + obj.location_details
-            summary = summary + ", " + api_loc['address']
+            if 'address' in api_loc:
+                summary = summary + ", " + api_loc['address']
             return summary
         return None
 

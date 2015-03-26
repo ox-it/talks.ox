@@ -362,10 +362,17 @@ def contributors_persons(request):
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
     letter = request.GET.get('letter', None)
+    persons_missing = request.GET.get('missing', None)
+
     if letter == 'None':
         letter = None
 
     args = {'count': count, 'letter': letter}
+
+    if persons_missing :
+            if persons_missing == 'affiliation':
+                args['missing'] = 'affiliation'
+                persons = persons.filter(bio='')
 
     if letter:
         # filter by letter

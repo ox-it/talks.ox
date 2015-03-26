@@ -13,13 +13,12 @@ PAST_DATE_STRING = "2011-01-01 20:00"
 TOPIC_1429860_MOCK_RESPONSE = {"_links":{"self":{"href":"/search?uri=http://id.worldcat.org/fast/1429860"}},"_embedded":{"concepts":[{"uri":"http://id.worldcat.org/fast/1429860","prefLabel":"Biodiversity","altLabels":["Biotic diversity","Diversification, Biological","Diversity, Biotic","Biological diversity","Diversity, Biological","Biological diversification"],"related":[{"label":"Biology","uri":"http://id.worldcat.org/fast/832383"},{"label":"Ecological heterogeneity","uri":"http://id.worldcat.org/fast/901453"}]}]}}
 LOC_40002001_MOCK_RESPONSE = {"_embedded": {"pois": [{"_embedded": {"files": [{"location": "oxpoints/40002001/depiction/original/primary.jpg","primary": True,"type": "depiction","url": "//mox-static-files.oucs.ox.ac.uk/oxpoints/40002001/depiction/original/primary.jpg"},{"location": "oxpoints/40002001/depiction/original/primary.jpg","type": "depiction","url": "//mox-static-files.oucs.ox.ac.uk/oxpoints/40002001/depiction/original/primary.jpg"}]},"_links": {"child": [{"href": "/places/oxpoints:23233603"},{"href": "/places/oxpoints:23233671","title": "11-13 Banbury Road","type": ["/university/building"],"type_name": ["Building"]},{"href": "/places/oxpoints:23233670","title": "7-9 Banbury Road","type": ["/university/building"],"type_name": ["Building"]},{"href": "/places/oxpoints:23233669","title": "15-19 Banbury Road","type": ["/university/building"],"type_name": ["Building"]}],"parent": {"href": "/places/oxpoints:31337175","title": "IT Services","type": ["/university/department"],"type_name": ["Department"]},"self": {"href": "/places/oxpoints:40002001"}},"address": "7-19 Banbury Road OX2 6NN","alternative_names": ["IT Services, Banbury Road"],"distance": 0,"id": "oxpoints:40002001","identifiers": ["osm:99933769-way","oxpoints:40002001"],"lat": "51.76001","lon": "-1.26035","name": "7-19 Banbury Road","name_sort": "7-19 Banbury Road","shape": "POLYGON ((-1.2604547 51.7597247,-1.2604524 51.759703600000002,-1.2606225 51.759693400000003,-1.2606263 51.759717899999998,-1.2606718 51.759715200000002,-1.2606742 51.759729900000004,-1.260875 51.759717299999998,-1.2609002 51.759870900000003,-1.2609514 51.7598677,-1.2609628 51.759937299999997,-1.2609819 51.759936099999997,-1.2610376 51.760275399999998,-1.2606854 51.760297899999998,-1.260475 51.760310799999999,-1.2604334 51.7600865,-1.2605216 51.760081800000002,-1.2605182 51.760061299999997,-1.2605157 51.760043799999998,-1.2604056 51.760051799999999,-1.2603867 51.759929399999997,-1.2604979 51.759923100000002,-1.2604921 51.7598805,-1.2604867 51.759852799999997,-1.2603628 51.759858199999996,-1.2603454 51.759729800000002,-1.2604547 51.7597247))","type": ["/university/site"],"type_name": ["Site"]}]},"_links": {"self": {"href": "/places/oxpoints:40002001%2C"}},"count": 1}
 DEP_23232503_MOCK_RESPONSE = {"_embedded": {"pois": [{"_links": {"child": [{"href": "/places/oxpoints:23232548"}],"parent": {"href": "/places/oxpoints:23232546","title": "Department of Chemistry","type": ["/university/department"],"type_name": ["Department"]},"primary_place": {"href": "/places/oxpoints:23232548"},"self": {"href": "/places/oxpoints:23232503"}},"address": "off South Parks Road OX1 3TA","alternative_names": ["Bayley Group"],"distance": 0,"id": "oxpoints:23232503","identifiers": ["oxpoints:23232503","finance:DQ"],"lat": "51.757797","lon": "-1.253332","name": "Chemical Biology","name_sort": "Chemical Biology","shape": "POLYGON ((-1.252908 51.758493199999997 0,-1.2525447 51.758077800000002 0,-1.252753 51.758007999999997 0,-1.2527069 51.757955299999999 0,-1.2532898 51.757759999999998 0,-1.2533847 51.7578685 0,-1.2532655 51.757908399999998 0,-1.2532846 51.757930299999998 0,-1.2533138 51.757963699999998 0,-1.2533718 51.757944299999998 0,-1.253638 51.758248700000003 0,-1.252908 51.758493199999997 0))","social_twitter": ["https://www.twitter.com/bayley_lab"],"type": ["/university/department"],"type_name": ["Department"],"website": "http://bayley.chem.ox.ac.uk/"}]},"_links": {"self": {"href": "/places/oxpoints:23232503%2C"}},"count": 1}
-DEP_23232503_SUBORGS_MOCK_RESPONSE = {"descendants": [],"id": "oxpoints:23232503"}
-
+DEP_23232546_SUBORGS_MOCK_RESPONSE = {"descendants": [{"id": "oxpoints:23232604","title": "Inorganic Chemistry Laboratory"},{"id": "oxpoints:51830315","title": "Theory and Modelling in Chemical Sciences CDT"},{"id": "oxpoints:52835523","title": "Chemistry Research Laboratory"},{"id": "oxpoints:23232687","title": "Physical and Theoretical Chemistry Laboratory"},{"id": "oxpoints:58224544","title": "Organic Chemistry"},{"id": "oxpoints:23232503","title": "Chemical Biology"},{"id": "oxpoints:23232843","title": "Synthesis for Biology and Medicine CDT"}],"id": "oxpoints:23232546"}
 
 MOCK_URL_RESPONSES = {
     settings.API_OX_PLACES_URL + 'oxpoints:40002001,': LOC_40002001_MOCK_RESPONSE,
     settings.API_OX_PLACES_URL + 'oxpoints:23232503,': DEP_23232503_MOCK_RESPONSE,
-    settings.API_OX_PLACES_URL + 'oxpoints:23232503/organisation-descendants,': DEP_23232503_SUBORGS_MOCK_RESPONSE,
+    settings.API_OX_PLACES_URL + 'oxpoints:23232546/organisation-descendants': DEP_23232546_SUBORGS_MOCK_RESPONSE,
     settings.TOPICS_URL + 'get?uri=http%3A%2F%2Fid.worldcat.org%2Ffast%2F1429860': TOPIC_1429860_MOCK_RESPONSE,
     }
 
@@ -51,7 +50,8 @@ class TestAPI(TestCase):
         self.group1_slug = "talks-conference"
         self.speaker1_slug = "james-bond"
         self.location1 = "oxpoints:40002001"
-        self.department1 = "oxpoints:23232503"
+        self.department1 = "oxpoints:23232503"  # Chemical Biology
+        self.super_department = "oxpoints:23232546"  # Department of Chemistry
         self.topic1_uri = "http://id.worldcat.org/fast/1429860"
         # create some sample events and series
         person1 = factories.PersonFactory.create(
@@ -196,3 +196,11 @@ class TestAPI(TestCase):
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
         self.assertContains(response, "Biodiversity")
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_search_sub_organisations(self, requests_get):
+        response = self.client.get('/api/talks/search?from=01/01/01&organising_department=' + self.super_department)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, self.event1_slug)

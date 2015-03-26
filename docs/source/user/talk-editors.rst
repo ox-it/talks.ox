@@ -15,5 +15,6 @@ Talk Editors
    talk-editors/people-details
    talk-editors/contact
    talk-editors/differences
+   talk-editors/organisers
 
    

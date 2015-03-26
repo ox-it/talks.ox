@@ -20,4 +20,12 @@
 
 <p><a href="//maps.ox.ac.uk/#/places/{{ org.id }}" target="_blank">See {{ org.name }} on <strong>maps.ox</strong></a></p>
 
+
+This page lists all talks organised by this department, or any of its sub-organisations:
+<ul>
+    {% for org in sub_orgs %}
+        <li>{{ org.title }}</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

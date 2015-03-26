@@ -2,6 +2,7 @@ from django.db.models.query_utils import Q
 import operator
 from rest_framework.exceptions import ParseError
 from talks.core.utils import parse_date
+from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 
 
@@ -23,11 +24,19 @@ def events_search(request):
     if to_date:
         queries.append(Q(start__lt=to_date))
 
+    include_sub_departments = True
+    subdepartments = request.GET.get("subdepartments")
+    print subdepartments
+    if subdepartments and subdepartments == 'false':
+        print "no subdepartments"
+        include_sub_departments = False
+
+    print include_sub_departments
     # map between URL query parameters and their corresponding django ORM query
     list_parameters = {
         'speaker': lambda speakers: Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers),
         'venue': lambda venues: Q(location__in=venues),
-        'organising_department': lambda depts: Q(department_organiser__in=depts),
+        'organising_department': lambda depts: Q(department_organiser__in=get_all_department_ids(depts, include_sub_departments)),
         'topic': lambda topics: Q(topics__uri__in=topics)
     }
 
@@ -40,6 +49,26 @@ def events_search(request):
     events = Event.published.filter(final_query).distinct().order_by('start')
 
     return events
+
+
+def get_all_department_ids(departments, include_suborgs):
+    if not include_suborgs:
+        return departments
+
+    # build a new list which includes the originals plus all descendants
+    try:
+        descendants_response = DEPARTMENT_DESCENDANT_DATA_SOURCE.get_object_list(departments)
+    except Exception:
+        print "Error retrieving sub-departments, returning departments only"
+        return departments
+
+    all_ids = []
+    for result in descendants_response:
+        # For each of the orgs being queried, extract the list of suborg ids, and add the original id too
+        result_ids = map((lambda descendant: descendant['id']), result['descendants'])
+        result_ids.append(result['id'])
+        all_ids.extend(result_ids)
+    return all_ids
 
 
 def get_event_by_slug(slug):
