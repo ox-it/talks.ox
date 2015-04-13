@@ -9,7 +9,7 @@ from talks.old_talks.models import (OldTalk, OldSeries, event_to_old_talk,
 logger = logging.getLogger(__name__)
 
 
-CONTACT_OLD_TALKS_TIMEOUT = 30.0
+CONTACT_OLD_TALKS_TIMEOUT = 60.0
 
 def update_old_talks(event):
     if _old_talks_configured():
