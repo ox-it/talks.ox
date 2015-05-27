@@ -1,3 +1,4 @@
+import codecs
 import logging
 from xml.etree import ElementTree
 
@@ -68,7 +69,9 @@ def event_to_old_talk(event, series_id):
         name = location['name']
         if event.location_details:
             name += " (" + event.location_details + ")"
-        data.append(("talk[venue_name]", "{name}, {address}".format(name=name, address=location.get('address', ''))))
+        location = ("talk[venue_name]", "{name}, {address}".format(name=name, address=location.get('address', '')))
+        location = unicode(location.strip(codecs.BOM_UTF8), 'utf-8')
+        data.append(location)
     elif event.location_details:
         name = event.location_details
         data.append(("talk[venue_name]", "{name}".format(name=name)))
