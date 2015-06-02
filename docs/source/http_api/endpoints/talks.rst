@@ -169,6 +169,8 @@ All the responses conform to the `HAL specification <http://stateless.co/hal_spe
     :type organising_department: string
     :query speaker: Search for talks at which the specified person is a speaker. Supply the unique slug for the person e.g. 'james-bond'
     :type speaker: string
+    :query series: The slug of a series to filter results by
+    :type series: string
 
     The response can be either in XML or JSON dependent on the 'accept' header in the request.
 
