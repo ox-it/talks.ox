@@ -26,18 +26,16 @@ def events_search(request):
 
     include_sub_departments = True
     subdepartments = request.GET.get("subdepartments")
-    print subdepartments
     if subdepartments and subdepartments == 'false':
-        print "no subdepartments"
         include_sub_departments = False
 
-    print include_sub_departments
     # map between URL query parameters and their corresponding django ORM query
     list_parameters = {
         'speaker': lambda speakers: Q(personevent__role=ROLES_SPEAKER, personevent__person__slug__in=speakers),
         'venue': lambda venues: Q(location__in=venues),
         'organising_department': lambda depts: Q(department_organiser__in=get_all_department_ids(depts, include_sub_departments)),
-        'topic': lambda topics: Q(topics__uri__in=topics)
+        'topic': lambda topics: Q(topics__uri__in=topics),
+        'series': lambda series: Q(group__slug__in=series)
     }
 
     for url_query_parameter, orm_mapping in list_parameters.iteritems():
