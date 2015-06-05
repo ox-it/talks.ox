@@ -46,12 +46,12 @@ class EventForm(forms.ModelForm):
         if not self.instance.group or self.instance.group.user_can_edit(self.user):
             #user may change the group. Populate the list with only the available choices
             if self.user and self.user.is_superuser:
-                self.fields['group'].queryset = models.EventGroup.objects.all()
+                self.fields['group'].queryset = models.EventGroup.objects.all().order_by('title')
             else:
                 query = Q(editor_set__in=[self.user])
                 if self.instance.group:
                     query = query | Q(slug=self.instance.group.slug)
-                self.fields['group'].queryset = models.EventGroup.objects.filter(query).distinct()
+                self.fields['group'].queryset = models.EventGroup.objects.filter(query).distinct().order_by('title')
         else:
             #user should be able to see the field but not be able to edit it
             self.fields['group'].widget.attrs['readonly'] = True
