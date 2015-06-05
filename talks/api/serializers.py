@@ -52,14 +52,20 @@ class EventSerializer(serializers.ModelSerializer):
         else:
             return obj.get_absolute_url()
 
-    def get_location(self, obj):
-        location = obj.api_location
-        if location:
-            if 'address' in location and location['address'] != '':
-                return location['address']
-            elif 'name' in location and location['name'] != '':
-                return location['name']
-        return "Venue to be announced"
+    def get_location(self, event):
+
+        if event.location:
+            location = event.api_location
+            name = location['name']
+            if event.location_details:
+                name += " (" + event.location_details + ")"
+            location_string = name + ", " + location.get('address')
+            return location_string
+        elif event.location_details:
+            name = event.location_details
+            return name
+        else:
+            return "Venue to be announced"
 
     class Meta:
         model = Event
