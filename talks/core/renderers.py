@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from icalendar.cal import Alarm
 
 from rest_framework import renderers
 from icalendar import Calendar, Event
@@ -26,8 +27,10 @@ class ICalRenderer(renderers.BaseRenderer):
         event.add('summary', e['title_display'])
         if 'description' in e:
             desc_with_speakers = e['description']
-            speakers_list = "Speakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
-            event.add('description', desc_with_speakers + "\n" + speakers_list)
+            speakers_list = ""
+            if 'speakers' in e:
+                speakers_list = "\nSpeakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
+            event.add('description', desc_with_speakers + speakers_list)
         if 'start' in e:
             event.add('dtstart', dt_string_to_object(e['start']))
         if 'end' in e:
@@ -37,7 +40,15 @@ class ICalRenderer(renderers.BaseRenderer):
             event.add('uid', e['full_url'])
         if 'location' in e:
             event.add('location', e['location'])
+
+        alarm = Alarm()
+        alarm.add('action', 'display')
+        alarm.add('trigger', timedelta(hours=-1))
+        alarm.add('description', "Talk:" + e['title_display'])
+        event.add_component(alarm)
+
         return event
+
 
 def get_speaker_name(speaker):
     name = speaker['name']
