@@ -84,12 +84,12 @@ Parameters Reference
 
 from : date string (`'dd/mm/yy'`), **required**
      * Start date for the list of talks. 
-     * Format as :code: `dd/mm/yy` 
+     * Format as :code:`dd/mm/yy` 
      * Or use the keyword :code:`'today'` to get upcoming talks
 
 to : date string (`'dd/mm/yy'`), optional
     * End date for the list of talks.
-    * Format :code: `dd/mm/yy`
+    * Format :code:`dd/mm/yy`
 
 subdepartments : boolean, optional
     * If true, include all sub-organisations of the specified department within the search (see organising_department below)
@@ -103,24 +103,24 @@ The parameters below can each be repeated multiple times
 
 speaker : speaker slug as string, optional
          * For a list of talks by a specific speaker
-         * Format :code: `f8ecded3-d2af-4585-bd3b-5cd7440795b9`
+         * Format :code:`f8ecded3-d2af-4585-bd3b-5cd7440795b9`
          
 series : series slug as string, optional
          * For a list of talks belonging to a specific series
-         * Format :code: `f8ecded3-d2af-4585-bd3b-5cd7440795b9`  
+         * Format :code:`f8ecded3-d2af-4585-bd3b-5cd7440795b9`  
          
 venue : Oxpoints ID as string, optional
        * For a list of talks in a specific venues
-       * Format :code: `oxpoints:59444038` 
+       * Format :code:`oxpoints:59444038` 
        
 organising_department : Oxpoints ID as string, optional
         * For a list of talks in a specific organising department
-        * Format :code: `oxpoints:23232596` 
+        * Format :code:`oxpoints:23232596` 
         * use the subdepartments parameter (see above) to include sub-organisations of the department
                        
 topic : FAST topic URI as string, optional
         * For a list of talks on a topics
-        * Format :code: `http://id.worldcat.org/fast/1097048`
+        * Format :code:`http://id.worldcat.org/fast/1097048`
      
 
     The response can be either in XML or JSON dependent on the 'accept' header in the request.
