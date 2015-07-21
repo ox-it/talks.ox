@@ -77,23 +77,47 @@ Retrieve Talks via Search
                 }
             }
 
-    :query from: Date to start filtering on (mandatory). Format should be dd/mm/yy OR 'today' or 'tomorrow'
-    :type from: string
-    :query to: Optional date to end filtering. Format should be dd/mm/yy OR 'today' or 'tomorrow'
-    :type to: string
-    :query subdepartments: Optional. Defaults to true. If true, include all sub-organisations of the specified department within the search
-    :type subdepartments: boolean
 
-    The below parameters can each be repeated multiple times
+Parameters Reference
+====================
 
-    :query topic: Topic URI
-    :type topic: string
-    :query venue: Search for talks taking place at the location specified by the oxpoints ID
-    :type venue: string
-    :query organising_department: Search for talks whose organising department is the organisation specified by this oxpoints ID
-    :type organising_department: string
-    :query speaker: Search for talks at which the specified person is a speaker. Supply the unique slug for the person e.g. 'd47e2458-af73-4bc1-bf04-3c275e1c1254'
-    :type speaker: string
+
+from : date string (`'dd/mm/yy'`), **required**
+     * Start date for the list of talks. 
+     * Format as :code: `dd/mm/yy` 
+     * Or use the keyword :code:`'today'` to get upcoming talks
+
+to : date string (`'dd/mm/yy'`), optional
+    * End date for the list of talks.
+    * Format :code: `dd/mm/yy`
+
+subdepartments : boolean, optional
+    * If true, include all sub-organisations of the specified department within the search
+    * Defaults to **true**. 
+    
+
+The parameters below can each be repeated multiple times
+
+speaker : speaker slug as string, optional
+         * For a list of talks by a specific speaker
+         * Format :code: `f8ecded3-d2af-4585-bd3b-5cd7440795b9`
+         
+series : series slug as string, optional
+         * For a list of talks belonging to a specific series
+         * Format :code: `f8ecded3-d2af-4585-bd3b-5cd7440795b9`  
+         
+venue : Oxpoints ID as string, optional
+       * For a list of talks in a specific venues
+       * Format :code: `oxpoints:59444038` 
+       
+organising_department : Oxpoints ID as string, optional
+        * For a list of talks in a specific organising departments
+        * Format :code: `oxpoints:23232596` 
+                       
+topic : FAST topic URI as string, optional
+        * For a list of talks on a topics
+        * Format :code: `http://id.worldcat.org/fast/1097048`
+     
 
     The response can be either in XML or JSON dependent on the 'accept' header in the request.
 
