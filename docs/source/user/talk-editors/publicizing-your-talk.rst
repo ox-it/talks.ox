@@ -19,6 +19,31 @@ Go to the **Topics** field on the Add talk form. Start typing and you will be of
 
 Please start with broader topics first e.g.: 'Neuroscience' or 'Ancient History', and then add narrower topics in the specialist area of the talk e.g.: 'Molecular Neurobiology' or 'Naval Warfare'.
 
+
+
+Viewing topic listings
+----------------------
+
+To see a listing of talks for a specific topic, type the topic name into the site search box and then use the **Topic** filters on the left hand side of the results page. Alternatively, click on the topic name when viewing a talk.
+
+The talks site will create a listing for any topic if you provide the FAST Topic URI e.g.:
+
+`https://new.talks.ox.ac.uk/talks/topics/id/?uri=http://id.worldcat.org/fast/1120819 <https://new.talks.ox.ac.uk/talks/topics/id/?uri=http://id.worldcat.org/fast/1120819>`_ 
+
+You can search for the FAST Topic URI here:
+
+`https://new.talks.ox.ac.uk/topics/search?q=sleep <https://new.talks.ox.ac.uk/topics/search?q=sleep>`_ 
+
+look for a phrase like this in the results:
+
+::
+
+     "uri":"http://id.worldcat.org/fast/1120819"
+
+
+
+
+
 Adding your talk to department listings
 ---------------------------------------
 
@@ -36,6 +61,17 @@ Start typing the name in the **Organising department** field in either the Serie
 Once you've assigned a department or unit to a Series it will be automatically assigned to any Talks you then add to the Series. 
 
 If you choose a sub-department or unit, then the talk will also appear in the parent department and division listings.
+
+Viewing department listings
+---------------------------
+
+If you click on the **Organising department name** when viewing a talk you will get to a web page with all talks assigned to that department.
+
+The site can generate a listing for any department if you provide the Oxpoints ID for it:
+
+`https://new.talks.ox.ac.uk/talks/department/id/oxpoints:51292900 <https://new.talks.ox.ac.uk/talks/department/id/oxpoints%3A51292900>`_
+
+The easiest way to find an Oxpoints ID is to go to `http://maps.ox.ac.uk, <http://maps.ox.ac.uk,>`_ search for the department and then get the ID from the address bar of your browser.
 
 Adding an abstract
 ------------------
