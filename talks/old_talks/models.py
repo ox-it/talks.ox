@@ -68,7 +68,10 @@ def event_to_old_talk(event, series_id):
         name = location['name']
         if event.location_details:
             name += " (" + event.location_details + ")"
-        location_string = name + ", " + location.get('address')
+        location_string = name
+        address = location.get('address')
+        if address:
+            location_string += ", " + address
         location = ("talk[venue_name]", location_string)
         data.append(location)
     elif event.location_details:
