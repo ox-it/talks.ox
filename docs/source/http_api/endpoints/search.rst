@@ -92,8 +92,11 @@ to : date string (`'dd/mm/yy'`), optional
     * Format :code: `dd/mm/yy`
 
 subdepartments : boolean, optional
-    * If true, include all sub-organisations of the specified department within the search
-    * Defaults to **true**. 
+    * If true, include all sub-organisations of the specified department within the search (see organising_department below)
+    * Defaults to **true**.
+    
+count : integer, optional
+    * Number of talks to return per page 
     
 
 The parameters below can each be repeated multiple times
@@ -111,8 +114,9 @@ venue : Oxpoints ID as string, optional
        * Format :code: `oxpoints:59444038` 
        
 organising_department : Oxpoints ID as string, optional
-        * For a list of talks in a specific organising departments
+        * For a list of talks in a specific organising department
         * Format :code: `oxpoints:23232596` 
+        * use the subdepartments parameter (see above) to include sub-organisations of the department
                        
 topic : FAST topic URI as string, optional
         * For a list of talks on a topics
