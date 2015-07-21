@@ -1,5 +1,5 @@
 *********************
-Retrieve Talks via ID
+Retrieve Talk via ID
 *********************
 
 Endpoint to retrieve information about talks
@@ -8,7 +8,7 @@ All the responses conform to the `HAL specification <http://stateless.co/hal_spe
 
 .. http:get:: /talks/(string:id)
 
-    Retrieve talk by ID
+    Retrieve talk by unique slug identifier
 
     **Example request**:
 

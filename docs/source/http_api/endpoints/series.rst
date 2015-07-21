@@ -1,63 +1,82 @@
-***************
-Retrieve Series
-***************
+**********************
+Retrieve Series via ID 
+**********************
 
-.. http:get:: /series/
+Endpoint to retrieve information about all talks in a series
 
-    Retrieve series by ID, including all talks
+All the responses conform to the `HAL specification <http://stateless.co/hal_specification.html>`_.
+
+
+.. http:get:: /series/(string:id)
+
+    Retrieve series by unique slug identifier, including all talks
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/series/series-id
+      GET /api/series/d95be2ef-10bb-43d3-a46c-99dccf7151a0
       Host: talks.ox.ac.uk
       Accept: application/json
 
     **Example response**
 
-      .. sourcecode:: xml
+      .. sourcecode:: http
 
-        <root>
-        <id>1</id>
-          <title>A conference</title>
-          <description>A conference featuring a diverse array of groups</description>
-          <department_organiser/>
-          <events>
-            <list-item>
-              <slug>
-               deformation-and-melts-litosphere-astenosphere-boundary
-              </slug>
-              <url>
-                /talks/id/deformation-and-melts-litosphere-astenosphere-boundary/
-              </url>
-              <title>
-                Feedbacks between deformation and melts in the lithosphere-asthenosphere boundary
-              </title>
-              <start>2014-12-10T12:00:00Z</start>
-              <end>2014-12-10T14:00:00Z</end>
-              <description>Geo sciences</description>
-              <formatted_date>10 December 2014, 12:00</formatted_date>
-              <formatted_time>12:00</formatted_time>
-              <speakers>
-                <list-item>
-                  <id>3</id>
-                  <name>Dr Andrea Tommasi</name>
-                  <bio>Geosciences Montpellier</bio>
-                  <title>Dr Andrea Tommasi, Geosciences Montpellier</title>
-                </list-item>
-              </speakers>
-            <organisers/>
-            <hosts/>
-            <happening_today>False</happening_today>
-            <audience>oxonly</audience>
-            <api_location>...</api_location>
-            <api_organisation>...</api_organisation>
-            <api_topics>...</api_topics>
-            <class_name>Event</class_name>
-            </list-item>
-          </events>
-        </root>
+        {
+            "_links": {
+                "self": {
+                    "href": "/api/series/d95be2ef-10bb-43d3-a46c-99dccf7151a0"
+                },
+                "talks_page": {
+                    "href": "/talks/series/id/d95be2ef-10bb-43d3-a46c-99dccf7151a0"
+                }
+            },
+            "title": "ChemBio Hub Events",
+            "description": "",
+            "occurence": "",
+            "_embedded": {
+                "talks": [{
+                    "_links": {
+                        "self": {
+                            "href": "/api/talks/88ba512b-8ac1-4191-a86e-340f8f3fed1d"
+                        },
+                        "talks_page": {
+                            "href": "/talks/id/88ba512b-8ac1-4191-a86e-340f8f3fed1d/"
+                        }
+                    },
+                    "title_display": "Current expertise and future directions in drug discovery: an Oxford-Industry conversation",
+                    "slug": "88ba512b-8ac1-4191-a86e-340f8f3fed1d",
+                    "start": "2015-07-31T09:00:00Z",
+                    "end": "2015-07-31T19:00:00Z",
+                    "formatted_date": "31 July 2015, 9:00",
+                    "formatted_time": "09:00",
+                    "description": "This event showcases top chemical biology research from labs at Oxford. ...",
+                    "location_details": "",
+                    "location_summary": null,
+                    "series": {
+                        "slug": "d95be2ef-10bb-43d3-a46c-99dccf7151a0",
+                        "title": "ChemBio Hub Events"
+                    },
+                    "_embedded": {
+                        "speakers": [],
+                        "venue": null,
+                        "organising_department": {
+                            "address": "off South Parks Road OX1 3QU",
+                            "_links": {
+                                "self": {
+                                    "href": "//api.m.ox.ac.uk/places/oxpoints:23232534"
+                                }
+                            },
+                            "name": "Department of Biochemistry",
+                            "map_link": "//maps.ox.ac.uk/#/places/oxpoints:23232534"
+                        },
+                        "topics": []
+                    },
+                    "organiser_email": ""
+                }]
+            }
+        }
 
     :param id: The unique slug identifier for the series
     :type id: string
