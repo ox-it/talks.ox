@@ -1,7 +1,8 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
+
+from .forms import BrowseEventsForm
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +28,10 @@ def homepage(request):
                     event_groups)
     group_no_type = filter(lambda eg: not eg.group_type,
                            event_groups)
+    
+    nextWeek = today + timedelta(days=7)
+    initial_browse_link = '/browse' + '?start_date=' + today.strftime('%Y-%m-%d') + '&end_date=' + nextWeek.strftime('%Y-%m-%d')
+
     context = {
         'events': events,
         'event_groups': event_groups,
@@ -39,7 +46,39 @@ def homepage(request):
         context['default_collection'] = collection
         context['user_events'] = collection.get_events()
         context['user_event_groups'] = collection.get_event_groups()
+        context['initial_browse_link'] = initial_browse_link
     return render(request, 'front.html', context)
+
+
+def browse_events(request):
+    # if this is a POST request we need to process the form data
+    browse_events_form = BrowseEventsForm(request.GET)
+
+    events = Event.published.order_by('start')
+    
+
+    start_date = request.GET.get('start_date', None)
+    end_date = request.GET.get('end_date', None)
+    if not(start_date):
+        start_date = date.today().strftime('%Y-%m-%d')
+    events = events.filter(start__gte=start_date)
+    if end_date:
+        # end_date_date = datetime.strptime(end_date_raw, '%d/%m/%Y %H:%M')
+        # end_date = end_date_date.strftime('%Y-%m-%d')
+        events = events.filter(start__lt=end_date)
+    
+    context = {
+        'events': events,
+        'default_collection': None,
+    }
+    if request.tuser:
+        # Authenticated user
+        collection = request.tuser.default_collection
+        context['default_collection'] = collection
+        context['user_events'] = collection.get_events()
+        context['user_event_groups'] = collection.get_event_groups()
+        context['browse_events_form'] = browse_events_form
+    return render(request, 'events/browse.html', context)
 
 
 def upcoming_events(request):
