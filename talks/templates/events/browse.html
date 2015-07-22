@@ -1,0 +1,112 @@
+{% extends "layouts/2-column.html" %}
+{% load staticfiles %}
+
+{% block title %}Events{% endblock %}
+
+{% block extrahead %}
+
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        yourTalkTemplate: _.template('<li><strong><%= event.formatted_date %></strong> - <a href="<%= event.url %>"><%= event.title %></a> <a data-event="<%= event.slug %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
+        yourGroupTemplate: _.template('<li><a href="<%= group.url %>"><%= group.title %></a> <a data-group="<%= group.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
+        saveItemDefault: "{% url "save-item" %}",
+        removeItemDefault: "{% url "remove-item" %}",
+    };
+</script>
+<script type="application/ld+json">
+[{% for event in events %}{
+  "@context": "http://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title }}",
+  "startDate": "{{ event.start|date:'c' }}"
+{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
+</script>
+
+
+
+{% endblock %}
+
+
+{% block topcontent %}
+
+<ul class="visible-xs nav nav-tabs nav-justified" role="tablist">
+  <li class="active"><a href="#upcoming">Upcoming</a></li>
+  <li><a href="#yourtalks">Your Talks</a></li>
+</ul>
+{% endblock %}
+
+{% block side %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-3">
+      <h3>Filters</h3>
+
+
+      <ul class="nav nav-list well">
+        <li class="nav-header"><strong>Date filter</strong></li>
+
+      <form action="/browse" method="get">
+        <!--{% csrf_token %}-->
+        {{ browse_events_form }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="/browse" class="btn btn-default">Reset Filters</a>
+        </form>
+
+        <script type="text/javascript">
+          $(function() {
+            $('.js-datetimepicker').datetimepicker({
+              format: 'yyyy-mm-dd',
+              minView: 2,
+              autoclose: true
+            });
+          });
+        </script>
+
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block main %}
+
+<h2 class="hidden-xs">Browse Talks</h2>
+
+
+<div class="js-upcoming-events">
+    <ul class="list-unstyled">
+        {% if events %}
+        {% for event in events %}
+          <li>
+            <strong>{{ event.formatted_date }}</strong>
+             - 
+            <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
+            {% if event.group %}
+              - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+        {% else %}
+          Sorry, there are no events to display.
+        {% endif %}
+    </ul>
+
+</div>
+
+{% endblock %}
