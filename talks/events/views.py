@@ -41,7 +41,7 @@ def homepage(request):
         'conferences': conferences,
         'group_no_type': group_no_type,
         'series': series,
-        'default_ collection': None,
+        'default_collection': None,
         'initial_browse_params' : initial_browse_params
     }
     if request.tuser:
