@@ -15,6 +15,17 @@ class OxPointField(forms.CharField):
         self.widget = typeahead.Typeahead(source)
         return super(OxPointField, self).__init__(*args, **kwargs)
 
+    # def value_from_datadict(self, data, files, name):
+    #     """
+    #     Given a dictionary of data and this widget's name, returns the value
+    #     of this widget. Returns None if it's not provided.
+    #     """
+    #     return data.get(name)
+
+    # @property
+    # def is_hidden(self):
+    #     return self.input_type == 'hidden' if hasattr(self, 'input_type') else False        
+
 
 class TopicsField(forms.MultipleChoiceField):
     def valid_value(self, value):

@@ -6,7 +6,7 @@ from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 
 
-def events_search(request):
+def events_search(request, fallbackFromDate=None):
     """
     Return a list of events based on the DRF Request object
     :param request: Django Rest Framework Request object
@@ -16,7 +16,11 @@ def events_search(request):
 
     from_date = parse_date(request.GET.get("from"))
     if not from_date:
-        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
+        from_date = parse_date(request.GET.get("start_date"))
+    if not from_date and fallbackFromDate:
+        from_date = parse_date(fallbackFromDate)
+    if not from_date:
+        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy' or 'yyyy-mm-dd'.")
     else:
         queries.append(Q(start__gt=from_date))
 

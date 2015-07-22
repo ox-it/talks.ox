@@ -16,6 +16,7 @@
 <!-- our Typeahead styling -->
 <link href="{% static "css/typeahead.css"%}" rel="stylesheet">
 
+<script src="{% static "js/form-controls.js"%}"></script>
 
 <script src="{% static "js/user-collections.js"%}"></script>
 <script>
@@ -59,11 +60,11 @@
       <ul class="nav nav-list well">
         <li class="nav-header"><strong>Date filter</strong></li>
 
-      <form action="/browse" method="get">
-        <!--{% csrf_token %}-->
-        {{ browse_events_form }}
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="/browse" class="btn btn-default">Reset Filters</a>
+        <form action="/browse" method="get">
+            <!--{% csrf_token %}-->
+            {{ browse_events_form }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/browse" class="btn btn-default">Reset Filters</a>
         </form>
 
         <script type="text/javascript">

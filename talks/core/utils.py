@@ -21,12 +21,17 @@ def parse_date(date_param):
         from_date = datetime.today().date() + timedelta(1)
     else:
         try:
-            # TODO should probably test multiple formats, especially YYYY
             from_date = datetime.strptime(date_param, "%d/%m/%y")
         except Exception as e:
-            # catch the exception and raise an API exception instead, which the user will see
-            raise ParseError(e.message)
-            # TODO should raised a more specialised error than rest framework.
+            try:
+                from_date = datetime.strptime(date_param, "%d/%m/%y")
+            except Exception as e:
+                try:
+                    from_date = datetime.strptime(date_param, "%Y-%m-%d")
+                except Exception as e:
+                    # catch the exception and raise an API exception instead, which the user will see
+                    raise ParseError(e.message)
+                    # TODO should raised a more specialised error than rest framework.
     return from_date
 
 
