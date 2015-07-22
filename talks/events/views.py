@@ -38,7 +38,8 @@ def homepage(request):
         'conferences': conferences,
         'group_no_type': group_no_type,
         'series': series,
-        'default_collection': None,
+        'default_ collection': None,
+        'initial_browse_link' : initial_browse_link
     }
     if request.tuser:
         # Authenticated user
@@ -46,7 +47,6 @@ def homepage(request):
         context['default_collection'] = collection
         context['user_events'] = collection.get_events()
         context['user_event_groups'] = collection.get_event_groups()
-        context['initial_browse_link'] = initial_browse_link
     return render(request, 'front.html', context)
 
 
@@ -70,14 +70,14 @@ def browse_events(request):
     context = {
         'events': events,
         'default_collection': None,
-    }
+        'browse_events_form' : browse_events_form
+        }
     if request.tuser:
         # Authenticated user
         collection = request.tuser.default_collection
         context['default_collection'] = collection
         context['user_events'] = collection.get_events()
         context['user_event_groups'] = collection.get_event_groups()
-        context['browse_events_form'] = browse_events_form
     return render(request, 'events/browse.html', context)
 
 
