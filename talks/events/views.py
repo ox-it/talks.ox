@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
@@ -30,7 +31,7 @@ def homepage(request):
                            event_groups)
     
     nextWeek = today + timedelta(days=7)
-    initial_browse_link = '/browse' + '?start_date=' + today.strftime('%Y-%m-%d') + '&end_date=' + nextWeek.strftime('%Y-%m-%d')
+    initial_browse_params = '?start_date=' + today.strftime('%Y-%m-%d') + '&end_date=' + nextWeek.strftime('%Y-%m-%d')
 
     context = {
         'events': events,
@@ -39,7 +40,7 @@ def homepage(request):
         'group_no_type': group_no_type,
         'series': series,
         'default_ collection': None,
-        'initial_browse_link' : initial_browse_link
+        'initial_browse_params' : initial_browse_params
     }
     if request.tuser:
         # Authenticated user
@@ -56,9 +57,19 @@ def browse_events(request):
 
     events = Event.published.order_by('start')
     
+    count = request.GET.get('count', 20)
+    page = request.GET.get('page', 1)
 
     start_date = request.GET.get('start_date', None)
     end_date = request.GET.get('end_date', None)
+
+    # used to build a URL fragment that does not
+    # contain "page" so that we can... paginate
+    args = {'count': count,
+            'start_date': start_date,
+            'end_date': end_date,
+        }
+
     if not(start_date):
         start_date = date.today().strftime('%Y-%m-%d')
     events = events.filter(start__gte=start_date)
@@ -66,9 +77,18 @@ def browse_events(request):
         # end_date_date = datetime.strptime(end_date_raw, '%d/%m/%Y %H:%M')
         # end_date = end_date_date.strftime('%Y-%m-%d')
         events = events.filter(start__lt=end_date)
-    
+
+    paginator = Paginator(events, count)
+    try:
+        events = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('browse')
+
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+
     context = {
         'events': events,
+        'fragment': fragment,
         'default_collection': None,
         'browse_events_form' : browse_events_form
         }

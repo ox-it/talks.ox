@@ -90,8 +90,8 @@
 
 
 <div class="js-upcoming-events">
+    {% if events %}
     <ul class="list-unstyled">
-        {% if events %}
         {% for event in events %}
           <li>
             <strong>{{ event.formatted_date }}</strong>
@@ -102,11 +102,14 @@
             {% endif %}
           </li>
         {% endfor %}
-        {% else %}
-          Sorry, there are no events to display.
-        {% endif %}
     </ul>
+    {% else %}
+      Sorry, there are no events to display.
+    {% endif %}
 
+    {% with events as page %}
+        {% include 'events/_pagination.html' %}
+    {% endwith %}
 </div>
 
 {% endblock %}
