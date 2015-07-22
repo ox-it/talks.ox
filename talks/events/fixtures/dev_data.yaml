@@ -58,22 +58,22 @@
 - fields:
     department_organiser: ''
     description: Skin
-    end: 2014-12-15 14:00:00
+    end: 2015-12-15 14:00:00
     group: null
     location: 'oxpoints:23233672'
     slug: complete-regeneration-of-skin
-    start: 2014-12-15 14:00:00
+    start: 2015-12-15 14:00:00
     title: Complete Regeneration of Skin
   model: events.event
   pk: 1
 - fields:
     department_organiser: ''
     description: Geo sciences
-    end: 2014-12-10 14:00:00
+    end: 2015-12-10 14:00:00
     group: null
     location: 'oxpoints:23233672'
     slug: deformation-and-melts-litosphere-astenosphere-boundary
-    start: 2014-12-10 12:00:00
+    start: 2015-12-10 12:00:00
     title: Feedbacks between deformation and melts in the lithosphere-asthenosphere
       boundary
   model: events.event
@@ -103,11 +103,11 @@
       jelly-like matrix around the mammalian egg that is crucial for fertility), and
       on "superselective" targeting of the cell surface through multivalent interactions
       between hyaluronan polymers and cell surface receptors.
-    end: 2014-12-10 13:00:00
+    end: 2015-12-10 13:00:00
     group: null
     location: 'oxpoints:23233672'
     slug: making-difference
-    start: 2014-12-10 12:00:00
+    start: 2015-12-10 12:00:00
     title: How do we know if we're making a difference? Finding solid ground in the
       shifting sands of conservation evaluation
   model: events.event
@@ -133,11 +133,11 @@
       \ related to lack of standard and useful measures, well designed measurement\
       \ instruments, and miss-conceptions in use of measures will be discussed by\
       \ comparing the practices to those of mature engineering fields."
-    end: 2014-08-22 16:30:00
+    end: 2015-08-22 16:30:00
     group: null
     location: 'oxpoints:23233672'
     slug: persistence-in-poor-estimating
-    start: 2014-08-22 16:00:00
+    start: 2015-08-22 16:00:00
     title: Persistence in Poor Estimating in Software Engineering Whys and Hows
   model: events.event
   pk: 4
@@ -176,11 +176,11 @@
       relations in a conceptual space of films (derived from a large corpus of film
       reviews), we can implement a form of analogical reasoning which outperforms
       standard classifiers in a variety of film related categorisation tasks.
-    end: 2014-09-02 17:00:00
+    end: 2015-09-02 17:00:00
     group: null
     location: 'oxpoints:23233672'
     slug: data-driven
-    start: 2014-09-02 16:00:00
+    start: 2015-09-02 16:00:00
     title: A data-driven approach to commonsense reasoning based on qualitative spatial
       representations from the web
   model: events.event
@@ -194,10 +194,10 @@
       \ expected, and market conditions have been unexpectedly supportive. But the\
       \ hardest part still lies ahead."
     location: 'oxpoints:23233672'
-    end: 2014-06-09 17:45:00
+    end: 2015-06-09 17:45:00
     group: 1
     slug: banking-union
-    start: 2014-06-09 17:00:00
+    start: 2015-06-09 17:00:00
     title: "Banking Union - Will the ECB\u2019s assessment do the trick?"
   model: events.event
   pk: 6
@@ -210,21 +210,21 @@
       \ analysing factors causing shortfalls in funding, social mistrust, and political\
       \ dysfunction, and offering recommendations for dealing with these obstacles."
     location: 'oxpoints:23233672'
-    end: 2014-06-09 20:00:00
+    end: 2015-06-09 20:00:00
     group: 2
     slug: emerging-technology-businesses
-    start: 2014-06-09 19:00:00
+    start: 2015-06-09 19:00:00
     title: Emerging Technology Businesses
   model: events.event
   pk: 7
 - fields:
     department_organiser: ''
     description: Globalisation and Regional Development in an Age of Economic Volatility
-    end: 2014-06-10 17:00:00
+    end: 2015-06-10 17:00:00
     group: null
     location: 'oxpoints:23233672'
     slug: financialization-wind-energy
-    start: 2014-06-10 16:00:00
+    start: 2015-06-10 16:00:00
     title: Financialization of wind energy? The case of Germany
   model: events.event
   pk: 8
@@ -242,22 +242,22 @@
       \ sector in India, the second is about if and how cultural institutions create\
       \ national and global identities, and the third is on the new forms of global\
       \ social protection and provision that arise in response to a world on the move."
-    end: 2014-06-19 17:00:00
+    end: 2015-06-19 17:00:00
     group: null
     location: 'oxpoints:23233672'
     slug: people-culture-move
-    start: 2014-06-19 17:00:00
+    start: 2015-06-19 17:00:00
     title: Sites of Encounter - Making Sense of People and Culture on the Move
   model: events.event
   pk: 9
 - fields:
     department_organiser: ''
     description: ddsad
-    end: 2014-06-19 17:30:00
+    end: 2015-06-19 17:30:00
     group: null
     location: 'oxpoints:23233672'
     slug: dsadd
-    start: 2014-06-19 17:00:00
+    start: 2015-06-19 17:00:00
     title: dsadd
   model: events.event
   pk: 10

@@ -1,14 +1,20 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
+
+from .forms import BrowseEventsForm
+
+from talks.api.services import events_search
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +31,10 @@ def homepage(request):
                     event_groups)
     group_no_type = filter(lambda eg: not eg.group_type,
                            event_groups)
+    
+    nextWeek = today + timedelta(days=7)
+    initial_browse_params = '?start_date=' + today.strftime('%Y-%m-%d') + '&to=' + nextWeek.strftime('%Y-%m-%d')
+
     context = {
         'events': events,
         'event_groups': event_groups,
@@ -32,6 +42,7 @@ def homepage(request):
         'group_no_type': group_no_type,
         'series': series,
         'default_collection': None,
+        'initial_browse_params' : initial_browse_params
     }
     if request.tuser:
         # Authenticated user
@@ -40,6 +51,49 @@ def homepage(request):
         context['user_events'] = collection.get_events()
         context['user_event_groups'] = collection.get_event_groups()
     return render(request, 'front.html', context)
+
+
+def browse_events(request):
+    # if this is a POST request we need to process the form data
+    browse_events_form = BrowseEventsForm(request.GET)
+
+    count = request.GET.get('count', 20)
+    page = request.GET.get('page', 1)
+
+    # used to build a URL fragment that does not
+    # contain "page" so that we can... paginate
+    args = {'count': count,
+            'start_date': request.GET.get('start_date', None),
+            'to': request.GET.get('to', None),
+            'venue': request.GET.get('venue', None),
+        }
+
+    defaultStartDate = None
+    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue')):
+        defaultStartDate = 'today'
+    events = events_search(request, defaultStartDate)
+
+    paginator = Paginator(events, count)
+    try:
+        events = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect('browse')
+
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+
+    context = {
+        'events': events,
+        'fragment': fragment,
+        'default_collection': None,
+        'browse_events_form' : browse_events_form
+        }
+    if request.tuser:
+        # Authenticated user
+        collection = request.tuser.default_collection
+        context['default_collection'] = collection
+        context['user_events'] = collection.get_events()
+        context['user_event_groups'] = collection.get_event_groups()
+    return render(request, 'events/browse.html', context)
 
 
 def upcoming_events(request):
