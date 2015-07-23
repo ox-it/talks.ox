@@ -63,7 +63,7 @@
 
         <form action="/browse" method="get">
             <!--{% csrf_token %}-->
-            {{ browse_events_form }}
+            {{ browse_events_form | bootstrap }}
             <button type="submit" class="btn btn-primary">Submit</button>
             <a href="/browse" class="btn btn-default">Reset Filters</a>
         </form>
