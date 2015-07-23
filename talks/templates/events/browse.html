@@ -105,13 +105,12 @@
           </li>
         {% endfor %}
     </ul>
+        {% with events as page %}
+            {% include 'events/_pagination.html' %}
+        {% endwith %}
     {% else %}
       Sorry, there are no events to display.
     {% endif %}
-
-    {% with events as page %}
-        {% include 'events/_pagination.html' %}
-    {% endwith %}
 </div>
 
 {% endblock %}
