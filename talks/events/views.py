@@ -66,10 +66,12 @@ def browse_events(request):
             'start_date': request.GET.get('start_date', None),
             'to': request.GET.get('to', None),
             'venue': request.GET.get('venue', None),
+            'organising_department': request.GET.get('organising_department', None),
+            'subdepartments': request.GET.get('subdepartments', None),
         }
 
     defaultStartDate = None
-    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue')):
+    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue') or request.GET.get('organising_department') or request.GET.get('subdepartments')):
         defaultStartDate = 'today'
     events = events_search(request, defaultStartDate)
 
