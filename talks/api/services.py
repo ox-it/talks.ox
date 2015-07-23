@@ -19,9 +19,7 @@ def events_search(request, fallbackFromDate=None):
         from_date = parse_date(request.GET.get("start_date"))
     if not from_date and fallbackFromDate:
         from_date = parse_date(fallbackFromDate)
-    if not from_date:
-        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy' or 'yyyy-mm-dd'.")
-    else:
+    if from_date:
         queries.append(Q(start__gt=from_date))
 
     to_date = parse_date(request.GET.get("to"))
