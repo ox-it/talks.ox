@@ -19,17 +19,30 @@ def events_search(request, fallbackFromDate=None):
         from_date = parse_date(request.GET.get("start_date"))
     if not from_date and fallbackFromDate:
         from_date = parse_date(fallbackFromDate)
-    if from_date:
+    if not from_date:
+        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy' or 'yyyy-mm-dd'.")
+    else:
         queries.append(Q(start__gt=from_date))
 
     to_date = parse_date(request.GET.get("to"))
     if to_date:
         queries.append(Q(start__lt=to_date))
 
-    include_sub_departments = True
+    # cater for include_subdepartments parameter from the browse page (which is a BooleanField)
+    # The browe page contains a hidden 'subdepartments' param that is always set to 'false'
+    # If the checkbox is checked, include_subdepartments=on is passed and we 
+    # If the checkbox is unchecked, no param is passed in the request.
+    include_subdepartments_param = request.GET.get("include_subdepartments")
     subdepartments = request.GET.get("subdepartments")
-    if subdepartments and subdepartments == 'false':
+
+    include_sub_departments = True
+    if include_subdepartments_param:
+        include_sub_departments = True
+
+    elif subdepartments and subdepartments == 'false':
         include_sub_departments = False
+
+    
 
     # map between URL query parameters and their corresponding django ORM query
     list_parameters = {
