@@ -8,7 +8,7 @@ from talks.contributors.forms import BootstrappedDateTimeWidget, OxPointField
 
 class BrowseEventsForm(forms.Form):
     start_date = forms.DateTimeField(label="Start Date",
-                                     required=False,
+                                     required=True,
                                      widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
     to = forms.DateTimeField(label="End Date",
                              required=False,
@@ -22,5 +22,10 @@ class BrowseEventsForm(forms.Form):
                                          label="Department",
                                          required=False,
                                          help_text="Type department name and select from the list.")
-    subdepartments = forms.BooleanField(label="Include sub-departments?",
+    include_subdepartments = forms.BooleanField(label="Include sub-departments?",
+                                        initial=True,
                                         required=False)
+    subdepartments = forms.CharField(label="Include sub-departments?",
+                                        initial="false",
+                                        required=True,
+                                        widget=forms.HiddenInput())
