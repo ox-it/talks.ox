@@ -30,8 +30,6 @@ class BootstrappedDateTimeWidget(forms.DateTimeInput):
                 </span>
         """ + html + "</div>"
 
-
-
         return mark_safe(html)
 
 

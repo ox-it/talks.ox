@@ -56,3 +56,9 @@ span.filter-active {
     font-style: italic;
     padding: 10px 0px 20px 30px;
 }
+
+/* Help text in form fields */
+.helptext {
+    display: block;
+    margin-bottom: 8px;
+}

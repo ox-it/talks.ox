@@ -14,6 +14,8 @@ from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE,
 
 from .forms import BrowseEventsForm
 
+from talks.api.services import events_search
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,7 +33,7 @@ def homepage(request):
                            event_groups)
     
     nextWeek = today + timedelta(days=7)
-    initial_browse_params = '?start_date=' + today.strftime('%Y-%m-%d') + '&end_date=' + nextWeek.strftime('%Y-%m-%d')
+    initial_browse_params = '?start_date=' + today.strftime('%Y-%m-%d') + '&to=' + nextWeek.strftime('%Y-%m-%d')
 
     context = {
         'events': events,
@@ -39,7 +41,7 @@ def homepage(request):
         'conferences': conferences,
         'group_no_type': group_no_type,
         'series': series,
-        'default_ collection': None,
+        'default_collection': None,
         'initial_browse_params' : initial_browse_params
     }
     if request.tuser:
@@ -55,28 +57,21 @@ def browse_events(request):
     # if this is a POST request we need to process the form data
     browse_events_form = BrowseEventsForm(request.GET)
 
-    events = Event.published.order_by('start')
-    
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
-
-    start_date = request.GET.get('start_date', None)
-    end_date = request.GET.get('end_date', None)
 
     # used to build a URL fragment that does not
     # contain "page" so that we can... paginate
     args = {'count': count,
-            'start_date': start_date,
-            'end_date': end_date,
+            'start_date': request.GET.get('start_date', None),
+            'to': request.GET.get('to', None),
+            'venue': request.GET.get('venue', None),
         }
 
-    if not(start_date):
-        start_date = date.today().strftime('%Y-%m-%d')
-    events = events.filter(start__gte=start_date)
-    if end_date:
-        # end_date_date = datetime.strptime(end_date_raw, '%d/%m/%Y %H:%M')
-        # end_date = end_date_date.strftime('%Y-%m-%d')
-        events = events.filter(start__lt=end_date)
+    defaultStartDate = None
+    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue')):
+        defaultStartDate = 'today'
+    events = events_search(request, defaultStartDate)
 
     paginator = Paginator(events, count)
     try:
