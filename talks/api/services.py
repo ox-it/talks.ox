@@ -50,7 +50,8 @@ def events_search(request, fallbackFromDate=None):
         'venue': lambda venues: Q(location__in=venues),
         'organising_department': lambda depts: Q(department_organiser__in=get_all_department_ids(depts, include_sub_departments)),
         'topic': lambda topics: Q(topics__uri__in=topics),
-        'series': lambda series: Q(group__slug__in=series)
+        'series': lambda series: Q(group__slug__in=series),
+        'seriesid': lambda seriesid: Q(group__id__in=seriesid)
     }
 
     for url_query_parameter, orm_mapping in list_parameters.iteritems():

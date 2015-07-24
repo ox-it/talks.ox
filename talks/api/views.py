@@ -110,6 +110,16 @@ def api_event_group_ics(request, event_group_slug):
 
 
 @api_view(["GET"])
+def suggest_event_group(request):
+    """Get event group titles for typeahead searching
+    """
+    query = request.GET.get('q', '')
+    series = EventGroup.objects.filter(Q(title__startswith=query)).distinct()
+    serializer = EventGroupSerializer(series, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
 def api_event_search_hal(request):
     """
     Return a list of events using the HAL serialisation,

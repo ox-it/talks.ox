@@ -57,7 +57,7 @@ def browse_events(request):
     default_form_values = request.GET.copy()
     default_form_values['subdepartments'] = "false"
     default_start_date = None
-    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue') or request.GET.get('organising_department') or request.GET.get('subdepartments')):
+    if (len(request.GET) == 0):
         default_start_date = 'today'
         default_form_values['start_date'] = date.today().strftime("%Y-%m-%d")
         default_form_values['include_subdepartments'] = True
@@ -77,6 +77,7 @@ def browse_events(request):
             'venue': request.GET.get('venue', None),
             'organising_department': request.GET.get('organising_department', None),
             'subdepartments': request.GET.get('subdepartments', None),
+            'seriesid': request.GET.get('seriesid', None),
         }
 
     

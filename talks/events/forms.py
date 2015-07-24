@@ -29,3 +29,7 @@ class BrowseEventsForm(forms.Form):
                                         initial="false",
                                         required=True,
                                         widget=forms.HiddenInput())
+    seriesid = OxPointField(datasources.SERIES_DATA_SOURCE,
+                                         label="Series",
+                                         required=False,
+                                         help_text="Type series name and select from the list.")
