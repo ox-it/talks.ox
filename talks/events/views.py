@@ -32,9 +32,6 @@ def homepage(request):
     group_no_type = filter(lambda eg: not eg.group_type,
                            event_groups)
     
-    nextWeek = today + timedelta(days=7)
-    initial_browse_params = '?start_date=' + today.strftime('%Y-%m-%d') + '&to=' + nextWeek.strftime('%Y-%m-%d')
-
     context = {
         'events': events,
         'event_groups': event_groups,
@@ -42,7 +39,6 @@ def homepage(request):
         'group_no_type': group_no_type,
         'series': series,
         'default_collection': None,
-        'initial_browse_params' : initial_browse_params
     }
     if request.tuser:
         # Authenticated user
@@ -57,7 +53,10 @@ def browse_events(request):
     modified_request_parameters = request.GET.copy()
     modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0):
-        modified_request_parameters['start_date'] = date.today().strftime("%Y-%m-%d")
+        today = date.today()
+        twoWeeks = date.today() + timedelta(days=14)
+        modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
+        modified_request_parameters['to'] = twoWeeks.strftime("%Y-%m-%d")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):

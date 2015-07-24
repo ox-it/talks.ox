@@ -41,6 +41,7 @@
                 <div class="container-fluid">
                     {% url 'homepage' as home %}
                     {% url 'create-event' as create_event %}
+                    {% url 'browse_events' as browse_events %}
                     {% url 'contributors-events' as contributors_homepage %}
                     <div class="navbar-header">
                         <a id="navbar-oxford-brandmark" href="http://www.ox.ac.uk"><img src="{% static "images/ox_brand6_rev_rect.gif"%}"></a>
@@ -53,6 +54,7 @@
                         {% if perms.events.add_event %}
                             <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
                         {% endif %}
+                            <li {% ifequal request.path browse_events %} class="active" {% endifequal %}><a href="{{ browse_events }}">Browse Talks</a></li>
                     </ul>
                     <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'haystack_search' %}">
                         <div class="form-group">
