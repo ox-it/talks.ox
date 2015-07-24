@@ -74,15 +74,10 @@ def browse_events(request):
 
     # used to build a URL fragment that does not
     # contain "page" so that we can... paginate
-    args = {'count': count,
-            'start_date': modified_request_parameters.get('start_date', None),
-            'to': modified_request_parameters.get('to', None),
-            'venue': modified_request_parameters.get('venue', None),
-            'organising_department': modified_request_parameters.get('organising_department', None),
-            'subdepartments': modified_request_parameters.get('subdepartments', None),
-            'seriesid': modified_request_parameters.get('seriesid', None),
-        }
-
+    args = {'count': count}
+    for param in ('start_date', 'to', 'venue', 'organising_department', 'include_subdepartments', 'seriesid'):
+        if modified_request_parameters.get(param):
+            args[param] = modified_request_parameters.get(param)
     
     events = events_search(modified_request_parameters)
 
