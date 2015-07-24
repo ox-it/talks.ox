@@ -54,17 +54,20 @@ def homepage(request):
 
 
 def browse_events(request):
-    default_form_values = request.GET.copy()
-    default_form_values['subdepartments'] = "false"
-    default_start_date = None
+    modified_request_parameters = request.GET.copy()
+    modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0):
-        default_start_date = 'today'
-        default_form_values['start_date'] = date.today().strftime("%Y-%m-%d")
-        default_form_values['include_subdepartments'] = True
-    elif request.GET.get('subdepartments') and not request.GET.get('include_subdepartments'):
-        default_form_values['include_subdepartments'] = False
-    
-    browse_events_form = BrowseEventsForm(default_form_values)
+        modified_request_parameters['start_date'] = date.today().strftime("%Y-%m-%d")
+        modified_request_parameters['include_subdepartments'] = True
+        modified_request_parameters['subdepartments'] = 'true'
+    elif request.GET.get('include_subdepartments'):
+        modified_request_parameters['include_subdepartments'] = True
+        modified_request_parameters['subdepartments'] = 'true'
+    else:
+        modified_request_parameters['include_subdepartments'] = False
+        modified_request_parameters['subdepartments'] = 'false'
+
+    browse_events_form = BrowseEventsForm(modified_request_parameters)
 
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
@@ -72,16 +75,16 @@ def browse_events(request):
     # used to build a URL fragment that does not
     # contain "page" so that we can... paginate
     args = {'count': count,
-            'start_date': request.GET.get('start_date', None),
-            'to': request.GET.get('to', None),
-            'venue': request.GET.get('venue', None),
-            'organising_department': request.GET.get('organising_department', None),
-            'subdepartments': request.GET.get('subdepartments', None),
-            'seriesid': request.GET.get('seriesid', None),
+            'start_date': modified_request_parameters.get('start_date', None),
+            'to': modified_request_parameters.get('to', None),
+            'venue': modified_request_parameters.get('venue', None),
+            'organising_department': modified_request_parameters.get('organising_department', None),
+            'subdepartments': modified_request_parameters.get('subdepartments', None),
+            'seriesid': modified_request_parameters.get('seriesid', None),
         }
 
     
-    events = events_search(request, default_start_date)
+    events = events_search(modified_request_parameters)
 
     paginator = Paginator(events, count)
     try:

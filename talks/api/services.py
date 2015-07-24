@@ -6,43 +6,30 @@ from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 
 
-def events_search(request, fallbackFromDate=None):
+def events_search(parameters):
     """
     Return a list of events based on the DRF Request object
-    :param request: Django Rest Framework Request object
+    :param parameters: QueryDict in the same structure as a request.GET object
     :return QuerySet of Event
     """
     queries = []
 
-    from_date = parse_date(request.GET.get("from"))
+    from_date = parse_date(parameters.get("from"))
     if not from_date:
-        from_date = parse_date(request.GET.get("start_date"))
-    if not from_date and fallbackFromDate:
-        from_date = parse_date(fallbackFromDate)
+        from_date = parse_date(parameters.get("start_date"))
     if not from_date:
         raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy' or 'yyyy-mm-dd'.")
     else:
         queries.append(Q(start__gt=from_date))
 
-    to_date = parse_date(request.GET.get("to"))
+    to_date = parse_date(parameters.get("to"))
     if to_date:
         queries.append(Q(start__lt=to_date))
 
-    # cater for include_subdepartments parameter from the browse page (which is a BooleanField)
-    # The browe page contains a hidden 'subdepartments' param that is always set to 'false'
-    # If the checkbox is checked, include_subdepartments=on is passed and we 
-    # If the checkbox is unchecked, no param is passed in the request.
-    include_subdepartments_param = request.GET.get("include_subdepartments")
-    subdepartments = request.GET.get("subdepartments")
-
     include_sub_departments = True
-    if include_subdepartments_param:
-        include_sub_departments = True
-
-    elif subdepartments and subdepartments == 'false':
+    subdepartments = parameters.get("subdepartments")
+    if subdepartments and subdepartments == 'false':
         include_sub_departments = False
-
-    
 
     # map between URL query parameters and their corresponding django ORM query
     list_parameters = {
@@ -55,7 +42,7 @@ def events_search(request, fallbackFromDate=None):
     }
 
     for url_query_parameter, orm_mapping in list_parameters.iteritems():
-        value = request.GET.getlist(url_query_parameter)
+        value = parameters.getlist(url_query_parameter)
         if value:
             queries.append(orm_mapping(value))
 
