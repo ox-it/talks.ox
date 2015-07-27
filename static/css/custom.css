@@ -62,3 +62,9 @@ span.filter-active {
     display: block;
     margin-bottom: 8px;
 }
+
+/* ICS link within a panel */
+.panel .ics-link {
+    float: right;
+    margin-left: 15px;
+}
