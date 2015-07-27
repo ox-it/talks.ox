@@ -39,6 +39,7 @@ def homepage(request):
         'group_no_type': group_no_type,
         'series': series,
         'default_collection': None,
+        'show_event_time_only': 1,
     }
     if request.tuser:
         # Authenticated user
