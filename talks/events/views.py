@@ -229,6 +229,7 @@ def show_department_descendant(request, org_id):
     descendants = results['descendants']
     sub_orgs = descendants
     ids = [o['id'] for o in sub_orgs]
+    ids.append(results['id'])  # Include self
     events = Event.published.filter(department_organiser__in=ids)
     context = {
         'org': org,
