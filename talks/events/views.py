@@ -183,7 +183,10 @@ def show_event_group(request, event_group_slug):
         'organisers': group.organisers.all(),
         'show_all': show_all,
     }
-    return render(request, 'events/event-group.html', context)
+    if request.GET.get('format') == 'txt':
+        return render(request, 'events/event-group.txt.html', context)
+    else:
+        return render(request, 'events/event-group.html', context)
 
 
 def show_person(request, person_slug):

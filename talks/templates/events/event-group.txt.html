@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% load users %}
+
+{% block title %}{{ event_group.title }}{% endblock %}
+
+{% block extrahead %}
+<script type="application/ld+json">
+[{% for event in event_group.events.all %}{
+  "@context": "http://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title }}",
+  "startDate": "{{ event.start|date:'c' }}"
+{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
+</script>
+{% endblock %}
+
+{% block content %}
+
+<br>{{ event_group.title }}
+{% if event_group.description %}
+    <br>{{ event_group.description_html | safe }}
+{% else %}
+    <br>This series does not yet have an abstract
+{% endif %}
+
+<br>Type: {{ event_group.get_group_type_display }}
+{% if organisers %}
+    <br>Series organiser{{ organisers|pluralize }}:
+    {% for organiser in organisers %}{{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+{% endif %}
+{% if event_group.occurence %}
+    <br>Timing: {{ event_group.occurence }}
+{% endif %}
+{% if event_group.web_address %}
+    <br>Web Address: <a href="{{ event_group.web_address }}">{{ event_group.web_address }}</a>
+{% endif %}
+{% if event_group.api_organisation %}
+    <br>Organising department: {{ event_group.api_organisation.name }}
+{% endif %}
+
+<br>
+<br>Talks:
+{% for event in events %}
+    <br>{{ event.title_display }}
+    <br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
+                
+    <br>Speaker{{ event.speakers|pluralize }}: 
+    {% for speaker in event.speakers %}
+        {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+    {% empty %} TBA
+    {% endfor %}
+
+    {% if event.location %}
+        <br>Venue: {{ event.api_location.name}}, {{ event.api_location.address }}
+    {% endif %}
+
+    {% if event.location_details %}
+        <br>Venue Details: {{event.location_details}}
+    {% endif %}
+
+    <br>Organiser{{ event.organisers|pluralize }}: 
+    {% for org in event.organisers %}
+        {{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+    {% empty %} TBA
+    {% endfor %}
+    
+    <br>Host{{ event.hosts|pluralize }}: 
+    {% for host in event.hosts %}
+        {{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+    {% empty %} TBA
+    {% endfor %}
+
+    <br>
+        
+{% empty %}
+    {% if show_all %}
+        <br>There are no talks for this series yet
+    {% else %}
+        <br>No upcoming talks to display for this series.
+    {% endif %}
+{% endfor %}
+
+<br>
+{% endblock %}

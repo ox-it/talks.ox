@@ -41,6 +41,7 @@
         <h3 class="panel-title">
             {{ event_group.title }}
             <div class="formatting-links">
+                {% include "events/event_group_plain_text_link.html" %}
                 {% include "events/event_group_ics_link.html" %}
             </div>
         </h3>
