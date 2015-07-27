@@ -154,7 +154,11 @@ def show_event(request, event_slug):
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
     }
-    return render(request, 'events/event.html', context)
+
+    if request.GET.get('format') == 'txt':
+        return render(request, 'events/event.txt.html', context)
+    else:
+        return render(request, 'events/event.html', context)
 
 
 def list_event_groups(request):

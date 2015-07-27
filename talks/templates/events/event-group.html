@@ -40,7 +40,9 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             {{ event_group.title }}
-            {% include "events/event_group_ics_link.html" %}
+            <div class="formatting-links">
+                {% include "events/event_group_ics_link.html" %}
+            </div>
         </h3>
     </div>
     <div class="panel-body">
@@ -64,11 +66,10 @@
     {% endif %}
         {% for event in events %}
         <li class="list-group-item">
-                {% include "events/event_ics_link.html" %}
                 {% if perms.events.change_event %}
                 <div style="float:right">{% if request.user|can_edit_event:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
                 {% endif %}
-                <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }})
+                <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }}){% include "events/event_ics_link.html" %}
                 {% if perms.events.change_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.is_published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>
                 <a href="{{ event.get_absolute_url }}">{{ event.title_display }}</a><br>
                 <strong>Speaker{{ event.speakers|pluralize }}</strong>: {% for speaker in event.speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
