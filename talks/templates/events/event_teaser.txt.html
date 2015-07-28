@@ -1,0 +1,12 @@
+<!-- Display a single event teaser -->
+{% if event.title %}
+    <br>{{ event.title | striptags | linebreaksbr }}
+{% else %}
+    <br>Untitled talk
+{% endif %}
+
+<br>Date: {{ event.formatted_date }}
+{% if event.group %}
+  <br>Series: {{ event.group.title }}
+{% endif %}
+

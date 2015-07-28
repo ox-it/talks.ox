@@ -244,4 +244,7 @@ def show_department_descendant(request, org_id):
         'sub_orgs': sub_orgs,
         'events': events
     }
-    return render(request, 'events/department.html', context)
+    if request.GET.get('format') == 'txt':
+        return render(request, 'events/department.txt.html', context)
+    else:
+        return render(request, 'events/department.html', context)

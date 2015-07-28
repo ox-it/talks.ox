@@ -7,7 +7,14 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ org.name }}</h3>
+        <h3 class="panel-title">
+            {{ org.name }}
+            <div class="formatting-links">
+                <a class="formatting-link plain-text-link" href="/talks/department/id/{{ org.id }}?format=txt" title="View a plain text version of this department">
+                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+            </div>
+        </h3>
     </div>
 
     <ul class="list-group">
