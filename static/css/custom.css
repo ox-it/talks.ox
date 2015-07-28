@@ -67,6 +67,20 @@ span.filter-active {
 .panel .formatting-links {
     float: right;
 }
+/* ICS link within a list-group */
+.list-group-item .formatting-links-wrapper {
+    float: right;
+}
+
+.event-teaser-wrapper {
+    display: inline-flex;
+    width: 100%;
+}
+
+.list-group-item .event-teaser-text-wrapper {
+    float: left;
+    width: 100%;
+}
 .formatting-link {
     padding-left: 15px;
     color: inherit;
