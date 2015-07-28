@@ -54,8 +54,17 @@ def homepage(request):
 
 
 def browse_events(request):
-    # if this is a POST request we need to process the form data
-    browse_events_form = BrowseEventsForm(request.GET)
+    default_form_values = request.GET.copy()
+    default_form_values['subdepartments'] = "false"
+    default_start_date = None
+    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue') or request.GET.get('organising_department') or request.GET.get('subdepartments')):
+        default_start_date = 'today'
+        default_form_values['start_date'] = date.today().strftime("%Y-%m-%d")
+        default_form_values['include_subdepartments'] = True
+    elif request.GET.get('subdepartments') and not request.GET.get('include_subdepartments'):
+        default_form_values['include_subdepartments'] = False
+    
+    browse_events_form = BrowseEventsForm(default_form_values)
 
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
@@ -66,12 +75,12 @@ def browse_events(request):
             'start_date': request.GET.get('start_date', None),
             'to': request.GET.get('to', None),
             'venue': request.GET.get('venue', None),
+            'organising_department': request.GET.get('organising_department', None),
+            'subdepartments': request.GET.get('subdepartments', None),
         }
 
-    defaultStartDate = None
-    if not(request.GET.get('start_date') or request.GET.get('to') or request.GET.get('venue')):
-        defaultStartDate = 'today'
-    events = events_search(request, defaultStartDate)
+    
+    events = events_search(request, default_start_date)
 
     paginator = Paginator(events, count)
     try:

@@ -28,10 +28,21 @@ def events_search(request, fallbackFromDate=None):
     if to_date:
         queries.append(Q(start__lt=to_date))
 
-    include_sub_departments = True
+    # cater for include_subdepartments parameter from the browse page (which is a BooleanField)
+    # The browe page contains a hidden 'subdepartments' param that is always set to 'false'
+    # If the checkbox is checked, include_subdepartments=on is passed and we 
+    # If the checkbox is unchecked, no param is passed in the request.
+    include_subdepartments_param = request.GET.get("include_subdepartments")
     subdepartments = request.GET.get("subdepartments")
-    if subdepartments and subdepartments == 'false':
+
+    include_sub_departments = True
+    if include_subdepartments_param:
+        include_sub_departments = True
+
+    elif subdepartments and subdepartments == 'false':
         include_sub_departments = False
+
+    
 
     # map between URL query parameters and their corresponding django ORM query
     list_parameters = {
