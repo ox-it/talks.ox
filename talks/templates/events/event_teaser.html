@@ -1,0 +1,19 @@
+<!-- Display a single event teaser -->
+<strong>
+    {% if show_event_time_only %}
+        {{ event.formatted_time }}
+    {% else %}
+        {{ event.formatted_date }}
+    {% endif %}
+</strong>
+ -
+<a href="{{ event.get_absolute_url }}">
+  {% if event.title %}
+    {{ event.title }}
+  {% else %}
+    Untitled talk
+  {% endif %}
+</a>
+{% if event.group %}
+  - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+{% endif %}

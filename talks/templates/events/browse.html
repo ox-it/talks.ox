@@ -93,18 +93,13 @@
 
 <div class="js-upcoming-events">
     {% if events %}
-    <ul class="list-unstyled">
+      <ul class="list-unstyled">
         {% for event in events %}
           <li>
-            <strong>{{ event.formatted_date }}</strong>
-             - 
-            <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
-            {% if event.group %}
-              - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
-            {% endif %}
+            {% include 'events/event_teaser.html' %}
           </li>
         {% endfor %}
-    </ul>
+      </ul>
         {% with events as page %}
             {% include 'events/_pagination.html' %}
         {% endwith %}
