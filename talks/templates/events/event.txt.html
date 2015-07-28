@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% load users %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block extrahead %}
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ event.title }}">
+<meta name="twitter:description" content="{{ event.description }}">
+<meta property="og:title" content="{{ event.title }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ url }}" />
+<meta property="og:image" content="" />
+{% endblock %}
+
+{% block content %}
+
+{% include "events/jsonld_event.html" with event=event location=location url=url %}
+
+{{ event.title_display }}
+
+{% if event.special_message %}
+    <br>{{ event.special_message }}
+{% endif %}
+
+{% if event.description %}
+    <br>{{ event.description_html | striptags | linebreaksbr }}
+{% else %}
+    <br>Abstract not yet added
+{% endif %}
+
+<br>Date: 
+{{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})
+
+<br>Venue:
+{% if location %}
+  {{ location.name }}{% if location.address %}, {{ location.address }}{% endif %}
+{% else %}
+  Venue to be announced
+{% endif %}
+
+{% if event.location_details %}
+  <br>Details:
+  {{ event.location_details }}
+{% endif %}
+
+<br>Speaker{{ speakers|pluralize }}: 
+{% for speaker in speakers %}
+    {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+{% empty %}
+    Speaker to be announced
+{% endfor %}
+
+{% if event.api_organisation %}
+    <br>Organising department:
+    {{ event.api_organisation.name }}
+{% endif %}
+
+{% if event.organisers %}
+    <br>Organiser{{ organisers|pluralize }}: 
+    {% for organiser in organisers %}
+        {{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+    {% endfor %}   
+{% endif %}
+
+{% if event.organiser_email %} 
+    <br>Organiser contact email address: 
+    {{event.organiser_email}}
+{% endif %}
+
+{% if event.hosts %}
+    <br>Host{{ hosts|pluralize }}: 
+    {% for host in hosts %}
+        {{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% if event.group %}
+    <br>Part of: 
+    {{ event.group.title }}
+{% endif %}
+
+{% if event.topics.count %}
+    <br>Topics: 
+    {% for topic in event.api_topics %}
+        {{ topic.prefLabel }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+{% endif %}
+
+<br>Booking required?: 
+{{ event.get_booking_type_display }}
+
+{% if event.booking_url %}
+    <br>Booking url: 
+    {{ event.booking_url }}
+{% endif %}
+
+{% if event.booking_email %}
+    <br>Booking email: 
+    {{ event.booking_email }}
+{% endif %}
+
+{% if event.cost %}
+    <br>Cost: 
+    {{ event.cost }}
+{% endif %}
+
+<br>Audience: 
+{{ event.get_audience_display }}
+
+{% endblock %}

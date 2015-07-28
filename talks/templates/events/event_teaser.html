@@ -1,29 +1,34 @@
 <!-- Display a single event teaser -->
-<strong>
-    {% if show_event_time_only %}
-        {{ event.formatted_time }}
-    {% else %}
-        {{ event.formatted_date }}
+<div class="event-teaser-wrapper">
+    <div class="event-teaser-text-wrapper">
+        <strong>
+            {% if show_event_time_only %}
+                {{ event.formatted_time }}
+            {% else %}
+                {{ event.formatted_date }}
+            {% endif %}
+        </strong>
+         -
+        <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
+          {% if event.title %}
+            {{ event.title }}
+          {% else %}
+            Untitled talk
+          {% endif %}
+        </a>
+        {% if event.group %}
+          - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+        {% endif %}
+    </div>
+    <div class="formatting-links-wrapper">
+        {% include "events/event_ics_link.html" %}
+    </div>
+
+    <!--
+    {% if default_collection %}
+      <a data-event="{{ event.slug }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#">
+        <span class="glyphicon glyphicon-plus text-success"></span>
+      </a>
     {% endif %}
-</strong>
- -
-<a href="{{ event.get_absolute_url }}">
-  {% if event.title %}
-    {{ event.title }}
-  {% else %}
-    Untitled talk
-  {% endif %}
-</a>
-{% if event.group %}
-  - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
-{% endif %}
-
-{% include "events/event_ics_link.html" %}
-
-<!--
-{% if default_collection %}
-  <a data-event="{{ event.slug }}" class="js-add-to-collection{% if event in user_events %} hidden{% endif %}" href="#">
-    <span class="glyphicon glyphicon-plus text-success"></span>
-  </a>
-{% endif %}
--->
+    -->
+</div>

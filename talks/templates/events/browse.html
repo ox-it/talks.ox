@@ -93,9 +93,9 @@
 
 <div class="js-upcoming-events">
     {% if events %}
-      <ul class="list-unstyled">
+      <ul class="list-group">
         {% for event in events %}
-          <li>
+          <li class="list-group-item">
             {% include 'events/event_teaser.html' %}
           </li>
         {% endfor %}
