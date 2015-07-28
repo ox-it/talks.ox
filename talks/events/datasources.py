@@ -45,7 +45,13 @@ USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='email',
     serializer=serializers.UserSerializer
 )
-
+SERIES_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'series',
+    url='/api/series/suggest?q=%QUERY',
+    id_key='id',
+    display_key='title',
+    serializer=serializers.EventGroupWithEventsSerializer,
+)
 # not doing what we want as we want to treat the response as one document...
 DEPARTMENT_DESCENDANT_DATA_SOURCE = typeahead.DataSource(
     'department_descendant',

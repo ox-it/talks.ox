@@ -25,7 +25,7 @@ class BrowseEventsForm(forms.Form):
     include_subdepartments = forms.BooleanField(label="Include sub-departments?",
                                         initial=True,
                                         required=False)
-    subdepartments = forms.CharField(label="Include sub-departments?",
-                                        initial="false",
-                                        required=True,
-                                        widget=forms.HiddenInput())
+    seriesid = OxPointField(datasources.SERIES_DATA_SOURCE,
+                                         label="Series",
+                                         required=False,
+                                         help_text="Type series name and select from the list.")

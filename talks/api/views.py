@@ -110,12 +110,22 @@ def api_event_group_ics(request, event_group_slug):
 
 
 @api_view(["GET"])
+def suggest_event_group(request):
+    """Get event group titles for typeahead searching
+    """
+    query = request.GET.get('q', '')
+    series = EventGroup.objects.filter(Q(title__startswith=query)).distinct()
+    serializer = EventGroupSerializer(series, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
 def api_event_search_hal(request):
     """
     Return a list of events using the HAL serialisation,
     based on the query terms
     """
-    events = events_search(request)
+    events = events_search(request.GET)
 
     count = request.GET.get('count', 20)
     page_number = request.GET.get('page', 1)
@@ -138,7 +148,7 @@ def api_event_search_ics(request):
     Return a list of events using the iCAl serialisation,
     based on the query terms
     """
-    events = events_search(request)
+    events = events_search(request.GET)
     serializer = EventSerializer(events, many=True, context={'request': request})
     return Response(serializer.data,
                     status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
