@@ -43,37 +43,8 @@
 <br>
 <br>Talks:
 {% for event in events %}
-    <br>{{ event.title_display }}
-    <br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
-                
-    <br>Speaker{{ event.speakers|pluralize }}: 
-    {% for speaker in event.speakers %}
-        {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
-    {% empty %} TBA
-    {% endfor %}
+    {% include "events/event_teaser.txt.html" %}<br>
 
-    {% if event.location %}
-        <br>Venue: {{ event.api_location.name}}, {{ event.api_location.address }}
-    {% endif %}
-
-    {% if event.location_details %}
-        <br>Venue Details: {{event.location_details}}
-    {% endif %}
-
-    <br>Organiser{{ event.organisers|pluralize }}: 
-    {% for org in event.organisers %}
-        {{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
-    {% empty %} TBA
-    {% endfor %}
-    
-    <br>Host{{ event.hosts|pluralize }}: 
-    {% for host in event.hosts %}
-        {{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
-    {% empty %} TBA
-    {% endfor %}
-
-    <br>
-        
 {% empty %}
     {% if show_all %}
         <br>There are no talks for this series yet

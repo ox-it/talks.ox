@@ -1,12 +1,29 @@
 <!-- Display a single event teaser -->
-{% if event.title %}
-    <br>{{ event.title | striptags | linebreaksbr }}
-{% else %}
-    <br>Untitled talk
+<br>{{ event.title_display }}
+<br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
+
+<br>Speaker{{ event.speakers|pluralize }}:
+{% for speaker in event.speakers %}
+    {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+{% empty %} TBA
+{% endfor %}
+
+{% if event.location %}
+    <br>Venue: {{ event.api_location.name}}, {{ event.api_location.address }}
 {% endif %}
 
-<br>Date: {{ event.formatted_date }}
-{% if event.group %}
-  <br>Series: {{ event.group.title }}
+{% if event.location_details %}
+    <br>Venue Details: {{event.location_details}}
 {% endif %}
 
+<br>Organiser{{ event.organisers|pluralize }}:
+{% for org in event.organisers %}
+    {{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+{% empty %} TBA
+{% endfor %}
+
+<br>Host{{ event.hosts|pluralize }}:
+{% for host in event.hosts %}
+    {{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+{% empty %} TBA
+{% endfor %}

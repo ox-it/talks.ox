@@ -207,7 +207,10 @@ def show_person(request, person_slug):
         'speaker_events': speaker_events,
         'organiser_events': organiser_events,
     }
-    return render(request, 'events/person.html', context)
+    if request.GET.get('format') == 'txt':
+        return render(request, 'events/person.txt.html', context)
+    else:
+        return render(request, 'events/person.html', context)
 
 
 def show_topic(request):
@@ -218,7 +221,10 @@ def show_topic(request):
         'topic': api_topic,
         'events': events
     }
-    return render(request, 'events/topic.html', context)
+    if request.GET.get('format') == 'txt':
+        return render(request, 'events/topic.txt.html', context)
+    else:
+        return render(request, 'events/topic.html', context)
 
 
 def show_department_organiser(request, org_id):
