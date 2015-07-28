@@ -11,9 +11,13 @@
     </div>
 
     <ul class="list-group">
-        {% for event in events.all %}
-        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a></li>
-        {% endfor %}
+        {% if events %}
+            {% for event in events.all %}
+                <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a></li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item"><i>Sorry, there are currently no talks scheduled in this department.</i></li>
+        {% endif %}
     </ul>
 
 </div>
