@@ -62,3 +62,17 @@ span.filter-active {
     display: block;
     margin-bottom: 8px;
 }
+
+/* ICS link within a panel */
+.panel .formatting-links {
+    float: right;
+}
+.formatting-link {
+    padding-left: 15px;
+    color: inherit;
+    text-decoration: none;
+}
+
+a.formatting-link:hover {
+    text-decoration: none;
+}

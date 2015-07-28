@@ -12,7 +12,7 @@
 
     <ul class="list-group">
         {% for event in events.all %}
-        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a></li>
+            <li class="list-group-item">{% include "events/event_teaser.html" %}</li>
         {% endfor %}
     </ul>
 

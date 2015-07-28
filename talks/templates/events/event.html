@@ -41,7 +41,12 @@
 
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">{{ event.title_display }}</h3>
+        <h3 class="panel-title">
+            {{ event.title_display }}
+            <div class="formatting-links">
+                {% include "events/event_ics_link.html" %}
+            </div>
+        </h3>
         {% if event.special_message %}
         <br>
         <div class="alert alert-info">
@@ -61,7 +66,7 @@
         <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location %}
-            <address>{{ location.name }}{% if location.address %}</br>{{ location.address }}{% endif %}</address>
+            <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
             <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
             {% else %}
             <span>Venue to be announced<span>
