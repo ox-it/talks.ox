@@ -1,7 +1,7 @@
-    <div class="pagination">
+    <div class="col-sm-offset-5 col-lg-offset-5 col-sm-5 col-lg-5">
         <span class="step-links">
             {% if page.has_previous %}
-                <a href="?{{ fragment }}&page={{ page.previous_page_number }}">previous</a>
+                <a class="btn btn-default" href="?{{ fragment }}&page={{ page.previous_page_number }}">previous</a>
             {% endif %}
 
             <span class="current">
@@ -9,7 +9,7 @@
             </span>
 
             {% if page.has_next %}
-                <a href="?{{ fragment }}&page={{ page.next_page_number }}">next</a>
+                <a class="btn btn-default" href="?{{ fragment }}&page={{ page.next_page_number }}">next</a>
             {% endif %}
         </span>
     </div>
