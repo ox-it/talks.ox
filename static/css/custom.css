@@ -93,3 +93,8 @@ span.filter-active {
 a.formatting-link:hover {
     text-decoration: none;
 }
+
+.manage-lists-buttons {
+    float: right;
+    height: 40px;
+}

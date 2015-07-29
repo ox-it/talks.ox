@@ -70,7 +70,12 @@
 <div class="js-upcoming-events">
     <ul class="list-unstyled">
         {% for event in events %}
-        <li>{% include "events/event_teaser.html" %}</li>
+            <li>{% include "events/event_teaser.html" %}</li>
+        {% empty %}
+            <li>
+                <p>There are no talks scheduled today.</p>
+                <a class="btn btn-default" href="{% url "browse_events" %}">Browse upcoming talks</a>
+            </li>
         {% endfor %}
     </ul>
 
@@ -78,7 +83,9 @@
     <h3>Conferences</h3>
     <ul class="list-unstyled">
         {% for conf in conferences %}
-        <li><a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a><!--{% if default_collection %} <a data-group="{{ conf.id }}" class="js-add-to-collection{% if conf in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}--></li>
+        <li>
+            <a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a>
+        </li>
         {% endfor %}
     </ul>
     {% endif %}
@@ -87,7 +94,9 @@
     <h3>Seminar Series</h3>
     <ul class="list-unstyled">
         {% for serie in series %}
-        <li><a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a><!--{% if default_collection %} <a data-group="{{ serie.id }}" class="js-add-to-collection{% if serie in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}--></li>
+        <li>
+            <a href="{{ serie.get_absolute_url }}">{{ serie.title }}</a>
+        </li>
         {% endfor %}
     </ul>
     {% endif %}
@@ -96,7 +105,9 @@
     <h3>Other events</h3>
     <ul class="list-unstyled">
         {% for group in group_no_type %}
-        <li><a href="{{ group.get_absolute_url }}">{{ group.title }}</a><!--{% if default_collection %} <a data-group="{{ group.id }}" class="js-add-to-collection{% if group in user_event_groups %} hidden{% endif %}" href="#"><span class="glyphicon glyphicon-plus text-success"></span></a>{% endif %}--></li>
+        <li>
+            <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
+        </li>
         {% endfor %}
     </ul>
     {% endif %}

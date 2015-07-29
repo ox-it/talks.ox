@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Manage Lists{% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+{% block content %}
+
+<h2 class="hidden-xs">View list</h2>
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {{ collection.title }}
+            <span class="manage-lists-buttons">
+                <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
+            </span>
+        </h3>
+    </div>
+    {% if collection.description %}
+        <div class="panel-body">
+            <p>{{ collection.description_html | safe }}</p>
+        </div>
+    {% endif %}
+        <ul class="list-group">
+            <li class="list-group-item">
+                <strong>Talks:</strong>
+                {% if events %}
+
+                        {% for event in events %}
+                            <br>
+                                {% include "events/event_teaser.html" %}
+
+                        {% endfor %}
+
+                {% else %}
+                    <p>You haven't added any talks to this list yet.</p>
+                {% endif %}
+            </li>
+
+            <li class="list-group-item">
+                <strong>Series:</strong>
+                {% if event_groups %}
+
+                        {% for event_group in event_groups %}
+                            <br>
+                                <a href="{{ event_group.get_absolute_url }}">{{ event_group.title }}</a>
+
+                        {% endfor %}
+
+                {% else %}
+                    <p>You haven't added any series to this list.</p>
+                {% endif %}
+            </li>
+        </ul>
+</div>
+<a href="{% url "manage-lists" %}" class="btn btn-default">Back to Lists</a>
+
+{% endblock %}

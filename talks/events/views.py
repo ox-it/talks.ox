@@ -1,19 +1,15 @@
 import logging
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.http.response import Http404
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
-
 from .forms import BrowseEventsForm
-
 from talks.api.services import events_search
 
 logger = logging.getLogger(__name__)
@@ -41,19 +37,21 @@ def homepage(request):
         'default_collection': None,
         'show_event_time_only': 1,
     }
-    if request.tuser:
+    #if request.tuser:
         # Authenticated user
-        collection = request.tuser.default_collection
-        context['default_collection'] = collection
-        context['user_events'] = collection.get_events()
-        context['user_event_groups'] = collection.get_event_groups()
+        # collections = request.tuser.collections.all
+        # if collections:
+        #     default_collection = collections[1]
+        #     context['default_collection'] = default_collection
+        #     context['user_events'] = collections.get_events()
+        #     context['user_event_groups'] = collections.get_event_groups()
     return render(request, 'front.html', context)
 
 
 def browse_events(request):
     modified_request_parameters = request.GET.copy()
     modified_request_parameters['subdepartments'] = "false"
-    if (len(request.GET) == 0):
+    if len(request.GET) == 0:
         today = date.today()
         twoWeeks = date.today() + timedelta(days=14)
         modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
@@ -93,14 +91,8 @@ def browse_events(request):
         'events': events,
         'fragment': fragment,
         'default_collection': None,
-        'browse_events_form' : browse_events_form
+        'browse_events_form': browse_events_form
         }
-    if request.tuser:
-        # Authenticated user
-        collection = request.tuser.default_collection
-        context['default_collection'] = collection
-        context['user_events'] = collection.get_events()
-        context['user_event_groups'] = collection.get_event_groups()
     return render(request, 'events/browse.html', context)
 
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Manage Lists{% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+{% block content %}
+
+<h2 class="hidden-xs">Manage lists</h2>
+
+<div>
+    {% if collections %}
+        <ul class="list-group">
+            {% for collection in collections %}
+                <li class="list-group-item">
+                    <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
+                    <span class="manage-lists-buttons">
+                        <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
+                        <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+      You currently have no lists.
+    {% endif %}
+</div>
+<a href="{% url "add-list" %}" class="btn btn-primary" type="button">Add new list</a>
+
+{% endblock %}
