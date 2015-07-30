@@ -145,7 +145,7 @@ def show_event(request, event_slug):
         'speakers': ev.speakers.all(),
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
-        'editable_collections' : editable_collections
+        'editable_collections' : editable_collections,
     }
 
     if request.GET.get('format') == 'txt':
@@ -170,11 +170,15 @@ def show_event_group(request, event_group_slug):
     if not show_all:
         events = events.filter(start__gte=date.today())
 
+    # TODO:  Filter collections by whether they are editable.
+    editable_collections = request.tuser.collections.all
+
     context = {
         'event_group': group,
         'events': events,
         'organisers': group.organisers.all(),
         'show_all': show_all,
+        'editable_collections' : editable_collections,
     }
     if request.GET.get('format') == 'txt':
         return render(request, 'events/event-group.txt.html', context)

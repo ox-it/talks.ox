@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load users %}
 
 {% block title %}{{ event_group.title }}{% endblock %}
 
 {% block extrahead %}
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        saveItemDefault: "{% url "save-item" %}",
+        removeItemDefault: "{% url "remove-item" %}",
+    };
+</script>
+
 <script type="application/ld+json">
 [{% for event in event_group.events.all %}{
   "@context": "http://schema.org",
@@ -43,6 +52,11 @@
             <div class="formatting-links">
                 {% include "events/event_group_plain_text_link.html" %}
                 {% include "events/event_group_ics_link.html" %}
+                {% if editable_collections %}
+                    <div class="row add-to-collections">
+                        <div class="float-right">{% include "events/../users/add_to_collections_widget.html"  with collections=editable_collections item_desc='series' %}</div>
+                    </div>
+                {% endif %}
             </div>
         </h3>
     </div>

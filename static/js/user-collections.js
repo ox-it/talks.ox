@@ -38,7 +38,7 @@ $(function() {
             error: function(err) {
                 console.log(err);
                 $('#add-to-collection-alert-container').html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                    err +
+                    err.messages +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
                     '</button></div>');
             },
@@ -72,7 +72,7 @@ $(function() {
             error: function(err) {
                 console.log(err);
                 $('#add-to-collection-alert-container').html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                        err +
+                        err.messages +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
                     '</button></div>');
             },

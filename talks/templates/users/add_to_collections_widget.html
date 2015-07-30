@@ -10,7 +10,7 @@
                href="#add-to-collections-collapse-body"
                aria-expanded="false"
                aria-controls="add-to-collections-collapse-body">
-                Add this talk to list:
+                Add this {% if item_desc %}{{ item_desc }}{% else %}talk{% endif %} to list:
             </a>
         </h4>
     </div>
@@ -20,10 +20,17 @@
                 <ul class="list-group">
                     <li class="list-group-item">
                         {{ collection.title }}
-                        <a class="js-add-to-collection {% if collection|collection_contains_event:event %}hidden{% endif %}"
-                           href="#" action="/api/collections/add" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">add</a>
-                        <a class="js-remove-from-collection {% if not collection|collection_contains_event:event %}hidden{% endif %}"
-                           href="#" action="/api/collections/remove" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">remove</a>
+                        {% ifequal item_desc 'series' %}
+                            <a class="js-add-to-collection {% if collection|collection_contains_item:event_group %}hidden{% endif %}"
+                               href="#" action="/api/collections/add" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">add</a>
+                            <a class="js-remove-from-collection {% if not collection|collection_contains_item:event_group %}hidden{% endif %}"
+                               href="#" action="/api/collections/remove" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">remove</a>
+                        {% else %}
+                            <a class="js-add-to-collection {% if collection|collection_contains_item:event %}hidden{% endif %}"
+                               href="#" action="/api/collections/add" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">add</a>
+                            <a class="js-remove-from-collection {% if not collection|collection_contains_item:event %}hidden{% endif %}"
+                               href="#" action="/api/collections/remove" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">remove</a>
+                        {% endifequal %}
                     </li>
                 </ul>
             {% endfor %}

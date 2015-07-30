@@ -176,14 +176,14 @@ def api_event_get_ics(request, slug):
 
 def item_from_request(request):
     event_slug = request.data.get('event', None)
-    group_id = request.data.get('group', None)
+    group_slug = request.data.get('group', None)
     # Our JS doesn't support sending both
-    assert not(event_slug and group_id)
+    assert not(event_slug and group_slug)
     try:
         if event_slug:
             return Event.objects.get(slug=event_slug)
-        elif group_id:
-            return EventGroup.objects.get(id=group_id)
+        elif group_slug:
+            return EventGroup.objects.get(slug=group_slug)
     except ObjectDoesNotExist:
         logger.warn("Attempt to add event that doesn't exist to collection")
 
