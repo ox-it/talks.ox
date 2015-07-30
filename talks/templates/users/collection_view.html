@@ -19,6 +19,9 @@
             <span class="manage-lists-buttons">
                 <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
             </span>
+            <div class="formatting-links">
+                {% include "users/collection_plain_text_link.html" %}
+            </div>
         </h3>
     </div>
     {% if collection.description %}

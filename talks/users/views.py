@@ -36,7 +36,10 @@ def view_collection(request, collection_slug):
         context['events'] = collection.get_events()
         context['event_groups'] = collection.get_event_groups()
 
-    return render(request, 'users/collection_view.html', context)
+    if request.GET.get('format') == 'txt':
+        return render(request, 'users/collection_view.txt.html', context)
+    else:
+        return render(request, 'users/collection_view.html', context)
 
 @login_required
 def add_collection(request):

@@ -25,7 +25,7 @@
 {% endif %}
 
 {% if event.description %}
-    <br>{{ event.description_html | striptags | linebreaksbr }}
+    <br>{{ event.description_html | safe | striptags | linebreaksbr }}
 {% else %}
     <br>Abstract not yet added
 {% endif %}
