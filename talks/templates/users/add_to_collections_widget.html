@@ -1,0 +1,33 @@
+{% load users %}
+
+<div class="panel panel-default" id="add-to-collections-collapse">
+    <div class="panel-heading" role="tab" id="add-to-collections-collapse-heading">
+        <h4 class="panel-title">
+            <a class="collapsed btn btn-default"
+               role="button"
+               data-toggle="collapse"
+               data-parent="#add-to-collections-collapse"
+               href="#add-to-collections-collapse-body"
+               aria-expanded="false"
+               aria-controls="add-to-collections-collapse-body">
+                Add this talk to list:
+            </a>
+        </h4>
+    </div>
+    <div id="add-to-collections-collapse-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="add-to-collections-collapse-heading">
+        <div class="panel-body">
+            {% for collection in collections %}
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        {{ collection.title }}
+                        <a class="js-add-to-collection {% if collection|collection_contains_event:event %}hidden{% endif %}"
+                           href="#" action="/api/collections/add" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">add</a>
+                        <a class="js-remove-from-collection {% if not collection|collection_contains_event:event %}hidden{% endif %}"
+                           href="#" action="/api/collections/remove" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">remove</a>
+                    </li>
+                </ul>
+            {% endfor %}
+            <div id="add-to-collection-alert-container"></div>
+        </div>
+    </div>
+</div>

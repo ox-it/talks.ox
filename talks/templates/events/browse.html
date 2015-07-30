@@ -19,15 +19,6 @@
 
 <script src="{% static "js/form-controls.js"%}"></script>
 
-<script src="{% static "js/user-collections.js"%}"></script>
-<script>
-    document.collectionConfig = {
-        yourTalkTemplate: _.template('<li><strong><%= event.formatted_date %></strong> - <a href="<%= event.url %>"><%= event.title %></a> <a data-event="<%= event.slug %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
-        yourGroupTemplate: _.template('<li><a href="<%= group.url %>"><%= group.title %></a> <a data-group="<%= group.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
-        saveItemDefault: "{% url "save-item" %}",
-        removeItemDefault: "{% url "remove-item" %}",
-    };
-</script>
 <script type="application/ld+json">
 [{% for event in events %}{
   "@context": "http://schema.org",

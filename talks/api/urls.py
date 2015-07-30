@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     url(r'^user/suggest$', suggest_user, name='api-user-suggest'),
     url(r'^persons/new$', api_create_person, name='api-person-create'),
     url(r'^persons/suggest$', suggest_person, name='api-person-suggest'),
-    url(r'^collections/me/add$', save_item, name="save-item"),
-    url(r'^collections/me/remove$', remove_item, name="remove-item"),
+    url(r'^collections/add$', save_item, name="save-item"),
+    url(r'^collections/remove$', remove_item, name="remove-item"),
 )
 

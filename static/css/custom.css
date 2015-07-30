@@ -71,7 +71,8 @@ span.filter-active {
 .list-group-item .formatting-links-wrapper {
     float: right;
 }
-.list-group-item .formatting-link .formatting-link-text {
+.list-group-item .formatting-link .formatting-link-text,
+.list-unstyled .formatting-link .formatting-link-text {
     display: none;
 }
 
@@ -97,4 +98,8 @@ a.formatting-link:hover {
 .manage-lists-buttons {
     float: right;
     height: 40px;
+}
+
+.float-right {
+    float: right;
 }

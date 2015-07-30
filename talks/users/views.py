@@ -76,8 +76,8 @@ def edit_collection(request, collection_slug):
     if request.method == 'POST':
         if form.is_valid():
             collection = form.save()
-            messages.success(request, "List was updated")
-            return redirect(collection.get_absolute_url())
+            messages.success(request, "List '" + collection.title + "' was updated")
+            return HttpResponseRedirect(reverse('manage-lists'))
         else:
             messages.warning(request, "Please correct errors below")
     return render(request, "users/collection_form.html", context)

@@ -185,17 +185,26 @@ def item_from_request(request):
         elif group_id:
             return EventGroup.objects.get(id=group_id)
     except ObjectDoesNotExist:
-        logger.warn("Attempt to add thing to event that doesn't exist")
+        logger.warn("Attempt to add event that doesn't exist to collection")
+
+
+def collection_from_request(request):
+    collection_slug = request.data.get('collection', None)
+    try:
+        if collection_slug:
+            return Collection.objects.get(slug=collection_slug)
+    except ObjectDoesNotExist:
+        logger.warn("Attempt to add event to collection that doesn't exist")
 
 
 # TODO: require auth
 @api_view(["POST"])
-def save_item(request, collection_id=None):
-    user_collection = request.tuser.default_collection
+def save_item(request):
     item = item_from_request(request)
-    if item:
+    collection = collection_from_request(request)
+    if item and collection:
         try:
-            item = user_collection.add_item(item)
+            item = collection.add_item(item)
         except Collection.ItemAlreadyInCollection:
             return Response({'error': "Item already in user collection"},
                             status=status.HTTP_409_CONFLICT)
@@ -208,10 +217,10 @@ def save_item(request, collection_id=None):
 
 # TODO: require auth
 @api_view(["POST"])
-def remove_item(request, collection_id=None):
-    user_collection = request.tuser.default_collection
+def remove_item(request):
+    collection = collection_from_request(request)
     item = item_from_request(request)
-    deleted = user_collection.remove_item(item)
+    deleted = collection.remove_item(item)
     if deleted:
         serializer = get_item_serializer(item)
         return Response(serializer.data, status=status.HTTP_200_OK)

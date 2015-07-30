@@ -1,18 +1,11 @@
 {% extends "layouts/2-column.html" %}
 {% load staticfiles %}
+{% load users %}
 
 {% block title %}Events{% endblock %}
 
 {% block extrahead %}
-<script src="{% static "js/user-collections.js"%}"></script>
-<script>
-    document.collectionConfig = {
-        yourTalkTemplate: _.template('<li><strong><%= event.formatted_date %></strong> - <a href="<%= event.url %>"><%= event.title %></a> <a data-event="<%= event.slug %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
-        yourGroupTemplate: _.template('<li><a href="<%= group.url %>"><%= group.title %></a> <a data-group="<%= group.id %>" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>'),
-        saveItemDefault: "{% url "save-item" %}",
-        removeItemDefault: "{% url "remove-item" %}",
-    };
-</script>
+
 <script type="application/ld+json">
 [{% for event in events %}{
   "@context": "http://schema.org",
@@ -43,23 +36,22 @@
 {% endblock %}
 
 {% block side %}
-<!--<h2 class="hidden-xs">Your Talks</h2>-->
+    {% if collections %}
+        <h2 class="hidden-xs">Your Talks</h2>
 
-<!--{% if default_collection %}-->
-<!--<div class="js-your-collection">-->
-    <!--<ul class="list-unstyled js-your-talks">-->
-        <!--{% for event in user_events %}-->
-        <!--<li><strong>{{ event.formatted_date }}</strong> - <a href="{{ event.get_absolute_url }}">{{ event.title }}</a> <a data-event="{{ event.slug }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a></li>-->
-        <!--{% endfor %}-->
-    <!--</ul>-->
-    <!--<ul class="list-unstyled js-your-groups">-->
-        <!--{% for evg in user_event_groups %}-->
-        <!--<li><a href="{{ evg.get_absolute_url }}">{{ evg.title }}</a><a data-group="{{ evg.id }}" href="#" class="js-remove-from-collection"><span class="glyphicon glyphicon-minus text-warning"></span></a>-->
-        <!--{% endfor %}-->
-    <!--</ul>-->
-<!--</div>-->
-<!--{% endif %}-->
-
+        {% for collection in collections %}
+            <ul class="list-unstyled">
+                <li>
+                    <strong>{{ collection.title }}</strong>
+                    <ul class="list-unstyled">
+                        {% for event in collection.get_events %}
+                            <li>{% include "events/event_teaser.html" %}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
 
 
@@ -70,7 +62,7 @@
 <div class="js-upcoming-events">
     <ul class="list-unstyled">
         {% for event in events %}
-            <li>{% include "events/event_teaser.html" %}</li>
+            <li>{% include "events/event_teaser.html" with show_event_time_only=True %}</li>
         {% empty %}
             <li>
                 <p>There are no talks scheduled today.</p>

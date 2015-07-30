@@ -100,6 +100,20 @@ class Collection(models.Model):
     def get_event_groups(self):
         return self._get_items_by_model(EventGroup)
 
+    def contains_item(self, item):
+        if isinstance(item, Event):
+            content_type = ContentType.objects.get_for_model(Event)
+        elif isinstance(item, EventGroup):
+            content_type = ContentType.objects.get_for_model(EventGroup)
+        else:
+            raise self.InvalidItemType()
+        try:
+            self.collectionitem_set.get(content_type=content_type,
+                                        object_id=item.id)
+            return True
+        except CollectionItem.DoesNotExist:
+            return False
+
     @property
     def description_html(self):
         return textile_restricted(self.description, auto_link=True, lite=False)

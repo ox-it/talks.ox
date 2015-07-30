@@ -33,18 +33,14 @@ def homepage(request):
         'event_groups': event_groups,
         'conferences': conferences,
         'group_no_type': group_no_type,
-        'series': series,
-        'default_collection': None,
-        'show_event_time_only': 1,
+        'series': series
     }
-    #if request.tuser:
+    if request.tuser:
         # Authenticated user
-        # collections = request.tuser.collections.all
-        # if collections:
-        #     default_collection = collections[1]
-        #     context['default_collection'] = default_collection
-        #     context['user_events'] = collections.get_events()
-        #     context['user_event_groups'] = collections.get_event_groups()
+         collections = request.tuser.collections.all
+         if collections:
+             context['collections'] = collections
+             #context['user_events'] = Event.objects.for_collections(collections)
     return render(request, 'front.html', context)
 
 
@@ -138,6 +134,10 @@ def show_event(request, event_slug):
             'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
+
+    # TODO:  Filter collections by whether they are editable.
+    editable_collections = request.tuser.collections.all
+
     context = {
         'event': ev,
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
@@ -145,6 +145,7 @@ def show_event(request, event_slug):
         'speakers': ev.speakers.all(),
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
+        'editable_collections' : editable_collections
     }
 
     if request.GET.get('format') == 'txt':
