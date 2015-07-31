@@ -1,4 +1,6 @@
 import logging
+from datetime import date
+
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -240,7 +242,8 @@ def api_collection_ics(request, collection_slug):
         return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)
 
-    events = collection.get_all_events()
+    today = date.today()
+    events = collection.get_all_events().filter(start__gte=today)
 
     serializer = EventSerializer(events, many=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
