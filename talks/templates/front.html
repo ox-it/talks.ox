@@ -38,19 +38,15 @@
 {% block side %}
     {% if collections %}
         <h2 class="hidden-xs">Your Talks</h2>
-
-        {% for collection in collections %}
-            <ul class="list-unstyled">
-                <li>
-                    <strong>{{ collection.title }}</strong>
-                    <ul class="list-unstyled">
-                        {% for event in collection.get_events %}
-                            <li>{% include "events/event_teaser.html" %}</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            </ul>
+        <ul class="list-unstyled">
+        {% for event in user_events %}
+            <li>{% include "events/event_teaser.html" %}</li>
         {% endfor %}
+        </ul>
+{#        TODO.  More link #}
+{#        {% if user_events_more_link %}#}
+{#            <a href="{% url 'browse_events' %}?limit_to_collections=true">More</a>#}
+{#        {% endif %}#}
     {% endif %}
 {% endblock %}
 

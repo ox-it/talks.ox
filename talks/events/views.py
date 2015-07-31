@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request):
+
+    HOMEPAGE_YOUR_TALKS_RESULTS_LIMIT = 5
+
     today = date.today()
     tomorrow = today + timedelta(days=1)
     events = Event.published.filter(start__gte=today,
@@ -27,7 +30,7 @@ def homepage(request):
                     event_groups)
     group_no_type = filter(lambda eg: not eg.group_type,
                            event_groups)
-    
+
     context = {
         'events': events,
         'event_groups': event_groups,
@@ -37,21 +40,29 @@ def homepage(request):
     }
     if request.tuser:
         # Authenticated user
-         collections = request.tuser.collections.all
-         if collections:
-             context['collections'] = collections
-             #context['user_events'] = Event.objects.for_collections(collections)
+        collections = request.tuser.collections.all()
+        if collections:
+            user_events = collections[0].get_all_events()
+            for collection in collections[1:]:
+                user_events = user_events | collection.get_all_events()
+            context['collections'] = collections
+            user_events = user_events.filter(start__gte=today)
+            if (user_events.count() > HOMEPAGE_YOUR_TALKS_RESULTS_LIMIT):
+                context['user_events_more_link'] = True
+            context['user_events'] = user_events[:HOMEPAGE_YOUR_TALKS_RESULTS_LIMIT]
+
     return render(request, 'front.html', context)
 
 
 def browse_events(request):
     modified_request_parameters = request.GET.copy()
     modified_request_parameters['subdepartments'] = "false"
-    if len(request.GET) == 0:
+    if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
         twoWeeks = date.today() + timedelta(days=14)
         modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
-        modified_request_parameters['to'] = twoWeeks.strftime("%Y-%m-%d")
+        if len(request.GET) == 0:
+            modified_request_parameters['to'] = twoWeeks.strftime("%Y-%m-%d")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
@@ -66,10 +77,13 @@ def browse_events(request):
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
 
+    if request.GET.get('limit_to_collections'):
+        modified_request_parameters['limit_to_collections'] = request.tuser.collections.all()
+
     # used to build a URL fragment that does not
     # contain "page" so that we can... paginate
     args = {'count': count}
-    for param in ('start_date', 'to', 'venue', 'organising_department', 'include_subdepartments', 'seriesid'):
+    for param in ('start_date', 'to', 'venue', 'organising_department', 'include_subdepartments', 'seriesid', 'limit_to_collections'):
         if modified_request_parameters.get(param):
             args[param] = modified_request_parameters.get(param)
     
@@ -86,7 +100,6 @@ def browse_events(request):
     context = {
         'events': events,
         'fragment': fragment,
-        'default_collection': None,
         'browse_events_form': browse_events_form
         }
     return render(request, 'events/browse.html', context)
