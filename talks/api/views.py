@@ -243,6 +243,4 @@ def api_collection_ics(request, collection_slug):
     events = collection.get_all_events()
 
     serializer = EventSerializer(events, many=True, context={'request': request})
-    print "serial"
-    print serializer.data
     return Response(serializer.data, status=status.HTTP_200_OK)
