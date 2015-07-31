@@ -16,9 +16,9 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             {{ collection.title }}
-            <span class="manage-lists-buttons">
-                <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
-            </span>
+{#            <span class="manage-lists-buttons">#}
+{#                <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>#}
+{#            </span>#}
             <div class="formatting-links">
                 {% include "users/collection_plain_text_link.html" %}
                 {% include "users/collection_ics_link.html" %}

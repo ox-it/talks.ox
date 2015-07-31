@@ -11,16 +11,22 @@
 
 <h2 class="hidden-xs">Manage lists</h2>
 
+<ul class="nav nav-tabs">
+  <li role="presentation" {% if not viewing_public_lists %}class="active"{% endif %}><a href="{% url 'manage-lists' %}?public=false">My Lists</a></li>
+  <li role="presentation" {% if viewing_public_lists %}class="active"{% endif %}><a href="{% url 'manage-lists' %}?public=true">All Public Lists</a></li>
+</ul>
 <div>
     {% if collections %}
         <ul class="list-group">
             {% for collection in collections %}
                 <li class="list-group-item">
                     <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
-                    <span class="manage-lists-buttons">
-                        <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
-                        <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
-                    </span>
+                    {% if not viewing_public_lists %}
+                        <span class="manage-lists-buttons">
+                            <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
+                            <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
+                        </span>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

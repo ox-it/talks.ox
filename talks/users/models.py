@@ -29,6 +29,7 @@ class Collection(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True)
     editor_set = models.ManyToManyField('TalksUser', through='TalksUserCollection', blank=True)
+    public = models.BooleanField(default=False)
 
     # TODO list private or public/shared?
 
