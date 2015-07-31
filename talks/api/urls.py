@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, url
 
-from .views import (api_event_search_hal, suggest_user, api_create_person,
-                    save_item, remove_item, get_event_group, suggest_person, api_event_search_ics,
-                    api_event_get, api_event_get_ics, api_event_group_ics, api_event_group, suggest_event_group)
+from .views import (api_event_search_hal, api_event_search_ics, api_event_get, api_event_get_ics,
+                    api_event_group, get_event_group, suggest_event_group, api_event_group_ics,
+                    suggest_user, suggest_person, api_create_person,
+                    save_item, remove_item, api_collection_ics)
 
 
 urlpatterns = patterns('',
@@ -19,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^persons/suggest$', suggest_person, name='api-person-suggest'),
     url(r'^collections/add$', save_item, name="save-item"),
     url(r'^collections/remove$', remove_item, name="remove-item"),
+    url(r'^collections/id/(?P<collection_slug>[^/]+).ics', api_collection_ics, name='api-collection-ics'),
 )
 

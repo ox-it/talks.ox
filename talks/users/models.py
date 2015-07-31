@@ -100,6 +100,21 @@ class Collection(models.Model):
     def get_event_groups(self):
         return self._get_items_by_model(EventGroup)
 
+    def get_all_events(self):
+        """
+          Returns all distinct events in this collections events and event groups:
+        """
+        eventIDs = self.collectionitem_set.filter(content_type=ContentType.objects.get_for_model(Event)
+                                             ).values_list('object_id')
+        eventGroupIDs = self.collectionitem_set.filter(content_type=ContentType.objects.get_for_model(EventGroup)
+                                             ).values_list('object_id')
+        events = Event.objects.filter(id__in=itertools.chain.from_iterable(eventIDs))
+        eventsInEventGroups = Event.objects.filter(group=eventGroupIDs)
+
+        allEvents = events | eventsInEventGroups
+
+        return allEvents.distinct().order_by('start')
+
     def contains_item(self, item):
         if isinstance(item, Event):
             content_type = ContentType.objects.get_for_model(Event)

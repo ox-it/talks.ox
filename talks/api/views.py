@@ -227,3 +227,22 @@ def remove_item(request):
     else:
         return Response({'error': "Item not found."},
                         status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_collection_ics(request, collection_slug):
+    """Get events and event groups from a collection to be displayed
+    as an iCal feed
+    """
+    collection = Collection.objects.get(slug=collection_slug)
+    if not collection:
+        return Response({'error': "Item not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    events = collection.get_all_events()
+
+    serializer = EventSerializer(events, many=True, context={'request': request})
+    print "serial"
+    print serializer.data
+    return Response(serializer.data, status=status.HTTP_200_OK)
