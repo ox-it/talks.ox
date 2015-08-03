@@ -36,8 +36,10 @@
                     {% endif %}
                     <span class="manage-lists-buttons">
                         {% if not viewing_public_lists %}
-                            <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
-                            <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
+                            {% ifequal collection|collection_permission:user 'owner' %}
+                                <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
+                                <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
+                            {% endifequal %}
                         {% endif %}
 
                         <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
@@ -51,7 +53,11 @@
             {% endfor %}
         </ul>
     {% else %}
-      You currently have no lists.
+        {% if viewing_public_lists %}
+            <p>There are no public lists available.</p>
+        {% else %}
+            <p>You currently have no lists.</p>
+        {% endif %}
     {% endif %}
 </div>
 <a href="{% url "add-list" %}" class="btn btn-primary" type="button">Add new list</a>

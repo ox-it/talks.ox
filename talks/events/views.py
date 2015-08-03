@@ -149,7 +149,7 @@ def show_event(request, event_slug):
     except Event.DoesNotExist:
         raise Http404
 
-    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR])
+    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
 
     context = {
         'event': ev,

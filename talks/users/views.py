@@ -26,9 +26,8 @@ def manage_collections(request):
             collections = Collection.objects.filter(public=True)
             context['viewing_public_lists'] = True
         else:
-            collections = request.tuser.collections.all
+            collections = request.tuser.collections.distinct().order_by('title')
         context['collections'] = collections
-        context['user'] = request.tuser
 
     return render(request, 'users/collections.html', context)
 

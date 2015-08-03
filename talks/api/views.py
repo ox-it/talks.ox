@@ -235,7 +235,7 @@ def remove_item(request):
 def subscribe_to_list(request):
     collection = collection_from_request(request)
     if collection:
-        usercollection = TalksUserCollection.objects.get_or_create(user=request.tuser,
+        TalksUserCollection.objects.get_or_create(user=request.tuser,
                                                 collection=collection,
                                                 role=COLLECTION_ROLES_READER)
         usercollection = TalksUserCollection.objects.get(user=request.tuser,
