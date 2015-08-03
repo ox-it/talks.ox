@@ -20,13 +20,13 @@ def manage_collections(request):
     context = {}
     if request.tuser:
         # Authenticated user
-
         if request.GET.get("public") == 'true':
             collections = Collection.objects.filter(public=True)
             context['viewing_public_lists'] = True
         else:
             collections = request.tuser.collections.all
         context['collections'] = collections
+        context['user'] = request.tuser
 
     return render(request, 'users/collections.html', context)
 

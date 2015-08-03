@@ -130,6 +130,23 @@ class Collection(models.Model):
         except CollectionItem.DoesNotExist:
             return False
 
+    def user_collection_permission(self, user):
+        """
+        :param user: The user accessing the collection
+        :return: The role that user has on that collection (if any)
+            ie.  owner, editor, reader or None.
+        """
+        roles = self.talksusercollection_set.filter(user=user).values_list('role', flat=True)
+        role = None
+        if COLLECTION_ROLES_OWNER.encode('utf-8') in roles:
+            role = COLLECTION_ROLES_OWNER
+        elif COLLECTION_ROLES_EDITOR in roles:
+            role = COLLECTION_ROLES_EDITOR
+        elif COLLECTION_ROLES_READER in roles:
+            role = COLLECTION_ROLES_READER
+        return role
+
+
     @property
     def description_html(self):
         return textile_restricted(self.description, auto_link=True, lite=False)
@@ -147,6 +164,8 @@ class TalksUserCollection(models.Model):
     role = models.TextField(choices=COLLECTION_ROLES, default=COLLECTION_ROLES_OWNER)
     is_main = models.BooleanField(default=False)
 
+    def __unicode__(self):
+        return unicode(self.user)
 
 
 class TalksUser(models.Model):

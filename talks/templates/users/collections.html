@@ -1,16 +1,26 @@
 {% extends "base.html" %}
 
-{% load bootstrap %}
 {% load staticfiles %}
+{% load users %}
 
 {% block title %}Manage Lists{% endblock %}
 
-{% block extrahead %}{% endblock %}
+{% block extrahead %}
+
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        addListDefault: "{% url "subscribe-to-list" %}",
+        removeListDefault: "{% url "unsubscribe-from-list" %}",
+    };
+</script>
+{% endblock %}
 
 {% block content %}
 
 <h2 class="hidden-xs">Manage lists</h2>
 
+<div id="collection-alert-container"></div>
 <ul class="nav nav-tabs">
   <li role="presentation" {% if not viewing_public_lists %}class="active"{% endif %}><a href="{% url 'manage-lists' %}?public=false">My Lists</a></li>
   <li role="presentation" {% if viewing_public_lists %}class="active"{% endif %}><a href="{% url 'manage-lists' %}?public=true">All Public Lists</a></li>
@@ -22,11 +32,21 @@
                 <li class="list-group-item">
                     <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
                     {% if not viewing_public_lists %}
-                        <span class="manage-lists-buttons">
+                        (access: {{ collection|collection_permission:user }})
+                    {% endif %}
+                    <span class="manage-lists-buttons">
+                        {% if not viewing_public_lists %}
                             <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
                             <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
-                        </span>
-                    {% endif %}
+                        {% endif %}
+
+                        <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
+                               href="#" action="{% url 'subscribe-to-list' %}" data-collection="{{ collection.slug }}">Subscribe</a>
+
+                        <a class="btn btn-warning js-remove-collection {% ifnotequal collection|collection_permission:user 'reader' %}hidden{% endifnotequal %}"
+                               href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
+                    </span>
+
                 </li>
             {% endfor %}
         </ul>

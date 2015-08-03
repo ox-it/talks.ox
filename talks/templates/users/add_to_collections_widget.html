@@ -22,19 +22,19 @@
                         {{ collection.title }}
                         {% ifequal item_desc 'series' %}
                             <a class="js-add-to-collection {% if collection|collection_contains_item:event_group %}hidden{% endif %}"
-                               href="#" action="/api/collections/add" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">add</a>
+                               href="#" action="{% url 'save-item' %}" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">add</a>
                             <a class="js-remove-from-collection {% if not collection|collection_contains_item:event_group %}hidden{% endif %}"
-                               href="#" action="/api/collections/remove" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">remove</a>
+                               href="#" action="{% url 'remove-item' %}" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">remove</a>
                         {% else %}
                             <a class="js-add-to-collection {% if collection|collection_contains_item:event %}hidden{% endif %}"
-                               href="#" action="/api/collections/add" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">add</a>
+                               href="#" action="{% url 'save-item' %}" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">add</a>
                             <a class="js-remove-from-collection {% if not collection|collection_contains_item:event %}hidden{% endif %}"
-                               href="#" action="/api/collections/remove" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">remove</a>
+                               href="#" action="{% url 'remove-item' %}" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">remove</a>
                         {% endifequal %}
                     </li>
                 </ul>
             {% endfor %}
-            <div id="add-to-collection-alert-container"></div>
+            <div id="collection-alert-container"></div>
         </div>
     </div>
 </div>

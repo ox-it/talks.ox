@@ -3,7 +3,7 @@ from rest_framework import serializers, pagination
 from rest_framework.fields import Field
 
 from talks.events.models import Event, Person, EventGroup
-from talks.users.models import CollectionItem
+from talks.users.models import CollectionItem, TalksUserCollection
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -323,3 +323,10 @@ class CollectionItemSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'item', 'collection')
         model = CollectionItem
+
+
+class TalksUserCollectionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('user', 'collection', 'role')
+        model = TalksUserCollection

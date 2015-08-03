@@ -16,9 +16,9 @@ from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
-from talks.users.models import Collection
+from talks.users.models import Collection, TalksUserCollection, COLLECTION_ROLES_READER
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
-                                   CollectionItemSerializer, get_item_serializer, HALEventSerializer,
+                                   CollectionItemSerializer, TalksUserCollectionSerializer, get_item_serializer, HALEventSerializer,
                                    HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer)
 from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
@@ -228,6 +228,39 @@ def remove_item(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response({'error': "Item not found."},
+                        status=status.HTTP_404_NOT_FOUND)
+
+# TODO: require auth
+@api_view(["POST"])
+def subscribe_to_list(request):
+    collection = collection_from_request(request)
+    if collection:
+        usercollection = TalksUserCollection.objects.get_or_create(user=request.tuser,
+                                                collection=collection,
+                                                role=COLLECTION_ROLES_READER)
+        usercollection = TalksUserCollection.objects.get(user=request.tuser,
+                                            collection=collection,
+                                            role=COLLECTION_ROLES_READER)
+        serializer = TalksUserCollectionSerializer(usercollection)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': "Collection not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+
+
+# TODO: require auth
+@api_view(["POST"])
+def unsubscribe_from_list(request):
+    collection = collection_from_request(request)
+    usercollection = TalksUserCollection.objects.get(user=request.tuser,
+                                            collection=collection,
+                                            role=COLLECTION_ROLES_READER)
+    if usercollection:
+        deleted = usercollection.delete()
+        serializer = TalksUserCollectionSerializer(usercollection)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': "Collection not found."},
                         status=status.HTTP_404_NOT_FOUND)
 
 
