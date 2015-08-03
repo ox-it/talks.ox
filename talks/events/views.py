@@ -9,6 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
+from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 from .forms import BrowseEventsForm
 from talks.api.services import events_search
 
@@ -148,8 +149,7 @@ def show_event(request, event_slug):
     except Event.DoesNotExist:
         raise Http404
 
-    # TODO:  Filter collections by whether they are editable.
-    editable_collections = request.tuser.collections.all
+    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR])
 
     context = {
         'event': ev,
