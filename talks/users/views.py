@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render, get_object_or_404, redirect
 
+from datetime import date
+
 from .models import Collection, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
 from .forms import CollectionForm
 
@@ -38,8 +40,9 @@ def view_collection(request, collection_slug):
         # TODO: Confirm that this user is allowed to view this list
         collection = Collection.objects.get(slug=collection_slug)
         context['collection'] = collection
-        context['events'] = collection.get_events()
-        context['event_groups'] = collection.get_event_groups()
+        today = date.today()
+        context['events'] = collection.get_events().filter(start__gte=today).order_by('start')
+        context['event_groups'] = collection.get_event_groups().order_by('title')
 
     if request.GET.get('format') == 'txt':
         return render(request, 'users/collection_view.txt.html', context)
