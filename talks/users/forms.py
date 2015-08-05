@@ -1,8 +1,9 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db.models.query_utils import Q
 
 from talks.events import typeahead, datasources
-from talks.users.models import Collection, TalksUser, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER, COLLECTION_ROLES_OWNER
+from talks.users.models import Collection, TalksUser, TalksUserCollection, DEFAULT_COLLECTION_NAME, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER, COLLECTION_ROLES_OWNER
 
 class CollectionForm(forms.ModelForm):
 
@@ -38,3 +39,12 @@ class CollectionForm(forms.ModelForm):
         collection.save()
         return collection
 
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        public = cleaned_data.get('public')
+        title = cleaned_data.get('title')
+
+        # If we're making the collection public, ensure that the collection title is not 'My Collection'
+        if public and (title == DEFAULT_COLLECTION_NAME):
+            raise ValidationError({'title': 'Please change the title of your list to something less generic before making your list public'})
