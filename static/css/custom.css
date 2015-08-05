@@ -97,7 +97,7 @@ a.formatting-link:hover {
 
 .manage-lists-buttons {
     float: right;
-    height: 40px;
+    min-height: 40px;
 }
 
 /* Prevent target from being the font-awesome element for fa tags within an <a>.  eg. for add/remove event from list */
@@ -109,4 +109,8 @@ a.formatting-link:hover {
 .dropdown-menu>li>a.js-add-to-collection,
 .dropdown-menu>li>a.js-remove-from-collection {
     display: inline-block;
+}
+
+.list-item-containing-floating-buttons {
+    min-height: 40px;
 }

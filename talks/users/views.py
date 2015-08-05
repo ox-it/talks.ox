@@ -17,19 +17,27 @@ def webauth_logout(request):
     logout(request)
     return render_to_response('auth/logged_out.html', context)
 
+
 @login_required
 def manage_collections(request):
     context = {}
     if request.tuser:
         # Authenticated user
-        if request.GET.get("public") == 'true':
-            collections = Collection.objects.filter(public=True)
-            context['viewing_public_lists'] = True
-        else:
-            collections = request.tuser.collections.distinct().order_by('title')
-        context['collections'] = collections
+        context['collections'] = request.tuser.collections.distinct().order_by('title')
+        context['collection_type_filters'] = COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 
     return render(request, 'users/collections.html', context)
+
+
+@login_required
+def list_public_collections(request):
+    context = {}
+    if request.tuser:
+        # Authenticated user
+        context['collections'] = Collection.objects.filter(public=True)
+
+    return render(request, 'users/public_collections.html', context)
+
 
 @login_required
 def view_collection(request, collection_slug):
