@@ -66,6 +66,16 @@ def suggest_user(request):
 
 
 @api_view(["GET"])
+@authentication_classes((SessionAuthentication,))
+@permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
+def suggest_user_by_complete_email_address(request):
+    query = request.GET.get('q', '')
+    users = User.objects.filter(email=query)
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
 def get_event_group(request, event_group_id):
     """
     Used via ajax to retrieve group details when changing selection

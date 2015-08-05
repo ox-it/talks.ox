@@ -10,9 +10,9 @@ class CollectionForm(forms.ModelForm):
     editor_set = forms.ModelMultipleChoiceField(
         queryset=TalksUser.objects.filter().distinct(),
         label="Other Editors",
-        help_text="Share editing with another Talks Editor by typing in their email address",
+        help_text="Share editing with another Talks Editor by typing in their full email address",
         required=False,
-        widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.USERS_EMAIL_EXACT_DATA_SOURCE),
     )
     class Meta:
         model = Collection
