@@ -2,6 +2,7 @@
 
 {% load bootstrap %}
 {% load staticfiles %}
+{% load users %}
 
 {% block title %}View List{% endblock %}
 
@@ -16,9 +17,11 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             {{ collection.title }}
-{#            <span class="manage-lists-buttons">#}
-{#                <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>#}
-{#            </span>#}
+            {% ifequal collection|collection_permission:user 'owner' %}
+                <span class="manage-lists-buttons">
+                    <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
+                </span>
+            {% endifequal %}
             <div class="formatting-links">
                 {% include "users/collection_plain_text_link.html" %}
                 {% include "users/collection_ics_link.html" %}
