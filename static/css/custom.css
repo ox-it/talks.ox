@@ -124,7 +124,8 @@ a.formatting-link:hover {
 .nav-tabs {
     border-bottom: 0;
 }
-div.add-to-collections {
+div.add-to-collections,
+div.manage-lists-buttons {
     display: inline-block;
     margin-left: 15px;
 }

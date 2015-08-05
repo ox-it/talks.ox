@@ -45,7 +45,11 @@
                         {% endfor %}
 
                 {% else %}
-                    <p>You haven't added any talks to this list yet.</p>
+                    {% if show_all %}
+                        <p>You haven't added any talks to this list yet.</p>
+                    {% else %}
+                        <p>There are no upcoming talks in this list.</p>
+                    {% endif %}
                 {% endif %}
             </li>
 
@@ -64,6 +68,13 @@
                 {% endif %}
             </li>
         </ul>
+    <div class="panel-footer">
+        {% if show_all %}
+            <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}">Show upcoming talks only</a>
+        {% else %}
+            <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}?show_all=true">Show all talks in this list</a>
+        {% endif %}
+    </div>
 </div>
 <a href="{% url "manage-lists" %}" class="btn btn-default">Back to Lists</a>
 

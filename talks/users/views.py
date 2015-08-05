@@ -47,8 +47,12 @@ def view_collection(request, collection_slug):
         # TODO: Confirm that this user is allowed to view this list
         collection = Collection.objects.get(slug=collection_slug)
         context['collection'] = collection
-        today = date.today()
-        context['events'] = collection.get_events().filter(start__gte=today).order_by('start')
+        if (request.GET.get("show_all") == 'true'):
+            context['events'] = collection.get_events().order_by('start')
+            context['show_all'] = True
+        else:
+            today = date.today()
+            context['events'] = collection.get_events().filter(start__gte=today).order_by('start')
         context['event_groups'] = collection.get_event_groups().order_by('title')
 
     if request.GET.get('format') == 'txt':
