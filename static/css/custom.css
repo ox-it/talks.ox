@@ -110,7 +110,21 @@ a.formatting-link:hover {
 .dropdown-menu>li>a.js-remove-from-collection {
     display: inline-block;
 }
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    background-color: #fff;
+}
 
-.list-item-containing-floating-buttons {
+.dropdown-menu>li {
+    margin-left: 10px;
+}
+
+.contains-floating-buttons {
     min-height: 40px;
+}
+.nav-tabs {
+    border-bottom: 0;
+}
+div.add-to-collections {
+    display: inline-block;
+    margin-left: 15px;
 }

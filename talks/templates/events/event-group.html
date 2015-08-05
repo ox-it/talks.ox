@@ -47,14 +47,14 @@
 <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">
+        <h3 class="panel-title contains-floating-buttons">
             {{ event_group.title }}
             <div class="formatting-links">
                 {% include "events/event_group_plain_text_link.html" %}
                 {% include "events/event_group_ics_link.html" %}
                 {% if editable_collections %}
-                    <div class="row add-to-collections">
-                        <div class="pull-right">{% include "users/add_to_collections_widget.html"  with collections=editable_collections item_desc='series' %}</div>
+                    <div class="add-to-collections">
+                        {% include "users/add_to_collections_widget.html"  with collections=editable_collections item_desc='series' %}
                     </div>
                 {% endif %}
             </div>

@@ -15,12 +15,12 @@
 <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">
+        <h3 class="panel-title contains-floating-buttons">
             {{ collection.title }}
             {% ifequal collection|collection_permission:user 'owner' %}
-                <span class="manage-lists-buttons">
+                <div class="manage-lists-buttons">
                     <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
-                </span>
+                </div>
             {% endifequal %}
             <div class="formatting-links">
                 {% include "users/collection_plain_text_link.html" %}
