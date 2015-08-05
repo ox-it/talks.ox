@@ -85,7 +85,11 @@ def edit_collection(request, collection_slug):
     collection = get_object_or_404(Collection, slug=collection_slug)
     if not collection.user_can_edit(request.user):
         raise PermissionDenied
-    form = CollectionForm(request.POST or None, instance=collection, prefix='collection')
+
+    # Limit editor set to users who only have editor role.
+    editors = TalksUserCollection.objects.filter(collection=collection, role=COLLECTION_ROLES_EDITOR).values_list('user_id', flat=True)
+    editor_set = {'editor_set': editors}
+    form = CollectionForm(request.POST or None, instance=collection, prefix='collection', initial=editor_set)
     context = {
         'collection': collection,
         'collection_form': form,
