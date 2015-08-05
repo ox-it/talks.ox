@@ -31,8 +31,6 @@ class Collection(models.Model):
     editor_set = models.ManyToManyField('TalksUser', through='TalksUserCollection', blank=True)
     public = models.BooleanField(default=False)
 
-    # TODO list private or public/shared?
-
     def _get_items_by_model(self, model):
         """Used when selecting a particular type (specified in the `model` arg)
         of objects from our Collection.
@@ -152,7 +150,10 @@ class Collection(models.Model):
         return textile_restricted(self.description, auto_link=True, lite=False)
 
     def user_can_edit(self, user):
-        return self.editor_set.filter(id=user.id, talksusercollection__role=COLLECTION_ROLES_OWNER).exists() or user.is_superuser
+        return self.editor_set.filter(id=user.id, talksusercollection__role=COLLECTION_ROLES_OWNER).exists()
+
+    def user_can_view(self, user):
+        return self.editor_set.filter(id=user.id, talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER]).exists()
 
     def __unicode__(self):
         return self.title

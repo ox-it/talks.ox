@@ -44,16 +44,22 @@ def view_collection(request, collection_slug):
     context = {}
     if request.tuser:
         # Authenticated user
-        # TODO: Confirm that this user is allowed to view this list
         collection = Collection.objects.get(slug=collection_slug)
-        context['collection'] = collection
-        if (request.GET.get("show_all") == 'true'):
-            context['events'] = collection.get_events().order_by('start')
-            context['show_all'] = True
-        else:
-            today = date.today()
-            context['events'] = collection.get_events().filter(start__gte=today).order_by('start')
-        context['event_groups'] = collection.get_event_groups().order_by('title')
+        if not collection.user_can_view(request.user):
+            raise PermissionDenied
+
+        show_all = request.GET.get('show_all', False)
+        events = collection.get_events().order_by('start')
+
+        if not show_all:
+            events = events.filter(start__gte=date.today())
+
+        context = {
+            'collection' : collection,
+            'show_all' : show_all,
+            'events' : events,
+            'event_groups' : collection.get_event_groups().order_by('title'),
+        }
 
     if request.GET.get('format') == 'txt':
         return render(request, 'users/collection_view.txt.html', context)
