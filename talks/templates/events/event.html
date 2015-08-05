@@ -59,7 +59,7 @@
                 {% include "events/event_ics_link.html" %}
                 {% if editable_collections %}
                     <div class="row add-to-collections">
-                        <div class="float-right">{% include "events/../users/add_to_collections_widget.html"  with collections=editable_collections %}</div>
+                        <div class="pull-right">{% include "users/add_to_collections_widget.html"  with collections=editable_collections %}</div>
                     </div>
                 {% endif %}
             </div>
