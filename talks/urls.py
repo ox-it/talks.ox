@@ -31,6 +31,6 @@ urlpatterns = patterns('',
     url(r'^audit/', include(audit_urls, namespace='audit')),
     url(r'^api/', include(api_urls)),
     url(r'^contributors/', include(contributors_urls)),
-    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico'))
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
     url(r'^_health$', healthcheck, name='healthcheck')
 )
