@@ -81,7 +81,6 @@ def add_collection(request):
 
 @login_required
 def edit_collection(request, collection_slug):
-    # TODO: Confirm that this user is allowed to edit this list
     collection = get_object_or_404(Collection, slug=collection_slug)
     if not collection.user_can_edit(request.user):
         raise PermissionDenied
@@ -106,7 +105,6 @@ def edit_collection(request, collection_slug):
 
 @login_required
 def delete_collection(request, collection_slug):
-    # TODO: Confirm that this user is allowed to edit this list
     collection = get_object_or_404(Collection, slug=collection_slug)
     if not collection.user_can_edit(request.user):
         raise PermissionDenied
