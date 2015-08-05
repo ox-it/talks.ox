@@ -213,7 +213,11 @@ def save_item(request):
         serializer = CollectionItemSerializer(item)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
-        return Response({'error': "Item not found"},
+        if item:
+            return Response({'error': "Collection not found"},
+                        status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)
 
 
@@ -235,14 +239,23 @@ def remove_item(request):
 def subscribe_to_list(request):
     collection = collection_from_request(request)
     if collection:
-        TalksUserCollection.objects.get_or_create(user=request.tuser,
-                                                collection=collection,
-                                                role=COLLECTION_ROLES_READER)
-        usercollection = TalksUserCollection.objects.get(user=request.tuser,
-                                            collection=collection,
-                                            role=COLLECTION_ROLES_READER)
-        serializer = TalksUserCollectionSerializer(usercollection)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if collection.public:
+            TalksUserCollection.objects.get_or_create(user=request.tuser,
+                                                    collection=collection,
+                                                    role=COLLECTION_ROLES_READER)
+            try:
+                usercollection = TalksUserCollection.objects.get(user=request.tuser,
+                                                    collection=collection,
+                                                    role=COLLECTION_ROLES_READER)
+                serializer = TalksUserCollectionSerializer(usercollection)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except ObjectDoesNotExist:
+                return Response({'error': "Failed to subscribe to collection"},
+                                status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'error': "Collection is not public"},
+                            status=status.HTTP_403_FORBIDDEN)
+
     else:
         return Response({'error': "Collection not found"},
                         status=status.HTTP_404_NOT_FOUND)
@@ -252,15 +265,15 @@ def subscribe_to_list(request):
 @api_view(["POST"])
 def unsubscribe_from_list(request):
     collection = collection_from_request(request)
-    usercollection = TalksUserCollection.objects.get(user=request.tuser,
+    try:
+        usercollection = TalksUserCollection.objects.get(user=request.tuser,
                                             collection=collection,
                                             role=COLLECTION_ROLES_READER)
-    if usercollection:
         deleted = usercollection.delete()
         serializer = TalksUserCollectionSerializer(usercollection)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    else:
-        return Response({'error': "Collection not found."},
+    except ObjectDoesNotExist:
+        return Response({'error': "Failed to unsubscribe from collection"},
                         status=status.HTTP_404_NOT_FOUND)
 
 
@@ -270,13 +283,14 @@ def api_collection_ics(request, collection_slug):
     """Get events and event groups from a collection to be displayed
     as an iCal feed
     """
-    collection = Collection.objects.get(slug=collection_slug)
-    if not collection:
-        return Response({'error': "Item not found"},
+    try:
+        collection = Collection.objects.get(slug=collection_slug)
+        today = date.today()
+        events = collection.get_all_events().filter(start__gte=today)
+
+        serializer = EventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+        return Response({'error': "Collection not found"},
                         status=status.HTTP_404_NOT_FOUND)
 
-    today = date.today()
-    events = collection.get_all_events().filter(start__gte=today)
-
-    serializer = EventSerializer(events, many=True, context={'request': request})
-    return Response(serializer.data, status=status.HTTP_200_OK)
