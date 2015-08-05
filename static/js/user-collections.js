@@ -24,25 +24,17 @@ $(function() {
             success: function(response) {
                 // Hide the <a>
                 $(ev.target).addClass('hidden');
-                $(ev.target.nextElementSibling).removeClass('hidden');
-                $('#collection-alert-container').html('<div class="alert alert-success alert-dismissible" role="alert">' +
-                        'Talk has been added to the list' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
-                    '</button></div>');
-                window.setTimeout(function() {
-                        $("#collection-alert-container div.alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove();
-                        });}, 2000);
-
+                $(ev.target).siblings('.js-remove-from-collection').removeClass('hidden');
             },
             error: function(err) {
                 console.log(err);
                 $('#collection-alert-container').html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                    err.messages +
+                    'Error: ' + err.statusText +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
                     '</button></div>');
             },
         });
+        $(ev.stopPropagation());  // Stop the bootstrap dropdown list from auto-closing
     });
 
     $('.js-remove-from-collection').click( function(ev) {
@@ -58,25 +50,17 @@ $(function() {
             dataType: 'json',
             success: function(response) {
                 $(ev.target).addClass('hidden');
-                $(ev.target.previousElementSibling).removeClass('hidden');
-                $('#collection-alert-container').html('<div class="alert alert-success alert-dismissible" role="alert">' +
-                        'Talk has been removed from the list' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
-                    '</button></div>');
-                window.setTimeout(function() {
-                        $("#collection-alert-container div.alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove();
-                        });}, 2000);
-
+                $(ev.target).siblings('.js-add-to-collection').removeClass('hidden');
             },
             error: function(err) {
                 console.log(err);
                 $('#collection-alert-container').html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                        err.messages +
+                        'Error: ' + err.statusText +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
                     '</button></div>');
             },
         });
+        $(ev.stopPropagation());  // Stop the bootstrap dropdown list from auto-closing
     });
 
     // Subscribe to collection (as a reader)
@@ -94,21 +78,12 @@ $(function() {
             success: function(response) {
                 // Hide the <a>
                 $(ev.target).addClass('hidden');
-                $(ev.target.nextElementSibling).removeClass('hidden');
-                $('#collection-alert-container').html('<div class="alert alert-success alert-dismissible" role="alert">' +
-                        'List has been added to your lists' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
-                    '</button></div>');
-                window.setTimeout(function() {
-                        $("#collection-alert-container div.alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove();
-                        });}, 2000);
-
+                $(ev.target).siblings('.js-remove-collection').removeClass('hidden');
             },
             error: function(err) {
                 console.log(err);
                 $('#collection-alert-container').html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                    err.messages +
+                    '"Error: ' + err.statusText +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
                     '</button></div>');
             },
@@ -130,21 +105,12 @@ $(function() {
             success: function(response) {
                 // Hide the <a>
                 $(ev.target).addClass('hidden');
-                $(ev.target.previousElementSibling).removeClass('hidden');
-                $('#collection-alert-container').html('<div class="alert alert-success alert-dismissible" role="alert">' +
-                        'List has been removed from your lists' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
-                    '</button></div>');
-                window.setTimeout(function() {
-                        $("#collection-alert-container div.alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove();
-                        });}, 2000);
-
+                $(ev.target).siblings('.js-add-collection').removeClass('hidden');
             },
             error: function(err) {
                 console.log(err);
                 $('#collection-alert-container').html('<div class="alert alert-warning alert-dismissible" role="alert">' +
-                    err.messages +
+                    'Error: ' + err.statusText +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
                     '</button></div>');
             },
