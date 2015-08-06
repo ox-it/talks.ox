@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from django_webauth.views import LoginView
+from django.views.generic.base import RedirectView
 
 from talks.events.views import (homepage, browse_events)
 from talks.events_search.forms import DateFacetedSearchForm
@@ -17,6 +18,7 @@ from talks.users.views import webauth_logout
 from talks.core.healthchecks import healthcheck
 
 
+
 urlpatterns = patterns('',
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', webauth_logout, name='logout'),
@@ -30,6 +32,7 @@ urlpatterns = patterns('',
     url(r'^audit/', include(audit_urls, namespace='audit')),
     url(r'^api/', include(api_urls)),
     url(r'^contributors/', include(contributors_urls)),
-    url(r'^_health$', healthcheck, name='healthcheck'),
     url(r'^user/', include(users_urls)),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
+    url(r'^_health$', healthcheck, name='healthcheck')
 )
