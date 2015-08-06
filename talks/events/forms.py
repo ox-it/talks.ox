@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 
 from talks.events import typeahead, datasources
@@ -29,3 +30,13 @@ class BrowseEventsForm(forms.Form):
                                          label="Series",
                                          required=False,
                                          help_text="Type series name and select from the list.")
+
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('to')
+
+        # Ensure end date is after start date
+        if end_date and (end_date < start_date):
+            raise ValidationError({'to': 'End date must be after start date'})
