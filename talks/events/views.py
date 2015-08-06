@@ -149,8 +149,6 @@ def show_event(request, event_slug):
     except Event.DoesNotExist:
         raise Http404
 
-    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
-
     context = {
         'event': ev,
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
@@ -158,8 +156,9 @@ def show_event(request, event_slug):
         'speakers': ev.speakers.all(),
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
-        'editable_collections' : editable_collections,
     }
+    if request.tuser:
+        context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
 
     if request.GET.get('format') == 'txt':
         return render(request, 'events/event.txt.html', context)
@@ -183,15 +182,16 @@ def show_event_group(request, event_group_slug):
     if not show_all:
         events = events.filter(start__gte=date.today())
 
-    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
-
     context = {
         'event_group': group,
         'events': events,
         'organisers': group.organisers.all(),
         'show_all': show_all,
-        'editable_collections' : editable_collections,
     }
+
+    if request.tuser:
+        context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+
     if request.GET.get('format') == 'txt':
         return render(request, 'events/event-group.txt.html', context)
     else:
