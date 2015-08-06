@@ -129,3 +129,8 @@ div.manage-lists-buttons {
     display: inline-block;
     margin-left: 15px;
 }
+
+.js-datetimepicker:hover,
+.js-datetimepicker input:hover {
+    cursor: pointer;
+}

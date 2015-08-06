@@ -51,8 +51,8 @@
         <form action="{% url 'browse_events' %}" method="get">
             <!--{% csrf_token %}-->
             {{ browse_events_form | bootstrap }}
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="{% url 'browse_events' %}" class="btn btn-default">Reset Filters</a>
+            <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </form>
 
         <script type="text/javascript">
