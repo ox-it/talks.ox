@@ -21,56 +21,76 @@
 <h2 class="hidden-xs">Manage lists</h2>
 
 <div id="collection-alert-container"></div>
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="{% url 'manage-lists' %}">My Lists</a></li>
-  <li role="presentation"><a href="{% url 'manage-public-lists' %}">All Public Lists</a></li>
-</ul>
-
-{% if collections %}
-    <ul class="list-group">
-        {% for filter in collection_type_filters %}
-            <li class="list-group-item">
-                <p><strong>
-                {% ifequal filter 'owner' %}
-                    Lists that I've created:
-                {% endifequal %}
-                {% ifequal filter 'editor' %}
-                    Lists that I can contribute to:
-                {% endifequal %}
-                {% ifequal filter 'reader' %}
-                    Public lists that I've subscribed to:
-                {% endifequal %}
-                </strong></p>
-                <ul class="list-unstyled">
-                    {% for collection in collections %}
-                        {% ifequal collection|collection_permission:user filter %}
-                            <li class="contains-floating-buttons">
-                                <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
-                                {% if collection.public %}
-                                    <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
-                                {% endif %}
-                                <div class="manage-lists-buttons">
-                                    {% ifequal collection|collection_permission:user 'owner' %}
-                                        <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
-                                        <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
-                                    {% endifequal %}
-
-                                    <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
-                                           href="#" action="{% url 'subscribe-to-list' %}" data-collection="{{ collection.slug }}">Subscribe</a>
-
-                                    <a class="btn btn-warning js-remove-collection {% ifnotequal collection|collection_permission:user 'reader' %}hidden{% endifnotequal %}"
-                                           href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
-                                </div>
-                            </li>
-                        {% endifequal %}
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="active"><a href="{% url 'manage-lists' %}">My Lists</a></li>
+      <li role="presentation"><a href="{% url 'manage-public-lists' %}">All Public Lists</a></li>
     </ul>
-{% else %}
-    <p>You currently have no lists.</p>
-{% endif %}
+
+    <ul class="list-group">
+
+        <li class="list-group-item">
+            <p><strong>
+                Lists that I've created:
+            </strong></p>
+            <ul class="list-unstyled">
+                {% for collection in collections_owner %}
+                    <li class="contains-floating-buttons">
+                        <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
+                        {% if collection.public %}
+                            <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
+                        {% endif %}
+                        <div class="manage-lists-buttons">
+                                <a class="btn btn-primary" href="{% url 'edit-list' collection.slug %}">Edit</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <p>You haven't created any lists yet.</p>
+                {% endfor %}
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <p><strong>
+                Lists that I can contribute to:
+            </strong></p>
+            <ul class="list-unstyled">
+                {% for collection in collections_editor %}
+                    <li class="contains-floating-buttons">
+                        <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
+                        {% if collection.public %}
+                            <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
+                        {% endif %}
+                    </li>
+                {% empty %}
+                    <p>You haven't been invited to collaborate on any lists yet.</p>
+                {% endfor %}
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <p><strong>
+                Public lists that I've subscribed to:
+            </strong></p>
+            <ul class="list-unstyled">
+                {% for collection in collections_reader %}
+                    <li class="contains-floating-buttons">
+                        <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
+                            <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
+                        <div class="manage-lists-buttons">
+                            <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
+                                   href="#" action="{% url 'subscribe-to-list' %}" data-collection="{{ collection.slug }}">Subscribe</a>
+
+                            <a class="btn btn-warning js-remove-collection {% ifnotequal collection|collection_permission:user 'reader' %}hidden{% endifnotequal %}"
+                                   href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <p>You haven't subscribed to any public lists yet.</p>
+                {% endfor %}
+            </ul>
+        </li>
+
+    </ul>
 
 <a href="{% url "add-list" %}" class="btn btn-primary" type="button">Add new list</a>
 

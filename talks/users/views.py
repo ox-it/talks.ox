@@ -23,7 +23,9 @@ def manage_collections(request):
     context = {}
     if request.tuser:
         # Authenticated user
-        context['collections'] = request.tuser.collections.distinct().order_by('title')
+        context['collections_owner'] = request.tuser.collections.filter(talksusercollection__role=COLLECTION_ROLES_OWNER).distinct().order_by('title')
+        context['collections_editor'] = request.tuser.collections.filter(talksusercollection__role=COLLECTION_ROLES_EDITOR).distinct().order_by('title')
+        context['collections_reader'] = request.tuser.collections.filter(talksusercollection__role=COLLECTION_ROLES_READER).distinct().order_by('title')
         context['collection_type_filters'] = COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 
     return render(request, 'users/collections.html', context)

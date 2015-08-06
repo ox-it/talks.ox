@@ -21,15 +21,16 @@
 <h2 class="hidden-xs">Public lists</h2>
 
 <div id="collection-alert-container"></div>
-<ul class="nav nav-tabs">
-  <li role="presentation"><a href="{% url 'manage-lists' %}">My Lists</a></li>
-  <li role="presentation" class="active"><a href="{% url 'manage-public-lists' %}">All Public Lists</a></li>
-</ul>
+    <ul class="nav nav-tabs">
+      <li role="presentation"><a href="{% url 'manage-lists' %}">My Lists</a></li>
+      <li role="presentation" class="active"><a href="{% url 'manage-public-lists' %}">All Public Lists</a></li>
+    </ul>
 
-{% if collections %}
     <ul class="list-group">
         <li class="list-group-item">
-            <p><strong>Public lists: </strong></p>
+            <p><strong>
+
+            </strong></p>
             <ul class="list-unstyled">
                 {% for collection in collections %}
                     <li class="contains-floating-buttons">
@@ -45,12 +46,11 @@
                                    href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
                         </div>
                     </li>
+                {% empty %}
+                    <p>There are no public lists available.</p>
                 {% endfor %}
             </ul>
         </li>
     </ul>
-{% else %}
-    <p>There are no public lists available.</p>
-{% endif %}
 
 {% endblock %}
