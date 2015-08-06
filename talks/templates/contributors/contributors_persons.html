@@ -33,9 +33,9 @@
     <a class="btn btn-primary navbar-btn" href="{% url 'create-person' %}"><span class="glyphicon glyphicon-plus"></span> New Person</a>
     <table class="table table-bordered table-striped">
         <thead>
-            <td>Name</td>
-            <td>Affiliation</td>
-            <td>Edit</td>
+            <th>Name</th>
+            <th>Affiliation</th>
+            <th>Edit</th>
         </thead>
             {% for person in persons %}
             <tr>

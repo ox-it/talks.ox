@@ -199,7 +199,7 @@ class AuthTestCase(TestCase):
         self.group.save()
 
         #Add edit permissions for Event, EventGroup and Person
-        content_types = ContentType.objects.get_for_models(Event, EventGroup, Person);
+        content_types = ContentType.objects.get_for_models(Event, EventGroup, Person)
         permissions = Permission.objects.filter( content_type__in=content_types.values() )
         self.group.permissions.add(*permissions)
         self.group.save()
@@ -555,7 +555,7 @@ class TestAuthorisation(TestCase):
         self.group.save()
 
         #Add edit permissions for Event, EventGroup and Person
-        content_types = ContentType.objects.get_for_models(Event, EventGroup, Person);
+        content_types = ContentType.objects.get_for_models(Event, EventGroup, Person)
         permissions = Permission.objects.filter( content_type__in=content_types.values() )
         self.group.permissions.add(*permissions)
         self.group.save()
@@ -584,7 +584,7 @@ class TestAuthorisation(TestCase):
         #a non-contributing user
         self.username_non_contrib = "nc"
         self.password_non_contrib = "nc"
-        self.nonContribUser = User.objects.create_user(self.username_non_contrib, password=self.password_non_contrib);
+        self.nonContribUser = User.objects.create_user(self.username_non_contrib, password=self.password_non_contrib)
         self.nonContribUser.save()
 
     def test_edit_event_unauthorised(self):

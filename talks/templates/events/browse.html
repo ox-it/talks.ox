@@ -35,10 +35,6 @@
 
 {% block topcontent %}
 
-<ul class="visible-xs nav nav-tabs nav-justified" role="tablist">
-  <li class="active"><a href="#upcoming">Upcoming</a></li>
-  <li><a href="#yourtalks">Your Talks</a></li>
-</ul>
 {% endblock %}
 
 {% block side %}
@@ -52,11 +48,11 @@
       <ul class="nav nav-list well">
         <li class="nav-header"><strong>Date filter</strong></li>
 
-        <form action="/browse" method="get">
+        <form action="{% url 'browse_events' %}" method="get">
             <!--{% csrf_token %}-->
             {{ browse_events_form | bootstrap }}
             <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="/browse" class="btn btn-default">Reset Filters</a>
+            <a href="{% url 'browse_events' %}" class="btn btn-default">Reset Filters</a>
         </form>
 
         <script type="text/javascript">
