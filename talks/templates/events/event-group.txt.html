@@ -19,7 +19,7 @@
 
 <br>{{ event_group.title }}
 {% if event_group.description %}
-    <br>{{ event_group.description_html | striptags | linebreaksbr }}
+    <br>{{ event_group.description_html | safe | striptags | linebreaksbr }}
 {% else %}
     <br>This series does not yet have an abstract
 {% endif %}

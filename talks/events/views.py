@@ -1,25 +1,25 @@
 import logging
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.http.response import Http404
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
-
+from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 from .forms import BrowseEventsForm
-
 from talks.api.services import events_search
 
 logger = logging.getLogger(__name__)
 
 
 def homepage(request):
+
+    HOMEPAGE_YOUR_TALKS_RESULTS_LIMIT = 5
+
     today = date.today()
     tomorrow = today + timedelta(days=1)
     events = Event.published.filter(start__gte=today,
@@ -31,33 +31,39 @@ def homepage(request):
                     event_groups)
     group_no_type = filter(lambda eg: not eg.group_type,
                            event_groups)
-    
+
     context = {
         'events': events,
         'event_groups': event_groups,
         'conferences': conferences,
         'group_no_type': group_no_type,
-        'series': series,
-        'default_collection': None,
-        'show_event_time_only': 1,
+        'series': series
     }
     if request.tuser:
         # Authenticated user
-        collection = request.tuser.default_collection
-        context['default_collection'] = collection
-        context['user_events'] = collection.get_events()
-        context['user_event_groups'] = collection.get_event_groups()
+        collections = request.tuser.collections.all()
+        if collections:
+            user_events = collections[0].get_all_events()
+            for collection in collections[1:]:
+                user_events = user_events | collection.get_all_events()
+            context['collections'] = collections
+            user_events = user_events.filter(start__gte=today)
+            if (user_events.count() > HOMEPAGE_YOUR_TALKS_RESULTS_LIMIT):
+                context['user_events_more_link'] = True
+            context['user_events'] = user_events[:HOMEPAGE_YOUR_TALKS_RESULTS_LIMIT]
+
     return render(request, 'front.html', context)
 
 
 def browse_events(request):
     modified_request_parameters = request.GET.copy()
     modified_request_parameters['subdepartments'] = "false"
-    if (len(request.GET) == 0):
+    if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
         twoWeeks = date.today() + timedelta(days=14)
         modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
-        modified_request_parameters['to'] = twoWeeks.strftime("%Y-%m-%d")
+        if len(request.GET) == 0:
+            modified_request_parameters['to'] = twoWeeks.strftime("%Y-%m-%d")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
@@ -72,10 +78,13 @@ def browse_events(request):
     count = request.GET.get('count', 20)
     page = request.GET.get('page', 1)
 
+    if request.GET.get('limit_to_collections'):
+        modified_request_parameters['limit_to_collections'] = request.tuser.collections.all()
+
     # used to build a URL fragment that does not
     # contain "page" so that we can... paginate
     args = {'count': count}
-    for param in ('start_date', 'to', 'venue', 'organising_department', 'include_subdepartments', 'seriesid'):
+    for param in ('start_date', 'to', 'venue', 'organising_department', 'include_subdepartments', 'seriesid', 'limit_to_collections'):
         if modified_request_parameters.get(param):
             args[param] = modified_request_parameters.get(param)
     
@@ -92,15 +101,8 @@ def browse_events(request):
     context = {
         'events': events,
         'fragment': fragment,
-        'default_collection': None,
-        'browse_events_form' : browse_events_form
+        'browse_events_form': browse_events_form
         }
-    if request.tuser:
-        # Authenticated user
-        collection = request.tuser.default_collection
-        context['default_collection'] = collection
-        context['user_events'] = collection.get_events()
-        context['user_event_groups'] = collection.get_event_groups()
     return render(request, 'events/browse.html', context)
 
 
@@ -146,6 +148,9 @@ def show_event(request, event_slug):
             'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
+
+    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+
     context = {
         'event': ev,
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
@@ -153,6 +158,7 @@ def show_event(request, event_slug):
         'speakers': ev.speakers.all(),
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
+        'editable_collections' : editable_collections,
     }
 
     if request.GET.get('format') == 'txt':
@@ -177,11 +183,14 @@ def show_event_group(request, event_group_slug):
     if not show_all:
         events = events.filter(start__gte=date.today())
 
+    editable_collections = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+
     context = {
         'event_group': group,
         'events': events,
         'organisers': group.organisers.all(),
         'show_all': show_all,
+        'editable_collections' : editable_collections,
     }
     if request.GET.get('format') == 'txt':
         return render(request, 'events/event-group.txt.html', context)

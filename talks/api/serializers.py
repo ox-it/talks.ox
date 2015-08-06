@@ -3,7 +3,7 @@ from rest_framework import serializers, pagination
 from rest_framework.fields import Field
 
 from talks.events.models import Event, Person, EventGroup
-from talks.users.models import CollectionItem
+from talks.users.models import CollectionItem, TalksUserCollection
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -59,7 +59,9 @@ class EventSerializer(serializers.ModelSerializer):
             name = location['name']
             if event.location_details:
                 name += " (" + event.location_details + ")"
-            location_string = name + ", " + location.get('address')
+            location_string = name
+            if location.get('address'):
+                location_string += ", " + location.get('address')
             return location_string
         elif event.location_details:
             name = event.location_details
@@ -321,3 +323,10 @@ class CollectionItemSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'item', 'collection')
         model = CollectionItem
+
+
+class TalksUserCollectionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('user', 'collection', 'role')
+        model = TalksUserCollection

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+{% load users %}
+
+{% block title %}View List{% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+{% block content %}
+
+<h2 class="hidden-xs">View list</h2>
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title contains-floating-buttons">
+            {{ collection.title }}
+            {% ifequal collection|collection_permission:user 'owner' %}
+                <div class="manage-lists-buttons">
+                    <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
+                </div>
+            {% endifequal %}
+            <div class="formatting-links">
+                {% include "users/collection_plain_text_link.html" %}
+                {% include "users/collection_ics_link.html" %}
+            </div>
+        </h3>
+    </div>
+    {% if collection.description %}
+        <div class="panel-body">
+            <p>{{ collection.description_html | safe }}</p>
+        </div>
+    {% endif %}
+        <ul class="list-group">
+            <li class="list-group-item">
+                <strong>Talks:</strong>
+                {% if events %}
+
+                        {% for event in events %}
+                            <br>
+                                {% include "events/event_teaser.html" %}
+
+                        {% endfor %}
+
+                {% else %}
+                    {% if show_all %}
+                        <p>You haven't added any talks to this list yet.</p>
+                    {% else %}
+                        <p>There are no upcoming talks in this list.</p>
+                    {% endif %}
+                {% endif %}
+            </li>
+
+            <li class="list-group-item">
+                <strong>Series:</strong>
+                {% if event_groups %}
+
+                        {% for event_group in event_groups %}
+                            <br>
+                                <a href="{{ event_group.get_absolute_url }}">{{ event_group.title }}</a>
+
+                        {% endfor %}
+
+                {% else %}
+                    <p>You haven't added any series to this list.</p>
+                {% endif %}
+            </li>
+        </ul>
+    <div class="panel-footer">
+        {% if show_all %}
+            <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}">Show upcoming talks only</a>
+        {% else %}
+            <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}?show_all=true">Show all talks in this list</a>
+        {% endif %}
+    </div>
+</div>
+<a href="{% url "manage-lists" %}" class="btn btn-default">Back to Lists</a>
+
+{% endblock %}

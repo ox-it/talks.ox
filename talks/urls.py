@@ -13,6 +13,7 @@ from talks.api.urls import urlpatterns as api_urls
 from talks.contributors.urls import urlpatterns  as contributors_urls
 from talks.audit_trail.urls import urlpatterns as audit_urls
 from talks.events.urls import urlpatterns as events_urls
+from talks.users.urls import urlpatterns as users_urls
 from talks.users.views import webauth_logout
 from talks.core.healthchecks import healthcheck
 
@@ -31,6 +32,7 @@ urlpatterns = patterns('',
     url(r'^audit/', include(audit_urls, namespace='audit')),
     url(r'^api/', include(api_urls)),
     url(r'^contributors/', include(contributors_urls)),
+    url(r'^user/', include(users_urls)),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
     url(r'^_health$', healthcheck, name='healthcheck')
 )

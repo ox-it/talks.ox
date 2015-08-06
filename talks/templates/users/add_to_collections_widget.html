@@ -1,0 +1,35 @@
+{% load users %}
+
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Add this {% if item_desc %}{{ item_desc }}{% else %}talk{% endif %} to list
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        {% for collection in collections %}
+            <li>
+                {{ collection.title }}
+                {% ifequal item_desc 'series' %}
+                    <a class="js-add-to-collection {% if collection|collection_contains_item:event_group %}hidden{% endif %}"
+                       href="#" action="{% url 'save-item' %}" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">
+                        <i class="fa fa-plus-square pull-right"></i>
+                    </a>
+                    <a class="js-remove-from-collection {% if not collection|collection_contains_item:event_group %}hidden{% endif %}"
+                       href="#" action="{% url 'remove-item' %}" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">
+                        <i class="fa fa-minus-square pull-right"></i>
+                    </a>
+                {% else %}
+                    <a class="js-add-to-collection {% if collection|collection_contains_item:event %}hidden{% endif %}"
+                       href="#" action="{% url 'save-item' %}" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">
+                        <i class="fa fa-plus-square pull-right"></i>
+                    </a>
+                    <a class="js-remove-from-collection {% if not collection|collection_contains_item:event %}hidden{% endif %}"
+                       href="#" action="{% url 'remove-item' %}" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">
+                        <i class="fa fa-minus-square pull-right"></i>
+                    </a>
+                {% endifequal %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div id="collection-alert-container"></div>

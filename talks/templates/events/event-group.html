@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load users %}
 
 {% block title %}{{ event_group.title }}{% endblock %}
 
 {% block extrahead %}
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        saveItemDefault: "{% url "save-item" %}",
+        removeItemDefault: "{% url "remove-item" %}",
+    };
+</script>
+
 <script type="application/ld+json">
 [{% for event in event_group.events.all %}{
   "@context": "http://schema.org",
@@ -38,11 +47,16 @@
 <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">
+        <h3 class="panel-title contains-floating-buttons">
             {{ event_group.title }}
             <div class="formatting-links">
                 {% include "events/event_group_plain_text_link.html" %}
                 {% include "events/event_group_ics_link.html" %}
+                {% if editable_collections %}
+                    <div class="add-to-collections">
+                        {% include "users/add_to_collections_widget.html"  with collections=editable_collections item_desc='series' %}
+                    </div>
+                {% endif %}
             </div>
         </h3>
     </div>
@@ -68,7 +82,7 @@
         {% for event in events %}
         <li class="list-group-item">
                 {% if perms.events.change_event %}
-                <div style="float:right">{% if request.user|can_edit_event:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
+                <div class="pull-right">{% if request.user|can_edit_event:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
                 {% endif %}
                 <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }}){% include "events/event_ics_link.html" %}
                 {% if perms.events.change_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.is_published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>

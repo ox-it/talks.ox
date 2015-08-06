@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap %}
 
 {% load users %}
 
@@ -12,6 +14,15 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ url }}" />
 <meta property="og:image" content="" />
+
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        saveItemDefault: "{% url "save-item" %}",
+        removeItemDefault: "{% url "remove-item" %}",
+    };
+</script>
+
 {% endblock %}
 
 {% block content %}
@@ -41,11 +52,16 @@
 
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">
+        <h3 class="panel-title contains-floating-buttons">
             {{ event.title_display }}
             <div class="formatting-links">
                 {% include "events/event_plain_text_link.html" %}
                 {% include "events/event_ics_link.html" %}
+                {% if editable_collections %}
+                    <div class="add-to-collections">
+                        {% include "users/add_to_collections_widget.html"  with collections=editable_collections %}
+                    </div>
+                {% endif %}
             </div>
         </h3>
         {% if event.special_message %}
@@ -70,7 +86,7 @@
             <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
             <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
             {% else %}
-            <span>Venue to be announced<span>
+            <span>Venue to be announced</span>
             {% endif %}
             {% if event.location_details %}
             <br><br>

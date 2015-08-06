@@ -45,6 +45,12 @@ USERS_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='email',
     serializer=serializers.UserSerializer
 )
+USERS_EMAIL_EXACT_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'users',
+    url='/api/user/suggest/exact?q=%QUERY',
+    display_key='email',
+    serializer=serializers.UserSerializer
+)
 SERIES_DATA_SOURCE = typeahead.DjangoModelDataSource(
     'series',
     url='/api/series/suggest?q=%QUERY',
