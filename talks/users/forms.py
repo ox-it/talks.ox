@@ -45,6 +45,12 @@ class CollectionForm(forms.ModelForm):
         public = cleaned_data.get('public')
         title = cleaned_data.get('title')
 
+        collection = super(CollectionForm, self).save(commit=False) # get the collection instance without saving the form
+        number_of_readers = collection.get_number_of_readers()
+
         # If we're making the collection public, ensure that the collection title is not 'My Collection'
         if public and (title == DEFAULT_COLLECTION_NAME):
             raise ValidationError({'title': 'Please change the title of your list to something less generic before making your list public'})
+
+        if not public and (number_of_readers > 0):
+            raise ValidationError({'public': 'Unable to revoke public status - there are already ' + str(number_of_readers) + ' readers following this list.'})

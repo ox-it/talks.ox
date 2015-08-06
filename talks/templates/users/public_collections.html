@@ -37,6 +37,9 @@
                         <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
                         {% if collection.public %}
                             <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
+                            {% if collection.get_number_of_readers > 0 %}
+                                <span class="number-of-readers">{{ collection.get_number_of_readers }} users are following this list</span>
+                            {% endif %}
                         {% endif %}
                         <div class="manage-lists-buttons">
                             <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
