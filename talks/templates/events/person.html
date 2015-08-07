@@ -18,7 +18,9 @@
         </h3>
     </div>
     <div class="panel-body">
-        <a class="pull-right btn btn-default" role="button" href="{% url 'edit-person' person.slug %}">edit</a>
+        {% if request.tuser %}
+            <a class="pull-right btn btn-default" role="button" href="{% url 'edit-person' person.slug %}">edit</a>
+        {% endif %}
         {% if person.bio %}
         <p>{{ person.bio }}</p>
         {% endif %}
