@@ -23,15 +23,15 @@
     };
 </script>
 
-{% endblock %}
-
-{% block content %}
-
 <script type="application/ld+json">
 {
 {% include "events/jsonld_event.html" with event=event location=location url=event.get_absolute_url %}
 }
 </script>
+
+{% endblock %}
+
+{% block content %}
 
 {% spaceless %}
 
