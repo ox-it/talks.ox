@@ -181,7 +181,7 @@ def api_event_get_ics(request, slug):
     event = get_event_by_slug(slug)
     if not event:
         raise Http404
-    serializer = EventSerializer(event)
+    serializer = EventSerializer(event, context={'request':request})
     return Response(serializer.data,
                     status=status.HTTP_200_OK, content_type=ICalRenderer.media_type)
 
