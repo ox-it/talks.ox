@@ -17,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
 from talks.api_ox.api import ApiException, OxfordDateResource
-
+from talks.core.utils import iso8601_duration
 
 logger = logging.getLogger(__name__)
 
@@ -356,6 +356,16 @@ class Event(models.Model):
     def formatted_endtime(self):
         if self.start:
             return date_filter(self.end, settings.EVENT_TIME_FORMAT)
+        else:
+            return None
+
+    def duration(self):
+        """
+        :return: a duration in ISO8601 duration format
+        """
+        if self.start and self.end:
+            duration = self.end - self.start
+            return str(iso8601_duration(duration))
         else:
             return None
 

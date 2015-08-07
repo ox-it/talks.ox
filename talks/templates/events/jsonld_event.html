@@ -1,10 +1,22 @@
-<script type="application/ld+json">
-{
   "@context": "http://schema.org",
-  "@type": "Event",
-  "name": "{{ event.title }}",
+  "@type": "EducationEvent",
+  "name": "{{ event.title_display }}",
   "startDate": "{{ event.start|date:'c' }}",
-  "url": "{{ url }}",
+  "duration": "{{ event.duration }}",
+  {% for speaker in event.speakers %}"performer": {
+     "@type": "Person",
+     "name": "{{ speaker.name }}",
+     "familyName": "{{ speaker.lastname }}"{% if speaker.bio %},
+     "affiliation": "{{ speaker.bio }}"{% endif %}
+   },{% endfor %}
+  {% for organiser in event.organisers %}"organizer": {
+     "@type": "Person",
+     "name": "{{ organiser.name }}",
+     "familyName": "{{ organiser.lastname }}"{% if organiser.bio %},
+     "affiliation": "{{ organiser.bio }}"{% endif %}{% if event.organiser_email %},
+     "email": "{{ event.organiser_email }}"{% endif %}
+   },{% endfor %}
+  "url": "{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ event.get_absolute_url }}",
   "location": {
       "@type": "Place",
       "name": "{{ location.name }}",
@@ -14,6 +26,9 @@
         "latitude": "{{ location.lat }}",
         "longitude": "{{ location.lon }}"
     }
+  },
+  "offers": {
+      "eligibleCustomerType": "{{ event.get_audience_display }}"{% if event.booking_url %},
+      "url": "{{ event.booking_url }}"{% endif %}
   }
-}
-</script>
+

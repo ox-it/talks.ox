@@ -16,8 +16,6 @@
 
 {% block content %}
 
-{% include "events/jsonld_event.html" with event=event location=location url=url %}
-
 {{ event.title_display }}
 
 {% if event.special_message %}

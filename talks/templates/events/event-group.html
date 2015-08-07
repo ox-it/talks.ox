@@ -14,14 +14,6 @@
     };
 </script>
 
-<script type="application/ld+json">
-[{% for event in event_group.events.all %}{
-  "@context": "http://schema.org",
-  "@type": "Event",
-  "name": "{{ event.title }}",
-  "startDate": "{{ event.start|date:'c' }}"
-{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
-</script>
 {% endblock %}
 
 {% block content %}
