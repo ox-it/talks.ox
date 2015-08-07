@@ -19,15 +19,6 @@
 
 {% block topcontent %}
 
-<div class="alert alert-info">
-    <h3>New Oxford Talks Editing Interface</h3>
-    <p>This is Phase 1 of the New Oxford Talks</p>
-
-    <ul>
-        <li><strong>Talks Editors</strong> log in to add and edit your talks</li>
-        <li><strong>Browse</strong> upcoming talks on the <a href="http://talks.ox.ac.uk">Talks Website</a></li>
-    </ul>
-</div>
 
 <ul class="visible-xs nav nav-tabs nav-justified" role="tablist">
   <li class="active"><a href="#upcoming">Upcoming</a></li>
@@ -36,18 +27,7 @@
 {% endblock %}
 
 {% block side %}
-    {% if collections %}
-        <h2 class="hidden-xs">Your Talks</h2>
-        <ul class="list-unstyled">
-        {% for event in user_events %}
-            <li>{% include "events/event_teaser.html" %}</li>
-        {% endfor %}
-        </ul>
-{#        TODO.  More link #}
-{#        {% if user_events_more_link %}#}
-{#            <a href="{% url 'browse_events' %}?limit_to_collections=true">More</a>#}
-{#        {% endif %}#}
-    {% endif %}
+
 {% endblock %}
 
 
@@ -62,9 +42,9 @@
         {% empty %}
             <li>
                 <p>There are no talks scheduled today.</p>
-                <a class="btn btn-default" href="{% url "browse_events" %}">Browse upcoming talks</a>
             </li>
         {% endfor %}
+        <a class="btn btn-default" href="{% url "browse_events" %}">Browse for more talks</a>
     </ul>
 
     {% if conferences %}
@@ -98,6 +78,19 @@
         </li>
         {% endfor %}
     </ul>
+    {% endif %}
+
+    {% if collections %}
+        <h2 class="hidden-xs">Your Talks</h2>
+        <ul class="list-unstyled">
+        {% for event in user_events %}
+            <li>{% include "events/event_teaser.html" %}</li>
+        {% endfor %}
+        </ul>
+{#        TODO.  More link #}
+{#        {% if user_events_more_link %}#}
+{#            <a href="{% url 'browse_events' %}?limit_to_collections=true">More</a>#}
+{#        {% endif %}#}
     {% endif %}
 </div>
 
