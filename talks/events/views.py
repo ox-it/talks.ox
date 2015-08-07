@@ -88,13 +88,16 @@ def browse_events(request):
         if modified_request_parameters.get(param):
             args[param] = modified_request_parameters.get(param)
     
+    if not modified_request_parameters['start_date']:
+        return redirect(reverse('browse_events'))
+
     events = events_search(modified_request_parameters)
 
     paginator = Paginator(events, count)
     try:
         events = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
-        return redirect('browse')
+        return redirect(reverse('browse_events'))
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 

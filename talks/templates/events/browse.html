@@ -46,11 +46,16 @@
 
 
       <ul class="nav nav-list well">
-        <li class="nav-header"><strong>Date filter</strong></li>
 
         <form action="{% url 'browse_events' %}" method="get">
-            <!--{% csrf_token %}-->
-            {{ browse_events_form | bootstrap }}
+            {{ browse_events_form.start_date | bootstrap }}
+            <a class="clear-datepicker pull-right" href="#">clear</a>
+            {{ browse_events_form.to | bootstrap }}
+            {{ browse_events_form.venue | bootstrap }}
+            {{ browse_events_form.organising_department | bootstrap }}
+            {{ browse_events_form.include_subdepartments | bootstrap }}
+            {{ browse_events_form.seriesid | bootstrap }}
+
             <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </form>

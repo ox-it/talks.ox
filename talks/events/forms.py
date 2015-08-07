@@ -11,9 +11,8 @@ class BrowseEventsForm(forms.Form):
     start_date = forms.DateTimeField(label="Start Date",
                                      required=True,
                                      widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
-    to = forms.DateTimeField(label="End Date",
+    to = forms.DateTimeField(label="End date",
                              required=False,
-                             help_text="Choose date range to filter by.",
                              widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
     venue = OxPointField(datasources.LOCATION_DATA_SOURCE,
                          label="Venue",
@@ -36,6 +35,9 @@ class BrowseEventsForm(forms.Form):
         cleaned_data = self.cleaned_data
         start_date = cleaned_data.get('start_date')
         end_date = cleaned_data.get('to')
+
+        if not start_date:
+            raise ValidationError({'start_date': 'Start date is required'})
 
         # Ensure end date is after start date
         if end_date and (end_date < start_date):
