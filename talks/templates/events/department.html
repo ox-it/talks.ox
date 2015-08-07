@@ -8,7 +8,13 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            {{ org.name }}
+            <strong>{{ org.name }}</strong>
+
+            {% if parent %}
+                <span class="pad-left">part of:</span>
+                <a class="" href="/talks/department/id/{{ parent.id }}">{{ parent.name }}</a>
+            {% endif %}
+
             <div class="formatting-links">
                 <a class="formatting-link plain-text-link" href="/talks/department/id/{{ org.id }}?format=txt" title="View a plain text version of this department">
                     <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
@@ -26,7 +32,13 @@
             <li class="list-group-item"><i>Sorry, there are currently no talks scheduled in this department.</i></li>
         {% endif %}
     </ul>
-
+<div class="panel-footer">
+        {% if show_all %}
+        <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-department' org.id %}">Show upcoming talks only</a>
+        {% else %}
+        <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-department' org.id %}?show_all=true">Show all talks in this department</a>
+        {% endif %}
+        </div>
 </div>
 
 <p><a href="//maps.ox.ac.uk/#/places/{{ org.id }}" target="_blank">See {{ org.name }} on <strong>maps.ox</strong></a></p>
@@ -35,7 +47,7 @@
 This page lists all talks organised by this department, or any of its sub-organisations:
 <ul>
     {% for org in sub_orgs %}
-        <li>{{ org.title }}</li>
+        <li><a class="" href="/talks/department/id/{{ org.id }}">{{ org.title }}</a></li>
     {% endfor %}
 </ul>
 

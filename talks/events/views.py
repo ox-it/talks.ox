@@ -241,7 +241,12 @@ def show_topic(request):
 
 def show_department_organiser(request, org_id):
     org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
-    events = Event.published.filter(department_organiser=org_id)
+    events = Event.published.filter(department_organiser=org_id).order_by('start')
+
+    show_all = request.GET.get('show_all', False)
+    if not show_all:
+        events = events.filter(start__gte=date.today())
+
     context = {
         'org': org,
         'events': events
@@ -256,11 +261,25 @@ def show_department_descendant(request, org_id):
     sub_orgs = descendants
     ids = [o['id'] for o in sub_orgs]
     ids.append(results['id'])  # Include self
-    events = Event.published.filter(department_organiser__in=ids)
+    events = Event.published.filter(department_organiser__in=ids).order_by('start')
+
+    show_all = request.GET.get('show_all', False)
+    if not show_all:
+        events = events.filter(start__gte=date.today())
+
+    if org['_links'].has_key('parent'):
+        parent_href = org['_links']['parent'][0]['href']
+        parent_id = parent_href[parent_href.find("oxpoints"):]
+        parent = DEPARTMENT_DATA_SOURCE.get_object_by_id(parent_id)
+    else:
+        parent = None
+
     context = {
         'org': org,
         'sub_orgs': sub_orgs,
-        'events': events
+        'events': events,
+        'parent': parent,
+        'show_all': show_all,
     }
     if request.GET.get('format') == 'txt':
         return render(request, 'events/department.txt.html', context)

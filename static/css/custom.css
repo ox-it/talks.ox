@@ -125,3 +125,7 @@ div.manage-lists-buttons {
 .js-datetimepicker input:hover {
     cursor: pointer;
 }
+
+.pad-left {
+    margin-left: 25px;
+}
