@@ -202,15 +202,15 @@ $(function() {
         bloodhound.initialize().done((function($this) { 
             return function(e) {
                 showSelectedValuesForInput.apply($this);
+		        var typeahead = $this.typeahead(options, dataSource);
+		        typeahead.on('typeahead:selected', onChange);
+		        typeahead.on('eventDepartmentChanged', onEventDepartmentChanged);
+		        typeahead.on('eventOrganisersChanged', onEventOrganisersChanged);
+		        typeahead.on('addPerson', onAddPerson);
             }
         })($this)
         );
 
-        var typeahead = $this.typeahead(options, dataSource);
-        typeahead.on('typeahead:selected', onChange);
-        typeahead.on('eventDepartmentChanged', onEventDepartmentChanged);
-        typeahead.on('eventOrganisersChanged', onEventOrganisersChanged);
-        typeahead.on('addPerson', onAddPerson);
     });
 
 });
