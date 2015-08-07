@@ -5,31 +5,34 @@
         Add this {% if item_desc %}{{ item_desc }}{% else %}talk{% endif %} to list
         <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu">
-        {% for collection in collections %}
-            <li>
-                {{ collection.title }}
-                {% ifequal item_desc 'series' %}
-                    <a class="js-add-to-collection {% if collection|collection_contains_item:event_group %}hidden{% endif %}"
-                       href="#" action="{% url 'save-item' %}" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">
-                        <i class="fa fa-plus-square pull-right"></i>
-                    </a>
-                    <a class="js-remove-from-collection {% if not collection|collection_contains_item:event_group %}hidden{% endif %}"
-                       href="#" action="{% url 'remove-item' %}" data-collection="{{ collection.slug }}" data-group="{{ event_group.slug }}">
-                        <i class="fa fa-minus-square pull-right"></i>
-                    </a>
-                {% else %}
-                    <a class="js-add-to-collection {% if collection|collection_contains_item:event %}hidden{% endif %}"
-                       href="#" action="{% url 'save-item' %}" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">
-                        <i class="fa fa-plus-square pull-right"></i>
-                    </a>
-                    <a class="js-remove-from-collection {% if not collection|collection_contains_item:event %}hidden{% endif %}"
-                       href="#" action="{% url 'remove-item' %}" data-collection="{{ collection.slug }}" data-event="{{ event.slug }}">
-                        <i class="fa fa-minus-square pull-right"></i>
-                    </a>
-                {% endifequal %}
-            </li>
-        {% endfor %}
+    <ul class="dropdown-menu nav">
+        <li>
+            <ul class="nav">
+                {% for collection in collections %}
+                    <li>
+                        {% ifequal item_desc 'series' %}
+                            <a class="js-toggle-collection-item"
+                               href="#" action="{% url 'remove-item' %}"
+                               data-collection="{{ collection.slug }}"
+                               data-group="{{ event_group.slug }}"
+                               data-action="{% if collection|collection_contains_item:event_group %}remove{% else %}add{% endif %}">
+                                {{ collection.title }}
+                                <i class="pull-right fa {% if collection|collection_contains_item:event_group %}fa-minus-square{% else %}fa-plus-square{% endif %}"></i>
+                            </a>
+                        {% else %}
+                            <a class="js-toggle-collection-item"
+                               href="#" action="{% url 'remove-item' %}"
+                               data-collection="{{ collection.slug }}"
+                               data-event="{{ event.slug }}"
+                               data-action="{% if collection|collection_contains_item:event %}remove{% else %}add{% endif %}">
+                                {{ collection.title }}
+                                <i class="pull-right fa {% if collection|collection_contains_item:event %}fa-minus-square{% else %}fa-plus-square{% endif %}"></i>
+                            </a>
+                        {% endifequal %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
     </ul>
 </div>
 <div id="collection-alert-container"></div>

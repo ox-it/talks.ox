@@ -101,17 +101,8 @@ a.formatting-link:hover {
 }
 
 /* Prevent target from being the font-awesome element for fa tags within an <a>.  eg. for add/remove event from list */
-.dropdown-menu>li>a.js-add-to-collection .fa,
-.dropdown-menu>li>a.js-remove-from-collection .fa {
+.dropdown-menu li>a.js-toggle-collection-item .fa {
     pointer-events: none;
-}
-
-.dropdown-menu>li>a.js-add-to-collection,
-.dropdown-menu>li>a.js-remove-from-collection {
-    display: inline-block;
-}
-.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
-    background-color: #fff;
 }
 
 .dropdown-menu>li {
