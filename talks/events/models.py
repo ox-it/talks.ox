@@ -20,9 +20,6 @@ from django.core.urlresolvers import reverse
 from talks.api_ox.api import ApiException, OxfordDateResource
 from talks.core.utils import iso8601_duration
 
-
-
-
 logger = logging.getLogger(__name__)
 
 ROLES_SPEAKER = 'speaker'
