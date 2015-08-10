@@ -84,7 +84,7 @@
         <h2 class="hidden-xs">Your Talks</h2>
         <ul class="list-unstyled">
         {% for event in user_events %}
-            <li>{% include "events/event_teaser.html" %}</li>
+            <li class="list-group-item">{% include "events/event_teaser.html" %}</li>
         {% endfor %}
         </ul>
 {#        TODO.  More link #}
