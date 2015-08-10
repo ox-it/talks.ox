@@ -1,5 +1,6 @@
-import logging
 import functools
+import itertools
+import logging
 from datetime import date
 import uuid
 
@@ -18,6 +19,9 @@ from django.core.urlresolvers import reverse
 
 from talks.api_ox.api import ApiException, OxfordDateResource
 from talks.core.utils import iso8601_duration
+
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +138,20 @@ class EventGroup(models.Model):
         :return: True if the user is allowed to edit this event, False otherwise
         """
         return self.editor_set.filter(id=user.id).exists() or user.is_superuser
+
+
+    @property
+    def public_collections_containing_this_event_group(self):
+        from talks.users.models import CollectionItem, Collection
+        content_type = ContentType.objects.get_for_model(EventGroup)
+
+        collectionItemsContainingEventGroup = CollectionItem.objects.filter(content_type=content_type, object_id=self.id)
+        collectionIDsTheseCollectionItemsAreIn = collectionItemsContainingEventGroup.values_list('collection')
+        collectionsContainingThisEventGroup = Collection.objects.filter(id__in=itertools.chain.from_iterable(collectionIDsTheseCollectionItemsAreIn))
+
+        publicCollectionsContainingThisEventGroup = collectionsContainingThisEventGroup.filter(public=True)
+
+        return publicCollectionsContainingThisEventGroup
 
 
 class PersonManager(models.Manager):
@@ -417,6 +435,21 @@ class Event(models.Model):
         if self.group:
             can_edit = can_edit or self.group.user_can_edit(user)
         return can_edit
+
+    @property
+    def public_collections_containing_this_event(self):
+        from talks.users.models import CollectionItem, Collection
+        content_type = ContentType.objects.get_for_model(Event)
+
+        collectionItemsContainingEvent = CollectionItem.objects.filter(content_type=content_type, object_id=self.id)
+        collectionIDsTheseCollectionItemsAreIn = collectionItemsContainingEvent.values_list('collection')
+        collectionsContainingThisEvent = Collection.objects.filter(id__in=itertools.chain.from_iterable(collectionIDsTheseCollectionItemsAreIn))
+
+        publicCollectionsContainingThisEvent = collectionsContainingThisEvent.filter(public=True)
+
+        return publicCollectionsContainingThisEvent
+
+
 
 reversion.register(Event)
 reversion.register(EventGroup)
