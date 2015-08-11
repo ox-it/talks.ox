@@ -16,6 +16,7 @@ from talks.events.urls import urlpatterns as events_urls
 from talks.users.urls import urlpatterns as users_urls
 from talks.users.views import webauth_logout
 from talks.core.healthchecks import healthcheck
+from talks.old_talks.url_mappings import old_talks_mappings
 
 
 
@@ -34,5 +35,7 @@ urlpatterns = patterns('',
     url(r'^contributors/', include(contributors_urls)),
     url(r'^user/', include(users_urls)),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
-    url(r'^_health$', healthcheck, name='healthcheck')
+    url(r'^_health$', healthcheck, name='healthcheck'),
+
+    url(r'^talk/index/(?P<index_id>[^/]+)$', old_talks_mappings, name='old-site-mappings'),
 )
