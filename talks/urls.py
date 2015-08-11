@@ -38,4 +38,5 @@ urlpatterns = patterns('',
     url(r'^_health$', healthcheck, name='healthcheck'),
 
     url(r'^talk/index/(?P<index_id>[^/]+)$', old_talks_mappings, name='old-site-mappings'),
+    url(r'^show/index/(?P<index_id>[^/]+)$', old_talks_mappings, name='old-site-mappings'),
 )
