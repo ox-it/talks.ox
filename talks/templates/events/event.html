@@ -8,9 +8,9 @@
 
 {% block extrahead %}
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{{ event.title }}">
+<meta name="twitter:title" content="{{ event.title_display }}">
 <meta name="twitter:description" content="{{ event.description }}">
-<meta property="og:title" content="{{ event.title }}" />
+<meta property="og:title" content="{{ event.title_display }}" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ url }}" />
 <meta property="og:description" content="{{ event.description }}">
@@ -72,7 +72,7 @@
                 <div class="share-this-links">
                     <span class="st_twitter_large" displayText="Tweet"></span>
                     <span class="st_facebook_large" displayText="Facebook"></span>
-                    <span class="st_linkedin_large" displayText="LinkedIn"></span>
+                    <span class="st_linkedin_large" displayText="LinkedIn" st_image="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}/static/images/ox_brand6_rev_rect.gif"></span>
                     <span class="st_email_large" displayText="Email"></span>
                     <span class="st_sharethis_large" displayText="ShareThis"></span>
                 </div>
@@ -103,7 +103,7 @@
     </div>
     <!-- List group -->
     <ul class="list-group">
-        <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})</li>
+        <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} {% if event.oxford_date.formatted_nocal %}({{ event.oxford_date.formatted_nocal }}){% endif %}</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location %}
             <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
