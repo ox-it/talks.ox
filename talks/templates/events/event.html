@@ -8,12 +8,13 @@
 
 {% block extrahead %}
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{{ event.title }}">
+<meta name="twitter:title" content="{{ event.title_display }}">
 <meta name="twitter:description" content="{{ event.description }}">
-<meta property="og:title" content="{{ event.title }}" />
+<meta property="og:title" content="{{ event.title_display }}" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ url }}" />
-<meta property="og:image" content="" />
+<meta property="og:description" content="{{ event.description }}">
+<meta property="og:image" content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}/static/images/oxweb-logo-square-200x200.png" />  {# Note: image must be 200x200 or larger for facebook share-this to use it #}
 
 <script src="{% static "js/user-collections.js"%}"></script>
 <script>
@@ -30,6 +31,11 @@
 }
 </script>
 {% endif %}
+
+{# For Share This links #}
+<script type="text/javascript">var switchTo5x=true;</script>
+<script type="text/javascript" src="{% if request.is_secure %}https://ws.{% else %}http://w.{% endif %}sharethis.com/button/buttons.js"></script>
+<script type="text/javascript">stLight.options({publisher: "c3a11c6f-3df5-4e62-9caf-dfdd9bbe172f", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 
 {% endblock %}
 
@@ -58,11 +64,22 @@
 
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title contains-floating-buttons">
-            {{ event.title_display }}
-            <div class="formatting-links">
+        <h3 class="panel-title contains-floating-buttons event">
+            <div class="event-title pull-left">
+                {{ event.title_display }}
+            </div>
+            <div class="formatting-links pull-right">
+                <div class="share-this-links">
+                    <span class="st_twitter_large" displayText="Tweet"></span>
+                    <span class="st_facebook_large" displayText="Facebook"></span>
+                    <span class="st_linkedin_large" displayText="LinkedIn"></span>
+                    <span class="st_email_large" displayText="Email"></span>
+                    <span class="st_sharethis_large" displayText="ShareThis"></span>
+                </div>
+
                 {% include "events/event_plain_text_link.html" %}
                 {% include "events/event_ics_link.html" %}
+
                 {% if editable_collections %}
                     <div class="add-to-collections">
                         {% include "users/add_to_collections_widget.html"  with collections=editable_collections %}
@@ -86,7 +103,7 @@
     </div>
     <!-- List group -->
     <ul class="list-group">
-        <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})</li>
+        <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} {% if event.oxford_date.formatted_nocal %}({{ event.oxford_date.formatted_nocal }}){% endif %}</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location %}
             <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>

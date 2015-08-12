@@ -63,11 +63,11 @@ span.filter-active {
     margin-bottom: 8px;
 }
 
-/* ICS link within a panel */
+/* ICS/plain text links within a panel */
 .panel .formatting-links {
     float: right;
 }
-/* ICS link within a list-group */
+/* ICS/plain text links within a list-group */
 .list-group-item .formatting-links-wrapper {
     float: right;
 }
@@ -112,6 +112,9 @@ a.formatting-link:hover {
 .contains-floating-buttons {
     min-height: 40px;
 }
+.contains-floating-buttons.event {
+    min-height: 60px;
+}
 .nav-tabs {
     border-bottom: 0;
 }
@@ -128,4 +131,15 @@ div.manage-lists-buttons {
 
 .pad-left {
     margin-left: 25px;
+}
+
+div.share-this-links {
+    display: inline-block;
+}
+div.share-this-links span {
+    vertical-align: middle;
+}
+
+.event-title {
+    margin-bottom: 10px;
 }
