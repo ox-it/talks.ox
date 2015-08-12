@@ -105,6 +105,17 @@
         {% endif %}
         </div>
         {% endfor %}
+
+        {% if event_group.public_collections_containing_this_event_group %}
+            <li class="list-group-item"><strong>This series features in the following public lists</strong>:
+                <ul class="list-unstyled">
+                    {% for collection in event_group.public_collections_containing_this_event_group %}
+                        <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+
         <div class="panel-footer">
         {% if show_all %}
         <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-event-group' event_group.slug %}">Show upcoming talks only</a>
