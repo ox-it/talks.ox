@@ -17,11 +17,13 @@
     <div class="panel-heading">
         <h3 class="panel-title contains-floating-buttons">
             {{ collection.title }}
-            {% ifequal collection|collection_permission:user 'owner' %}
-                <div class="manage-lists-buttons">
-                    <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
-                </div>
-            {% endifequal %}
+            {% if request.tuser %}
+                {% ifequal collection|collection_permission:user 'owner' %}
+                    <div class="manage-lists-buttons">
+                        <a href="{% url "edit-list" collection.slug %}" class="btn btn-primary">Edit</a>
+                    </div>
+                {% endifequal %}
+            {% endif %}
             <div class="formatting-links">
                 {% include "users/collection_plain_text_link.html" %}
                 {% include "users/collection_ics_link.html" %}

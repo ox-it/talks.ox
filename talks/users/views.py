@@ -41,27 +41,25 @@ def list_public_collections(request):
     return render(request, 'users/public_collections.html', context)
 
 
-@login_required
 def view_collection(request, collection_slug):
-    context = {}
-    if request.tuser:
-        # Authenticated user
-        collection = Collection.objects.get(slug=collection_slug)
-        if not collection.user_can_view(request.user):
-            raise PermissionDenied
+    collection = Collection.objects.get(slug=collection_slug)
+    if collection.public:
+        pass
+    elif not collection.user_can_view(request.user):
+        raise PermissionDenied
 
-        show_all = request.GET.get('show_all', False)
-        events = collection.get_events().order_by('start')
+    show_all = request.GET.get('show_all', False)
+    events = collection.get_events().order_by('start')
 
-        if not show_all:
-            events = events.filter(start__gte=date.today())
+    if not show_all:
+        events = events.filter(start__gte=date.today())
 
-        context = {
-            'collection' : collection,
-            'show_all' : show_all,
-            'events' : events,
-            'event_groups' : collection.get_event_groups().order_by('title'),
-        }
+    context = {
+        'collection' : collection,
+        'show_all' : show_all,
+        'events' : events,
+        'event_groups' : collection.get_event_groups().order_by('title'),
+    }
 
     if request.GET.get('format') == 'txt':
         return render(request, 'users/collection_view.txt.html', context)
