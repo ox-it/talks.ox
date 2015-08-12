@@ -11,22 +11,26 @@
                 {% for collection in collections %}
                     <li>
                         {% ifequal item_desc 'series' %}
-                            <a class="js-toggle-collection-item"
-                               href="#" action="{% url 'remove-item' %}"
+                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event_group %}active{% endif %}"
+                               href="#"
+                               title="{% if collection|collection_contains_item:event_group %}Remove from list{% else %}Add to list{% endif %}"
                                data-collection="{{ collection.slug }}"
                                data-group="{{ event_group.slug }}"
                                data-action="{% if collection|collection_contains_item:event_group %}remove{% else %}add{% endif %}">
+                                <i class="first pull-left fa fa-check {% if not collection|collection_contains_item:event_group %}fade-check{% endif %}"></i>
                                 {{ collection.title }}
-                                <i class="pull-right fa {% if collection|collection_contains_item:event_group %}fa-minus-square{% else %}fa-plus-square{% endif %}"></i>
+                                <i class="second pull-right fa {% if collection|collection_contains_item:event_group %}fa-times{% endif %}"></i>
                             </a>
                         {% else %}
-                            <a class="js-toggle-collection-item"
-                               href="#" action="{% url 'remove-item' %}"
+                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event %}active{% endif %}"
+                               href="#"
+                               title="{% if collection|collection_contains_item:event %}Remove from list{% else %}Add to list{% endif %}"
                                data-collection="{{ collection.slug }}"
                                data-event="{{ event.slug }}"
                                data-action="{% if collection|collection_contains_item:event %}remove{% else %}add{% endif %}">
+                                <i class="first pull-left fa fa-check {% if not collection|collection_contains_item:event %}fade-check{% endif %}"></i>
                                 {{ collection.title }}
-                                <i class="pull-right fa {% if collection|collection_contains_item:event %}fa-minus-square{% else %}fa-plus-square{% endif %}"></i>
+                                <i class="second pull-right fa {% if collection|collection_contains_item:event %}fa-times{% endif %}"></i>
                             </a>
                         {% endifequal %}
                     </li>

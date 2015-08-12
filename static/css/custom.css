@@ -109,6 +109,11 @@ a.formatting-link:hover {
     margin-left: 10px;
 }
 
+.dropdown-menu {
+    min-width: 250px;
+    margin-left: -90px;
+}
+
 .contains-floating-buttons {
     min-height: 40px;
 }
@@ -142,4 +147,11 @@ div.share-this-links span {
 
 .event-title {
     margin-bottom: 10px;
+}
+
+.fade-check {
+    color: #fff;
+}
+.active {
+    background-color: #E4F0FC;
 }

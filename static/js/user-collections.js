@@ -3,11 +3,9 @@ $(function() {
         var data = {};
         var eventID = $(el).data('event');
         var groupID = $(el).data('group');
-        var action = $(el).data('action');
         var collectionID = $(el).data('collection');
         if (eventID) { data.event = eventID; }
         if (groupID) { data.group = groupID; }
-        if (action) { data.action = action; }
         if (collectionID) { data.collection = collectionID; }
         return data;
     }
@@ -17,7 +15,7 @@ $(function() {
     // Add or remove a talk/series to/from a collection
     $('.js-toggle-collection-item').click( function(ev) {
         var data = dataFromEl(ev.target);
-        var action = data.action;
+        var action = $(ev.target).data('action');
         var action_url = document.collectionConfig.saveItemDefault;
         if (action == 'remove') {
             action_url = document.collectionConfig.removeItemDefault;
@@ -33,13 +31,17 @@ $(function() {
             dataType: 'json',
             success: function(response) {
                 if (action == 'remove') {
+                    $(ev.target).children('.first').addClass('fade-check');
+                    $(ev.target).children('.second').removeClass('fa-times');
+                    $(ev.target).removeClass('active');
                     $(ev.target).data('action', 'add');
-                    $(ev.target).children('i').removeClass('fa-minus-square');
-                    $(ev.target).children('i').addClass('fa-plus-square');
+
                 } else {
+                    //$(ev.target).children('i').addClass('fa-check');
+                    $(ev.target).children('.first').removeClass('fade-check');
+                    $(ev.target).children('.second').addClass('fa-times');
+                    $(ev.target).addClass('active');
                     $(ev.target).data('action', 'remove');
-                    $(ev.target).children('i').removeClass('fa-plus-square');
-                    $(ev.target).children('i').addClass('fa-minus-square');
                 }
             },
             error: function(err) {
