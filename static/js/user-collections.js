@@ -33,14 +33,14 @@ $(function() {
                 if (action == 'remove') {
                     $(ev.target).children('.first').addClass('fade-check');
                     $(ev.target).children('.second').removeClass('fa-times');
-                    $(ev.target).removeClass('active');
+                    $(ev.target).removeClass('active-collection');
                     $(ev.target).data('action', 'add');
 
                 } else {
                     //$(ev.target).children('i').addClass('fa-check');
                     $(ev.target).children('.first').removeClass('fade-check');
                     $(ev.target).children('.second').addClass('fa-times');
-                    $(ev.target).addClass('active');
+                    $(ev.target).addClass('active-collection');
                     $(ev.target).data('action', 'remove');
                 }
             },

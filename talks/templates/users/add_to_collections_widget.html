@@ -11,7 +11,7 @@
                 {% for collection in collections %}
                     <li>
                         {% ifequal item_desc 'series' %}
-                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event_group %}active{% endif %}"
+                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event_group %}active-collection{% endif %}"
                                href="#"
                                title="{% if collection|collection_contains_item:event_group %}Remove from list{% else %}Add to list{% endif %}"
                                data-collection="{{ collection.slug }}"
@@ -22,7 +22,7 @@
                                 <i class="second pull-right fa {% if collection|collection_contains_item:event_group %}fa-times{% endif %}"></i>
                             </a>
                         {% else %}
-                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event %}active{% endif %}"
+                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event %}active-collection{% endif %}"
                                href="#"
                                title="{% if collection|collection_contains_item:event %}Remove from list{% else %}Add to list{% endif %}"
                                data-collection="{{ collection.slug }}"
