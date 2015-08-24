@@ -92,6 +92,13 @@ Install python dependencies:
     pip install -r requirements.txt
     pip install -r requirements_dev.txt
 
+### Note for Ubunutu-based developers:
+If you're installing on an ubuntu linux machine, you may experience errors when pip encounters the psycopg2 and ldap packages.
+To prevent this, ensure you install the dev versions of python and libpq.
+```
+    sudo apt-get install -y python-dev libldap2-dev libsasl2-dev libssl-dev
+```
+
 Create the database:
 
     python manage.py migrate --settings=talks.settings_dev
