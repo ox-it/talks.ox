@@ -22,6 +22,10 @@ class CollectionForm(forms.ModelForm):
             'public': "Make this list public?"
         }
 
+        help_texts = {
+            'title': "If you wish to make this list public please make sure the list has a distinctive title and description - e.g.: Recommended talks for 3rd Year Biology"
+        }
+
     def save(self):
         collection = super(CollectionForm, self).save(commit=False)
         collection.save()
