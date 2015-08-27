@@ -9,6 +9,7 @@ from django.shortcuts import render_to_response, render, get_object_or_404, redi
 from datetime import date
 
 from .models import Collection, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
+from talks.events.models import Event
 from .forms import CollectionForm
 
 
@@ -51,14 +52,20 @@ def view_collection(request, collection_slug):
     show_all = request.GET.get('show_all', False)
     events = collection.get_events().order_by('start')
 
+    series = collection.get_event_groups().order_by('title')
+    eventsInSeries = Event.objects.filter(group=series)
+
+
     if not show_all:
         events = events.filter(start__gte=date.today())
+        eventsInSeries = eventsInSeries.filter(start__gte=date.today())
 
     context = {
         'collection' : collection,
         'show_all' : show_all,
         'events' : events,
-        'event_groups' : collection.get_event_groups().order_by('title'),
+        'event_groups' : series,
+        'events_in_series' : eventsInSeries,
     }
 
     if request.GET.get('format') == 'txt':

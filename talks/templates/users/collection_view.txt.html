@@ -24,10 +24,17 @@
     <br>There are no upcoming talks in this list.
 {% endif %}
 
-<br>Series:
+<br>
 {% if event_groups %}
     {% for event_group in event_groups %}
-        <br>{{ event_group.title }}
+        <br>Series: {{ event_group.title }}
+        <br>
+        {% for event in events_in_series %}
+            {% ifequal event.group.id event_group.id %}
+                {% include "events/event_teaser.txt.html" %}<br>
+            {% endifequal %}
+        {% endfor %}
+        <br>
     {% endfor %}
 {% else %}
     <br>You haven't added any series to this list.
