@@ -22,8 +22,10 @@
 
 <div id="collection-alert-container"></div>
     <ul class="nav nav-tabs">
-      <li role="presentation"><a href="{% url 'manage-lists' %}">My Lists</a></li>
-      <li role="presentation" class="active"><a href="{% url 'manage-public-lists' %}">All Public Lists</a></li>
+        {% if user.id %}
+            <li role="presentation"><a href="{% url 'manage-lists' %}">My Lists</a></li>
+        {% endif %}
+        <li role="presentation" class="active"><a href="{% url 'manage-public-lists' %}">All Public Lists</a></li>
     </ul>
 
     <ul class="list-group">
@@ -41,13 +43,15 @@
                                 <span class="number-of-readers">{{ collection.get_number_of_readers }} users are following this list</span>
                             {% endif %}
                         {% endif %}
-                        <div class="manage-lists-buttons">
-                            <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
-                                   href="#" action="{% url 'subscribe-to-list' %}" data-collection="{{ collection.slug }}">Subscribe</a>
+                        {% if user.id %}
+                            <div class="manage-lists-buttons">
+                                <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
+                                       href="#" action="{% url 'subscribe-to-list' %}" data-collection="{{ collection.slug }}">Subscribe</a>
 
-                            <a class="btn btn-warning js-remove-collection {% ifnotequal collection|collection_permission:user 'reader' %}hidden{% endifnotequal %}"
-                                   href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
-                        </div>
+                                <a class="btn btn-warning js-remove-collection {% ifnotequal collection|collection_permission:user 'reader' %}hidden{% endifnotequal %}"
+                                       href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
+                            </div>
+                        {% endif %}
                     </li>
                 {% empty %}
                     <p>There are no public lists available.</p>

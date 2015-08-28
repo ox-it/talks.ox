@@ -35,12 +35,9 @@ def manage_collections(request):
     return render(request, 'users/collections.html', context)
 
 
-@login_required
 def list_public_collections(request):
     context = {}
-    if request.tuser:
-        # Authenticated user
-        context['collections'] = Collection.objects.filter(public=True)
+    context['collections'] = Collection.objects.filter(public=True)
 
     return render(request, 'users/public_collections.html', context)
 
