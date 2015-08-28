@@ -17,6 +17,9 @@
     <div class="panel-heading">
         <h3 class="panel-title contains-floating-buttons">
             {{ collection.title }}
+            {% if collection.public %}
+                <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
+            {% endif %}
             {% if request.tuser %}
                 {% ifequal collection|collection_permission:user 'owner' %}
                     <div class="manage-lists-buttons">
@@ -70,6 +73,14 @@
                 {% endif %}
             </li>
         </ul>
+    {% if contributors %}
+        <div class="panel-footer">
+            <strong>The following Talks editors can contribute to this list:</strong>
+            {% for contributor in contributors %}
+                <br>{{ contributor.user.first_name }} {{ contributor.user.last_name }}
+            {% endfor %}
+        </div>
+    {% endif %}
     <div class="panel-footer">
         {% if show_all %}
             <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}">Show upcoming talks only</a>

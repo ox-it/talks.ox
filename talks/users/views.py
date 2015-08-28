@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response, render, get_object_or_404, redi
 
 from datetime import date
 
-from .models import Collection, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
+from .models import Collection, TalksUser, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
 from talks.events.models import Event
 from talks.users.authentication import user_in_group_or_super
 from .forms import CollectionForm
@@ -55,6 +55,8 @@ def view_collection(request, collection_slug):
     series = collection.get_event_groups().order_by('title')
     eventsInSeries = Event.objects.filter(group=series)
 
+    if request.tuser:
+        collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
 
     if not show_all:
         events = events.filter(start__gte=date.today())
@@ -66,6 +68,7 @@ def view_collection(request, collection_slug):
         'events' : events,
         'event_groups' : series,
         'events_in_series' : eventsInSeries,
+        'contributors' : collectionContributors,
     }
 
     if request.GET.get('format') == 'txt':
