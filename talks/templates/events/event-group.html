@@ -69,7 +69,7 @@
         <li class="list-group-item"><strong>Web Address</strong>: <a href="{{ event_group.web_address }}">{{ event_group.web_address }}</a></li>
     {% endif %}
     {% if event_group.api_organisation %}
-        <li class="list-group-item"><strong>Organising department</strong>: {{ event_group.api_organisation.name }}</li>
+        <li class="list-group-item"><strong>Organising department</strong>: <a href="{% url 'show-department' event_group.api_organisation.id %}">{{ event_group.api_organisation.name }}</a></li>
     {% endif %}
         {% for event in events %}
         <li class="list-group-item">
