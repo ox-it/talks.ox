@@ -52,6 +52,7 @@
             </ul>
         </li>
 
+    {% if user_is_a_contributor %}
         <li class="list-group-item">
             <p><strong>
                 Lists that I can contribute to:
@@ -69,6 +70,7 @@
                 {% endfor %}
             </ul>
         </li>
+    {% endif %}
 
         <li class="list-group-item">
             <p><strong>

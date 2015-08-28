@@ -32,13 +32,14 @@ class CollectionForm(forms.ModelForm):
 
         # clear the list of editors and repopulate with the contents of the form
         collection.editor_set.through.objects.filter(role=COLLECTION_ROLES_EDITOR, collection=collection).delete()
-        for user in self.cleaned_data['editor_set']:
-            if collection.user_collection_permission(user) == 'owner':
-                pass
-            else:
-                TalksUserCollection.objects.create(user=user,
-                                                    collection=collection,
-                                                    role=COLLECTION_ROLES_EDITOR)
+        if self.cleaned_data.has_key('editor_set'):
+            for user in self.cleaned_data['editor_set']:
+                if collection.user_collection_permission(user) == 'owner':
+                    pass
+                else:
+                    TalksUserCollection.objects.create(user=user,
+                                                        collection=collection,
+                                                        role=COLLECTION_ROLES_EDITOR)
 
         collection.save()
         return collection

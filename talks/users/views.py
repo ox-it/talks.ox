@@ -10,6 +10,7 @@ from datetime import date
 
 from .models import Collection, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
 from talks.events.models import Event
+from talks.users.authentication import user_in_group_or_super
 from .forms import CollectionForm
 
 
@@ -28,6 +29,8 @@ def manage_collections(request):
         context['collections_editor'] = request.tuser.collections.filter(talksusercollection__role=COLLECTION_ROLES_EDITOR).distinct().order_by('title')
         context['collections_reader'] = request.tuser.collections.filter(talksusercollection__role=COLLECTION_ROLES_READER).distinct().order_by('title')
         context['collection_type_filters'] = COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
+
+        context['user_is_a_contributor'] = user_in_group_or_super(request.user)
 
     return render(request, 'users/collections.html', context)
 
@@ -79,9 +82,13 @@ def add_collection(request):
     if request.tuser:
         # Authenticated user
         context['collection_form'] = CollectionForm()
+        if (not user_in_group_or_super(request.user)):
+            del context['collection_form'].fields['editor_set']
 
         if request.method == 'POST':
             context['collection_form'] = CollectionForm(request.POST)
+            if (not user_in_group_or_super(request.user)):
+                del context['collection_form'].fields['editor_set']
 
             forms_valid = context['collection_form'].is_valid()
             if forms_valid:
@@ -106,10 +113,15 @@ def edit_collection(request, collection_slug):
     editors = TalksUserCollection.objects.filter(collection=collection, role=COLLECTION_ROLES_EDITOR).values_list('user_id', flat=True)
     editor_set = {'editor_set': editors}
     form = CollectionForm(request.POST or None, instance=collection, prefix='collection', initial=editor_set)
+
+    if (not user_in_group_or_super(request.user)):
+        del form.fields['editor_set']
+
     context = {
         'collection': collection,
         'collection_form': form,
         'is_editing': True,
+        'user_is_a_contributor': user_in_group_or_super(request.user),
     }
     if request.method == 'POST':
         if form.is_valid():
