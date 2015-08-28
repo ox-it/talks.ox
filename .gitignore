@@ -74,3 +74,4 @@ selenium-screenshot-*
 
 .env
 
+.DS_Store
