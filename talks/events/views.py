@@ -170,7 +170,7 @@ def show_event(request, event_slug):
 
 
 def list_event_groups(request):
-    object_list = EventGroup.objects.all()
+    object_list = EventGroup.objects.all().order_by('title')
     context = {
         'object_list': object_list,
     }

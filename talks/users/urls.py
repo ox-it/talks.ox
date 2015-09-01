@@ -5,7 +5,7 @@ from talks.users.views import (manage_collections, list_public_collections, view
 
 urlpatterns = patterns('',
     url(r'^lists$', manage_collections, name='manage-lists'),
-    url(r'^lists/public$', list_public_collections, name='manage-public-lists'),
+    url(r'^lists/public$', list_public_collections, name='view-public-lists'),
     url(r'^lists/new$', add_collection, name='add-list'),
     url(r'^lists/id/(?P<collection_slug>[^/]+)/$', view_collection, name='view-list'),
     url(r'^lists/id/(?P<collection_slug>[^/]+)/edit$', edit_collection, name='edit-list'),
