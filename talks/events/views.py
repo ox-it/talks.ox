@@ -280,6 +280,7 @@ def show_department_descendant(request, org_id):
         'events': events,
         'parent': parent,
         'show_all': show_all,
+        'todays_date': date.today().strftime("%Y-%m-%d"),
     }
     if request.GET.get('format') == 'txt':
         return render(request, 'events/department.txt.html', context)
