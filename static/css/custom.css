@@ -77,6 +77,8 @@ span.filter-active {
 }
 
 .event-teaser-wrapper {
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
     display: inline-flex;
     width: 100%;
 }
