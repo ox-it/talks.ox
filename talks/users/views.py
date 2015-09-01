@@ -55,19 +55,19 @@ def view_collection(request, collection_slug):
     series = collection.get_event_groups().order_by('title')
     eventsInSeries = Event.objects.filter(group=series)
 
-    if request.tuser:
-        collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
+    allEvents = events | eventsInSeries
 
     if not show_all:
-        events = events.filter(start__gte=date.today())
-        eventsInSeries = eventsInSeries.filter(start__gte=date.today())
+        allEvents = allEvents.filter(start__gte=date.today())
+
+    if request.tuser:
+        collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
 
     context = {
         'collection' : collection,
         'show_all' : show_all,
-        'events' : events,
+        'events' : allEvents,
         'event_groups' : series,
-        'events_in_series' : eventsInSeries,
         'contributors' : collectionContributors,
     }
 

@@ -58,20 +58,15 @@
                 {% endif %}
             </li>
 
-            <li class="list-group-item">
-                <strong>Series:</strong>
-                {% if event_groups %}
-
-                        {% for event_group in event_groups %}
-                            <br>
-                                <a href="{{ event_group.get_absolute_url }}">{{ event_group.title }}</a>
-
-                        {% endfor %}
-
-                {% else %}
-                    <p>You haven't added any series to this list.</p>
-                {% endif %}
-            </li>
+            {% if event_groups %}
+                <li class="list-group-item">
+                    <strong>This list contains talks from the following series:</strong>
+                    {% for event_group in event_groups %}
+                        <br>
+                            <a href="{{ event_group.get_absolute_url }}">{{ event_group.title }}</a>
+                    {% endfor %}
+                </li>
+            {% endif %}
         </ul>
     {% if contributors %}
         <div class="panel-footer">
