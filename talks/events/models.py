@@ -6,6 +6,7 @@ import uuid
 
 import requests
 import reversion
+import pytz
 from textile import textile_restricted
 
 from django.utils import timezone
@@ -358,19 +359,19 @@ class Event(models.Model):
 
     def formatted_date(self):
         if self.start:
-            return date_filter(self.start, settings.EVENT_DATETIME_FORMAT)
+            return date_filter(timezone.localtime(self.start), settings.EVENT_DATETIME_FORMAT)
         else:
             return None
 
     def formatted_time(self):
         if self.start:
-            return date_filter(self.start, settings.EVENT_TIME_FORMAT)
+            return date_filter(timezone.localtime(self.start), settings.EVENT_TIME_FORMAT)
         else:
             return None
 
     def formatted_endtime(self):
         if self.start:
-            return date_filter(self.end, settings.EVENT_TIME_FORMAT)
+            return date_filter(timezone.localtime(self.end), settings.EVENT_TIME_FORMAT)
         else:
             return None
 
