@@ -60,6 +60,7 @@ def view_collection(request, collection_slug):
     if not show_all:
         allEvents = allEvents.filter(start__gte=date.today())
 
+    collectionContributors = None
     if request.tuser:
         collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
 
