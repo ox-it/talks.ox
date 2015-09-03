@@ -19,17 +19,6 @@
 
 <script src="{% static "js/form-controls.js"%}"></script>
 
-<script type="application/ld+json">
-[{% for event in events %}{
-  "@context": "http://schema.org",
-  "@type": "Event",
-  "name": "{{ event.title }}",
-  "startDate": "{{ event.start|date:'c' }}"
-{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
-</script>
-
-
-
 {% endblock %}
 
 
@@ -42,19 +31,26 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-3 col-xs-12">
-      <h3>Filters</h3>
-
-
+      <h3>View all:</h3>
       <ul class="nav nav-list well">
+        <li>
+          <a href="{% url 'list-event-groups' %}">Series</a>
+        </li>
+        <li>
+          <a href="{% url 'view-public-lists' %}">Public Lists</a>
+        </li>
+      </ul>
 
+      <h3>Filters</h3>
+      <ul class="nav nav-list well">
         <form action="{% url 'browse_events' %}" method="get">
             {{ browse_events_form.start_date | bootstrap }}
             <a class="clear-datepicker pull-right" href="#">clear</a>
             {{ browse_events_form.to | bootstrap }}
-            {{ browse_events_form.venue | bootstrap }}
             {{ browse_events_form.organising_department | bootstrap }}
             {{ browse_events_form.include_subdepartments | bootstrap }}
             {{ browse_events_form.seriesid | bootstrap }}
+            {{ browse_events_form.venue | bootstrap }}
 
             <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
@@ -71,19 +67,8 @@
         </script>
 
       </ul>
-
-
-      <br>
-      <h3>View all:</h3>
-      <ul class="nav nav-list well">
-          <li>
-              <a href="{% url 'list-event-groups' %}">Series</a>
-          </li>
-          <li>
-              <a href="{% url 'view-public-lists' %}">Public Lists</a>
-          </li>
-        </ul>
     </div>
+
   </div>
 </div>
 
@@ -93,7 +78,6 @@
 {% block main %}
 
 <h2 class="hidden-xs">Browse Talks</h2>
-
 
 <div class="js-upcoming-events">
     {% if events %}
