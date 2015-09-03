@@ -60,10 +60,10 @@ def browse_events(request):
     modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
-        twoWeeks = date.today() + timedelta(days=14)
+        defaultEndDate = date.today() + timedelta(days=7*8)
         modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
         if len(request.GET) == 0:
-            modified_request_parameters['to'] = twoWeeks.strftime("%Y-%m-%d")
+            modified_request_parameters['to'] = defaultEndDate.strftime("%Y-%m-%d")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
@@ -104,7 +104,9 @@ def browse_events(request):
     context = {
         'events': events,
         'fragment': fragment,
-        'browse_events_form': browse_events_form
+        'browse_events_form': browse_events_form,
+        'start_date': modified_request_parameters.get('start_date'),
+        'end_date': modified_request_parameters.get('to'),
         }
     return render(request, 'events/browse.html', context)
 
