@@ -19,7 +19,7 @@ from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection, TalksUserCollection, COLLECTION_ROLES_READER
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, TalksUserCollectionSerializer, get_item_serializer, HALEventSerializer,
-                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer)
+                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer)
 from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
 
@@ -304,3 +304,22 @@ def api_collection_ics(request, collection_slug):
         return Response({'error': "Collection not found"},
                         status=status.HTTP_404_NOT_FOUND)
 
+
+
+@api_view(["GET"])
+def api_collection(request, collection_slug):
+    """Get events and event groups from a collection to be displayed
+    :param collection_slug: collection slug
+    :return: DRF response object
+    """
+    try:
+        collection = Collection.objects.get(slug=collection_slug)
+        if collection.public:
+            serializer = HALCollectionSerializer(collection)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': "Collection is not public"},
+                        status=status.HTTP_403_FORBIDDEN)
+    except ObjectDoesNotExist:
+        return Response({'error': "Collection not found"},
+                        status=status.HTTP_404_NOT_FOUND)
