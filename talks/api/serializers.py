@@ -252,7 +252,7 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventGroup
-        fields = ('_links', 'title', 'description', 'occurence', '_embedded')
+        fields = ('_links', 'id', 'title', 'description', 'occurence', '_embedded')
 
 
 class CollectionLinksSerializer(serializers.ModelSerializer):
