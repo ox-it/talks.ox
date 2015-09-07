@@ -32,18 +32,19 @@
 {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})
 
 <br>Venue:
-{% if location %}
+{% if location and event.location_details %}
   {{ location.name }}{% if location.address %}, {{ location.address }}{% endif %}
+  <br>Venue Details:
+  {{ event.location_details }}
+{% elif location %}
+  {{ location.name }}{% if location.address %}, {{ location.address }}{% endif %}
+{% elif event.location_details %}
+  {{ event.location_details }}
 {% else %}
   Venue to be announced
 {% endif %}
 
-{% if event.location_details %}
-  <br>Details:
-  {{ event.location_details }}
-{% endif %}
-
-<br>Speaker{{ speakers|pluralize }}: 
+<br>Speaker{{ speakers|pluralize }}:
 {% for speaker in speakers %}
     {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
 {% empty %}

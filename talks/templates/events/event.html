@@ -105,17 +105,21 @@
     <ul class="list-group">
         <li class="list-group-item"><strong>Date</strong>: {{ event.formatted_date}} {% if event.oxford_date.formatted_nocal %}({{ event.oxford_date.formatted_nocal }}){% endif %}</li>
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
-            {% if location %}
-            <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
-            <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
+            {% if location and event.location_details %}
+                <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
+                <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
+                <br><br>
+                <strong>Details</strong>:
+                {{ event.location_details }}
+            {% elif location %}
+                <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
+                <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
+            {% elif event.location_details %}
+                {{ event.location_details }}
             {% else %}
-            <span>Venue to be announced</span>
+                <span>Venue to be announced</span>
             {% endif %}
-            {% if event.location_details %}
-            <br><br>
-            <strong>Details</strong>:
-            {{ event.location_details }}
-            {% endif %}
+
         {% endspaceless %}</li>
         {% spaceless %}
         <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
