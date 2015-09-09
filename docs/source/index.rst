@@ -13,12 +13,32 @@ Oxford Talks
 User Guide
 **********
 
-.. toctree::
-    :maxdepth: 2
-    :glob:
+New features arriving in the next few months
 
-    user/*   
-    
+.. toctree::
+    :maxdepth: 1
+
+    user/talk-users
+
+*******************
+General Information
+*******************
+
+.. toctree::
+    :maxdepth: 1
+
+    user/general
+
+**************
+Editors' Guide
+**************
+
+.. toctree::
+    :maxdepth: 1
+
+    user/talk-editors
+
+
 ****************************
 Web Managers and Integrators
 ****************************
@@ -49,4 +69,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
