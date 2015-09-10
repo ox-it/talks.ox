@@ -7,36 +7,40 @@
 Oxford Talks
 ############
 
+.. toctree::
+   :maxdepth: 1
+   :caption: User Guide
 
-
-**********
-User Guide
-**********
-
-New features arriving in the next few months
+   user/talk-users/explore-talks
+   user/talk-users/make-a-list
+   user/talk-users/add-to-your-calendar
+   user/talk-users/feed-in-your-calendar
+   user/talk-users/email-reminders
 
 .. toctree::
     :maxdepth: 1
+    :caption: General Information
 
-    user/talk-users
-
-*******************
-General Information
-*******************
-
-.. toctree::
-    :maxdepth: 1
-
-    user/general
-
-**************
-Editors' Guide
-**************
+    user/general/log-in
+    user/general/terms
+    user/general/organisers
+    user/general/differences
+    user/general/contact
 
 .. toctree::
     :maxdepth: 1
+    :caption: Talks Editor's Guide
 
-    user/talk-editors
+    user/talk-editors/sign-up
+    user/talk-editors/create-a-talk
+    user/talk-editors/create-a-series
+    user/talk-editors/editing
+    user/talk-editors/formatting-the-abstract
+    user/talk-editors/publicizing-your-talk
+    user/talk-editors/last-minute-changes
+    user/talk-editors/share-editing
+    user/talk-editors/people-details
+
 
 
 ****************************
