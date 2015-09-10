@@ -18,21 +18,10 @@ Log in
 * Once you have signed in, clicking the **Continue to** button will take you back to Oxford Talks
 
 .. image:: images/log-in/d1a11eac-3994-43ab-a04e-def878f18588.png
-   :alt: 
+   :alt:
    :height: 389px
    :width: 614px
    :align: center
-
-
-Next Steps
-----------
-
-If you haven't already applied to be a Talks Editor then follow the instructions in the section :doc:`Apply to be a Talks Editor <sign-up>` 
-
-If you are already signed up as a Talks Editor, follow the instructions in:
-
-*  :doc:`Create a talk <create-a-talk>` - to make a start on creating or editing talks
-* :doc:`Create a series of talks <create-a-series>` - to begin a new seminar series or conference
 
 Log out
 -------

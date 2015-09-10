@@ -111,6 +111,7 @@ Using Chrome and Google Calendar
 Further Information
 -------------------
 
-Subscribe to a continuously updated feed of events
+There are also guides on how to:
 
-Set up reminders in your calendar
+* :doc:`Subscribe to a continuously updated feed of events <feed-in-your-calendar>`
+* :doc:`Set up reminders in your calendar <email-reminders>`

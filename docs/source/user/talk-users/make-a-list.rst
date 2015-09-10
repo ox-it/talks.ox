@@ -18,6 +18,8 @@ Login
 * Click the **Login** link at the top right of the screen
 * You will be prompted for your Oxford Single Sign On username and password
 
+(for more help see the :doc:`Logging in and Out <../general/log-in>` section of this guide)
+
 Add talks to My Collection
 --------------------------
 
@@ -122,4 +124,4 @@ Further Information
 -------------------
 
 * All lists have an **Add to my Calendar** button so that you can add them to your own calendar. See the :doc:`Get an up-to-date feed in your own calendar <feed-in-your-calendar>` section for details. 
-* If you want to share the process of collecting talks to a list with other people, you will need to become a Talks Editor. See the Talks Editor Guide for more information.
+* If you want to share the process of collecting talks to a list with other people, you will need to become a Talks Editor. See the :doc:`Talks Editor Guide <../talk-editors/sign-up>` for more information.

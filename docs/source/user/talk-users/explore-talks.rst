@@ -111,9 +111,9 @@ Meanwhile:
 Further Information
 -------------------
 
-Make your own collected list of talks
+There are further guides on:
 
-Copy talks to your calendar
-
-Get a feed of talks in your calendar
+* :doc:`Making your own collected list of talks <make-a-list>`
+* :doc:`Copying talks to your calendar <add-to-your-calendar>`
+* :doc:`Getting a feed of talks into your calendar <feed-in-your-calendar>`
 

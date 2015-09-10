@@ -159,4 +159,4 @@ Google Calendar
 Further Information
 -------------------
 
-Get email reminders
+If you are using Google Calendar, look at the :doc:`Get email reminders <email-reminders>` section to see how to set these up.

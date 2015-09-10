@@ -62,14 +62,10 @@ Developer Documentation
 ***********************
 
 .. toctree::
-    :glob:
+   :maxdepth: 1
+   :caption: HTTP-API
 
-    developer
-
-******************
-Indices and tables
-******************
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   http_api/summary
+   http_api/endpoints/talks
+   http_api/endpoints/series
+   http_api/endpoints/search
