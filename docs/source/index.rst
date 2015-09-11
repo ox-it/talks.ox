@@ -21,11 +21,11 @@ Oxford Talks
     :maxdepth: 1
     :caption: General Information
 
+    user/general/contact
     user/general/log-in
     user/general/terms
     user/general/organisers
     user/general/differences
-    user/general/contact
 
 .. toctree::
     :maxdepth: 1
