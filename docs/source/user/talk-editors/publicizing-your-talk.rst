@@ -62,23 +62,15 @@ Once you've assigned a department or unit to a Series it will be automatically a
 
 If you choose a sub-department or unit, then the talk will also appear in the parent department and division listings.
 
-Viewing department listings
----------------------------
-
-If you click on the **Organising department name** when viewing a talk you will get to a web page with all talks assigned to that department.
-
-The site can generate a listing for any department if you provide the Oxpoints ID for it:
-
-`https://new.talks.ox.ac.uk/talks/department/id/oxpoints:51292900 <https://new.talks.ox.ac.uk/talks/department/id/oxpoints%3A51292900>`_
-
-The easiest way to find an Oxpoints ID is to go to `http://maps.ox.ac.uk, <http://maps.ox.ac.uk,>`_ search for the department and then get the ID from the address bar of your browser.
-
 Adding an abstract
 ------------------
 
 Keywords in the talk abstract will be used for searching, so please add the abstract if you have it. 
 
-Public lists (coming soon)
---------------------------
+Public lists
+------------
 
-As well as topic and department listings, there may be some more ad hoc listings you would like your talk to be included in.  In the next version of Oxford Talks, public lists can be created to collect together talks relevant to a particular theme, enterprise or project within the University - Athena Swan is a good example.
+As well as topic and department listings, there may be some more *ad hoc* listings you would like your talk to be included in.  You can set up a Public List to collect together talks relevant to a particular theme, enterprise or project within the University - Athena Swan is a good example. 
+
+* Follow the instructions in the User Guide - :doc:`Collect talks you are interested in <../talk-users/make-a-list>` - to create and publish a list
+* You can also allow other Talks Editors to add talks to your list - see the :doc:`Sharing Editing <share-editing>` section for more details
