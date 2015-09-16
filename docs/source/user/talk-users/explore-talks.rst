@@ -1,3 +1,6 @@
+.. Note:: |upcoming| 
+
+
 Explore Oxford Talks
 ====================
 
@@ -49,10 +52,10 @@ To see all upcoming talks happening in your department
 Find a seminar series
 ---------------------
 
-If you are interested in a particular seminar series, or meetings of a society: 
+If you are interested in a particular seminar series, or meetings of a society:
 
 * Use the **Series** box in the filter panel if you know the name of the series you are interested in
-* Alternatively, browse the full list of series from the **View all** panel 
+* Alternatively, browse the full list of series from the **View all** panel
 
 .. image:: images/explore-talks/find-a-seminar-series.png
    :alt: Find a seminar series
@@ -79,14 +82,14 @@ It's also possible to find talks on a on a particular topic - you don't need to 
 
 **Topics**
 
-Talks Editors are also beginning to tag talks with a huge range of topics (based on the Library of Congress subject headings). Ways to browse talks by topic will be delivered in the next phases of development. 
+Talks Editors are also beginning to tag talks with a huge range of topics (based on the Library of Congress subject headings). Ways to browse talks by topic will be delivered in the next phases of development.
 
 Meanwhile:
 
 * To find talks in a particular subject area use the **Search** box to type your search term
 
 .. image:: images/explore-talks/1eeac054-56b9-461b-81e7-a0299f31b32b.png
-   :alt: 
+   :alt:
    :height: 339px
    :width: 552px
    :align: center
@@ -95,14 +98,14 @@ Meanwhile:
 * All the topics assigned to a talk or series are clickable, so you can explore a topic further from an individual talk
 
 .. image:: images/explore-talks/204ed603-33b8-48b4-9ff3-c84675a70818.png
-   :alt: 
+   :alt:
    :height: 501px
    :width: 487px
    :align: center
 
 
 .. image:: images/explore-talks/88fe1021-88ef-4e74-8082-b0fa4e6684bd.png
-   :alt: 
+   :alt:
    :height: 286px
    :width: 548px
    :align: center
@@ -116,4 +119,3 @@ There are further guides on:
 * :doc:`Making your own collected list of talks <make-a-list>`
 * :doc:`Copying talks to your calendar <add-to-your-calendar>`
 * :doc:`Getting a feed of talks into your calendar <feed-in-your-calendar>`
-

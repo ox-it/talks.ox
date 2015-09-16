@@ -1,7 +1,10 @@
+.. Note:: |upcoming| 
+
+
 Collect talks you are interested in
 ===================================
 
-You can log in and create personal lists of any of the talks on Oxford Talks. These lists can remain private to you or you can make them public for anyone to view and follow. 
+You can log in and create personal lists of any of the talks on Oxford Talks. These lists can remain private to you or you can make them public for anyone to view and follow.
 
 You can also decide to follow a list of talks that another user has made public.
 
@@ -33,7 +36,7 @@ Add talks to My Collection
 * **Browse Talks** or **Search** for talks you would like to add
 
 .. image:: images/make-a-list/b06e9718-387e-4c1f-948e-969505713c13.png
-   :alt: 
+   :alt:
    :height: 233px
    :width: 393px
    :align: center
@@ -57,7 +60,7 @@ You can make as many lists as you like (for example you could collect talks rele
 * Click **Manage Lists** in the navigation bar on the top right of your screen
 
 .. image:: images/make-a-list/c8e9912a-d536-4ad3-b7b3-5e50b8cdab14.png
-   :alt: 
+   :alt:
    :height: 288px
    :width: 515px
    :align: center
@@ -66,7 +69,7 @@ You can make as many lists as you like (for example you could collect talks rele
 * Click the **Add new list** button.
 
 .. image:: images/make-a-list/bf172905-4135-40f4-b73c-36b84679fa15.png
-   :alt: 
+   :alt:
    :height: 497px
    :width: 586px
    :align: center
@@ -78,17 +81,17 @@ You can make as many lists as you like (for example you could collect talks rele
 #. Click **Save**
 
 .. image:: images/make-a-list/b15d7dcc-3757-4f8c-b6e8-5817778e6610.png
-   :alt: 
+   :alt:
    :height: 382px
    :width: 375px
    :align: center
 
 
-* The list has been created and is available on your **Manage lists** page. 
+* The list has been created and is available on your **Manage lists** page.
 * You will also see it when you click the **Add this talk to list** button on each talk or series page.
 
 .. image:: images/make-a-list/9f3e7c18-b097-4477-a1f1-b0d899512d0b.png
-   :alt: 
+   :alt:
    :height: 157px
    :width: 625px
    :align: center
@@ -97,7 +100,7 @@ You can make as many lists as you like (for example you could collect talks rele
 See all the talks you've collected
 ----------------------------------
 
-Go back to the **Talks Home Page** and you will now find **Your Talks** - an aggregated listing of all the talks you have added to your own personal and public lists 
+Go back to the **Talks Home Page** and you will now find **Your Talks** - an aggregated listing of all the talks you have added to your own personal and public lists
 
 .. image:: images/make-a-list/see-all-the-talks-you-ve-collected.png
    :alt: See all the talks you&apos;ve collected
@@ -123,5 +126,5 @@ Add someone else's public list to Your Talks
 Further Information
 -------------------
 
-* All lists have an **Add to my Calendar** button so that you can add them to your own calendar. See the :doc:`Get an up-to-date feed in your own calendar <feed-in-your-calendar>` section for details. 
+* All lists have an **Add to my Calendar** button so that you can add them to your own calendar. See the :doc:`Get an up-to-date feed in your own calendar <feed-in-your-calendar>` section for details.
 * If you want to share the process of collecting talks to a list with other people, you will need to become a Talks Editor. See the :doc:`Talks Editor Guide <../talk-editors/sign-up>` for more information.

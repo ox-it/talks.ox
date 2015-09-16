@@ -1,3 +1,6 @@
+
+
+
 Change speaker / host / organiser details
 =========================================
 
@@ -6,9 +9,7 @@ Speaker, host and organiser details can be changed using the Person edit form
 Be careful!
 -----------
 
-.. warning::
-
-Any Talks Editor can change the details of any person appearing in Oxford Talks as a speaker, host or organiser. When you edit their name or affiliation, the changes will **trickle down to every talk this person has been assigned to** - including past talks.  If someone has moved department or been promoted, it is perfectly OK to create a new person entry for them in their new role.
+.. warning:: Any Talks Editor can change the details of any person appearing in Oxford Talks as a speaker, host or organiser. When you edit their name or affiliation, the changes will **trickle down to every talk this person has been assigned to** - including past talks.  If someone has moved department or been promoted, it is perfectly OK to create a new person entry for them in their new role.
 
 Find the person
 ---------------
@@ -52,4 +53,4 @@ Person Edit form
 Deleting
 --------
 
-If you need to delete a person, please :doc:`contact the Oxford Talks Administration <contact>`.
+If you need to delete a person, please :doc:`contact the Oxford Talks Administration <../general/contact>`.

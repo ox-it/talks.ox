@@ -1,3 +1,6 @@
+
+
+
 Publicising your talk
 =====================
 
@@ -69,6 +72,8 @@ Keywords in the talk abstract will be used for searching, so please add the abst
 
 Public lists
 ------------
+
+.. Note:: |upcoming|
 
 As well as topic and department listings, there may be some more *ad hoc* listings you would like your talk to be included in.  You can set up a Public List to collect together talks relevant to a particular theme, enterprise or project within the University - Athena Swan is a good example. 
 

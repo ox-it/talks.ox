@@ -1,3 +1,5 @@
+.. Note:: |upcoming|
+
 Moving from the Old Oxford Talks to the New
 ===========================================
 

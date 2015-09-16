@@ -48,6 +48,12 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
+rst_epilog = """
+.. |upcoming| replace:: The features described in this section will be available in a few weeks time.
+"""
+
+
+
 # General information about the project.
 project = u'talks.ox'
 copyright = u'2015, Mobile Oxford Team, Software Solutions, IT Services, University of Oxford'

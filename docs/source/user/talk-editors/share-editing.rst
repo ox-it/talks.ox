@@ -1,3 +1,6 @@
+
+
+
 Sharing editing
 ===============
 
@@ -28,6 +31,8 @@ You can adjust this in the **Other Editors** field of the individual talk.
 
 Lists
 -----
+
+.. Note:: |upcoming|
 
 Once you have signed an editor up to your list they will see it on their **Manage Lists** page and will find the list available in the dropdown box on each talk and series page.
 

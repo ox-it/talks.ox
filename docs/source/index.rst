@@ -7,6 +7,8 @@
 Oxford Talks
 ############
 
+.. Note:: Some of the features described in the documentation are not available yet. They will be released in a few weeks.
+
 .. toctree::
    :maxdepth: 1
    :caption: User Guide

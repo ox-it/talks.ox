@@ -1,3 +1,5 @@
+.. Note:: |upcoming|
+
 Glossary of Terms used by Oxford Talks
 ======================================
 
