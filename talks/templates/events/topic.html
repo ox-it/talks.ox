@@ -7,12 +7,19 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ topic.prefLabel }}</h3>
+        <h3 class="panel-title">
+            {{ topic.prefLabel }}
+            <div class="formatting-links">
+                <a class="formatting-link plain-text-link" href="{% url 'show-topic' %}?uri={{ topic.uri }}&format=txt" title="View a plain text version of this topic">
+                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+            </div>
+        </h3>
     </div>
 
     <ul class="list-group">
         {% for event in events.all %}
-        <li class="list-group-item">{{ event.formatted_date}} <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a></li>
+            <li class="list-group-item">{% include "events/event_teaser.html" %}</li>
         {% endfor %}
     </ul>
 

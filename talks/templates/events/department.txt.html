@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ org.name }}{% endblock %}
+
+
+{% block content %}
+
+<br>Department: {{ org.name }}
+
+{% if events %}
+    <br>Talks:
+    {% for event in events.all %}
+        {% include "events/event_teaser.txt.html" %}<br>
+    {% endfor %}
+{% else %}
+    <br>Sorry, there are currently no talks scheduled in this department.
+{% endif %}
+
+{% endblock %}

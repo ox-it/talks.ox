@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ person.name }}{% endblock %}
+
+
+{% block content %}
+
+<br>Name: {{ person.name }}
+{% if person.bio %}
+    <br>{{ person.bio }}
+{% endif %}
+{% if person.web_address %}
+    <br>{{ person.web_address }}
+{% endif %}
+<br>
+{% if speaker_events %}
+    <br>Events this person is speaking at:
+    {% for event in speaker_events %}
+        {% include "events/event_teaser.txt.html" %}<br>
+    {% endfor %}
+{% endif %}
+
+{% if host_events %}
+    <br>Events this person is hosting:
+    {% for event in host_events %}
+        {% include "events/event_teaser.txt.html" %}<br>
+    {% endfor %}
+{% endif %}
+
+{% if organiser_events %}
+    <br>Events this person is organising:
+    {% for event in organiser_events %}
+        {% include "events/event_teaser.txt.html" %}<br>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

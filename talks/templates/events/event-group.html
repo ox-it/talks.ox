@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load users %}
 
 {% block title %}{{ event_group.title }}{% endblock %}
 
 {% block extrahead %}
-<script type="application/ld+json">
-[{% for event in event_group.events.all %}{
-  "@context": "http://schema.org",
-  "@type": "Event",
-  "name": "{{ event.title }}",
-  "startDate": "{{ event.start|date:'c' }}"
-{% if forloop.last %}}{% else %}},{% endif %}{% endfor %}]
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        saveItemDefault: "{% url "save-item" %}",
+        removeItemDefault: "{% url "remove-item" %}"
+    };
 </script>
+
 {% endblock %}
 
 {% block content %}
@@ -38,7 +39,18 @@
 <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">{{ event_group.title }}</h3>
+        <h3 class="panel-title contains-floating-buttons">
+            {{ event_group.title }}
+            <div class="formatting-links">
+                {% include "events/event_group_plain_text_link.html" %}
+                {% include "events/event_group_ics_link.html" %}
+                {% if editable_collections %}
+                    <div class="add-to-collections">
+                        {% include "users/add_to_collections_widget.html"  with collections=editable_collections item_desc='series' %}
+                    </div>
+                {% endif %}
+            </div>
+        </h3>
     </div>
     <div class="panel-body">
         <p>{% if event_group.description %}{{ event_group.description_html | safe }}{% else %}<i>This series does not yet have an abstract</i>{% endif %}</p>
@@ -57,24 +69,28 @@
         <li class="list-group-item"><strong>Web Address</strong>: <a href="{{ event_group.web_address }}">{{ event_group.web_address }}</a></li>
     {% endif %}
     {% if event_group.api_organisation %}
-        <li class="list-group-item"><strong>Organising department</strong>: {{ event_group.api_organisation.name }}</li>
+        <li class="list-group-item"><strong>Organising department</strong>: <a href="{% url 'show-department' event_group.api_organisation.id %}">{{ event_group.api_organisation.name }}</a></li>
     {% endif %}
         {% for event in events %}
         <li class="list-group-item">
                 {% if perms.events.change_event %}
-                <div style="float:right">{% if request.user|can_edit_event:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
+                <div class="pull-right">{% if request.user|can_edit_event:event %}<a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>{% else %}Not authorized to edit{% endif %}</div>
                 {% endif %}
-                <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }})
+                <strong>{{ event.formatted_date }} - {{ event.formatted_endtime }}</strong> ({{ event.oxford_date.formatted_nocal }}){% include "events/event_ics_link.html" %}
                 {% if perms.events.change_event %}<span style="padding-left: 20px"><strong>Status</strong>:{% if event.is_published %} published{% else %}In Preparation{% endif %}</span>{% endif %}<br>
                 <a href="{{ event.get_absolute_url }}">{{ event.title_display }}</a><br>
                 <strong>Speaker{{ event.speakers|pluralize }}</strong>: {% for speaker in event.speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% empty %} TBA
                 {% endfor %}<br>
-                {% if event.location %}
-                <strong>Venue</strong>: <a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
-                {% endif %}
-                {% if event.location_details %}
-                <strong>Venue Details</strong>: {{event.location_details}}<br>
+                {% if event.location and event.location_details %}
+                  <strong>Venue</strong>: <a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                  <strong>Venue Details</strong>: {{event.location_details}}<br>
+                {% elif event.location %}
+                  <strong>Venue</strong>: <a href="//maps.ox.ac.uk/#/places/{{ event.api_location.id }}">{{ event.api_location.name}}, {{ event.api_location.address }}</a><br>
+                {% elif event.location_details %}
+                  <strong>Venue Details</strong>: {{event.location_details}}<br>
+                {% else %}
+                  <strong>Venue</strong>: To be announced<br>
                 {% endif %}
                 <strong>Organiser{{ event.organisers|pluralize }}</strong>: {% for org in event.organisers %}<a href="{% url 'show-person' org.slug %}">{{ org.name }}{% if org.bio %} ({{ org.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% empty %} TBA
@@ -93,6 +109,17 @@
         {% endif %}
         </div>
         {% endfor %}
+
+        {% if event_group.public_collections_containing_this_event_group %}
+            <li class="list-group-item"><strong>This series features in the following public lists</strong>:
+                <ul class="list-unstyled">
+                    {% for collection in event_group.public_collections_containing_this_event_group %}
+                        <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+
         <div class="panel-footer">
         {% if show_all %}
         <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-event-group' event_group.slug %}">Show upcoming talks only</a>

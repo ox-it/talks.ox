@@ -29,7 +29,7 @@ class TestEventProperties(TestCase):
 
     def test_already_started(self):
         old_event = factories.EventFactory.create()
-        old_event.start = timezone.now() - datetime.timedelta(days=1);
+        old_event.start = timezone.now() - datetime.timedelta(days=1)
         self.assertTrue(old_event.already_started)
         new_event = factories.EventFactory.create()
         new_event.start = timezone.now() + datetime.timedelta(days=1)

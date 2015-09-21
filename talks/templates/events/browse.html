@@ -1,0 +1,99 @@
+{% extends "layouts/2-column.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Events{% endblock %}
+
+{% block extrahead %}
+
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<script src="{% static "js/form-controls.js"%}"></script>
+
+{% endblock %}
+
+
+{% block topcontent %}
+
+{% endblock %}
+
+{% block side %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3 col-xs-12">
+      <h3>View all:</h3>
+      <ul class="nav nav-list well">
+        <li>
+          <a href="{% url 'list-event-groups' %}">Series</a>
+        </li>
+        <li>
+          <a href="{% url 'view-public-lists' %}">Public Lists</a>
+        </li>
+      </ul>
+
+      <h3>Filters</h3>
+      <ul class="nav nav-list well">
+        <form action="{% url 'browse_events' %}" method="get">
+            {{ browse_events_form.start_date | bootstrap }}
+            <a class="clear-datepicker pull-right" href="#">clear</a>
+            {{ browse_events_form.to | bootstrap }}
+            {{ browse_events_form.organising_department | bootstrap }}
+            {{ browse_events_form.include_subdepartments | bootstrap }}
+            {{ browse_events_form.seriesid | bootstrap }}
+            {{ browse_events_form.venue | bootstrap }}
+
+            <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        </form>
+
+        <script type="text/javascript">
+          $(function() {
+            $('.js-datetimepicker').datetimepicker({
+              format: 'yyyy-mm-dd',
+              minView: 2,
+              autoclose: true
+            });
+          });
+        </script>
+
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block main %}
+
+<h2 class="hidden-xs">Browse Talks</h2>
+
+<div class="js-upcoming-events">
+    {% if events %}
+      <ul class="list-group">
+        {% for event in events %}
+          <li class="list-group-item">
+            {% include 'events/event_teaser.html' %}
+          </li>
+        {% endfor %}
+      </ul>
+        {% with events as page %}
+            {% include 'events/_pagination.html' %}
+        {% endwith %}
+    {% else %}
+      Sorry, there are no talks that match these criteria.
+    {% endif %}
+</div>
+
+{% endblock %}

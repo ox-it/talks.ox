@@ -6,26 +6,28 @@ from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 
 
-def events_search(request):
+def events_search(parameters):
     """
     Return a list of events based on the DRF Request object
-    :param request: Django Rest Framework Request object
+    :param parameters: QueryDict in the same structure as a request.GET object
     :return QuerySet of Event
     """
     queries = []
 
-    from_date = parse_date(request.GET.get("from"))
+    from_date = parse_date(parameters.get("from"))
     if not from_date:
-        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy'.")
+        from_date = parse_date(parameters.get("start_date"))
+    if not from_date:
+        raise ParseError(detail="'from' parameter is mandatory. Supply either 'today' or a date in form 'dd/mm/yy' or 'yyyy-mm-dd'.")
     else:
         queries.append(Q(start__gt=from_date))
 
-    to_date = parse_date(request.GET.get("to"))
+    to_date = parse_date(parameters.get("to"))
     if to_date:
         queries.append(Q(start__lt=to_date))
 
     include_sub_departments = True
-    subdepartments = request.GET.get("subdepartments")
+    subdepartments = parameters.get("subdepartments")
     if subdepartments and subdepartments == 'false':
         include_sub_departments = False
 
@@ -35,11 +37,12 @@ def events_search(request):
         'venue': lambda venues: Q(location__in=venues),
         'organising_department': lambda depts: Q(department_organiser__in=get_all_department_ids(depts, include_sub_departments)),
         'topic': lambda topics: Q(topics__uri__in=topics),
-        'series': lambda series: Q(group__slug__in=series)
+        'series': lambda series: Q(group__slug__in=series),
+        'seriesid': lambda seriesid: Q(group__id__in=seriesid)
     }
 
     for url_query_parameter, orm_mapping in list_parameters.iteritems():
-        value = request.GET.getlist(url_query_parameter)
+        value = parameters.getlist(url_query_parameter)
         if value:
             queries.append(orm_mapping(value))
 

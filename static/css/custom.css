@@ -56,3 +56,104 @@ span.filter-active {
     font-style: italic;
     padding: 10px 0px 20px 30px;
 }
+
+/* Help text in form fields */
+.helptext {
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* ICS/plain text links within a panel */
+.panel .formatting-links {
+    float: right;
+}
+/* ICS/plain text links within a list-group */
+.list-group-item .formatting-links-wrapper {
+    float: right;
+}
+.list-group-item .formatting-link .formatting-link-text,
+.list-unstyled .formatting-link .formatting-link-text {
+    display: none;
+}
+
+.event-teaser-wrapper {
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 100%;
+}
+
+.list-group-item .event-teaser-text-wrapper {
+    float: left;
+    width: 100%;
+}
+.formatting-link {
+    margin-left: 15px;
+    color: inherit;
+    text-decoration: none;
+}
+
+a.formatting-link:hover {
+    text-decoration: none;
+}
+
+.manage-lists-buttons {
+    float: right;
+    min-height: 40px;
+}
+
+/* Prevent target from being the font-awesome element for fa tags within an <a>.  eg. for add/remove event from list */
+.dropdown-menu li>a.js-toggle-collection-item .fa {
+    pointer-events: none;
+}
+
+.dropdown-menu>li {
+    margin-left: 10px;
+}
+
+.dropdown-menu {
+    min-width: 250px;
+    margin-left: -90px;
+}
+
+.contains-floating-buttons {
+    min-height: 40px;
+}
+.contains-floating-buttons.event {
+    min-height: 60px;
+}
+.nav-tabs {
+    border-bottom: 0;
+}
+div.add-to-collections,
+div.manage-lists-buttons {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.js-datetimepicker:hover,
+.js-datetimepicker input:hover {
+    cursor: pointer;
+}
+
+.pad-left {
+    margin-left: 25px;
+}
+
+div.share-this-links {
+    display: inline-block;
+}
+div.share-this-links span {
+    vertical-align: middle;
+}
+
+.event-title {
+    margin-bottom: 10px;
+}
+
+.fade-check {
+    color: #fff;
+}
+.active-collection {
+    background-color: #E4F0FC;
+}

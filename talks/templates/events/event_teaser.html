@@ -1,0 +1,33 @@
+<!-- Display a single event teaser -->
+<div class="event-teaser-wrapper">
+    <div class="event-teaser-text-wrapper">
+        <strong>
+            {% if show_event_time_only %}
+                {{ event.formatted_time }}
+            {% else %}
+                {{ event.formatted_date }}
+            {% endif %}
+        </strong>
+         -
+        <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
+          {% if event.title %}
+            {{ event.title }}
+          {% else %}
+            Untitled talk
+          {% endif %}
+        </a>
+        {% if event.group %}
+          - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+        {% endif %}
+        {% if event.speakers %}
+            . Speaker{{ event.speakers|pluralize }}:
+            {% for speaker in event.speakers %}
+                <a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="formatting-links-wrapper">
+        {% include "events/event_ics_link.html" %}
+    </div>
+
+</div>

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Manage Lists{% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+{% block content %}
+
+<h2 class="hidden-xs">View list</h2>
+
+<br>{{ collection.title }}
+{% if collection.description %}
+  <br>Description: {{ collection.description_html | safe | striptags | linebreaksbr }}
+{% endif %}
+<br>Talks:
+{% if events %}
+    {% for event in events %}
+        {% include "events/event_teaser.txt.html" %}<br>
+    {% endfor %}
+{% else %}
+    <br>There are no upcoming talks in this list.
+{% endif %}
+
+{% if event_groups %}
+    <br>This list contains talks from the following series:
+    {% for event_group in event_groups %}
+        <br>{{ event_group.title }}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
