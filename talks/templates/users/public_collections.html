@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load users %}
+
+{% block title %}Public Lists{% endblock %}
+
+{% block extrahead %}
+
+<script src="{% static "js/user-collections.js"%}"></script>
+<script>
+    document.collectionConfig = {
+        addListDefault: "{% url "subscribe-to-list" %}",
+        removeListDefault: "{% url "unsubscribe-from-list" %}"
+    };
+</script>
+{% endblock %}
+
+{% block content %}
+
+<h2 class="hidden-xs">Public lists</h2>
+
+<div id="collection-alert-container"></div>
+    <ul class="nav nav-tabs">
+        {% if user.id %}
+            <li role="presentation"><a href="{% url 'manage-lists' %}">My Lists</a></li>
+        {% endif %}
+        <li role="presentation" class="active"><a href="{% url 'view-public-lists' %}">All Public Lists</a></li>
+    </ul>
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <p><strong>
+
+            </strong></p>
+            <ul class="list-unstyled">
+                {% for collection in collections %}
+                    <li class="contains-floating-buttons">
+                        <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
+                        {% if collection.public %}
+                            <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
+                            {% if collection.get_number_of_readers > 0 %}
+                                <span class="number-of-readers">{{ collection.get_number_of_readers }} users are following this list</span>
+                            {% endif %}
+                        {% endif %}
+                        {% if user.id %}
+                            <div class="manage-lists-buttons">
+                                <a class="btn btn-primary js-add-collection {% ifnotequal collection|collection_permission:user None %}hidden{% endifnotequal %}"
+                                       href="#" action="{% url 'subscribe-to-list' %}" data-collection="{{ collection.slug }}">Subscribe</a>
+
+                                <a class="btn btn-warning js-remove-collection {% ifnotequal collection|collection_permission:user 'reader' %}hidden{% endifnotequal %}"
+                                       href="#" action="{% url 'unsubscribe-from-list' %}" data-collection="{{ collection.slug }}">Unsubscribe</a>
+                            </div>
+                        {% endif %}
+                    </li>
+                {% empty %}
+                    <p>There are no public lists available.</p>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+{% endblock %}

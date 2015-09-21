@@ -18,7 +18,7 @@
             <li><a href="{% url 'contributors-eventgroups' %}?editable=true">Series  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
             <li><a href="{% url 'contributors-persons' %}" class="">People  <span class="glyphicon glyphicon-ok filter-active"></span></a></li>
         </ul>
-        <strong>Filters</strong></li>
+        <strong>Filters</strong>
       <ul class="nav nav-list well">
         <li class="nav-header"><i class="icon-star"></i>Talk status</li>
         <li><a href="{% facet_single_param status='published' %}" class="{% facet_selected status='published' %}">Published <span class="glyphicon glyphicon-ok filter-active"></span></a>
@@ -48,10 +48,10 @@
         <a class="btn btn-primary navbar-btn" href="{% url 'create-event' %}"><span class="glyphicon glyphicon-plus"></span> New Talk</a>
     <table class="table table-bordered table-striped">
         <thead>
-            <td>Title</td>
-            <td>Start date</td>
-            <td>Status</td>
-            <td>Edit</td>
+            <th>Title</th>
+            <th>Start date</th>
+            <th>Status</th>
+            <th>Edit</th>
         </thead>
 
         {% for event in events %}

@@ -3,6 +3,7 @@ from icalendar.cal import Alarm
 
 from rest_framework import renderers
 from icalendar import Calendar, Event
+from dateutil import parser
 
 
 class ICalRenderer(renderers.BaseRenderer):
@@ -26,11 +27,13 @@ class ICalRenderer(renderers.BaseRenderer):
         event = Event()
         event.add('summary', e['title_display'])
         if 'description' in e:
-            desc_with_speakers = e['description']
-            speakers_list = ""
-            if 'speakers' in e:
-                speakers_list = "\nSpeakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
-            event.add('description', desc_with_speakers + speakers_list)
+            if len(e['description']):
+                desc_with_speakers = e['description']
+                speakers_list = ""
+                if 'speakers' in e:
+                    if len(e['speakers']):
+                        speakers_list = "\nSpeakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
+                event.add('description', desc_with_speakers + speakers_list)
         if 'start' in e:
             event.add('dtstart', dt_string_to_object(e['start']))
         if 'end' in e:
@@ -61,4 +64,4 @@ def dt_string_to_object(string):
     :param string: string representing a date/time
     :return: python datetime object
     """
-    return datetime.strptime(string, "%Y-%m-%dT%H:%M:%SZ")
+    return parser.parse(string)

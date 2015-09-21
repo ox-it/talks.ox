@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}{% if collection %}Edit List{% else %}Add List{% endif %}{% endblock %}
+
+{% block extrahead %}
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<script src="{% static "js/form-controls.js"%}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+<h2 class="hidden-xs">{% if collection %}Edit list: {{ collection.title }}{% else %}Add new list{% endif %}</h2>
+
+<form class="form-horizontal" method="post" action="{{ request.get_full_path }}">{% csrf_token %}
+    <div class="form-group">
+        {{ collection_form | bootstrap_horizontal}}
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-lg-offset-2 col-sm-10 col-lg-10">
+            <button type="submit" class="btn btn-primary">Save</button>
+            {% if is_editing %}
+                <a class="btn btn-danger" href="{% url 'delete-list' collection.slug %}">Delete</a>
+            {% endif %}
+            <a href="{% url 'manage-lists' %}" class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

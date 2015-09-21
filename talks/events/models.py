@@ -1,10 +1,12 @@
-import logging
 import functools
+import itertools
+import logging
 from datetime import date
 import uuid
 
 import requests
 import reversion
+import pytz
 from textile import textile_restricted
 
 from django.utils import timezone
@@ -17,7 +19,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
 from talks.api_ox.api import ApiException, OxfordDateResource
-
+from talks.core.utils import iso8601_duration
 
 logger = logging.getLogger(__name__)
 
@@ -111,9 +113,6 @@ class EventGroup(models.Model):
             self.slug = str(uuid.uuid4())
         super(EventGroup, self).save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse('show-event-group', args=[self.slug])
-
     def get_api_url(self):
         return reverse('api-event-group', args=[self.slug])
 
@@ -137,6 +136,20 @@ class EventGroup(models.Model):
         :return: True if the user is allowed to edit this event, False otherwise
         """
         return self.editor_set.filter(id=user.id).exists() or user.is_superuser
+
+
+    @property
+    def public_collections_containing_this_event_group(self):
+        from talks.users.models import CollectionItem, Collection
+        content_type = ContentType.objects.get_for_model(EventGroup)
+
+        collectionItemsContainingEventGroup = CollectionItem.objects.filter(content_type=content_type, object_id=self.id)
+        collectionIDsTheseCollectionItemsAreIn = collectionItemsContainingEventGroup.values_list('collection')
+        collectionsContainingThisEventGroup = Collection.objects.filter(id__in=itertools.chain.from_iterable(collectionIDsTheseCollectionItemsAreIn))
+
+        publicCollectionsContainingThisEventGroup = collectionsContainingThisEventGroup.filter(public=True)
+
+        return publicCollectionsContainingThisEventGroup
 
 
 class PersonManager(models.Manager):
@@ -346,19 +359,29 @@ class Event(models.Model):
 
     def formatted_date(self):
         if self.start:
-            return date_filter(self.start, settings.EVENT_DATETIME_FORMAT)
+            return date_filter(timezone.localtime(self.start), settings.EVENT_DATETIME_FORMAT)
         else:
             return None
 
     def formatted_time(self):
         if self.start:
-            return date_filter(self.start, settings.EVENT_TIME_FORMAT)
+            return date_filter(timezone.localtime(self.start), settings.EVENT_TIME_FORMAT)
         else:
             return None
 
     def formatted_endtime(self):
         if self.start:
-            return date_filter(self.end, settings.EVENT_TIME_FORMAT)
+            return date_filter(timezone.localtime(self.end), settings.EVENT_TIME_FORMAT)
+        else:
+            return None
+
+    def duration(self):
+        """
+        :return: a duration in ISO8601 duration format
+        """
+        if self.start and self.end:
+            duration = self.end - self.start
+            return str(iso8601_duration(duration))
         else:
             return None
 
@@ -401,7 +424,7 @@ class Event(models.Model):
     def user_can_edit(self, user):
         """
         Check if the given django User is authorised to edit this event.
-        They need to have the events.change_event permission AND be in the event's editors_set, or be a superuser
+        They need to be in the event's editors_set, or be a superuser
         Users can also edit an event if they are an editor of the series it belongs to
         :param user: The django user wishing to edit the event
         :return: True if the user is allowed to edit this event, False otherwise
@@ -410,6 +433,21 @@ class Event(models.Model):
         if self.group:
             can_edit = can_edit or self.group.user_can_edit(user)
         return can_edit
+
+    @property
+    def public_collections_containing_this_event(self):
+        from talks.users.models import CollectionItem, Collection
+        content_type = ContentType.objects.get_for_model(Event)
+
+        collectionItemsContainingEvent = CollectionItem.objects.filter(content_type=content_type, object_id=self.id)
+        collectionIDsTheseCollectionItemsAreIn = collectionItemsContainingEvent.values_list('collection')
+        collectionsContainingThisEvent = Collection.objects.filter(id__in=itertools.chain.from_iterable(collectionIDsTheseCollectionItemsAreIn))
+
+        publicCollectionsContainingThisEvent = collectionsContainingThisEvent.filter(public=True)
+
+        return publicCollectionsContainingThisEvent
+
+
 
 reversion.register(Event)
 reversion.register(EventGroup)

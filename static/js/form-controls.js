@@ -71,6 +71,9 @@ $(function() {
 
         var $input = makeInput(e.target, name, value);
         showSelectedValue($(e.target), $input, suggestion);
+
+        var $hint = $('.tt-hint');
+        $hint.hide();
     }
     function onEventDepartmentChanged(e, department) {
         //update to use the supplied department ID, if it doesn't currently have one set
@@ -199,15 +202,15 @@ $(function() {
         bloodhound.initialize().done((function($this) { 
             return function(e) {
                 showSelectedValuesForInput.apply($this);
+		        var typeahead = $this.typeahead(options, dataSource);
+		        typeahead.on('typeahead:selected', onChange);
+		        typeahead.on('eventDepartmentChanged', onEventDepartmentChanged);
+		        typeahead.on('eventOrganisersChanged', onEventOrganisersChanged);
+		        typeahead.on('addPerson', onAddPerson);
             }
         })($this)
         );
 
-        var typeahead = $this.typeahead(options, dataSource);
-        typeahead.on('typeahead:selected', onChange);
-        typeahead.on('eventDepartmentChanged', onEventDepartmentChanged);
-        typeahead.on('eventOrganisersChanged', onEventOrganisersChanged);
-        typeahead.on('addPerson', onAddPerson);
     });
 
 });

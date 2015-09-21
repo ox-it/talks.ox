@@ -3,7 +3,7 @@ from rest_framework import serializers, pagination
 from rest_framework.fields import Field
 
 from talks.events.models import Event, Person, EventGroup
-from talks.users.models import CollectionItem
+from talks.users.models import CollectionItem, TalksUserCollection, Collection
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -59,7 +59,9 @@ class EventSerializer(serializers.ModelSerializer):
             name = location['name']
             if event.location_details:
                 name += " (" + event.location_details + ")"
-            location_string = name + ", " + location.get('address')
+            location_string = name
+            if location.get('address'):
+                location_string += ", " + location.get('address')
             return location_string
         elif event.location_details:
             name = event.location_details
@@ -250,7 +252,33 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventGroup
-        fields = ('_links', 'title', 'description', 'occurence', '_embedded')
+        fields = ('_links', 'id', 'title', 'description', 'occurence', '_embedded')
+
+
+class CollectionLinksSerializer(serializers.ModelSerializer):
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+
+    class Meta:
+        model = Collection
+        fields = ('self', 'talks_page')
+
+
+class CollectionEmbedsSerializer(serializers.ModelSerializer):
+    talks = HALEventSerializer(many=True, read_only=True, source='get_all_events')
+
+    class Meta:
+        model = Collection
+        fields = ('talks',)
+
+
+class HALCollectionSerializer(serializers.ModelSerializer):
+    _links = CollectionLinksSerializer(source='*', read_only=True)
+    _embedded = CollectionEmbedsSerializer(source='*', read_only=True)
+
+    class Meta:
+        model = Collection
+        fields = ('_links', 'title', 'description', '_embedded')
 
 
 class SpeakerSerializer(serializers.ModelSerializer):
@@ -321,3 +349,10 @@ class CollectionItemSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'item', 'collection')
         model = CollectionItem
+
+
+class TalksUserCollectionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('user', 'collection', 'role')
+        model = TalksUserCollection

@@ -1747,6 +1747,10 @@
 	);
 	$(function () {
 		$('[data-provide="datetimepicker-inline"]').datetimepicker();
+
+		$('.clear-datepicker').click( function(ev) {
+			$('div.input-group.js-datetimepicker#to').children('input.form-control').val('');
+		});
 	});
 
 }(window.jQuery);
