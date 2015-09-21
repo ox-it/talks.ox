@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 rst_epilog = """
-.. |upcoming| replace:: The features described in this section will be available in a few weeks time.
+.. |upcoming| replace:: New Feature!
 """
 
 
