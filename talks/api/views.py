@@ -11,6 +11,7 @@ from django.http.response import Http404
 from rest_framework import status, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, renderer_classes
+from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -22,6 +23,7 @@ from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserS
                                    HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer)
 from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
+from talks.core.utils import parse_date
 
 logger = logging.getLogger(__name__)
 
@@ -312,11 +314,18 @@ def api_collection(request, collection_slug):
     :param collection_slug: collection slug
     :return: DRF response object
     """
+    from_date = parse_date(request.GET.get('from', ''))
+    to_date = parse_date(request.GET.get('to', ''))
     try:
         collection = Collection.objects.get(slug=collection_slug)
         if collection.public:
-            serializer = HALCollectionSerializer(collection)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if from_date and to_date:
+                events = collection.get_all_events().filter(start__gte=from_date, end__lte=to_date)
+                serializer = EventSerializer(events, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                serializer = HALCollectionSerializer(collection)
+                return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': "Collection is not public"},
                         status=status.HTTP_403_FORBIDDEN)
