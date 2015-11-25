@@ -322,10 +322,9 @@ def api_collection(request, collection_slug):
         if collection.public:
             if from_date and to_date:
                 serializer = HALCollectionSerializer(collection, context={'from-date': from_date, 'to-date': to_date})
-                return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 serializer = HALCollectionSerializer(collection)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': "Collection is not public"},
                         status=status.HTTP_403_FORBIDDEN)
