@@ -314,14 +314,15 @@ def api_collection(request, collection_slug):
     :param collection_slug: collection slug
     :return: DRF response object
     """
+
+    # If from and to dates have been passed as request parameters, filter the events by those dates.
     from_date = parse_date(request.GET.get('from', ''))
     to_date = parse_date(request.GET.get('to', ''))
     try:
         collection = Collection.objects.get(slug=collection_slug)
         if collection.public:
             if from_date and to_date:
-                events = collection.get_all_events().filter(start__gte=from_date, end__lte=to_date)
-                serializer = EventSerializer(events, many=True)
+                serializer = HALCollectionSerializer(collection, context={'from-date': from_date, 'to-date': to_date})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 serializer = HALCollectionSerializer(collection)
