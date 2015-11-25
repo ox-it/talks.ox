@@ -22,6 +22,7 @@ from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserS
                                    HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer)
 from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
+from talks.core.utils import parse_date
 
 logger = logging.getLogger(__name__)
 
@@ -312,10 +313,17 @@ def api_collection(request, collection_slug):
     :param collection_slug: collection slug
     :return: DRF response object
     """
+
+    # If from and to dates have been passed as request parameters, filter the events by those dates.
+    from_date = parse_date(request.GET.get('from', ''))
+    to_date = parse_date(request.GET.get('to', ''))
     try:
         collection = Collection.objects.get(slug=collection_slug)
         if collection.public:
-            serializer = HALCollectionSerializer(collection)
+            if from_date and to_date:
+                serializer = HALCollectionSerializer(collection, context={'from-date': from_date, 'to-date': to_date})
+            else:
+                serializer = HALCollectionSerializer(collection)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': "Collection is not public"},
