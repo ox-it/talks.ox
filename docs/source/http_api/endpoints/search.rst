@@ -97,6 +97,7 @@ from : date string (`'yyyy-mm-dd'`), **required**
 to : date string (`'yyyy-mm-dd'`), optional
     * End date for the list of talks.
     * Format :code:`yyyy-mm-dd` or :code:`dd/mm/yy` (deprecated)
+    * Note that the end time is currently assumed to be 00:00 not 23:59 (see `#394 <https://github.com/ox-it/talks.ox/issues/394>`_ for progress on this issue)
 
 subdepartments : boolean, optional
     * If true, include all sub-organisations of the specified department within the search (see organising_department below)
