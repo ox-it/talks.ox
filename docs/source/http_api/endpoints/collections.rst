@@ -64,9 +64,24 @@ All the responses conform to the `HAL specification <http://stateless.co/hal_spe
 		        "title": "Athena Swan Talks"
 		    }
 
-    :param id: The unique slug identifier for the list
-    :type id: string
+    The response can be either in XML or JSON dependent on the 'accept' header in the request.
 
     :statuscode 200: List found
     :statuscode 404: List not found
     :statuscode 503: Service not available
+
+
+
+Parameters Reference
+====================
+
+id : list slug as string
+      * Format :code:`f8ecded3-d2af-4585-bd3b-5cd7440795b9`
+
+from : date string (`'yyyy-mm-dd'`), optional
+     * Start date for the list of talks.
+     * Format as :code:`yyyy-mm-dd`
+
+to : date string (`'yyyy-mm-dd'`), optional
+    * End date for the list of talks.
+    * Format :code:`yyyy-mm-dd`

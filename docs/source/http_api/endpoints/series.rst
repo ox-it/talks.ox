@@ -1,5 +1,5 @@
 **********************
-Retrieve Series via ID 
+Retrieve Series via ID
 **********************
 
 Endpoint to retrieve information about all talks in a series
@@ -80,6 +80,8 @@ All the responses conform to the `HAL specification <http://stateless.co/hal_spe
 
     :param id: The unique slug identifier for the series
     :type id: string
+
+    The response can be either in XML or JSON dependent on the 'accept' header in the request.
 
     :statuscode 200: Series found
     :statuscode 404: Series not found
