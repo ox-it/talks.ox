@@ -39,7 +39,8 @@ urlpatterns = patterns('',
 
     # Mappings from old talks site
     url(r'^talk/index/(?P<index_id>[^/]+)$', old_talks_mappings, name='old-talks-mappings'),
-    url(r'^(show|list)/(index|archive|text)/(?P<index_id>[^/]+)$', old_series_mappings, name='old-series-mappings'),
+    url(r'^(feeds|show|list)/(table|minimalist|detailed|bulletin|simplewithlogo|oneday|xml|rss|ics|json|index|archive|text)/(?P<index_id>[^/]+)$', old_series_mappings, name='old-series-mappings'),
     url(r'^dates', RedirectView.as_view(pattern_name='browse_events')),
     url(r'^index', RedirectView.as_view(pattern_name='browse_events')),
+
 )
