@@ -140,13 +140,14 @@ class EmbeddedTopicSerializer(serializers.Serializer):
 
 class EventEmbedsSerializer(serializers.ModelSerializer):
     speakers = EmbeddedSpeakerSerializer(many=True, read_only=True)
+    organisers = EmbeddedSpeakerSerializer(many=True, read_only=True)
     venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
     organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
     topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
 
     class Meta:
         model = Event
-        fields = ('speakers', 'venue', 'organising_department', 'topics')
+        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
@@ -154,6 +155,8 @@ class HALEventSerializer(serializers.ModelSerializer):
     _embedded = EventEmbedsSerializer(source='*', read_only=True)
 
     location_summary = serializers.SerializerMethodField()
+    audience = serializers.SerializerMethodField()
+    booking_required = serializers.SerializerMethodField()
     series = serializers.SerializerMethodField()
     organiser_email = serializers.CharField(read_only=True)
 
@@ -173,6 +176,12 @@ class HALEventSerializer(serializers.ModelSerializer):
             return summary
         return None
 
+    def get_audience(self, obj):
+        return obj.get_audience_display();
+        
+    def get_booking_required(self, obj):
+        return obj.get_booking_type_display();
+
     def get_series(self, obj):
         if obj.group:
             return { 'title': obj.group.title, 'slug': obj.group.slug }
@@ -180,7 +189,7 @@ class HALEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'description', 'location_details', 'location_summary', 'series', '_embedded', 'organiser_email')
+        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):
