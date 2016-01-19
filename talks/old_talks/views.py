@@ -18,7 +18,7 @@ def old_talks_mappings(request, index_id):
         event = Event.objects.get(id=eventList[0]);
         return HttpResponsePermanentRedirect(reverse('show-event', args=[event.slug]))
     else:
-        raise render(request, "old_talks/not_found.html")
+        return render(request, "old_talks/not_found.html")
 
 
 def old_series_mappings(request, index_id):
