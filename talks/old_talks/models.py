@@ -20,22 +20,22 @@ class OldSeries(models.Model):
     old_series_id = models.CharField(max_length=20, null=False, blank=False)
 
 
-@receiver(event_updated, sender=Event)
-def publish_to_old_talks(sender, instance, *args, **kwargs):
-    from talks.old_talks.tasks import update_old_talks
-    update_old_talks(instance)
-
-
-@receiver(eventgroup_updated, sender=EventGroup)
-def update_series_old_talks(sender, instance, *args, **kwargs):
-    from talks.old_talks.tasks import update_old_series
-    update_old_series(instance, True)
-
-
-@receiver(models.signals.post_delete, sender=Event)
-def delete_old_talks(sender, instance, using, **kwargs):
-    from .tasks import delete_old_talks
-    delete_old_talks(instance)
+# @receiver(event_updated, sender=Event)
+# def publish_to_old_talks(sender, instance, *args, **kwargs):
+#     from talks.old_talks.tasks import update_old_talks
+#     update_old_talks(instance)
+# 
+# 
+# @receiver(eventgroup_updated, sender=EventGroup)
+# def update_series_old_talks(sender, instance, *args, **kwargs):
+#     from talks.old_talks.tasks import update_old_series
+#     update_old_series(instance, True)
+# 
+# 
+# @receiver(models.signals.post_delete, sender=Event)
+# def delete_old_talks(sender, instance, using, **kwargs):
+#     from .tasks import delete_old_talks
+#     delete_old_talks(instance)
 
 
 def get_list_id(string):
