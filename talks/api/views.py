@@ -102,8 +102,13 @@ def api_event_group(request, event_group_slug):
     if not eg:
         return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)
-
-    serializer = HALEventGroupSerializer(eg)
+    from_date = parse_date(request.GET.get('from', ''))
+    to_date = parse_date(request.GET.get('to',''))
+    
+    if from_date or to_date:
+        serializer = HALEventGroupSerializer(eg, context={'from-date': from_date, 'to-date': to_date})
+    else:
+        serializer = HALEventGroupSerializer(eg)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -320,7 +325,7 @@ def api_collection(request, collection_slug):
     try:
         collection = Collection.objects.get(slug=collection_slug)
         if collection.public:
-            if from_date and to_date:
+            if from_date or to_date:
                 serializer = HALCollectionSerializer(collection, context={'from-date': from_date, 'to-date': to_date})
             else:
                 serializer = HALCollectionSerializer(collection)

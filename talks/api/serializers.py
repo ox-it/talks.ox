@@ -248,8 +248,19 @@ class EventGroupLinksSerializer(serializers.ModelSerializer):
 
 
 class EventGroupEmbedsSerializer(serializers.ModelSerializer):
-    talks = HALEventSerializer(many=True, read_only=True, source='events')
+    talks = serializers.SerializerMethodField()
 
+    def get_talks(self,obj):
+        events = obj.events
+        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+            if self.context['from-date']:
+                events = events.filter(start__gte=self.context['from-date'])
+            if self.context['to-date']:
+                events = events.filter(end__lte=self.context['to-date'])
+                
+        serializer = HALEventSerializer(events, many=True, read_only=True)
+        return serializer.data
+        
     class Meta:
         model = EventGroup
         fields = ('talks',)
