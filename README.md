@@ -14,30 +14,14 @@ Make sure that you have the latest version of formulas in homebrew:
 
     brew update
 
-Install docker:
-
-    brew install docker boot2docker fig
-
-Initialise the virtual machine:
-
-    boot2docker init
-
-You will eventually be asked to stick some environments variables in your bash profile.
+Install docker from the docker website.
 
 ### Starting the virtual machine when required
 
 Start the virtual machine:
 
-    boot2docker up
-
-### Starting the virtual machine automatically
-
-If you want to have the virtual machine starting automatically when you start your computer:
-
-    cp /usr/local/Cellar/boot2docker/1.4.1/homebrew.mxcl.boot2docker.plist ~/Library/LaunchAgents/
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.boot2docker.plist
-    
-The path `/usr/local/Cellar/boot2docker/1.4.1` might change if you are using a newer version of `boot2docker`.
+    eval $(docker-machine env default)
+    docker-machine start default
 
 ### Starting the project instance when required
 
@@ -45,14 +29,14 @@ This requires the virtual machine to be up (either manually started or when your
 
 Type the following command in a terminal:
 
-    boot2docker ip
+    docker-machine ip
     
 This will give you the IP address of the virtual machine (e.g. `192.168.59.103`), you will need
 this information later.
 
 Go at the root of your project directory (probably `talks.ox`):
 
-    fig up
+    docker-compose up
     
 After a few seconds (minutes if it is building the instance for the first time), you should be able to visit
 in your web browser: `http://<IP ADDRESS>:8000` and visualise Oxford Talks.
@@ -67,13 +51,13 @@ the page in the web browser.
 
 Type the following command at the root of your project directory:
 
-    fig run web python manage.py migrate --settings=talks.settings_docker
+    docker-compose run web python manage.py migrate --settings=talks.settings_docker
 
 ### Creating a user account
 
 Type the following command at the root of your project directory:
 
-    fig run web python manage.py createsuperuser --username=myusername --email=my@email.com --settings=talks.settings_docker
+    docker-compose run web python manage.py createsuperuser --username=myusername --email=my@email.com --settings=talks.settings_docker
 
 You will interactively be asked for a password.
 
