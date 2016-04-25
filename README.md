@@ -53,6 +53,12 @@ Type the following command at the root of your project directory:
 
     docker-compose run web python manage.py migrate --settings=talks.settings_docker
 
+### Creating the solr collection
+
+Type the following command to create the solr collection:
+    
+    docker exec -it --user=solr talksox_solr_1 bin/solr create_core -c collection1
+
 ### Creating a user account
 
 Type the following command at the root of your project directory:
