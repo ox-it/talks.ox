@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='speaker_tba',
-            field=models.BooleanField(default=True, verbose_name=b'Speaker to be announced'),
+            field=models.BooleanField(default=False, verbose_name=b'Speaker to be announced'),
             preserve_default=True,
         ),
         migrations.AddField(
