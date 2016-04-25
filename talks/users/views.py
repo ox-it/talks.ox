@@ -43,7 +43,7 @@ def list_public_collections(request):
 
 def browse_public_collections(request):
     context = {}
-    context['collections'] = Collection.objects.filter(public=True)
+    context['collections'] = Collection.objects.filter(public=True).order_by('title')
 
     return render(request, 'users/collection_list.html', context)
 
