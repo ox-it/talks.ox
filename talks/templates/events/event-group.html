@@ -111,7 +111,7 @@
         {% endfor %}
 
         {% if event_group.public_collections_containing_this_event_group %}
-            <li class="list-group-item"><strong>This series features in the following public lists</strong>:
+            <li class="list-group-item"><strong>This series features in the following public collections</strong>:
                 <ul class="list-unstyled">
                     {% for collection in event_group.public_collections_containing_this_event_group %}
                         <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>

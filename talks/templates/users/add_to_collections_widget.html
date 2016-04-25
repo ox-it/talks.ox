@@ -2,7 +2,7 @@
 
 <div class="btn-group">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Add this {% if item_desc %}{{ item_desc }}{% else %}talk{% endif %} to list
+        Add this {% if item_desc %}{{ item_desc }}{% else %}talk{% endif %} to collection
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu nav">
@@ -13,7 +13,7 @@
                         {% ifequal item_desc 'series' %}
                             <a class="js-toggle-collection-item {% if collection|collection_contains_item:event_group %}active-collection{% endif %}"
                                href="#"
-                               title="{% if collection|collection_contains_item:event_group %}Remove from list{% else %}Add to list{% endif %}"
+                               title="{% if collection|collection_contains_item:event_group %}Remove from collection{% else %}Add to collection{% endif %}"
                                data-collection="{{ collection.slug }}"
                                data-group="{{ event_group.slug }}"
                                data-action="{% if collection|collection_contains_item:event_group %}remove{% else %}add{% endif %}">
@@ -24,7 +24,7 @@
                         {% else %}
                             <a class="js-toggle-collection-item {% if collection|collection_contains_item:event %}active-collection{% endif %}"
                                href="#"
-                               title="{% if collection|collection_contains_item:event %}Remove from list{% else %}Add to list{% endif %}"
+                               title="{% if collection|collection_contains_item:event %}Remove from collection{% else %}Add to collection{% endif %}"
                                data-collection="{{ collection.slug }}"
                                data-event="{{ event.slug }}"
                                data-action="{% if collection|collection_contains_item:event %}remove{% else %}add{% endif %}">

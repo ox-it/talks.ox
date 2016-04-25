@@ -2,20 +2,20 @@
 {% load bootstrap %}
 {% load staticfiles %}
 
-{% block title %}Delete list{% endblock %}
+{% block title %}Delete collection{% endblock %}
 
 {% block content %}
 
-    <h3>Delete the list</h3>
+    <h3>Delete the collection</h3>
 
     <p>You are about to delete the list "{{ collection.title }}".</p>
 
-    <p>Do you confirm?</p>
+    <p>Are you sure?</p>
 
     <p>
     <form method="post">
         {% csrf_token %}
-        <input type="submit" value="Yes, delete the list" class="btn btn-danger">
+        <input type="submit" value="Yes, delete the collection" class="btn btn-danger">
         <a class="btn btn-default" href="{% url 'manage-lists' %}">Cancel</a>
     </form>
 

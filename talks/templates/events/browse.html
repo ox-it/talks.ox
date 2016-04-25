@@ -31,13 +31,12 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-3 col-xs-12">
-      <h3>View all:</h3>
       <ul class="nav nav-list well">
         <li>
-          <a href="{% url 'list-event-groups' %}">Series</a>
+          <a href="{% url 'list-event-groups' %}">Lecture/Seminar Series</a>
         </li>
         <li>
-          <a href="{% url 'view-public-lists' %}">Public Lists</a>
+          <a href="{% url 'view-public-lists' %}">Talk Collections</a>
         </li>
       </ul>
 
@@ -77,7 +76,6 @@
 
 {% block main %}
 
-<h2 class="hidden-xs">Browse Talks</h2>
 
 <div class="js-upcoming-events">
     {% if events %}
