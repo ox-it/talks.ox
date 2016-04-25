@@ -4,18 +4,17 @@
 {% load staticfiles %}
 {% load users %}
 
-{% block title %}View List{% endblock %}
+{% block title %}Collection{% endblock %}
 
 {% block extrahead %}{% endblock %}
 
 {% block content %}
 
-<h2 class="hidden-xs">View list</h2>
 
 <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title contains-floating-buttons">
+        <h3 class="panel-title contains-floating-buttons">Collection: 
             {{ collection.title }}
             {% if collection.public %}
                 <i class="fa fa-globe" title="This list is visible to all Oxford Talks users"></i>
@@ -51,16 +50,16 @@
 
                 {% else %}
                     {% if show_all %}
-                        <p>You haven't added any talks to this list yet.</p>
+                        <p>You haven't added any talks to this collection yet.</p>
                     {% else %}
-                        <p>There are no upcoming talks in this list.</p>
+                        <p>There are no upcoming talks in this collection.</p>
                     {% endif %}
                 {% endif %}
             </li>
 
             {% if event_groups %}
                 <li class="list-group-item">
-                    <strong>This list contains talks from the following series:</strong>
+                    <strong>This collection contains talks from the following series:</strong>
                     {% for event_group in event_groups %}
                         <br>
                             <a href="{{ event_group.get_absolute_url }}">{{ event_group.title }}</a>
@@ -70,7 +69,7 @@
         </ul>
     {% if contributors %}
         <div class="panel-footer">
-            <strong>The following Talks editors can contribute to this list:</strong>
+            <strong>The following Talks editors are curating this collection:</strong>
             {% for contributor in contributors %}
                 <br>{{ contributor.user.first_name }} {{ contributor.user.last_name }}
             {% endfor %}
@@ -80,13 +79,11 @@
         {% if show_all %}
             <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}">Show upcoming talks only</a>
         {% else %}
-            <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}?show_all=true">Show all talks in this list</a>
+            <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'view-list' collection.slug %}?show_all=true">Show all talks in this collection</a>
         {% endif %}
     </div>
 </div>
 
-{% if user.id %}
-    <a href="{% url "manage-lists" %}" class="btn btn-default">Back to Lists</a>
-{% endif %}
+
 
 {% endblock %}
