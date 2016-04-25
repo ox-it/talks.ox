@@ -31,14 +31,10 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-3 col-xs-12">
-      <ul class="nav nav-list well">
-        <li>
-          <a href="{% url 'list-event-groups' %}">Lecture/Seminar Series</a>
-        </li>
-        <li>
-          <a href="{% url 'view-public-lists' %}">Talk Collections</a>
-        </li>
-      </ul>
+            
+            
+            {% include 'events/navigation_for_listing.html' %}
+
 
       <h3>Filters</h3>
       <ul class="nav nav-list well">
