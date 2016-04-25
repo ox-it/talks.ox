@@ -3,7 +3,7 @@
 {% load staticfiles %}
 {% load users %}
 
-{% block title %}Manage Lists{% endblock %}
+{% block title %}Manage My Collections{% endblock %}
 
 {% block extrahead %}
 
@@ -18,19 +18,19 @@
 
 {% block content %}
 
-<h2 class="hidden-xs">Manage lists</h2>
+<h2 class="hidden-xs">Manage My Collections</h2>
 
 <div id="collection-alert-container"></div>
     <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="{% url 'manage-lists' %}">My Lists</a></li>
-      <li role="presentation"><a href="{% url 'view-public-lists' %}">All Public Lists</a></li>
+      <li role="presentation" class="active"><a href="{% url 'manage-lists' %}">My Collections</a></li>
+      <li role="presentation"><a href="{% url 'view-public-lists' %}">All Public Collections</a></li>
     </ul>
 
     <ul class="list-group">
 
         <li class="list-group-item">
             <p><strong>
-                Lists that I've created:
+                Collections that I've created:
             </strong></p>
             <ul class="list-unstyled">
                 {% for collection in collections_owner %}
@@ -47,7 +47,7 @@
                         </div>
                     </li>
                 {% empty %}
-                    <p>You haven't created any lists yet.</p>
+                    <p>You haven't created any collections yet.</p>
                 {% endfor %}
             </ul>
         </li>
@@ -55,7 +55,7 @@
     {% if user_is_a_contributor %}
         <li class="list-group-item">
             <p><strong>
-                Lists that I can contribute to:
+                Collections that I can contribute to:
             </strong></p>
             <ul class="list-unstyled">
                 {% for collection in collections_editor %}
@@ -66,7 +66,7 @@
                         {% endif %}
                     </li>
                 {% empty %}
-                    <p>You haven't been invited to collaborate on any lists yet.</p>
+                    <p>You haven't been invited to collaborate on any collections yet.</p>
                 {% endfor %}
             </ul>
         </li>
@@ -74,7 +74,7 @@
 
         <li class="list-group-item">
             <p><strong>
-                Public lists that I've subscribed to:
+                Public collections that I've subscribed to:
             </strong></p>
             <ul class="list-unstyled">
                 {% for collection in collections_reader %}
@@ -90,13 +90,13 @@
                         </div>
                     </li>
                 {% empty %}
-                    <p>You haven't subscribed to any public lists yet.</p>
+                    <p>You haven't subscribed to any public collections yet.</p>
                 {% endfor %}
             </ul>
         </li>
 
     </ul>
 
-<a href="{% url "add-list" %}" class="btn btn-primary" type="button">Add new list</a>
+<a href="{% url "add-list" %}" class="btn btn-primary" type="button">Add new collection</a>
 
 {% endblock %}

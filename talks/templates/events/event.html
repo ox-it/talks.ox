@@ -162,7 +162,7 @@
         {% endif %}
         <li class="list-group-item"><strong>Audience</strong>: {{ event.get_audience_display }} </li>
         {% if event.public_collections_containing_this_event %}
-            <li class="list-group-item"><strong>This talk features in the following public lists</strong>:
+            <li class="list-group-item"><strong>This talk features in the following public collections</strong>:
                 <ul class="list-unstyled">
                     {% for collection in event.public_collections_containing_this_event %}
                         <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>
