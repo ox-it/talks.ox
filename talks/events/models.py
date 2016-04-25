@@ -56,7 +56,6 @@ EVENT_STATUS_CHOICES = (
     (EVENT_PUBLISHED, 'Published'),
 )
 
-
 class EventGroupManager(models.Manager):
 
     def for_events(self, events):
@@ -240,6 +239,8 @@ class Event(models.Model):
     description = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
     editor_set = models.ManyToManyField(User, blank=True)
+    speaker_tba = models.BooleanField(default=True, verbose_name="Speaker to be announced")
+    various_speakers = models.BooleanField(default=False, verbose_name="Various Speakers")
     audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
     booking_type = models.TextField(verbose_name="Booking required",
                                     choices=BOOKING_CHOICES,
