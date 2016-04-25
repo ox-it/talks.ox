@@ -1,0 +1,56 @@
+{% extends "layouts/2-column.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Lecture/Seminar Series{% endblock %}
+
+{% block topcontent %}
+
+{% endblock %}
+
+
+{% block side %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3 col-xs-12">
+            
+            
+            {% include 'events/navigation_for_listing.html' %}
+
+
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block main %}
+
+<h1>Collections</h1>
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <p><strong>
+
+            </strong></p>
+            <ul class="list-unstyled">
+                {% for collection in collections %}
+                    <li class="contains-floating-buttons">
+                        <a href="{% url 'view-list' collection.slug %}">{{ collection.title }}</a>
+                           
+                    </li>
+                {% empty %}
+                    <p>There are no public collections available.</p>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+
+
+
+{% endblock %}
