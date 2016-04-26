@@ -29,7 +29,10 @@ class BrowseEventsForm(forms.Form):
                                          label="Series",
                                          required=False,
                                          help_text="Type series name and select from the list.")
-
+    seriesslug = OxPointField(datasources.SERIES_DATA_SOURCE_BY_SLUG,
+                                         label="Series",
+                                         required=False,
+                                         help_text='Type series name and select from the list.')   
 
     def clean(self):
         cleaned_data = self.cleaned_data

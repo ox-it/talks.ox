@@ -172,9 +172,17 @@ def show_event(request, event_slug):
 
 
 def list_event_groups(request):
+            
+    modified_request_parameters = request.GET.copy()
+    if request.POST.get('seriesslug'):
+        return redirect('show-event-group', request.POST.get('seriesslug'))
+        
+    browse_events_form = BrowseEventsForm(modified_request_parameters)
+    
     object_list = EventGroup.objects.all().order_by('title')
     context = {
         'object_list': object_list,
+        'browse_events_form': browse_events_form, 
     }
     return render(request, "events/event_group_list.html", context)
 

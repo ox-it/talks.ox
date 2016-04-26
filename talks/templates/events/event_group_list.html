@@ -1,7 +1,46 @@
-{% extends "base.html" %}
+{% extends "layouts/2-column.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
 
-{% block content %}
-<h1>Existing series</h1>
+{% block title %}Series{% endblock %}
+
+{% block extrahead %}
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<script src="{% static "js/form-controls.js"%}"></script>
+
+{% endblock %}
+
+
+{% block side %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3 col-xs-12">
+      <h3>View all:</h3>
+      <ul class="nav nav-list well">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ browse_events_form.seriesslug | bootstrap }}
+            
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        </form>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block main %}
+<h1>Existing series:</h1>
 <div class="list-group">
 {% for object in object_list %}
     <div class="list-group-item">
