@@ -132,11 +132,7 @@ def suggest_event_group(request):
     """Get event group titles for typeahead searching
     """
     query = request.GET.get('q', '')
-<<<<<<< HEAD
-    series = EventGroup.objects.filter(Q(title__icontains=query)).distinct()
-=======
-    series = EventGroup.objects.filter(Q(title__istartswith=query)).distinct()
->>>>>>> 21a3e7e36e98f98fe1cc699c06aab9c556ed31e2
+    series = EventGroup.objects.filter(Q(title__startswith=query)).distinct()
     serializer = EventGroupSerializer(series, many=True)
     return Response(serializer.data)
 
