@@ -5,6 +5,7 @@
             {% if show_event_time_only %}
                 {{ event.formatted_time }}
             {% else %}
+<!-- show only hour, date is not needed             -->
                 {{ event.formatted_date }}
             {% endif %}
         </strong>
@@ -16,16 +17,16 @@
             Untitled talk
           {% endif %}
         </a></u></b>
-        {% if event.group %}
-          <br>
-          Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
-        {% endif %}
         {% if event.speakers %}
             <br>
             Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
                 <b><u><a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></u></b>{% if not forloop.last %}, {% endif %}
             {% endfor %}
+        {% endif %}
+        {% if event.group %}
+          <br>
+          Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
         {% endif %}
     </div>
     <div class="formatting-links-wrapper">

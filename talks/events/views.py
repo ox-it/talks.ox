@@ -99,6 +99,21 @@ def browse_events(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect(reverse('browse_events'))
 
+    grouped_events = group_events(events)
+
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+
+    context = {
+        'events': events,
+        'grouped_events': grouped_events,
+        'fragment': fragment,
+        'browse_events_form': browse_events_form,
+        'start_date': modified_request_parameters.get('start_date'),
+        'end_date': modified_request_parameters.get('to'),
+        }
+    return render(request, 'events/browse.html', context)
+
+def group_events (events):
     grouped_events = {}
     event_dates = []
     for group_event in events:
@@ -111,19 +126,9 @@ def browse_events(request):
     result_events = []
     for event_date in event_dates:
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
-
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
-
-    context = {
-        'events': events,
-        'result_events': result_events,
-        'fragment': fragment,
-        'browse_events_form': browse_events_form,
-        'start_date': modified_request_parameters.get('start_date'),
-        'end_date': modified_request_parameters.get('to'),
-        }
-    return render(request, 'events/browse.html', context)
-
+        
+    return result_events
+    
 
 def upcoming_events(request):
     today = date.today()
