@@ -92,6 +92,12 @@ def browse_events(request):
         return redirect(reverse('browse_events'))
 
     events = events_search(modified_request_parameters)
+        
+    paginator = Paginator(events, count)
+    try:
+        events = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        return redirect(reverse('browse_events'))
 
     grouped_events = {}
     event_dates = []
@@ -105,12 +111,6 @@ def browse_events(request):
     result_events = []
     for event_date in event_dates:
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
-        
-    paginator = Paginator(events, count)
-    try:
-        events = paginator.page(page)
-    except (PageNotAnInteger, EmptyPage):
-        return redirect(reverse('browse_events'))
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
