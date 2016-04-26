@@ -77,6 +77,9 @@
     {% include 'contributors/person_quick_add.html' %}
     {% endwith %}
 
+    {{ event_form.speaker_tba|bootstrap_horizontal}}
+    {{ event_form.various_speakers|bootstrap_horizontal}}
+
     {{ event_form.location|bootstrap_horizontal }}
     {{ event_form.location_details|bootstrap_horizontal }}
     {{ event_form.description|bootstrap_horizontal }}
