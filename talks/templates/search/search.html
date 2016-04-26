@@ -59,38 +59,6 @@
             </li>
             {% endfor %}
         </ul>
-    
-
-    {% for result in page.object_list %}
-        <!-- <p>
-        {% comment %}
-        {% url 'event' result.pk %} means that we can only retrieve "events" (e.g. wouldn't work if we want to
-        return Speakers as main results -- if it was something that we wanted to do.
-        It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
-        {% endcomment %}
-            <b>{{ result.start|date:"D, d M y" }}</b>
-            {% if result.speakers %}
-                {{ result.speakers|join:", " }}
-            {% else %}
-                <em>Speaker to be announced</em>
-            {% endif %}
-            <a href="{% url 'show-event' result.slug %}">{{ result.title }}</a>
-            {% if result.group %}
-              Part of <a href="{% url 'show-event-group' result.group_slug %}">{{ result.group }}</a>
-            {% endif %}
-
-        </p> -->
-    {% empty %}
-        <p>No results found.</p>
-    {% endfor %}
-
-    {% if page.has_previous or page.has_next %}
-        <div>
-            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-            |
-            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
-        </div>
-    {% endif %}
 
     </div>
 
