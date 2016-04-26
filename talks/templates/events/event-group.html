@@ -41,7 +41,7 @@
     <div class="panel-heading">
         <h3 class="panel-title contains-floating-buttons">
             {{ event_group.title }}
-            <div class="formatting-links">
+            <div class="formatting-links pull-right">
                 {% include "events/event_group_plain_text_link.html" %}
                 {% include "events/event_group_ics_link.html" %}
                 {% if editable_collections %}
@@ -52,9 +52,11 @@
             </div>
         </h3>
     </div>
+    {% if event_group.description %}
     <div class="panel-body">
-        <p>{% if event_group.description %}{{ event_group.description_html | safe }}{% else %}<i>This series does not yet have an abstract</i>{% endif %}</p>
+        <p>{{ event_group.description_html | safe }}</p>
     </div>
+    {% endif %}
     <!-- List group -->
     <ul class="list-group">
         <li class="list-group-item"><strong>Type</strong>: {{ event_group.get_group_type_display }}</li>
@@ -101,24 +103,17 @@
 
         </li>
         {% empty %}
-        <div class="panel-footer">
+        <li class="list-group-item">
         {% if show_all %}
         There are no talks for this series yet
         {% else %}
         No upcoming talks to display for this series. Press the button below to show all talks.
         {% endif %}
-        </div>
+    </li>
         {% endfor %}
 
-        {% if event_group.public_collections_containing_this_event_group %}
-            <li class="list-group-item"><strong>This series features in the following public lists</strong>:
-                <ul class="list-unstyled">
-                    {% for collection in event_group.public_collections_containing_this_event_group %}
-                        <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endif %}
+ </ul>
+      
 
         <div class="panel-footer">
         {% if show_all %}
@@ -127,6 +122,18 @@
         <strong>Only showing upcoming talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-event-group' event_group.slug %}?show_all=true">Show all talks in this series</a>
         {% endif %}
         </div>
-    </ul>
 </div>
+
+    
+       {% if event_group.public_collections_containing_this_event_group %}
+           <p><strong>This series features in the following public collections</strong>:</p>
+               <ul class="list-unstyled">
+                   {% for collection in event_group.public_collections_containing_this_event_group %}
+                       <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>
+                   {% endfor %}
+               </ul>
+       {% endif %}
+    
+    
+    
 {% endblock %}
