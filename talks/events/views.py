@@ -167,7 +167,7 @@ def show_event(request, event_slug):
             'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
-
+        
     context = {
         'event': ev,
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
@@ -175,6 +175,7 @@ def show_event(request, event_slug):
         'speakers': ev.speakers.all(),
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
+        'editors': ev.editor_set.all(),
     }
     if request.tuser:
         context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()

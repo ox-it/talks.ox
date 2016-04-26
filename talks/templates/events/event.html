@@ -170,6 +170,12 @@
                 </ul>
             </li>
         {% endif %}
+        {% if editors %}
+            <li class="list-group-item"><strong>Editor{{ editors|pluralize }}</strong>: {% for editor in editors %}
+              {{ editor.username }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </li>
+        {% endif %}
 
     </ul>
 </div>
