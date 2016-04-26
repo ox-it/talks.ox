@@ -52,28 +52,16 @@
             <p>{{ collection.description_html | safe }}</p>
         </div>
     {% endif %}
-        <ul class="list-group">
             
             {% if events %}
-
-                {% for event in events %}
-            <li class="list-group-item">                                       {% include "events/event_teaser.html" %}
-            </li>
-
-                {% endfor %}
-
+              {% include 'events/_event_list.html' %}
             {% else %}
-                {% if show_all %}
-                  <li class="list-group-item"> 
-                            <i>You haven't added any talks to this collection yet.</i></li>
-                {% else %}
-                 <li class="list-group-item"> 
-                          <i>There are no upcoming talks in this collection.</i></li>
-                {% endif %}
+              {% if show_all %}
+                <i>You haven't added any talks to this collection yet.</i>
+              {% else %}
+                <i>There are no upcoming talks in this collection.</i>
+              {% endif %}
             {% endif %}
-            </li>
-
-        </ul>
 
     <div class="panel-footer">
         {% if show_all %}
