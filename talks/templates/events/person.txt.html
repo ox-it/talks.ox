@@ -14,24 +14,20 @@
 {% endif %}
 <br>
 {% if speaker_events %}
-    <br>Events this person is speaking at:
-    {% for event in speaker_events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+    <br>Events this person is speaking at:<br>
 {% endif %}
 
 {% if host_events %}
-    <br>Events this person is hosting:
-    {% for event in host_events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+    <br>Events this person is hosting:<br>
 {% endif %}
 
 {% if organiser_events %}
-    <br>Events this person is organising:
-    {% for event in organiser_events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+    <br>Events this person is organising:<br>
 {% endif %}
+
+{% if grouped_events %}
+  {% include "events/_event_list.txt.html" %}
+{% endif %}
+
 
 {% endblock %}
