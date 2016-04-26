@@ -14,7 +14,7 @@
             {% endif %}
         </strong>
          -
-         <a href="{% url 'show-event' result.slug %}" class="list-group-item-heading">
+         <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
           {% if event.title %}
             {{ event.title }}
           {% else %}

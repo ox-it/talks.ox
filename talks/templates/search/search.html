@@ -42,8 +42,27 @@
             {% endfor %}
         </ul>
 
+        <h3>Upcoming</h3>
+        <ul class="list-group">
+            {% for event in future_results %}
+            <li class="list-group-item">
+                {% include "events/event_teaser.html" %}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Past</h3>
+        <ul class="list-group">
+            {% for event in past_results %}
+            <li class="list-group-item">
+                {% include "events/event_teaser.html" %}
+            </li>
+            {% endfor %}
+        </ul>
+    
+
     {% for result in page.object_list %}
-        <p>
+        <!-- <p>
         {% comment %}
         {% url 'event' result.pk %} means that we can only retrieve "events" (e.g. wouldn't work if we want to
         return Speakers as main results -- if it was something that we wanted to do.
@@ -60,7 +79,7 @@
               Part of <a href="{% url 'show-event-group' result.group_slug %}">{{ result.group }}</a>
             {% endif %}
 
-        </p>
+        </p> -->
     {% empty %}
         <p>No results found.</p>
     {% endfor %}
