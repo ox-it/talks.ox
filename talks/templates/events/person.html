@@ -36,7 +36,7 @@
     {% if organiser_events %}
       <strong>Events this person is organising:</strong><br>
     {% endif %}
-    {% include 'events/_event_list.html' %}
+    {% include 'events/_event_list.html' with show_event_time_only=True %}
 
 </div>
 

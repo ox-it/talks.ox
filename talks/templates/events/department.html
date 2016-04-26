@@ -24,7 +24,7 @@
     </div>
 
     {% if events %}
-      {% include 'events/_event_list.html' %}
+      {% include 'events/_event_list.html' with show_event_time_only=True %}
     {% else %}
       <i>Sorry, there are currently no talks scheduled in this department.</i>
     {% endif %}

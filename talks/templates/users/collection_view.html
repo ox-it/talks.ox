@@ -54,7 +54,7 @@
     {% endif %}
             
             {% if events %}
-              {% include 'events/_event_list.html' %}
+              {% include 'events/_event_list.html' with show_event_time_only=True %}
             {% else %}
               {% if show_all %}
                 <i>You haven't added any talks to this collection yet.</i>

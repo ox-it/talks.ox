@@ -75,8 +75,7 @@
 
 <div class="js-upcoming-events">
     {% if grouped_events %}
-        {% include 'events/_event_list.html' %}
-      
+        {% include 'events/_event_list.html' with show_event_time_only=True %}      
         {% with events as page %}
             {% include 'events/_pagination.html' %}
         {% endwith %}
