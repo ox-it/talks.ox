@@ -9,20 +9,22 @@
             {% endif %}
         </strong>
          -
-        <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
+        <b><u><a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
           {% if event.title %}
             {{ event.title }}
           {% else %}
             Untitled talk
           {% endif %}
-        </a>
+        </a></u></b>
         {% if event.group %}
-          - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+          <br>
+          Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
         {% endif %}
         {% if event.speakers %}
-            . Speaker{{ event.speakers|pluralize }}:
+            <br>
+            Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
-                <a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+                <b><u><a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></u></b>{% if not forloop.last %}, {% endif %}
             {% endfor %}
         {% endif %}
     </div>
