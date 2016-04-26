@@ -207,9 +207,12 @@ def show_event_group(request, event_group_slug):
     if not show_all:
         events = events.filter(start__gte=date.today())
 
+    grouped_events = group_events(events)
+    
     context = {
         'event_group': group,
         'events': events,
+        'grouped_events': grouped_events,
         'organisers': group.organisers.all(),
         'show_all': show_all,
     }
