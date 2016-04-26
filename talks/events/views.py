@@ -93,6 +93,19 @@ def browse_events(request):
 
     events = events_search(modified_request_parameters)
 
+    grouped_events = {}
+    event_dates = []
+    for group_event in events:
+        key = group_event.start.date()
+        if key not in grouped_events:
+            grouped_events[key] = []
+            event_dates.append(key)
+        grouped_events[key].append(group_event)
+    
+    result_events = []
+    for event_date in event_dates:
+        result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
+        
     paginator = Paginator(events, count)
     try:
         events = paginator.page(page)
@@ -103,6 +116,7 @@ def browse_events(request):
 
     context = {
         'events': events,
+        'result_events': result_events,
         'fragment': fragment,
         'browse_events_form': browse_events_form,
         'start_date': modified_request_parameters.get('start_date'),
