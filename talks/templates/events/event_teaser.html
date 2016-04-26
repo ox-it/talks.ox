@@ -5,11 +5,16 @@
             {% if show_event_time_only %}
                 {{ event.formatted_time }}
             {% else %}
-                {{ event.formatted_date }}
+                {% if event.formatted_date %}
+                    {{ event.formatted_date }}
+                {% else %}
+                    <!-- from search results -->
+                    {{ event.start | date:"D, d M y" }}
+                {% endif %}
             {% endif %}
         </strong>
          -
-        <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
+         <a href="{% url 'show-event' result.slug %}" class="list-group-item-heading">
           {% if event.title %}
             {{ event.title }}
           {% else %}
@@ -22,7 +27,12 @@
         {% if event.speakers %}
             . Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
+                {% if speaker.slug %}
                 <a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+                {% else %}
+                <!-- Search result -->
+                {{ speaker}}{% if not forloop.last %}, {% endif %}
+                {% endif %}
             {% endfor %}
         {% endif %}
     </div>

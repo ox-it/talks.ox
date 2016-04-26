@@ -19,14 +19,36 @@
 
 
     <div class="col-md-9 col-md-push-3">
+        <h3>Top results</h3>
+        <ul class="list-group">
+            {% for result in top_results %}
+            <li class="list-group-item">
+                
+                <!-- <b>{{ result.start|date:"D, d M y" }}</b>
+                {% if result.speakers %}
+                    {{ reuslt.speakers|join:", " }}
+                {% else %}
+                    <em>Speaker to be announced</em>
+                {% endif %}
+                <a href="{% url 'show-event' result.slug %}">{{ result.title }}</a>
+                {% if result.group %}
+                  Part of <a href="{% url 'show-event-group' result.group_slug %}">{{ result.group }}</a>
+                {% endif %} -->
+                {% with result as event %}
+                {% include "events/event_teaser.html" %}
+                {% endwith %}
+                
+            </li>
+            {% endfor %}
+        </ul>
 
     {% for result in page.object_list %}
         <p>
-{% comment %}
-{% url 'event' result.pk %} means that we can only retrieve "events" (e.g. wouldn't work if we want to
-return Speakers as main results -- if it was something that we wanted to do.
-It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
-{% endcomment %}
+        {% comment %}
+        {% url 'event' result.pk %} means that we can only retrieve "events" (e.g. wouldn't work if we want to
+        return Speakers as main results -- if it was something that we wanted to do.
+        It is best practice to not access result.object as this would hit the database for every record (lazily loaded).
+        {% endcomment %}
             <b>{{ result.start|date:"D, d M y" }}</b>
             {% if result.speakers %}
                 {{ result.speakers|join:", " }}

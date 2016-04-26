@@ -56,4 +56,13 @@ class SearchView(FacetedSearchView):
 
             extra['facet_date'] = ordered_dates
 
+            extra['top_results'] = self.top_results(3)
+
+            print "top results", extra['top_results']
+
         return extra
+        
+    # get the top N results from the result set
+    def top_results(self, num):
+                
+        return self.get_results()[:num]
