@@ -18,6 +18,7 @@
 {% block content %}
 
 <br>{{ event_group.title }}
+<br>Editor: {{request.user}}
 {% if event_group.description %}
     <br>{{ event_group.description_html | safe | striptags | linebreaksbr }}
 {% else %}
