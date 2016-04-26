@@ -75,7 +75,11 @@
         <li class="list-group-item"><strong>Organising department</strong>: <a href="{% url 'show-department' event_group.api_organisation.id %}">{{ event_group.api_organisation.name }}</a></li>
     {% endif %}
     </ul>
-    {% include 'events/_event_list.html' %}
+    {% if events %}
+      {% include 'events/_event_list.html' %}
+    {% else %}
+      <i>Sorry, there are currently no talks scheduled in this series.</i>
+    {% endif %}
     <div class="panel-footer">
     {% if show_all %}
       <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-event-group' event_group.slug %}">Show upcoming talks only</a>
