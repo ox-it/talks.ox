@@ -55,7 +55,6 @@
                 <div class="container-fluid">
                     {% url 'homepage' as home %}
                     {% url 'create-event' as create_event %}
-                    {% url 'browse_events' as browse_events %}
                     {% url 'contributors-events' as contributors_homepage %}
                     {% url 'manage-lists' as manage_lists %}
                     <div class="navbar-header">
@@ -69,7 +68,6 @@
                         {% if perms.events.add_event %}
                             <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
                         {% endif %}
-                            <li {% ifequal request.path browse_events %} class="active" {% endifequal %}><a href="{{ browse_events }}">Browse Talks</a></li>
                     </ul>
                     <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'haystack_search' %}">
                         <div class="form-group">
@@ -85,7 +83,7 @@
                             {% elif user.email %}
                                 <li><p class="navbar-text"><i class="glyphicon glyphicon-user"></i> {{ user.email }}</p></li>
                             {% endif %}
-                            <li {% if '/user/lists' in request.path  %} class="active" {% endif %}><a href="{{ manage_lists }}"><span class="glyphicon glyphicon-list-alt"></span> Manage Lists</a></li>
+                            <li {% if '/user/lists' in request.path  %} class="active" {% endif %}><a href="{{ manage_lists }}"><span class="glyphicon glyphicon-list-alt"></span> Manage Collections</a></li>
                             <li><a href="{% url 'logout' %}">Logout</a></li>
                         {% else %}
                         <li><a href="{% url 'login' %}">Login</a></li>

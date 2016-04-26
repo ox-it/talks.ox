@@ -90,6 +90,14 @@ It is best practice to not access result.object as this would hit the database f
         {% endif %}
     </dl>
     <dl>
+        {% if facets.fields.lists %}
+            <dt>Public Lists</dt>
+            {% for list in facets.fields.lists|slice:":10" %}
+                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=lists_exact:{{ list.0|urlencode }}">{{ list.0 }}</a> ({{ list.1 }})</dd>
+            {% endfor %}
+        {% endif %}
+    </dl>
+    <dl>
         {% if facet_date %}
             <dt>Start</dt>
             {% for item in facet_date %}
