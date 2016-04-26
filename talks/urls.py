@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 
     url(r'^search/', SearchView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False),
         name='haystack_search'),
-    url(r'^$', homepage, name='homepage'),
+    url(r'^$', browse_events, name='homepage'),
     url(r'^browse$', browse_events, name='browse_events'),
     url(r'^talks/', include(events_urls)),
     url(r'^admin/', include(admin.site.urls)),
