@@ -42,17 +42,17 @@
 {% endif %}
 
 <br>
-<br>Talks:
-{% for event in events %}
-    {% include "events/event_teaser.txt.html" %}<br>
+<br>Talks:<br>
 
-{% empty %}
-    {% if show_all %}
-        <br>There are no talks for this series yet
-    {% else %}
-        <br>No upcoming talks to display for this series.
-    {% endif %}
-{% endfor %}
+{% if grouped_events %}
+  {% include "events/_event_list.txt.html" %}
+{% else %}
+  {% if show_all %}
+      <br>There are no talks for this series yet
+  {% else %}
+      <br>No upcoming talks to display for this series.
+  {% endif %}
+{% endif %}
 
 <br>
 {% endblock %}
