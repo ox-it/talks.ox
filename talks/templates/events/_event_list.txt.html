@@ -1,0 +1,6 @@
+{% for grouped_event in grouped_events %}
+  <br>{{grouped_event.start_date}}<br>
+    {% for event in grouped_event.gr_events %}
+        {% include 'events/event_teaser.txt.html' %}
+    {% endfor %}
+{% endfor %}

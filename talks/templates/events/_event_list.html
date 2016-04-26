@@ -3,7 +3,6 @@
   <ul class="list-group">
     {% for event in grouped_event.gr_events %}
       <li class="list-group-item">
-        {{event}}
         {% include 'events/event_teaser.html' %}
       </li>
     {% endfor %}
