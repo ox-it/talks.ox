@@ -10,11 +10,8 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             {{ person.name }}
-            <div class="formatting-links">
-                <a class="formatting-link plain-text-link" href="{% url 'show-person' person.slug %}?format=txt" title="View a plain text version of this page">
-                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                    <span class="formatting-link-text">plain text version</span>
-                </a>
+            <div class="formatting-links pull-right">
+ {% include "events/person_plain_text_link.html" %}
             </div>
         </h3>
     </div>
