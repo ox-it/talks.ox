@@ -298,7 +298,9 @@ def show_department_descendant(request, org_id):
     show_all = request.GET.get('show_all', False)
     if not show_all:
         events = events.filter(start__gte=date.today())
-
+        
+    grouped_events = group_events(events)
+    
     if org['_links'].has_key('parent'):
         parent_href = org['_links']['parent'][0]['href']
         parent_id = parent_href[parent_href.find("oxpoints"):]
@@ -310,6 +312,7 @@ def show_department_descendant(request, org_id):
         'org': org,
         'sub_orgs': sub_orgs,
         'events': events,
+        'grouped_events': grouped_events,
         'parent': parent,
         'show_all': show_all,
         'todays_date': date.today().strftime("%Y-%m-%d"),
