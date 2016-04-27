@@ -29,14 +29,16 @@
 
     {% if speaker_events %}
       <strong>Events this person is speaking at:</strong><br>
+      {% include 'events/_event_list.html' with show_event_time_only=True grouped_events=grouped_speaker_events %}
     {% endif %}
     {% if host_events %}
       <strong>Events this person is hosting:</strong><br>
+      {% include 'events/_event_list.html' with show_event_time_only=True grouped_events=grouped_host_events %}
     {% endif %}
     {% if organiser_events %}
       <strong>Events this person is organising:</strong><br>
+      {% include 'events/_event_list.html' with show_event_time_only=True grouped_events=grouped_organiser_events %}
     {% endif %}
-    {% include 'events/_event_list.html' with show_event_time_only=True %}
 
 </div>
 

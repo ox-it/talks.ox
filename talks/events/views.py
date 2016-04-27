@@ -238,19 +238,18 @@ def show_person(request, person_slug):
     host_events = events.filter(personevent__role=ROLES_HOST, personevent__person__slug=person.slug)
     speaker_events = events.filter(personevent__role=ROLES_SPEAKER, personevent__person__slug=person.slug)
     organiser_events = events.filter(personevent__role=ROLES_ORGANISER, personevent__person__slug=person.slug)
-    if host_events:
-        grouped_events = group_events(host_events)
-    elif speaker_events:
-        grouped_events = group_events(speaker_events)
-    elif speaker_events:
-        grouped_events = group_events(speaker_events)
+    grouped_host_events = group_events(host_events)
+    grouped_speaker_events = group_events(speaker_events)
+    grouped_organiser_events = group_events(organiser_events)
 
     context = {
         'person': person,
         'host_events': host_events,
         'speaker_events': speaker_events,
         'organiser_events': organiser_events,
-        'grouped_events': grouped_events,
+        'grouped_host_events': grouped_host_events,
+        'grouped_speaker_events': grouped_speaker_events,
+        'grouped_organiser_events': grouped_organiser_events,
     }
     if request.GET.get('format') == 'txt':
         return render(request, 'events/person.txt.html', context)
