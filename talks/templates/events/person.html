@@ -27,46 +27,16 @@
         {% endif %}
     </div>
 
-    <ul class="list-group">
-        {% if speaker_events %}
-        <li class="list-group-item">
-        <strong>Events this person is speaking at:</strong><br>
-        {% for event in speaker_events %}
-            <a href="{% url 'show-event' event.slug %}">{{ event.title_display}}</a>
-            -
-            {{ event.formatted_date}}
-            {% include "events/event_ics_link.html" %}
-            <br>
-        {% endfor %}
-        </li>
-        {% endif %}
-
-        {% if host_events %}
-        <li class="list-group-item">
-        <strong>Events this person is hosting:</strong><br>
-        {% for event in host_events %}
-            <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a>
-            -
-            {{ event.formatted_date}}
-            {% include "events/event_ics_link.html" %}
-            <br>
-        {% endfor %}
-        </li>
-        {% endif %}
-
-        {% if organiser_events %}
-        <li class="list-group-item">
-        <strong>Events this person is organising:</strong><br>
-        {% for event in organiser_events %}
-            <a href="{% url 'show-event' event.slug %}">{{ event.title_display }}</a>
-            -
-            {{ event.formatted_date}}
-            {% include "events/event_ics_link.html" %}
-            <br>
-        {% endfor %}
-        </li>
-        {% endif %}
-    </ul>
+    {% if speaker_events %}
+      <strong>Events this person is speaking at:</strong><br>
+    {% endif %}
+    {% if host_events %}
+      <strong>Events this person is hosting:</strong><br>
+    {% endif %}
+    {% if organiser_events %}
+      <strong>Events this person is organising:</strong><br>
+    {% endif %}
+    {% include 'events/_event_list.html' with show_event_time_only=True %}
 
 </div>
 

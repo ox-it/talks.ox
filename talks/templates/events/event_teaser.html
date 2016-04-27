@@ -1,6 +1,21 @@
+{% load users %}
 <!-- Display a single event teaser -->
 <div class="event-teaser-wrapper">
-    <div class="event-teaser-text-wrapper">
+  <div class="event-teaser-text-wrapper">
+      
+        <div class="pull-right">
+          <span style="padding-right: 20px">
+            {% if not is_search and not event.is_published %}<strong>Status</strong>: This talk is in preparation - details may change{% endif %}
+          </span>
+          {% if not is_search and perms.events.change_event %}
+            {% if request.user|can_edit_event:event %}
+              <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
+            {% else %}
+              Not authorized to edit
+            {% endif %}
+          {% endif %}
+        </div>
+
         <strong>
             {% if show_event_time_only %}
                 {{ event.formatted_time }}
@@ -13,27 +28,35 @@
                 {% endif %}
             {% endif %}
         </strong>
-         -
-         <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
+
+        <b><u><a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
           {% if event.title %}
             {{ event.title }}
           {% else %}
             Untitled talk
           {% endif %}
-        </a>
-        {% if event.group %}
-          - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
-        {% endif %}
+        </a></u></b>
         {% if event.speakers %}
-            . Speaker{{ event.speakers|pluralize }}:
+            <br>
+            Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
                 {% if speaker.slug %}
-                <a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+                <b><u><a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></u></b>{% if not forloop.last %}, {% endif %}
                 {% else %}
                 <!-- Search result -->
-                {{ speaker}}{% if not forloop.last %}, {% endif %}
+                <b><u>{{ speaker}}{% if not forloop.last %}, {% endif %}</b></u>
                 {% endif %}
             {% endfor %}
+        {% endif %}
+        {% if event.group_slug %}
+            <!-- Search Results -->
+            <br>
+            Part of: <a href="{% url 'show-event-group' event.group_slug %}">event.group</a>
+        {% else %}
+            {% if event.group %}
+              <br>
+              Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+            {% endif %}
         {% endif %}
     </div>
     <div class="formatting-links-wrapper">

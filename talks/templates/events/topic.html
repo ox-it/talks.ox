@@ -14,11 +14,11 @@
         </h3>
     </div>
 
-    <ul class="list-group">
-        {% for event in events.all %}
-            <li class="list-group-item">{% include "events/event_teaser.html" %}</li>
-        {% endfor %}
-    </ul>
+    {% if grouped_events %}
+      {% include 'events/_event_list.html' with show_event_time_only=True %}
+    {% else %}
+      <i>Sorry, there are currently no talks scheduled for this topic.</i>
+    {% endif %}
 
 
 </div>

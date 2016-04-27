@@ -7,6 +7,7 @@
 {% block content %}
 
 {% if query %}
+{% with True as is_search %}
     <div class="container-fluid">
 
     {% if suggestion %}
@@ -106,5 +107,6 @@
     {% endif %}
 
     </div>
+    {% endwith %}
 {% endif %}
 {% endblock %}

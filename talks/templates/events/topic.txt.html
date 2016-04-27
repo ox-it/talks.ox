@@ -8,10 +8,8 @@
 <br>Topic: {{ topic.prefLabel }}
 
 {% if events %}
-    <br>Talks:
-    {% for event in events.all %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+  <br>Talks:<br>
+  {% include "events/_event_list.txt.html" %}
 {% else %}
     <br>Sorry, there are currently no talks scheduled for this topic.
 {% endif %}
