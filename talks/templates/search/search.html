@@ -33,19 +33,8 @@
 
         <h3>Upcoming</h3>
         <h5><a href="{% url 'haystack_search_past' %}?q= {{query}}">Show past results</a></h5>
-        <ul class="list-group">
-            {% for event in future_results %}
-            <li class="list-group-item">
-                {% include "events/event_teaser.html" %}
-            </li>
-            {% empty %}
-            <li class="list-group-item">
-                No results found in upcoming talks
-            </li>
-            {% endfor %}
-        </ul>
-        
-
+        {% include "events/_event_list.html" with grouped_events=grouped_future_results %}
+    
     </div>
 
     {% if page.object_list %}
