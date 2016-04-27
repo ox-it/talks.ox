@@ -262,7 +262,9 @@ def show_topic(request):
     topic_uri = request.GET.get('uri')
     api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
     events = Event.published.filter(topics__uri=topic_uri)
+    grouped_events = group_events(events)
     context = {
+        'grouped_events': grouped_events,
         'topic': api_topic,
         'events': events
     }
