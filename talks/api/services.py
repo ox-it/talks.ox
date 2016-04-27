@@ -49,8 +49,8 @@ def events_search(parameters):
             queries.append(orm_mapping(value))
 
     final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query).distinct().order_by('start')
-
+    events = Event.objects.filter(final_query).distinct().order_by('start')
+    
     return events
 
 
