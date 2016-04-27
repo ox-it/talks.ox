@@ -2,15 +2,7 @@
 <div class="event-teaser-wrapper">
   <div class="event-teaser-text-wrapper">
       
-    {% if perms.events.change_event %}
-      <div class="pull-right">
-        {% if request.user|can_edit_event:event %}
-          <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
-        {% else %}
-          Not authorized to edit
-        {% endif %}
-      </div>
-    {% endif %}
+  
       
         <strong>
             {% if show_event_time_only %}
