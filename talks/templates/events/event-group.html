@@ -80,7 +80,7 @@
     {% endif %}
     </ul>
     {% if events %}
-      {% include 'events/_event_list.html' with show_event_time_only=True %}
+      {% include 'events/_event_list.html' with show_event_time_only=True is_group_view=True %}
     {% else %}
       <i>Sorry, there are currently no talks scheduled in this series.</i>
     {% endif %}
