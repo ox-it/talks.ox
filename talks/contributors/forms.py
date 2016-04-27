@@ -141,7 +141,7 @@ class EventForm(forms.ModelForm):
     
     audience_choices = forms.ChoiceField(
         label="Who can attend",
-        required=True,
+        required=False,
         choices=AUDIENCE_CHOICES,
         widget=RadioSelect()
     )
