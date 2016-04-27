@@ -13,7 +13,6 @@ from talks.events.models import Event
 from talks.users.authentication import user_in_group_or_super
 from .forms import CollectionForm
 
-
 def webauth_logout(request):
     context = {'was_webauth': True}
     logout(request)
@@ -46,7 +45,6 @@ def browse_public_collections(request):
     context['collections'] = Collection.objects.filter(public=True).order_by('title')
 
     return render(request, 'users/collection_list.html', context)
-
 
 def view_collection(request, collection_slug):
     collection = Collection.objects.get(slug=collection_slug)

@@ -6,7 +6,7 @@ from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Event, EventGroup, Person
+from .models import Event, EventGroup, Person, TopicItem
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
@@ -263,6 +263,22 @@ def show_topic(request):
     else:
         return render(request, 'events/topic.html', context)
 
+def list_topics(request):
+    
+    topics = TopicItem.objects.distinct()
+    topics_results = []
+    
+    for topic in topics.all():
+        events = Event.published.filter(topics__uri=topic.uri)
+        if(len(events)>0):
+            api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
+            topics_results.append(api_topic)
+    
+    context = {
+        'topics': topics_results,
+    }
+    
+    return render(request, 'events/topic_list.html', context)
 
 def show_department_organiser(request, org_id):
     org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
