@@ -1,12 +1,12 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
-from django.forms.widgets import Select
+from django.forms.widgets import Select, RadioSelect
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 
 from talks.events import models, typeahead, datasources
-from talks.events.models import EventGroup
+from talks.events.models import EventGroup, AUDIENCE_CHOICES, AUDIENCE_PUBLIC, AUDIENCE_OXFORD, AUDIENCE_OTHER
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 
@@ -57,6 +57,19 @@ class EventForm(forms.ModelForm):
         # Amend help text if no groups to choose from
         if (not self.fields['group'].queryset) or self.fields['group'].queryset.count <= 0:
             self.fields['group'].empty_label = "-- There are no series which you can add this talk to --"
+            
+        # set preliminary values for audience_choices and audience_other
+        if self.instance.audience == AUDIENCE_PUBLIC:
+            self.fields['audience_choices'].initial = 'public'
+            
+        elif self.instance.audience == AUDIENCE_OXFORD:
+            self.fields['audience_choices'].initial = 'oxonly'
+            
+        else:
+            self.fields['audience_choices'].initial = 'other'
+            self.fields['audience_other'].initial = self.instance.audience
+            
+        
 
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
@@ -114,6 +127,23 @@ class EventForm(forms.ModelForm):
         help_text="Share editing with another Talks Editor by typing in their email address",
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
+    )
+    
+    audience = forms.CharField(
+        required=False
+    )
+    
+    audience_other = forms.CharField(
+        label="",
+        required=False,
+        help_text="If other, please specify"
+    )
+    
+    audience_choices = forms.ChoiceField(
+        label="Who can attend",
+        required=True,
+        choices=AUDIENCE_CHOICES,
+        widget=RadioSelect()
     )
 
     class Meta:
@@ -179,6 +209,16 @@ class EventForm(forms.ModelForm):
                 #don't allow this user to clear the group
                 raise forms.ValidationError("You do not have permission to move this talk from its current series")
 
+        # fill in the 'audience' field used by the model, based on the form values filled in
+        if self.cleaned_data['audience_choices'] == 'other':
+            if not self.cleaned_data['audience_other']:
+                raise forms.ValidationError("You must specify who can attend")
+            else:
+                print "setting to value of audience_other field"
+                self.cleaned_data['audience'] = self.cleaned_data['audience_other']
+        else:
+            self.cleaned_data['audience'] = self.cleaned_data['audience_choices']
+        
         return self.cleaned_data
 
     def _update_people(self, field, event, role):
