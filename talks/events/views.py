@@ -114,6 +114,17 @@ def browse_events(request):
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
+    old_query = request.META['QUERY_STRING']
+    dates_start = old_query.find("start_date=")
+    dates_end = dates_start + 35
+    tab_dates = {
+        'all': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
+        'today': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
+        'tomorrow': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
+        'this week': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
+        'next week': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
+        'next 30 days': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:]
+    }
     context = {
         'events': events,
         'result_events': result_events,
@@ -121,6 +132,7 @@ def browse_events(request):
         'browse_events_form': browse_events_form,
         'start_date': modified_request_parameters.get('start_date'),
         'end_date': modified_request_parameters.get('to'),
+        'tab_dates': tab_dates,
         }
     return render(request, 'events/browse.html', context)
 

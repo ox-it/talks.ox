@@ -72,6 +72,13 @@
 
 {% block main %}
 
+{% for tab, date_string in tab_dates.items %}
+  <span>
+    <a href="{{date_string}}">
+      {{tab}}
+    </a>
+  </span>{% if not forloop.last %} | {% endif %}
+{% endfor %}
 
 <div class="js-upcoming-events">
     {% if result_events %}
