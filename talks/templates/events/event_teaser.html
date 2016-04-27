@@ -1,6 +1,17 @@
 <!-- Display a single event teaser -->
 <div class="event-teaser-wrapper">
-    <div class="event-teaser-text-wrapper">
+  <div class="event-teaser-text-wrapper">
+      
+    {% if perms.events.change_event %}
+      <div class="pull-right">
+        {% if request.user|can_edit_event:event %}
+          <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
+        {% else %}
+          Not authorized to edit
+        {% endif %}
+      </div>
+    {% endif %}
+      
         <strong>
             {% if show_event_time_only %}
                 {{ event.formatted_time }}
@@ -9,7 +20,7 @@
                 {{ event.formatted_date }}
             {% endif %}
         </strong>
-         -
+
         <b><u><a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
           {% if event.title %}
             {{ event.title }}
@@ -17,6 +28,10 @@
             Untitled talk
           {% endif %}
         </a></u></b>
+        <span style="padding-left: 20px">
+          <strong>Status</strong>:
+          {% if event.is_published %} published{% else %} In Preparation{% endif %}
+        </span>
         {% if event.speakers %}
             <br>
             Speaker{{ event.speakers|pluralize }}:
