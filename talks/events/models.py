@@ -450,7 +450,6 @@ class Event(models.Model):
 
         return publicCollectionsContainingThisEvent
 
-    @property
     def get_audience_display(self):
         # look up if it is one of the standard choices, else use the field value verbatim
         

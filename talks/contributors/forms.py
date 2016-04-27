@@ -210,14 +210,15 @@ class EventForm(forms.ModelForm):
                 raise forms.ValidationError("You do not have permission to move this talk from its current series")
 
         # fill in the 'audience' field used by the model, based on the form values filled in
-        if self.cleaned_data['audience_choices'] == 'other':
-            if not self.cleaned_data['audience_other']:
+        if 'audience_choices' in self.cleaned_data and self.cleaned_data['audience_choices'] == 'other':
+            if not self.cleaned_data['audience_other'] or self.cleaned_data['audience_other'] == '':
                 raise forms.ValidationError("You must specify who can attend")
             else:
                 print "setting to value of audience_other field"
                 self.cleaned_data['audience'] = self.cleaned_data['audience_other']
         else:
-            self.cleaned_data['audience'] = self.cleaned_data['audience_choices']
+            if 'audience_choices' in self.cleaned_data and not self.cleaned_data['audience_choices'] == '':
+                self.cleaned_data['audience'] = self.cleaned_data['audience_choices']        
         
         return self.cleaned_data
 
