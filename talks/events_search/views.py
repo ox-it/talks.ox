@@ -57,11 +57,17 @@ class SearchView(FacetedSearchView):
 
             extra['facet_date'] = ordered_dates
 
-            now = datetime.now()
-
-            extra['top_results'] = self.get_results()[:5]
-            extra['future_results'] = self.get_results().filter(start__gte=now).order_by('start')
-            extra['past_results'] = self.get_results().filter(start__lt=now).order_by('-start')
-
         return extra
+
+class SearchUpcomingView(SearchView):
     
+    def extra_context(self):
+        extra = super(SearchUpcomingView, self).extra_context()
+        
+        extra['top_results'] = self.get_results()[:5]
+        now = datetime.now()
+        extra['future_results'] = self.get_results().filter(start__gte=now).order_by('start')
+
+        # return all top results and future_results. These will be displayed on a single page.
+        
+        return extra

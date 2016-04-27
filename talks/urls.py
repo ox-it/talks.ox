@@ -6,8 +6,8 @@ from django.views.generic.base import RedirectView
 
 from talks.events.views import (homepage, browse_events)
 from talks.events_search.forms import DateFacetedSearchForm
-from talks.events_search.views import SearchView
-from talks.events_search.conf import sqs
+from talks.events_search.views import SearchView, SearchUpcomingView
+from talks.events_search.conf import sqs, sqs_past
 
 from talks.api.urls import urlpatterns as api_urls
 from talks.contributors.urls import urlpatterns  as contributors_urls
@@ -24,8 +24,10 @@ urlpatterns = patterns('',
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', webauth_logout, name='logout'),
 
-    url(r'^search/', SearchView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False),
+    url(r'^search/', SearchUpcomingView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False),
         name='haystack_search'),
+    url(r'^search_past/', SearchView(form_class=DateFacetedSearchForm, searchqueryset=sqs_past, load_all=False, template='search/search_past.html'),
+        name='haystack_search_past'),
     url(r'^$', homepage, name='homepage'),
     url(r'^browse$', browse_events, name='browse_events'),
     url(r'^talks/', include(events_urls)),

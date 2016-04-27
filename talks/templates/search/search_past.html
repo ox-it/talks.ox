@@ -19,31 +19,27 @@
 
 
     <div class="col-md-9 col-md-push-3">
-        {% if top_results %}
-            <h3>Top results</h3>
-            <ul class="list-group">
-                {% for event in top_results %}
-                <li class="list-group-item">
-                    {% include "events/event_teaser.html" %}                    
-                </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+	    <h3>Past results</h3>
+	    <h5><a href="{% url 'haystack_search' %}?q= {{query}}">Show upcoming results</a></h5>
+	    <ul class="list-group"> 
+	    {% for event in page.object_list %}
+	        <li class="list-group-item">
+	            {% include "events/event_teaser.html" %}
+	        </li>
+	    {% empty %}
+	        <li class="list-group-item">
+				No results found in past talks
+			</li>
+	    {% endfor %}
+	    </ul>
 
-        <h3>Upcoming</h3>
-        <h5><a href="{% url 'haystack_search_past' %}?q= {{query}}">Show past results</a></h5>
-        <ul class="list-group">
-            {% for event in future_results %}
-            <li class="list-group-item">
-                {% include "events/event_teaser.html" %}
-            </li>
-            {% empty %}
-            <li class="list-group-item">
-                No results found in upcoming talks
-            </li>
-            {% endfor %}
-        </ul>
-        
+	    {% if page.has_previous or page.has_next %}
+	        <div>
+	            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+	            |
+	            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+	        </div>
+	    {% endif %}
 
     </div>
 
