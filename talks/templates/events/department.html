@@ -16,16 +16,8 @@
             {% endif %}
 
             <div class="formatting-links">
-                <a class="formatting-link plain-text-link" href="{% url 'show-department' org.id %}?format=txt" title="View a plain text version of this department's talks">
-                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                    <span class="formatting-link-text">plain text version</span>
-
-                </a>
-                <a class="formatting-link ics-link" href="{% url 'api-search-events-ics' %}?start_date={{ todays_date }}&include_subdepartments=on&organising_department={{ org.id }}" title="Import this department's talks into your calendar">
-                    <span class="fa fa-calendar" aria-hidden="true"></span>
-                    <span class="formatting-link-text">add to your calendar</span>
-                </a>
-
+                {% include "events/department_plain_text_link.html" %}
+                {% include "events/department_ics_link.html" %}
 
             </div>
         </h3>

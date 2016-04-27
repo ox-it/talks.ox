@@ -92,17 +92,31 @@ def browse_events(request):
         return redirect(reverse('browse_events'))
 
     events = events_search(modified_request_parameters)
-
+        
     paginator = Paginator(events, count)
     try:
         events = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
         return redirect(reverse('browse_events'))
 
+    grouped_events = {}
+    event_dates = []
+    for group_event in events:
+        key = group_event.start.date()
+        if key not in grouped_events:
+            grouped_events[key] = []
+            event_dates.append(key)
+        grouped_events[key].append(group_event)
+    
+    result_events = []
+    for event_date in event_dates:
+        result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
+
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
     context = {
         'events': events,
+        'result_events': result_events,
         'fragment': fragment,
         'browse_events_form': browse_events_form,
         'start_date': modified_request_parameters.get('start_date'),
@@ -153,7 +167,7 @@ def show_event(request, event_slug):
             'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
-
+        
     context = {
         'event': ev,
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
@@ -161,6 +175,7 @@ def show_event(request, event_slug):
         'speakers': ev.speakers.all(),
         'hosts': ev.hosts.all(),
         'organisers': ev.organisers.all(),
+        'editors': ev.editor_set.all(),
     }
     if request.tuser:
         context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()

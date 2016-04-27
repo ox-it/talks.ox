@@ -4,6 +4,8 @@ from rest_framework.exceptions import ParseError
 from talks.core.utils import parse_date
 from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
+from datetime import datetime, timedelta
+
 
 
 def events_search(parameters):
@@ -24,7 +26,7 @@ def events_search(parameters):
 
     to_date = parse_date(parameters.get("to"))
     if to_date:
-        queries.append(Q(start__lt=to_date))
+        queries.append(Q(start__lt=to_date+timedelta(1)))
 
     include_sub_departments = True
     subdepartments = parameters.get("subdepartments")
