@@ -51,7 +51,11 @@
                 {% endif %}
             </div>
         </h3>
-        Editor: {{request.user}}
+        {% if editors %}
+            Editor{{ editors|pluralize }}: {% for editor in editors %}
+              {{ editor.username }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
     {% if event_group.description %}
     <div class="panel-body">

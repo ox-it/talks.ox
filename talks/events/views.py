@@ -215,6 +215,7 @@ def show_event_group(request, event_group_slug):
         'grouped_events': grouped_events,
         'organisers': group.organisers.all(),
         'show_all': show_all,
+        'editors': group.editor_set.all(),
     }
 
     if request.tuser:
