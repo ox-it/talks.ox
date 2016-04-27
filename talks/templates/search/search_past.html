@@ -22,25 +22,8 @@
     <div class="col-md-9 col-md-push-3">
 	    <h3>Past results</h3>
 	    <h5><a href="{% url 'haystack_search' %}?q= {{query}}">Show upcoming results</a></h5>
-	    <ul class="list-group"> 
-	    {% for event in page.object_list %}
-	        <li class="list-group-item">
-	            {% include "events/event_teaser.html" %}
-	        </li>
-	    {% empty %}
-	        <li class="list-group-item">
-				No results found in past talks
-			</li>
-	    {% endfor %}
-	    </ul>
 
-	    {% if page.has_previous or page.has_next %}
-	        <div>
-	            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-	            |
-	            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
-	        </div>
-	    {% endif %}
+        {% include "events/_event_list.html" with grouped_events=grouped_past_results %}
 
     </div>
 

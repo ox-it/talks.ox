@@ -6,7 +6,7 @@ from django.views.generic.base import RedirectView
 
 from talks.events.views import (homepage, browse_events)
 from talks.events_search.forms import DateFacetedSearchForm
-from talks.events_search.views import SearchView, SearchUpcomingView
+from talks.events_search.views import SearchPastView, SearchUpcomingView
 from talks.events_search.conf import sqs, sqs_past
 
 from talks.api.urls import urlpatterns as api_urls
@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 
     url(r'^search/', SearchUpcomingView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False),
         name='haystack_search'),
-    url(r'^search_past/', SearchView(form_class=DateFacetedSearchForm, searchqueryset=sqs_past, load_all=False, template='search/search_past.html'),
+    url(r'^search_past/', SearchPastView(form_class=DateFacetedSearchForm, searchqueryset=sqs_past, load_all=False, template='search/search_past.html'),
         name='haystack_search_past'),
     url(r'^$', browse_events, name='homepage'),
     url(r'^browse$', browse_events, name='browse_events'),

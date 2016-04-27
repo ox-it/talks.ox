@@ -59,6 +59,7 @@ class SearchView(FacetedSearchView):
 
             extra['facet_date'] = ordered_dates
 
+
         return extra
 
 class SearchUpcomingView(SearchView):
@@ -73,5 +74,15 @@ class SearchUpcomingView(SearchView):
         # return all top results and future_results. These will be displayed on a single page.
         
         extra['grouped_future_results'] = group_events(extra['future_results'])
+        
+        return extra
+        
+class SearchPastView(SearchView):
+
+    def extra_context(self):
+        extra = super(SearchPastView, self).extra_context()
+        
+        # pass all past events, grouped by date
+        extra['grouped_past_results'] = group_events(self.get_results())
         
         return extra

@@ -44,7 +44,7 @@
                 <b><u><a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></u></b>{% if not forloop.last %}, {% endif %}
                 {% else %}
                 <!-- Search result -->
-                <b><u>{{ speaker}}{% if not forloop.last %}, {% endif %}</b></u>
+                <b>{{ speaker}}</b>{% if not forloop.last %}, {% endif %}
                 {% endif %}
             {% endfor %}
         {% endif %}
