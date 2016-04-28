@@ -15,11 +15,9 @@
 {% if collection.description %}
   <br>Description: {{ collection.description_html | safe | striptags | linebreaksbr }}
 {% endif %}
-<br>Talks:
-{% if events %}
-    {% for event in events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+<br>Talks:<br>
+{% if grouped_events %}
+  {% include "events/_event_list.txt.html" %}
 {% else %}
     <br>There are no upcoming talks in this list.
 {% endif %}

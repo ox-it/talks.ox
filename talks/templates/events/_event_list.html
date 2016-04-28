@@ -1,0 +1,10 @@
+{% for grouped_event in grouped_events %}
+  <h4 class="group-date">{{grouped_event.start_date}}</h4>
+  <ul class="list-group">
+    {% for event in grouped_event.gr_events %}
+      <li class="list-group-item">
+        {% include 'events/event_teaser.html' %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endfor %}
