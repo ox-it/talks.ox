@@ -74,18 +74,8 @@
 
 
 <div class="js-upcoming-events">
-    {% if result_events %}
-      {% for result_event in result_events %}
-        <p>{{result_event.start_date}}</p>
-        <ul class="list-group">
-          {% for event in result_event.gr_events %}
-            <li class="list-group-item">
-              {{event}}
-              {% include 'events/event_teaser.html' %}
-            </li>
-          {% endfor %}
-        </ul>
-      {% endfor %}
+    {% if grouped_events %}
+        {% include 'events/_event_list.html' with show_event_time_only=True %}      
         {% with events as page %}
             {% include 'events/_pagination.html' %}
         {% endwith %}

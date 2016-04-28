@@ -10,6 +10,7 @@ from datetime import date
 
 from .models import Collection, TalksUser, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
 from talks.events.models import Event
+from talks.events.views import group_events
 from talks.users.authentication import user_in_group_or_super
 from .forms import CollectionForm
 
@@ -66,6 +67,8 @@ def view_collection(request, collection_slug):
     if not show_all:
         allEvents = allEvents.filter(start__gte=date.today())
 
+    grouped_events = group_events(allEvents)
+    
     collectionContributors = None
     if request.tuser:
         collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
@@ -74,6 +77,7 @@ def view_collection(request, collection_slug):
         'collection' : collection,
         'show_all' : show_all,
         'events' : allEvents,
+        'grouped_events': grouped_events,
         'event_groups' : series,
         'contributors' : collectionContributors,
     }

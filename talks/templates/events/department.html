@@ -23,15 +23,11 @@
         </h3>
     </div>
 
-    <ul class="list-group">
-        {% if events %}
-            {% for event in events.all %}
-                <li class="list-group-item">{% include "events/event_teaser.html" %}</li>
-            {% endfor %}
-        {% else %}
-            <li class="list-group-item"><i>Sorry, there are currently no talks scheduled in this department.</i></li>
-        {% endif %}
-    </ul>
+    {% if events %}
+      {% include 'events/_event_list.html' with show_event_time_only=True %}
+    {% else %}
+      <i>Sorry, there are currently no talks scheduled in this department.</i>
+    {% endif %}
 <div class="panel-footer">
         {% if show_all %}
         <strong>Showing all talks   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-department' org.id %}">Show upcoming talks only</a>
