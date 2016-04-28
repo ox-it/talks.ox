@@ -11,5 +11,12 @@
             {% if page.has_next %}
                 <a class="btn btn-default" href="?{{ fragment }}&page={{ page.next_page_number }}">next</a>
             {% endif %}
+
+            {% if page.paginator.num_pages > 1 %}
+              <br>
+              {% for page_index in page.paginator.page_range %}
+                <a class="btn btn-default" href="?{{ fragment }}&page={{ page_index }}">{{ page_index }}</a>
+              {% endfor %}
+            {% endif %}
         </span>
     </div>
