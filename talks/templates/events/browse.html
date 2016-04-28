@@ -8,7 +8,7 @@
 
 <!-- Date picker -->
 <link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
-
+<script src="{% static "js/moment-with-locales.min.js"%}"></script>
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
 
 <!-- Typeahead.js -->
@@ -40,7 +40,7 @@
       <ul class="nav nav-list well">
         <form action="{% url 'browse_events' %}" method="get">
             {{ browse_events_form.start_date | bootstrap }}
-            <a class="clear-datepicker pull-right" href="#">clear</a>
+            
             {{ browse_events_form.to | bootstrap }}
             {{ browse_events_form.organising_department | bootstrap }}
             {{ browse_events_form.include_subdepartments | bootstrap }}
@@ -52,12 +52,13 @@
         </form>
 
         <script type="text/javascript">
-          $(function() {
+          $(document).ready(function(){
             $('.js-datetimepicker').datetimepicker({
-              format: 'yyyy-mm-dd',
-              minView: 2,
-              autoclose: true
-            });
+              format : 'YYYY-MM-DD'  
+            });  
+          });
+          $(function() { 
+           
           });
         </script>
 

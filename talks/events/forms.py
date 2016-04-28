@@ -10,10 +10,10 @@ from talks.contributors.forms import BootstrappedDateTimeWidget, OxPointField
 class BrowseEventsForm(forms.Form):
     start_date = forms.DateTimeField(label="Start Date",
                                      required=True,
-                                     widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
+                                     widget=BootstrappedDateTimeWidget(attrs={}))
     to = forms.DateTimeField(label="End date",
                              required=False,
-                             widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
+                             widget=BootstrappedDateTimeWidget(attrs={}))
     venue = OxPointField(datasources.LOCATION_DATA_SOURCE,
                          label="Venue",
                          required=False,
