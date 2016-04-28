@@ -16,9 +16,7 @@ $(function() {
     today_eleven_am.setHours(11);
     // Initialise datetimepicker's
     $('.js-datetimepicker').datetimepicker({
-        format: 'dd/mm/yyyy hh:ii',
-        autoclose: true,
-        initialDate: today_eleven_am
+        format: 'DD/MM/YYYY HH:mm'
     });
 
     $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
