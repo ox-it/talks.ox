@@ -109,7 +109,7 @@ class Collection(models.Model):
         return self._get_items_by_model(EventGroup)
         
     def get_departments(self):
-        return self._get_items_by_model(basestring)
+        return self._get_items_by_model(CollectedDepartment)
 
     def get_all_events(self):
         """
