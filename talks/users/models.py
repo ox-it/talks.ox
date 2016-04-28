@@ -23,6 +23,10 @@ COLLECTION_ROLES = (
     (COLLECTION_ROLES_READER, 'Viewer'),
 )
 
+
+class CollectedDepartment(models.Model):
+    department = models.TextField(default='')
+
 class Collection(models.Model):
 
     slug = models.SlugField()
@@ -68,6 +72,9 @@ class Collection(models.Model):
         elif isinstance(item, EventGroup):
             # Adding event group
             content_type = ContentType.objects.get_for_model(EventGroup)
+        elif isinstance(item, CollectedDepartment):
+            # Adding department
+            content_type = ContentType.objects.get_for_model(CollectedDepartment)
         else:
             raise self.InvalidItemType()
         try:
@@ -83,6 +90,8 @@ class Collection(models.Model):
             content_type = ContentType.objects.get_for_model(Event)
         elif isinstance(item, EventGroup):
             content_type = ContentType.objects.get_for_model(EventGroup)
+        elif isinstance(item, CollectedDepartment):
+            content_type = ContentType.objects.get_for_model(CollectedDepartment)
         else:
             raise self.InvalidItemType()
         try:
@@ -98,19 +107,34 @@ class Collection(models.Model):
 
     def get_event_groups(self):
         return self._get_items_by_model(EventGroup)
+        
+    def get_departments(self):
+        return self._get_items_by_model(basestring)
 
     def get_all_events(self):
         """
-          Returns all distinct events in this collections events and event groups:
+          Returns all distinct events in this collections events, event groups, and departments:
         """
         eventIDs = self.collectionitem_set.filter(content_type=ContentType.objects.get_for_model(Event)
                                              ).values_list('object_id')
         eventGroupIDs = self.collectionitem_set.filter(content_type=ContentType.objects.get_for_model(EventGroup)
                                              ).values_list('object_id')
+        collectedDepartmentIDs = self.collectionitem_set.filter(content_type=ContentType.objects.get_for_model(CollectedDepartment)
+                                             ).values_list('object_id')
         events = Event.objects.filter(id__in=itertools.chain.from_iterable(eventIDs))
         eventsInEventGroups = Event.objects.filter(group=eventGroupIDs)
+        
+        print "COLLECTED DEPARTMENT IDs", collectedDepartmentIDs
+        
+        departments = CollectedDepartment.objects.filter(id__in=itertools.chain.from_iterable(collectedDepartmentIDs)).values('department')
 
-        allEvents = events | eventsInEventGroups
+        print "Departments", departments
+
+        departmentEvents = Event.objects.filter(department_organiser__in=departments)
+        
+        print "Events", departmentEvents
+
+        allEvents = events | eventsInEventGroups | departmentEvents
 
         return allEvents.distinct().order_by('start')
 
@@ -119,6 +143,8 @@ class Collection(models.Model):
             content_type = ContentType.objects.get_for_model(Event)
         elif isinstance(item, EventGroup):
             content_type = ContentType.objects.get_for_model(EventGroup)
+        elif isinstance(item, CollectedDepartment):
+            content_type = ContentType.objects.get_for_model(CollectedDepartment)
         else:
             raise self.InvalidItemType()
         try:
@@ -199,7 +225,7 @@ class CollectionItem(models.Model):
     collection = models.ForeignKey(Collection)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    # Currently item can be an Event or EventGroup
+    # Currently item can be an Event or EventGroup, or a DepartmentCollection
     item = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
@@ -212,8 +238,6 @@ class DepartmentFollow(models.Model):
 
 class LocationFollow(models.Model):
     pass
-
-
 
 @receiver(models.signals.post_save, sender=User)
 def ensure_profile_exists(sender, instance, created, **kwargs):
