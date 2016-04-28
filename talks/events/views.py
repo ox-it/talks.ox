@@ -1,5 +1,5 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -117,13 +117,14 @@ def browse_events(request):
     old_query = request.META['QUERY_STRING']
     dates_start = old_query.find("start_date=")
     dates_end = dates_start + 35
+    today = date.today()
     tab_dates = {
-        'all': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
-        'today': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
-        'tomorrow': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
-        'this week': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
-        'next week': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:],
-        'next 30 days': 'browse?' + old_query[:dates_start] + 'start_date=2016-04-30&to=2016-04-30' + old_query[dates_end:]
+        'all': 'browse?' + old_query[:dates_start] + 'start_date=1000-01-01&to=3000-01-01' + old_query[dates_end:],
+        'today': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today) + old_query[dates_end:],
+        'tomorrow': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=1)) + '&to=' + str(today+timedelta(days=1)) + old_query[dates_end:],
+        'this week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=6)) + old_query[dates_end:],
+        'next week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=7)) + '&to=' + str(today+timedelta(days=13)) + old_query[dates_end:],
+        'next 30 days': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=30)) + old_query[dates_end:],
     }
     context = {
         'events': events,
