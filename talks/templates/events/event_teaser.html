@@ -48,6 +48,7 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        {% if not is_group_view %}
         {% if event.group_slug %}
             <!-- Search Results -->
             <br>
@@ -57,6 +58,7 @@
               <br>
               Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
             {% endif %}
+          {% endif %}
         {% endif %}
     </div>
     <div class="formatting-links-wrapper">
