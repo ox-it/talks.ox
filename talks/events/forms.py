@@ -6,6 +6,12 @@ from talks.events import typeahead, datasources
 
 from talks.contributors.forms import BootstrappedDateTimeWidget, OxPointField
 
+class BrowseSeriesForm(forms.Form):
+    seriesslug = OxPointField(datasources.SERIES_DATA_SOURCE_BY_SLUG,
+                                         label="Find a Series",
+                                         required=False,
+                                         help_text='Type series name and select from the list.')  
+
 
 class BrowseEventsForm(forms.Form):
     start_date = forms.DateTimeField(label="Start Date",
@@ -29,10 +35,6 @@ class BrowseEventsForm(forms.Form):
                                          label="Series",
                                          required=False,
                                          help_text="Type series name and select from the list.")
-    seriesslug = OxPointField(datasources.SERIES_DATA_SOURCE_BY_SLUG,
-                                         label="Series",
-                                         required=False,
-                                         help_text='Type series name and select from the list.')   
 
     def clean(self):
         cleaned_data = self.cleaned_data
