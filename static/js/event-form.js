@@ -17,6 +17,8 @@ $(function() {
     // Initialise datetimepicker's
     $('.js-datetimepicker').datetimepicker({
         format: 'DD/MM/YYYY HH:mm'
+    }).each(function(i,v){
+        $(v).data("DateTimePicker").ignoreReadonly(true);   
     });
 
     $('#event-start.js-datetimepicker').on('changeDate', function(ev) {

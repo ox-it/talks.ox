@@ -55,10 +55,9 @@
           $(document).ready(function(){
             $('.js-datetimepicker').datetimepicker({
               format : 'YYYY-MM-DD'  
-            });  
-          });
-          $(function() { 
-           
+            }).each(function(i,v){
+              $(v).data("DateTimePicker").ignoreReadonly(true);  
+            });
           });
         </script>
 

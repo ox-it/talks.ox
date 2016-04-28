@@ -123,8 +123,8 @@ class EventForm(forms.ModelForm):
             'description': 'Abstract',
         }
         widgets = {
-            'start': BootstrappedDateTimeWidget(attrs={}),
-            'end': BootstrappedDateTimeWidget(attrs={}),
+            'start': BootstrappedDateTimeWidget(attrs={'readonly': True}),
+            'end': BootstrappedDateTimeWidget(attrs={'readonly': True}),
             'booking_type': forms.RadioSelect,
             'cost': forms.TextInput,
             'audience': forms.RadioSelect,
