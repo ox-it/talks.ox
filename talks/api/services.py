@@ -80,7 +80,7 @@ def get_event_by_slug(slug):
     :return: Event or None if slug does not exist
     """
     try:
-        return Event.published.get(slug=slug)
+        return Event.objects.get(slug=slug)
     except Event.DoesNotExist:
         return None
 
