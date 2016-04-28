@@ -74,8 +74,8 @@
 
 
 <ul class="nav nav-tabs">
-  {% for tab, date_string in tab_dates.items %}
-    <li role="presentation"{% if forloop.last %} class="active"{% endif %}><a href="{{date_string}}">{{tab}}</a></li>
+  {% for tab, date_string, active in tab_dates.items %}
+    <li role="presentation"{% if not date_string %} class="active"{% endif %}><a href="{{date_string}}">{{tab}}</a></li>
   {% endfor %}
 </ul>
 

@@ -127,6 +127,10 @@ def browse_events(request):
         'next week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=offset_Sunday+1)) + '&to=' + str(today+timedelta(days=offset_Sunday+7)) + old_query[dates_end:],
         'next 30 days': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=30)) + old_query[dates_end:],
     }
+    for tab in tab_dates:
+        if tab_dates[tab] == 'browse?' + old_query:
+            tab_dates[tab] = False
+
     context = {
         'events': events,
         'result_events': result_events,
