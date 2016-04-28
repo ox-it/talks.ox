@@ -264,7 +264,6 @@ def show_topic(request):
         return render(request, 'events/topic.html', context)
 
 def list_topics(request):
-    
     topics = TopicItem.objects.distinct()
     topics_results = []
     
@@ -272,7 +271,8 @@ def list_topics(request):
         events = Event.published.filter(topics__uri=topic.uri)
         if(len(events)>0):
             api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
-            topics_results.append(api_topic)
+            if api_topic not in topics_results:
+                topics_results.append(api_topic)
     
     context = {
         'topics': topics_results,
