@@ -57,12 +57,9 @@ def view_collection(request, collection_slug):
         raise PermissionDenied
 
     show_all = request.GET.get('show_all', False)
-    events = collection.get_events().order_by('start')
+    allEvents = collection.get_all_events().order_by('start')
 
     series = collection.get_event_groups().order_by('title')
-    eventsInSeries = Event.objects.filter(group=series)
-
-    allEvents = events | eventsInSeries
 
     if not show_all:
         allEvents = allEvents.filter(start__gte=date.today())
