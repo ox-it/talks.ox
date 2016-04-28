@@ -204,7 +204,8 @@ def item_from_request(request):
         elif group_slug:
             return EventGroup.objects.get(slug=group_slug)
         elif department_id:
-            return CollectedDepartment.objects.get_or_create(department=department_id)
+            obj, created = CollectedDepartment.objects.get_or_create(department=department_id)
+            return obj
     except ObjectDoesNotExist:
         logger.warn("Attempt to add event that doesn't exist to collection")
 

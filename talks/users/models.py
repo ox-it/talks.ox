@@ -123,17 +123,11 @@ class Collection(models.Model):
                                              ).values_list('object_id')
         events = Event.objects.filter(id__in=itertools.chain.from_iterable(eventIDs))
         eventsInEventGroups = Event.objects.filter(group=eventGroupIDs)
-        
-        print "COLLECTED DEPARTMENT IDs", collectedDepartmentIDs
-        
+                
         departments = CollectedDepartment.objects.filter(id__in=itertools.chain.from_iterable(collectedDepartmentIDs)).values('department')
-
-        print "Departments", departments
 
         departmentEvents = Event.objects.filter(department_organiser__in=departments)
         
-        print "Events", departmentEvents
-
         allEvents = events | eventsInEventGroups | departmentEvents
 
         return allEvents.distinct().order_by('start')
@@ -153,6 +147,17 @@ class Collection(models.Model):
             return True
         except CollectionItem.DoesNotExist:
             return False
+
+    def contains_department(self, department_id):
+        try:
+            collectedDepartment = CollectedDepartment.objects.get(department=department_id)
+        except CollectedDepartment.DoesNotExist:
+            # This department hasn't been collected at all, so cannot be in any collection
+            return False
+                
+        result = self.contains_item(collectedDepartment)
+        return result
+            
 
     def user_collection_permission(self, user):
         """

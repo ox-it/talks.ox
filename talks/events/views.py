@@ -281,10 +281,16 @@ def show_department_organiser(request, org_id):
     if not show_all:
         events = events.filter(start__gte=date.today())
 
+
     context = {
         'org': org,
-        'events': events
+        'events': events,
+        'department': org_id
     }
+    
+    if request.tuser:
+        context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+    
     return render(request, 'events/department.html', context)
 
 
@@ -318,7 +324,13 @@ def show_department_descendant(request, org_id):
         'parent': parent,
         'show_all': show_all,
         'todays_date': date.today().strftime("%Y-%m-%d"),
+        'department': org_id
     }
+    
+    if request.tuser:
+        context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+
+    
     if request.GET.get('format') == 'txt':
         return render(request, 'events/department.txt.html', context)
     else:
