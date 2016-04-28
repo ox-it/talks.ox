@@ -118,12 +118,13 @@ def browse_events(request):
     dates_start = old_query.find("start_date=")
     dates_end = dates_start + 35
     today = date.today()
+    offset_Sunday = (6 - today.weekday()) % 7 # weekday(): Monday=0 .... Sunday=6
     tab_dates = {
         'all': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + old_query[dates_end:],
         'today': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today) + old_query[dates_end:],
         'tomorrow': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=1)) + '&to=' + str(today+timedelta(days=1)) + old_query[dates_end:],
-        'this week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=6)) + old_query[dates_end:],
-        'next week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=7)) + '&to=' + str(today+timedelta(days=13)) + old_query[dates_end:],
+        'this week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=offset_Sunday)) + old_query[dates_end:],
+        'next week': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=offset_Sunday+1)) + '&to=' + str(today+timedelta(days=offset_Sunday+7)) + old_query[dates_end:],
         'next 30 days': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=30)) + old_query[dates_end:],
     }
     context = {
