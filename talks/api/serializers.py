@@ -87,6 +87,7 @@ class HALURICharField(Field):
 class EventLinksSerializer(serializers.ModelSerializer):
     self = serializers.SerializerMethodField()
     talks_page = serializers.SerializerMethodField()
+    ics = serializers.SerializerMethodField()
 
     def get_self(self, obj):
         if 'request' in self.context:
@@ -106,9 +107,18 @@ class EventLinksSerializer(serializers.ModelSerializer):
         field = HALURICharField()
         return field.to_representation(url)
 
+    def get_ics(self, obj):
+        if 'request' in self.context:
+            req = self.context.get('request')
+            url = req.build_absolute_uri(obj.get_ics_url())
+        else:
+            url = obj.get_ics_url()
+        field = HALURICharField()
+        return field.to_representation(url)
+
     class Meta:
         model = Event
-        fields = ('self', 'talks_page')
+        fields = ('self', 'talks_page', 'ics')
 
 
 class EmbeddedSpeakerSerializer(serializers.ModelSerializer):
