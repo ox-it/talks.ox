@@ -158,3 +158,11 @@ div.share-this-links span {
 .active-collection {
     background-color: #E4F0FC;
 }
+
+.teaser-special-message {
+  color: red;
+}
+
+.teaser-speaker {
+  color:black;
+}
