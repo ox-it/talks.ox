@@ -252,10 +252,11 @@ class HALSearchResultSerializer(serializers.Serializer):
 class EventGroupLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
     talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    ics = HALURICharField(source='get_ics_url', read_only=True)
 
     class Meta:
         model = EventGroup
-        fields = ('self', 'talks_page')
+        fields = ('self', 'talks_page', 'ics')
 
 
 class EventGroupEmbedsSerializer(serializers.ModelSerializer):
@@ -289,10 +290,11 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
 class CollectionLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
     talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    ics = HALURICharField(source='get_ics_url', read_only=True)
 
     class Meta:
         model = Collection
-        fields = ('self', 'talks_page')
+        fields = ('self', 'talks_page', 'ics')
 
 
 class CollectionEmbedsSerializer(serializers.ModelSerializer):
