@@ -67,6 +67,11 @@
             }).each(function(i,v){
               $(v).data("DateTimePicker").ignoreReadonly(true);  
             });
+            
+            $('#start_date').on('dp.change', function(e){
+              $('#to').data('DateTimePicker').minDate(e.date);
+            });
+            
           });
         </script>
 
