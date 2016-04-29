@@ -18,14 +18,14 @@
 
         <strong>
             {% if show_event_time_only %}
-                {{ event.formatted_time }}
+                {{ event.display_time }}
             {% else %}
                 {{ event.formatted_date }}
             {% endif %}
         </strong>
 
         <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
-          <u>{{ event.title_display }}</u>
+           - <u>{{ event.title_display }}</u>
         </a>
         {% if event.special_message %}
           <br><span class="teaser-special-message">{{ event.special_message }}</span>

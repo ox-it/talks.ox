@@ -1,5 +1,5 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -117,12 +117,20 @@ def group_events (events):
     grouped_events = {}
     event_dates = []
     for group_event in events:
-        key = group_event.start.date()
+        hours = datetime.strftime(group_event.start, '%I')
+        minutes = datetime.strftime(group_event.start, ':%M')
+        if minutes==":00":
+            minutes = ""
+        ampm = datetime.strftime(group_event.start, '%p')
+        group_event.display_time = str(int(hours))+minutes+ampm.lower()
+        comps = group_event.oxford_date.components
+        key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
+        key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
         grouped_events[key].append(group_event)
-    
+        
     result_events = []
     for event_date in event_dates:
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
