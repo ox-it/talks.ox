@@ -1,5 +1,6 @@
 <!-- Display a single event teaser -->
 <br>{{ event.title_display }}
+{% if not event.is_published %}<br>Status: This talk is in preparation - details may change{% endif %}
 <br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
 
 <br>Speaker{% if event.various_speakers %}
@@ -31,3 +32,4 @@
     {{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
 {% empty %} TBA
 {% endfor %}
+<br>

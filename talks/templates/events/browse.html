@@ -31,15 +31,10 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-3 col-xs-12">
-      <h3>View all:</h3>
-      <ul class="nav nav-list well">
-        <li>
-          <a href="{% url 'list-event-groups' %}">Series</a>
-        </li>
-        <li>
-          <a href="{% url 'view-public-lists' %}">Public Lists</a>
-        </li>
-      </ul>
+            
+            
+            {% include 'events/navigation_for_listing.html' %}
+
 
       <h3>Filters</h3>
       <ul class="nav nav-list well">
@@ -77,17 +72,10 @@
 
 {% block main %}
 
-<h2 class="hidden-xs">Browse Talks</h2>
 
 <div class="js-upcoming-events">
-    {% if events %}
-      <ul class="list-group">
-        {% for event in events %}
-          <li class="list-group-item">
-            {% include 'events/event_teaser.html' %}
-          </li>
-        {% endfor %}
-      </ul>
+    {% if grouped_events %}
+        {% include 'events/_event_list.html' with show_event_time_only=True %}      
         {% with events as page %}
             {% include 'events/_pagination.html' %}
         {% endwith %}

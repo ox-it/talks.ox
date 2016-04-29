@@ -3,7 +3,7 @@
 {% load staticfiles %}
 {% load users %}
 
-{% block title %}Public Lists{% endblock %}
+{% block title %}Public Collections{% endblock %}
 
 {% block extrahead %}
 
@@ -18,14 +18,14 @@
 
 {% block content %}
 
-<h2 class="hidden-xs">Public lists</h2>
+<h2 class="hidden-xs">Collections</h2>
 
 <div id="collection-alert-container"></div>
     <ul class="nav nav-tabs">
         {% if user.id %}
-            <li role="presentation"><a href="{% url 'manage-lists' %}">My Lists</a></li>
+            <li role="presentation"><a href="{% url 'manage-lists' %}">My Collections</a></li>
         {% endif %}
-        <li role="presentation" class="active"><a href="{% url 'view-public-lists' %}">All Public Lists</a></li>
+        <li role="presentation" class="active"><a href="{% url 'view-public-lists' %}">All Public Collections</a></li>
     </ul>
 
     <ul class="list-group">
@@ -54,7 +54,7 @@
                         {% endif %}
                     </li>
                 {% empty %}
-                    <p>There are no public lists available.</p>
+                    <p>There are no public collections available.</p>
                 {% endfor %}
             </ul>
         </li>

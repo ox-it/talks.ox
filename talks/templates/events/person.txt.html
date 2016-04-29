@@ -14,24 +14,18 @@
 {% endif %}
 <br>
 {% if speaker_events %}
-    <br>Events this person is speaking at:
-    {% for event in speaker_events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+    <br>Events this person is speaking at:<br>
+    {% include 'events/_event_list.txt.html' with show_event_time_only=True grouped_events=grouped_speaker_events %}
 {% endif %}
 
 {% if host_events %}
-    <br>Events this person is hosting:
-    {% for event in host_events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+    <br>Events this person is hosting:<br>
+    {% include 'events/_event_list.txt.html' with show_event_time_only=True grouped_events=grouped_host_events %}
 {% endif %}
 
 {% if organiser_events %}
-    <br>Events this person is organising:
-    {% for event in organiser_events %}
-        {% include "events/event_teaser.txt.html" %}<br>
-    {% endfor %}
+    <br>Events this person is organising:<br>
+    {% include 'events/_event_list.txt.html' with show_event_time_only=True grouped_events=grouped_organiser_events %}
 {% endif %}
 
 {% endblock %}

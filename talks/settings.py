@@ -186,13 +186,15 @@ REST_FRAMEWORK = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': read_yaml_param('/srv/talks/talks-configuration', 'solrLocation'),
+        # 'URL': read_yaml_param('/srv/talks/talks-configuration', 'solrLocation'),
+        'URL': 'http://127.0.0.1:8983/solr/talks',
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False
     },
 }
 
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'talks.events_search.signal_processor.EventUpdateSignalProcessor'
 
 RAVEN_CONFIG = {
     'dsn': 'http://cc958b8c93c340c9a25dd765e1843172:f67c8030f2674d6b9c74718f2abf4c16@sentry.oucs.ox.ac.uk/27',

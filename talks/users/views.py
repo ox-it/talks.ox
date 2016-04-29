@@ -10,9 +10,9 @@ from datetime import date
 
 from .models import Collection, TalksUser, TalksUserCollection, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_OWNER, COLLECTION_ROLES_READER
 from talks.events.models import Event
+from talks.events.views import group_events
 from talks.users.authentication import user_in_group_or_super
 from .forms import CollectionForm
-
 
 def webauth_logout(request):
     context = {'was_webauth': True}
@@ -37,10 +37,15 @@ def manage_collections(request):
 
 def list_public_collections(request):
     context = {}
-    context['collections'] = Collection.objects.filter(public=True)
+    context['collections'] = Collection.objects.filter(public=True).order_by('title')
 
     return render(request, 'users/public_collections.html', context)
 
+def browse_public_collections(request):
+    context = {}
+    context['collections'] = Collection.objects.filter(public=True).order_by('title')
+
+    return render(request, 'users/collection_list.html', context)
 
 def view_collection(request, collection_slug):
     collection = Collection.objects.get(slug=collection_slug)
@@ -60,6 +65,8 @@ def view_collection(request, collection_slug):
     if not show_all:
         allEvents = allEvents.filter(start__gte=date.today())
 
+    grouped_events = group_events(allEvents)
+    
     collectionContributors = None
     if request.tuser:
         collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
@@ -68,6 +75,7 @@ def view_collection(request, collection_slug):
         'collection' : collection,
         'show_all' : show_all,
         'events' : allEvents,
+        'grouped_events': grouped_events,
         'event_groups' : series,
         'contributors' : collectionContributors,
     }

@@ -419,7 +419,7 @@ class Event(models.Model):
         if self.title:
             return self.title
         else:
-            return "Untitled talk"
+            return "Title TBC"
 
     def user_can_edit(self, user):
         """
