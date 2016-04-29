@@ -49,8 +49,8 @@ def events_search(parameters):
             queries.append(orm_mapping(value))
 
     final_query = reduce(operator.and_, queries)
-    events = Event.published.filter(final_query).distinct().order_by('start')
-
+    events = Event.objects.filter(final_query).distinct().order_by('start')
+    
     return events
 
 
@@ -80,7 +80,7 @@ def get_event_by_slug(slug):
     :return: Event or None if slug does not exist
     """
     try:
-        return Event.published.get(slug=slug)
+        return Event.objects.get(slug=slug)
     except Event.DoesNotExist:
         return None
 

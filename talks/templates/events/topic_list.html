@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load users %}
+
+{% block title %}Public Collections{% endblock %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block content %}
+
+<ul class="list-group">
+
+        {% for topic in topics %}
+            <li class="list-group-item"><a href="{% url 'show-topic' %}?uri={{ topic.uri }}">{{ topic.prefLabel }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

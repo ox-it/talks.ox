@@ -25,11 +25,7 @@
         </strong>
 
         <b><u><a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
-          {% if event.title %}
-            {{ event.title }}
-          {% else %}
-            Untitled talk
-          {% endif %}
+          {{ event.title_display }}
         </a></u></b>
         {% if event.speakers %}
             <br>
