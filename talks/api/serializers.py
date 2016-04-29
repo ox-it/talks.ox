@@ -73,7 +73,7 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('slug', 'url', 'title_display', 'start', 'end', 'description', 'status',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email')
+                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
 
 
 class HALURICharField(Field):
@@ -147,7 +147,7 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics')
+        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics', 'various_speakers')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
@@ -159,7 +159,7 @@ class HALEventSerializer(serializers.ModelSerializer):
     booking_required = serializers.SerializerMethodField()
     series = serializers.SerializerMethodField()
     organiser_email = serializers.CharField(read_only=True)
-
+    
     def get_links(self, obj):
         # Return a links serializer, but pass on the context
         serializer = EventLinksSerializer(obj, read_only=True, context=self.context)
@@ -190,6 +190,7 @@ class HALEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'status', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
+
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):

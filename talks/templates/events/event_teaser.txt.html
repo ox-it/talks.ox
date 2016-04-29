@@ -3,11 +3,15 @@
 {% if not event.is_published %}<br>Status: This talk is in preparation - details may change{% endif %}
 <br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
 
-<br>Speaker{{ event.speakers|pluralize }}:
-{% for speaker in event.speakers %}
+<br>Speaker{% if event.various_speakers %}
+        . Various Speakers
+{% elif event.speakers %}
+	{{ event.speakers|pluralize }}:
+		{% for speaker in event.speakers %}
     {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
-{% empty %} TBA
-{% endfor %}
+	{% empty %} TBA
+	{% endfor %}
+{% endif %}
 
 {% if event.location %}
     <br>Venue: {{ event.api_location.name}}, {{ event.api_location.address }}
