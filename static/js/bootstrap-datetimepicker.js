@@ -133,6 +133,7 @@
              *
              ********************************************************************************/
             getMoment = function (d) {
+                var today = new Date();
                 var tzEnabled = false,
                     returnMoment,
                     currentZoneOffset,
@@ -145,9 +146,9 @@
                 }
                 if (d === undefined || d === null) {
                     if (tzEnabled) {
-                        returnMoment = moment().tz(options.timeZone).startOf('d');
+                        returnMoment = moment().tz(options.timeZone).month(today.getMonth()).date(today.getDate()).hours(11).minutes(0).seconds(0).milliseconds(0);
                     } else {
-                        returnMoment = moment().startOf('d');
+                        returnMoment = moment().month(today.getMonth()).date(today.getDate()).hours(11).minutes(0).seconds(0).milliseconds(0);
                     }
                 } else {
                     if (tzEnabled) {
@@ -759,7 +760,7 @@
                     currentHour = viewDate.clone().startOf('d'),
                     html = [],
                     row = $('<tr>');
-console.log(currentHour);
+
                 if (viewDate.hour() > 11 && !use24Hours) {
                     currentHour.hour(12);
                 }

@@ -28,11 +28,15 @@ $(function() {
         if (typeof $('input', v).attr('value') !== 'undefined') {
 			$(v).data("DateTimePicker").defaultDate(moment($('input', v).attr('value')));
 		}
+		else {
+			
+		}
     });
 
     $('#event-start.js-datetimepicker').on("dp.change", function(e) { 
-        var date = new Date(e.date);console.log(date);
-        var endDate = date.setHours(date.getHours()+1, date.getMinutes())
+        var date = new Date(e.date);
+        var endDate = date.setHours(date.getHours()+1, date.getMinutes());
+		
         $('#event-end.js-datetimepicker').data('DateTimePicker').minDate(e.date).date(moment(endDate));
     });
 

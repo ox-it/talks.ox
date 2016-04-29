@@ -40,7 +40,7 @@
       <ul class="nav nav-list well">
         <form action="{% url 'browse_events' %}" method="get">
             {{ browse_events_form.start_date | bootstrap }}
-            
+            <a id="clear-datepicker" class="pull-right" href="#">clear</a>
             {{ browse_events_form.to | bootstrap }}
             {{ browse_events_form.organising_department | bootstrap }}
             {{ browse_events_form.include_subdepartments | bootstrap }}
@@ -52,8 +52,15 @@
         </form>
 
         <script type="text/javascript">
+          
+          
+          
           $(document).ready(function(){
-            console.log( $('.js-datetimepicker input').text())
+            
+            $('#clear-datepicker').click(function(e){
+              $('#to').data("DateTimePicker").clear();  
+            });
+            
             $('.js-datetimepicker').datetimepicker({
               format : 'YYYY-MM-DD',
               allowInputToggle : true
