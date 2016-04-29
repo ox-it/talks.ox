@@ -17,6 +17,9 @@
 {% block content %}
 
 {{ event.title_display }}
+{% if not event.is_published %}
+    <br>Status: This talk is in preparation - details may change
+{% endif %} 
 {% if editors %}
     <br>Editor{{ editors|pluralize }}: {% for editor in editors %}
       {{ editor.username }}{% if not forloop.last %}, {% endif %}

@@ -268,7 +268,7 @@ def show_person(request, person_slug):
 def show_topic(request):
     topic_uri = request.GET.get('uri')
     api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
-    events = Event.published.filter(topics__uri=topic_uri)
+    events = Event.objects.filter(topics__uri=topic_uri)
     grouped_events = group_events(events)
     context = {
         'grouped_events': grouped_events,
@@ -319,7 +319,7 @@ def show_department_descendant(request, org_id):
     sub_orgs = descendants
     ids = [o['id'] for o in sub_orgs]
     ids.append(results['id'])  # Include self
-    events = Event.published.filter(department_organiser__in=ids).order_by('start')
+    events = Event.objects.filter(department_organiser__in=ids).order_by('start')
 
     show_all = request.GET.get('show_all', False)
     if not show_all:
