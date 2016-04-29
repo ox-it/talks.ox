@@ -25,11 +25,10 @@ SOLR_TO_NAME = {d['solr_query']: key for key, d in FACET_START_DATE.iteritems()}
 today = datetime.today()
 
 sqs = (SearchQuerySet()
-       .filter(published=True)
        .facet('speakers', mincount=1).facet('location', mincount=1).facet('topics', mincount=1)).facet('group', mincount=1).facet('lists', mincount=1)
 
 sqs_past = (SearchQuerySet()
-            .filter(published=True).filter(start__lt=today).order_by('-start')
+            .filter(start__lt=today).order_by('-start')
             .facet('speakers', mincount=1).facet('location', mincount=1).facet('topics', mincount=1)).facet('group', mincount=1).facet('lists', mincount=1)
 
 # add all the facet start date queries to the queryset
