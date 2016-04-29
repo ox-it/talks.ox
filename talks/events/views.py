@@ -10,7 +10,7 @@ from .models import Event, EventGroup, Person
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
-from .forms import BrowseEventsForm
+from .forms import BrowseEventsForm, BrowseSeriesForm
 from talks.api.services import events_search
 
 logger = logging.getLogger(__name__)
@@ -192,9 +192,17 @@ def show_event(request, event_slug):
 
 
 def list_event_groups(request):
+            
+    modified_request_parameters = request.GET.copy()
+    if request.POST.get('seriesslug'):
+        return redirect('show-event-group', request.POST.get('seriesslug'))
+        
+    browse_series_form = BrowseSeriesForm(modified_request_parameters)
+    
     object_list = EventGroup.objects.all().order_by('title')
     context = {
         'object_list': object_list,
+        'browse_events_form': browse_series_form, 
     }
     return render(request, "events/event_group_list.html", context)
 
