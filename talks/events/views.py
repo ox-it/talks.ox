@@ -6,11 +6,11 @@ from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Event, EventGroup, Person
+from .models import Event, EventGroup, Person, TopicItem
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
-from .forms import BrowseEventsForm
+from .forms import BrowseEventsForm, BrowseSeriesForm
 from talks.api.services import events_search
 
 logger = logging.getLogger(__name__)
@@ -230,9 +230,17 @@ def show_event(request, event_slug):
 
 
 def list_event_groups(request):
+            
+    modified_request_parameters = request.GET.copy()
+    if request.POST.get('seriesslug'):
+        return redirect('show-event-group', request.POST.get('seriesslug'))
+        
+    browse_series_form = BrowseSeriesForm(modified_request_parameters)
+    
     object_list = EventGroup.objects.all().order_by('title')
     context = {
         'object_list': object_list,
+        'browse_events_form': browse_series_form, 
     }
     return render(request, "events/event_group_list.html", context)
 
@@ -298,7 +306,7 @@ def show_person(request, person_slug):
 def show_topic(request):
     topic_uri = request.GET.get('uri')
     api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
-    events = Event.published.filter(topics__uri=topic_uri)
+    events = Event.objects.filter(topics__uri=topic_uri)
     grouped_events = group_events(events)
     context = {
         'grouped_events': grouped_events,
@@ -310,6 +318,22 @@ def show_topic(request):
     else:
         return render(request, 'events/topic.html', context)
 
+def list_topics(request):
+    topics = TopicItem.objects.distinct()
+    topics_results = []
+    
+    for topic in topics.all():
+        events = Event.published.filter(topics__uri=topic.uri)
+        if(len(events)>0):
+            api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
+            if api_topic not in topics_results:
+                topics_results.append(api_topic)
+    
+    context = {
+        'topics': topics_results,
+    }
+    
+    return render(request, 'events/topic_list.html', context)
 
 def show_department_organiser(request, org_id):
     org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
@@ -333,7 +357,7 @@ def show_department_descendant(request, org_id):
     sub_orgs = descendants
     ids = [o['id'] for o in sub_orgs]
     ids.append(results['id'])  # Include self
-    events = Event.published.filter(department_organiser__in=ids).order_by('start')
+    events = Event.objects.filter(department_organiser__in=ids).order_by('start')
 
     show_all = request.GET.get('show_all', False)
     if not show_all:
