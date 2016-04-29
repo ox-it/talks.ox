@@ -30,7 +30,9 @@ class ICalRenderer(renderers.BaseRenderer):
             if len(e['description']):
                 desc_with_speakers = e['description']
                 speakers_list = ""
-                if 'speakers' in e:
+                if e['various_speakers'] is True:
+                    speakers_list = "\nSpeakers:\n Various"
+                elif 'speakers' in e:
                     if len(e['speakers']):
                         speakers_list = "\nSpeakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
                 event.add('description', desc_with_speakers + speakers_list)

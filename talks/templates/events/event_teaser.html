@@ -19,7 +19,9 @@
         {% if event.group %}
           - Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
         {% endif %}
-        {% if event.speakers %}
+        {% if event.various_speakers %}
+        . Various Speakers
+        {% elif event.speakers %}
             . Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
                 <a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
