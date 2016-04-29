@@ -73,9 +73,13 @@
 {% block main %}
 
 
-<ul class="nav nav-tabs">
-  {% for tab, date_string, active in tab_dates.items %}
-    <li role="presentation"{% if not date_string %} class="active"{% endif %}><a href="{{date_string}}">{{tab}}</a></li>
+<ul class="nav nav-tabs nav-justified">
+  {% for tab in tab_dates %}
+    <li role="presentation" {% if tab.active %}class="active"{% endif %}>
+      <a href="{{tab.href}}">
+        {{tab.label}}
+      </a>
+    </li>
   {% endfor %}
 </ul>
 
