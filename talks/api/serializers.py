@@ -141,13 +141,14 @@ class EmbeddedTopicSerializer(serializers.Serializer):
 class EventEmbedsSerializer(serializers.ModelSerializer):
     speakers = EmbeddedSpeakerSerializer(many=True, read_only=True)
     organisers = EmbeddedSpeakerSerializer(many=True, read_only=True)
+    hosts = EmbeddedSpeakerSerializer(many=True, read_only=True)
     venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
     organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
     topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
 
     class Meta:
         model = Event
-        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics')
+        fields = ('speakers', 'organisers', 'hosts', 'venue', 'organising_department', 'topics')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
