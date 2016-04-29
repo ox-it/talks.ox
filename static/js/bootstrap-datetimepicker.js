@@ -759,7 +759,7 @@
                     currentHour = viewDate.clone().startOf('d'),
                     html = [],
                     row = $('<tr>');
-
+console.log(currentHour);
                 if (viewDate.hour() > 11 && !use24Hours) {
                     currentHour.hour(12);
                 }

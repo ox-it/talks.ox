@@ -53,8 +53,10 @@
 
         <script type="text/javascript">
           $(document).ready(function(){
+            console.log( $('.js-datetimepicker input').text())
             $('.js-datetimepicker').datetimepicker({
-              format : 'YYYY-MM-DD'
+              format : 'YYYY-MM-DD',
+              allowInputToggle : true
             }).each(function(i,v){
               $(v).data("DateTimePicker").ignoreReadonly(true);  
             });
