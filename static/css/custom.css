@@ -88,6 +88,13 @@ span.filter-active {
     float: left;
     width: 90%;
 }
+
+.list-group-item.date-continued {
+    border-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
 .formatting-link {
     margin-left: 15px;
     color: inherit;
