@@ -1,5 +1,3 @@
-*.komodoproject
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -77,5 +75,5 @@ selenium-screenshot-*
 .env
 
 *.komodoproject
-
+*.orig
 .DS_Store
