@@ -30,11 +30,14 @@
         {% if event.special_message %}
           <br><span class="teaser-special-message">{{ event.special_message }}</span>
         {% endif %}
-        
-        {% if event.speakers %}
-            <br>
+        <br>
+        {% if event.various_speakers %}
+         Various Speakers
+        {% else %}
+             Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
                 <b><a href="{% url 'show-person' speaker.slug %}" class="teaser-speaker">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></b>{% if not forloop.last %}, {% endif %}
+            {% empty %} TBA
             {% endfor %}
         {% endif %}
         {% if not is_group_view %}

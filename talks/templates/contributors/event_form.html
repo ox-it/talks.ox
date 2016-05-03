@@ -9,7 +9,7 @@
 
 <!-- Date picker -->
 <link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
-
+<script src="{% static "js/moment-with-locales.min.js"%}"></script>
 <script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
 
 <!-- Typeahead.js -->
@@ -76,6 +76,8 @@
     {% with person_form=speaker_form role='speakers' prefix='event-' %}
     {% include 'contributors/person_quick_add.html' %}
     {% endwith %}
+
+    {{ event_form.various_speakers|bootstrap_horizontal}}
 
     {{ event_form.location|bootstrap_horizontal }}
     {{ event_form.location_details|bootstrap_horizontal }}
