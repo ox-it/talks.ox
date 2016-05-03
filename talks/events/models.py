@@ -44,9 +44,12 @@ BOOKING_CHOICES = (
 
 AUDIENCE_PUBLIC = 'public'
 AUDIENCE_OXFORD = 'oxonly'
+AUDIENCE_OTHER = 'other'
+
 AUDIENCE_CHOICES = (
     (AUDIENCE_OXFORD, 'Members of the University only'),
     (AUDIENCE_PUBLIC, 'Public'),
+    (AUDIENCE_OTHER, 'Other')
 )
 
 EVENT_PUBLISHED = 'published'
@@ -240,7 +243,7 @@ class Event(models.Model):
     description = models.TextField(blank=True)
     person_set = models.ManyToManyField(Person, through=PersonEvent, blank=True)
     editor_set = models.ManyToManyField(User, blank=True)
-    audience = models.TextField(verbose_name="Who can attend", choices=AUDIENCE_CHOICES, default=AUDIENCE_OXFORD)
+    audience = models.TextField(verbose_name="Who can attend", default=AUDIENCE_OXFORD)
     booking_type = models.TextField(verbose_name="Booking required",
                                     choices=BOOKING_CHOICES,
                                     default=BOOKING_NOT_REQUIRED)
@@ -447,7 +450,17 @@ class Event(models.Model):
 
         return publicCollectionsContainingThisEvent
 
-
+    def get_audience_display(self):
+        # look up if it is one of the standard choices, else use the field value verbatim
+        
+        audience_choices = dict(AUDIENCE_CHOICES)
+        
+        try:
+            audience = audience_choices[self.audience]
+        except KeyError:
+            audience = self.audience
+                    
+        return audience
 
 reversion.register(Event)
 reversion.register(EventGroup)
