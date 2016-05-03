@@ -75,5 +75,5 @@ selenium-screenshot-*
 .env
 
 *.komodoproject
-
+*.orig
 .DS_Store

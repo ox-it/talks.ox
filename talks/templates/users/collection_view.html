@@ -94,6 +94,17 @@
     {% endfor %}
 </ul>
 {% endif %}
-
+{% if departments %}
+<p>
+    <strong>This collection contains talks from the following departments:</strong></p>
+    <ul>
+        {% for department in departments %}
+            <li>
+                <a href="{% url 'show-department' department.id %}">{{department.name}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</p>
+{% endif %}
 
 {% endblock %}

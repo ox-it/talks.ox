@@ -95,13 +95,6 @@
           {% endif %} 
         {% endif %}
 
-        {% if editors %}
-            <div class="editors">
-              Editor{{ editors|pluralize }}: {% for editor in editors %}
-                {{ editor.username }}{% if not forloop.last %}, {% endif %}
-              {% endfor %}
-            </div>
-        {% endif %}
 
         {% if event.special_message %}
         <br>
@@ -188,6 +181,13 @@
                         <li><a href="{{ collection.get_absolute_url }}">{{ collection.title }}</a></li>
                     {% endfor %}
                 </ul>
+            </li>
+        {% endif %}
+        {% if editors %}
+            <li class="list-group-item">
+              Editor{{ editors|pluralize }}: {% for editor in editors %}
+              {{ editor.first_name }} {{ editor.last_name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
             </li>
         {% endif %}
 

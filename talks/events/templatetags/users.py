@@ -18,7 +18,11 @@ def collection_contains_item(collection, item):
     return collection.contains_item(item)
 
 @register.filter()
+def collection_contains_department(collection, department_id):
+    # return true if collection contains a CollectedDepartment comprising the given department id
+    return collection.contains_department(department_id)
+
+@register.filter()
 def collection_permission(collection, user):
     # return the role the given user has for the collection
     return collection.user_collection_permission(user)
-

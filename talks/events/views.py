@@ -1,5 +1,5 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -60,10 +60,7 @@ def browse_events(request):
     modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
-        defaultEndDate = date.today() + timedelta(days=7*8)
         modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
-        if len(request.GET) == 0:
-            modified_request_parameters['to'] = defaultEndDate.strftime("%Y-%m-%d")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
@@ -103,6 +100,46 @@ def browse_events(request):
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
+    old_query = request.META['QUERY_STRING']
+    dates_start = old_query.find("start_date=")
+    dates_end = dates_start + 35
+    today = date.today()
+    offset_Sunday = (6 - today.weekday()) % 7 # weekday(): Monday=0 .... Sunday=6
+    tab_dates = [
+        {
+            'label': 'All',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Today',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Tomorrow',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=1)) + '&to=' + str(today+timedelta(days=1)) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'This week',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=offset_Sunday)) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Next week',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=offset_Sunday+1)) + '&to=' + str(today+timedelta(days=offset_Sunday+7)) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Next 30 days',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=30)) + old_query[dates_end:],
+            'active': False
+        }
+   ]
+    
+    if not old_query:
+        tab_dates[0]['active'] = True
+    else:
+        for tab in tab_dates:
+            if tab['href'] == 'browse?' + old_query:
+                tab['active'] = True
+
     context = {
         'events': events,
         'grouped_events': grouped_events,
@@ -110,6 +147,7 @@ def browse_events(request):
         'browse_events_form': browse_events_form,
         'start_date': modified_request_parameters.get('start_date'),
         'end_date': modified_request_parameters.get('to'),
+        'tab_dates': tab_dates,
         }
     return render(request, 'events/browse.html', context)
 
@@ -117,12 +155,20 @@ def group_events (events):
     grouped_events = {}
     event_dates = []
     for group_event in events:
-        key = group_event.start.date()
+        hours = datetime.strftime(group_event.start, '%I')
+        minutes = datetime.strftime(group_event.start, ':%M')
+        if minutes==":00":
+            minutes = ""
+        ampm = datetime.strftime(group_event.start, '%p')
+        group_event.display_time = str(int(hours))+minutes+ampm.lower()
+        comps = group_event.oxford_date.components
+        key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
+        key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
         grouped_events[key].append(group_event)
-    
+        
     result_events = []
     for event_date in event_dates:
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
@@ -305,10 +351,16 @@ def show_department_organiser(request, org_id):
     if not show_all:
         events = events.filter(start__gte=date.today())
 
+
     context = {
         'org': org,
-        'events': events
+        'events': events,
+        'department': org_id
     }
+    
+    if request.tuser:
+        context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+    
     return render(request, 'events/department.html', context)
 
 
@@ -342,7 +394,13 @@ def show_department_descendant(request, org_id):
         'parent': parent,
         'show_all': show_all,
         'todays_date': date.today().strftime("%Y-%m-%d"),
+        'department': org_id
     }
+    
+    if request.tuser:
+        context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
+
+    
     if request.GET.get('format') == 'txt':
         return render(request, 'events/department.txt.html', context)
     else:

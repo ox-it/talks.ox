@@ -3,7 +3,7 @@ from rest_framework import serializers, pagination
 from rest_framework.fields import Field
 
 from talks.events.models import Event, Person, EventGroup
-from talks.users.models import CollectionItem, TalksUserCollection, Collection
+from talks.users.models import CollectionItem, TalksUserCollection, Collection, CollectedDepartment
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -336,6 +336,11 @@ class EventGroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'slug', 'url', 'title', 'description', 'class_name', 'organisers', 'department_organiser')
 
 
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CollectedDepartment
+        fields = ('department', )
+
 class EventGroupWithEventsSerializer(serializers.ModelSerializer):
     """
     Serialize an event group and include info on all constitutent events
@@ -358,6 +363,8 @@ def get_item_serializer(item):
         return EventSerializer(item)
     elif isinstance(item, EventGroup):
         return EventGroupSerializer(item)
+    elif isinstance(item, CollectedDepartment):
+        return DepartmentSerializer(item)
     else:
         raise Exception('Unexpected type of tagged object')
 

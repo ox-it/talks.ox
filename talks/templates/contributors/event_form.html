@@ -95,7 +95,9 @@
     {% include 'contributors/person_quick_add.html' %}
     {% endwith %}
 
-    {{ event_form.audience|bootstrap_horizontal }}
+    {{ event_form.audience_choices|bootstrap_horizontal }}
+    {{ event_form.audience_other|bootstrap_horizontal }}
+    
     {{ event_form.booking_type|bootstrap_horizontal }}
     {{ event_form.booking_url|bootstrap_horizontal }}
     {{ event_form.booking_email|bootstrap_horizontal }}
