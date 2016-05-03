@@ -4,7 +4,7 @@
 <br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
 
 <br>Speaker{% if event.various_speakers %}
-        . Various Speakers
+         Various Speakers
 {% elif event.speakers %}
 	{{ event.speakers|pluralize }}:
 		{% for speaker in event.speakers %}
