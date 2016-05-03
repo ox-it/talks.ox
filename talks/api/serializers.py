@@ -78,7 +78,12 @@ class EventSerializer(serializers.ModelSerializer):
 
 class HALURICharField(Field):
     def to_representation(self, instance):
-        return {'href': instance}
+        if 'request' in self.context:
+            req = self.context.get('request')
+            url = req.build_absolute_uri(instance)
+        else:
+            url = instance
+        return {'href': url}
 
     def to_internal_value(self, data):
         return None
@@ -88,7 +93,7 @@ class EventLinksSerializer(serializers.ModelSerializer):
     self = serializers.SerializerMethodField()
     talks_page = serializers.SerializerMethodField()
     ics = serializers.SerializerMethodField()
-
+    
     def get_self(self, obj):
         if 'request' in self.context:
             req = self.context.get('request')
@@ -270,7 +275,7 @@ class EventGroupEmbedsSerializer(serializers.ModelSerializer):
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date'])
                 
-        serializer = HALEventSerializer(events, many=True, read_only=True)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
         
     class Meta:
@@ -308,7 +313,7 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date'])
 
-        serializer = HALEventSerializer(events, many=True, read_only=True)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
 
     class Meta:
@@ -317,7 +322,7 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
 
 
 class HALCollectionSerializer(serializers.ModelSerializer):
-    _links = CollectionLinksSerializer(source='*', read_only=True)
+    _links = CollectionLinksSerializer(source='*', read_only=True,)
     _embedded = CollectionEmbedsSerializer(source='*', read_only=True)
 
     class Meta:
