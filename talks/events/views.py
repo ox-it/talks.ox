@@ -366,12 +366,17 @@ def show_department_organiser(request, org_id):
 
 def show_department_descendant(request, org_id):
     org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
-    results = DEPARTMENT_DESCENDANT_DATA_SOURCE.get_object_by_id(org_id)
-    descendants = results['descendants']
-    sub_orgs = descendants
-    ids = [o['id'] for o in sub_orgs]
-    ids.append(results['id'])  # Include self
-    events = Event.objects.filter(department_organiser__in=ids).order_by('start')
+    try:
+        results = DEPARTMENT_DESCENDANT_DATA_SOURCE.get_object_by_id(org_id)
+        descendants = results['descendants']
+        sub_orgs = descendants
+        ids = [o['id'] for o in sub_orgs]
+        ids.append(results['id'])  # Include self
+        events = Event.objects.filter(department_organiser__in=ids).order_by('start')
+    except Exception:
+        print "Error retrieving sub-departments, only showing department"
+        events = Event.objects.filter(department_organiser=org).order_by('start')
+        sub_orgs = []
 
     show_all = request.GET.get('show_all', False)
     if not show_all:
