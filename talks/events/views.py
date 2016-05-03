@@ -1,5 +1,5 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -60,10 +60,7 @@ def browse_events(request):
     modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
-        defaultEndDate = date.today() + timedelta(days=7*8)
         modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
-        if len(request.GET) == 0:
-            modified_request_parameters['to'] = defaultEndDate.strftime("%Y-%m-%d")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
@@ -103,6 +100,46 @@ def browse_events(request):
 
     fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
 
+    old_query = request.META['QUERY_STRING']
+    dates_start = old_query.find("start_date=")
+    dates_end = dates_start + 35
+    today = date.today()
+    offset_Sunday = (6 - today.weekday()) % 7 # weekday(): Monday=0 .... Sunday=6
+    tab_dates = [
+        {
+            'label': 'All',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Today',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Tomorrow',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=1)) + '&to=' + str(today+timedelta(days=1)) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'This week',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=offset_Sunday)) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Next week',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=offset_Sunday+1)) + '&to=' + str(today+timedelta(days=offset_Sunday+7)) + old_query[dates_end:],
+            'active': False
+        }, {
+            'label': 'Next 30 days',
+            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=30)) + old_query[dates_end:],
+            'active': False
+        }
+   ]
+    
+    if not old_query:
+        tab_dates[0]['active'] = True
+    else:
+        for tab in tab_dates:
+            if tab['href'] == 'browse?' + old_query:
+                tab['active'] = True
+
     context = {
         'events': events,
         'grouped_events': grouped_events,
@@ -110,6 +147,7 @@ def browse_events(request):
         'browse_events_form': browse_events_form,
         'start_date': modified_request_parameters.get('start_date'),
         'end_date': modified_request_parameters.get('to'),
+        'tab_dates': tab_dates,
         }
     return render(request, 'events/browse.html', context)
 

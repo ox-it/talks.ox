@@ -73,6 +73,16 @@
 {% block main %}
 
 
+<ul class="nav nav-tabs nav-justified">
+  {% for tab in tab_dates %}
+    <li role="presentation" {% if tab.active %}class="active"{% endif %}>
+      <a href="{{tab.href}}">
+        {{tab.label}}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
 <div class="js-upcoming-events">
     {% if grouped_events %}
         {% include 'events/_event_list.html' with show_event_time_only=True %}      
