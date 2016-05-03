@@ -31,7 +31,7 @@ class ICalRenderer(renderers.BaseRenderer):
             if len(e['description']):
                 desc_with_speakers = e['description']
                 speakers_list = ""
-                if e['various_speakers'] is True:
+                if 'various_speakers' in e and e['various_speakers'] is True:
                     speakers_list = "\nSpeakers:\n Various"
                 elif 'speakers' in e:
                     if len(e['speakers']):
@@ -44,7 +44,7 @@ class ICalRenderer(renderers.BaseRenderer):
             
             desc_with_speakers = e['description']
             speakers_list = ""
-            if e['various_speakers'] is True:
+            if 'various_speakers' in e and e['various_speakers'] is True:
                 speakers_list = "\nSpeakers:\n Various"
             elif 'speakers' in e:
                 if len(e['speakers']):
