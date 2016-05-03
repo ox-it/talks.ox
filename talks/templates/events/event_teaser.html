@@ -18,30 +18,28 @@
 
         <strong>
             {% if show_event_time_only %}
-                {{ event.formatted_time }}
+                {{ event.display_time }}
             {% else %}
                 {{ event.formatted_date }}
             {% endif %}
         </strong>
 
-        <b><u><a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
-          {% if event.title %}
-            {{ event.title }}
-          {% else %}
-            Untitled talk
-          {% endif %}
-        </a></u></b>
+        <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
+           - <u>{{ event.title_display }}</u>
+        </a>
+        {% if event.special_message %}
+          <br><span class="teaser-special-message">{{ event.special_message }}</span>
+        {% endif %}
+        
         {% if event.speakers %}
             <br>
-            Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
-                <b><u><a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></u></b>{% if not forloop.last %}, {% endif %}
+                <b><a href="{% url 'show-person' speaker.slug %}" class="teaser-speaker">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></b>{% if not forloop.last %}, {% endif %}
             {% endfor %}
         {% endif %}
         {% if not is_group_view %}
           {% if event.group %}
-            <br>
-            Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+            <br><a href="{{ event.group.get_absolute_url }}"><u>{{ event.group.title }}</u></a>
           {% endif %}
         {% endif %}
     </div>

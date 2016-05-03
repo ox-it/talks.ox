@@ -4,7 +4,15 @@
 
 {% block title %}Lecture/Seminar Series{% endblock %}
 
-{% block topcontent %}
+{% block extrahead %}
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<script src="{% static "js/form-controls.js"%}"></script>
 
 {% endblock %}
 
@@ -14,16 +22,23 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-3 col-xs-12">
-            
-            
-            {% include 'events/navigation_for_listing.html' %}
 
-
+    {% include 'events/navigation_for_listing.html' %}
+      <ul class="nav nav-list well">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ browse_events_form.seriesslug | bootstrap }}
+            
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        </form>
+      </ul>
+    
 
     </div>
 
   </div>
 </div>
+
 
 {% endblock %}
 
@@ -31,6 +46,7 @@
 {% block main %}
 
 <h1>Lecture/Seminar Series</h1>
+
 <div class="list-group">
 {% for object in object_list %}
     <div class="list-group-item">
