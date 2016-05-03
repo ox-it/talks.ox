@@ -201,6 +201,10 @@ class TalksUserCollection(models.Model):
     collection = models.ForeignKey(Collection)
     role = models.TextField(choices=COLLECTION_ROLES, default=COLLECTION_ROLES_OWNER)
     is_main = models.BooleanField(default=False)
+    class Meta:
+        # For the admin interface where we only expose owner relationships for public lists
+        verbose_name = "Public Collection Ownership"
+        verbose_name_plural = "Public Collection Ownerships"
 
     def __unicode__(self):
         return unicode(self.user)
