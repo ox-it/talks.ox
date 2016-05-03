@@ -130,13 +130,17 @@
             {% endif %}
 
         {% endspaceless %}</li>
-        {% spaceless %}
-        <li class="list-group-item"><strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
+        <li class="list-group-item">{% spaceless %}
+        {% if event.various_speakers %}
+        <strong>Speaker</strong>: Various</li>
+        {% else %}
+        <strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
             {% empty %}
                 <span>Speaker to be announced</span>
             {% endfor %}
-        </li>
-        {% endspaceless %}
+        
+        {% endif %}
+        {% endspaceless %}</li>
         {% if event.api_organisation %}
         <li class="list-group-item"><strong>Organising department</strong>: <a href="{% url 'show-department' org_id=event.department_organiser %}">{{ event.api_organisation.name }}</a></li>
         {% endif %}
