@@ -282,7 +282,7 @@ class Event(models.Model):
 
     @property
     def speakers(self):
-        return self.person_set.filter(personevent__role=ROLES_SPEAKER)
+        return self.person_set.filter(personevent__role=ROLES_SPEAKER).order_by('personevent__id')
 
     @property
     def organisers(self):
