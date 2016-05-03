@@ -28,8 +28,9 @@ class ICalRenderer(renderers.BaseRenderer):
         event.add('summary', e['title_display'])
         if 'description' in e:
             desc_status = "" 
-            if e['status'] == 'preparation':
-                desc_status = '\nStatus: This talk is in preparation - details may change\n'
+            if 'status' in e:
+                if e['status'] == 'preparation':
+                    desc_status = '\nStatus: This talk is in preparation - details may change\n'
                 
             desc_with_speakers = e['description']
             speakers_list = ""
