@@ -180,16 +180,24 @@ class EventForm(forms.ModelForm):
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
 
-
-
-
         #reorder the speakers to be in the order they arrived in the post data (after that point the ordering is lost)
         speakers_posted = self.request.POST.copy().pop('event-speakers', [])
         speakers_current = getattr(event, 'speakers')
         speakers_cleaned = self.cleaned_data['speakers']
-                
-        # TODO - don't do this if nothing has changed
-        should_replace_speakers = True
+        
+        #determine if the list of speakers has changed
+        should_replace_speakers = False
+        if speakers_current.count() != len(speakers_posted):
+            #definitely different if lists are different lengths
+            should_replace_speakers = True
+        else:
+            #compare item-by-item to see if lists contain the same elements
+            for idx, speaker in enumerate(speakers_current):
+                if int(speakers_posted[idx]) != speaker.id:
+                    # order is not the same
+                    should_replace_speakers = True
+                    break
+        
         if should_replace_speakers:
             #remove all speakers
             for person in speakers_current:
