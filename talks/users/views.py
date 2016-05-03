@@ -12,6 +12,7 @@ from .models import Collection, TalksUser, TalksUserCollection, COLLECTION_ROLES
 from talks.events.models import Event
 from talks.events.views import group_events
 from talks.users.authentication import user_in_group_or_super
+from talks.events.datasources import DEPARTMENT_DATA_SOURCE
 from .forms import CollectionForm
 
 def webauth_logout(request):
@@ -55,18 +56,19 @@ def view_collection(request, collection_slug):
         raise PermissionDenied
 
     show_all = request.GET.get('show_all', False)
-    events = collection.get_events().order_by('start')
+    allEvents = collection.get_all_events().order_by('start')
 
-    series = collection.get_event_groups().order_by('title')
-    eventsInSeries = Event.objects.filter(group=series)
-
-    allEvents = events | eventsInSeries
 
     if not show_all:
         allEvents = allEvents.filter(start__gte=date.today())
 
     grouped_events = group_events(allEvents)
     
+    series = collection.get_event_groups().order_by('title')
+    
+    collectedDeps = collection.get_departments()    
+    departments = map(lambda cdep:DEPARTMENT_DATA_SOURCE.get_object_by_id(cdep.department), collectedDeps)
+
     collectionContributors = None
     if request.tuser:
         collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
@@ -78,6 +80,7 @@ def view_collection(request, collection_slug):
         'grouped_events': grouped_events,
         'event_groups' : series,
         'contributors' : collectionContributors,
+        'departments' : departments
     }
 
     if request.GET.get('format') == 'txt':

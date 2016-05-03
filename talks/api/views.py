@@ -16,7 +16,7 @@ from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
-from talks.users.models import Collection, TalksUserCollection, COLLECTION_ROLES_READER
+from talks.users.models import Collection, TalksUserCollection, CollectedDepartment, COLLECTION_ROLES_READER
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, TalksUserCollectionSerializer, get_item_serializer, HALEventSerializer,
                                    HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer)
@@ -195,6 +195,7 @@ def api_event_get_ics(request, slug):
 def item_from_request(request):
     event_slug = request.data.get('event', None)
     group_slug = request.data.get('group', None)
+    department_id = request.data.get('department', None)
     # Our JS doesn't support sending both
     assert not(event_slug and group_slug)
     try:
@@ -202,6 +203,9 @@ def item_from_request(request):
             return Event.objects.get(slug=event_slug)
         elif group_slug:
             return EventGroup.objects.get(slug=group_slug)
+        elif department_id:
+            obj, created = CollectedDepartment.objects.get_or_create(department=department_id)
+            return obj
     except ObjectDoesNotExist:
         logger.warn("Attempt to add event that doesn't exist to collection")
 

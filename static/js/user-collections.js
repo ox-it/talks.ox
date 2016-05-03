@@ -4,9 +4,11 @@ $(function() {
         var eventID = $(el).data('event');
         var groupID = $(el).data('group');
         var collectionID = $(el).data('collection');
+        var departmentID = $(el).data('department');
         if (eventID) { data.event = eventID; }
         if (groupID) { data.group = groupID; }
         if (collectionID) { data.collection = collectionID; }
+        if (departmentID) { data.department = departmentID; }
         return data;
     }
     var csrftoken = $.cookie('csrftoken');
