@@ -22,7 +22,7 @@ def clean_xml(dirty):
     _illegal_ranges = ["%s-%s" % (unichr(low), unichr(high)) 
                        for (low, high) in _illegal_unichrs] 
     _illegal_xml_chars_RE = compile(u'[%s]' % u''.join(_illegal_ranges))
-    clean = _illegal_xml_chars_RE.sub('', dirty)
+    clean = _illegal_xml_chars_RE.sub('', str(dirty))
     return clean
 
 def parse_date(date_param):

@@ -177,8 +177,7 @@ def api_event_get(request, slug):
     if not event:
         raise Http404
     serializer = HALEventSerializer(event, read_only=True, context={'request': request})
-    data = serializer.data
-    return Response(data, status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 @renderer_classes((ICalRenderer,))
