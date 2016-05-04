@@ -84,12 +84,12 @@ def browse_events(request):
     for param in ('start_date', 'to', 'venue', 'organising_department', 'include_subdepartments', 'seriesid', 'limit_to_collections'):
         if modified_request_parameters.get(param):
             args[param] = modified_request_parameters.get(param)
-    
+
     if not modified_request_parameters['start_date']:
         return redirect(reverse('browse_events'))
 
     events = events_search(modified_request_parameters)
-        
+
     paginator = Paginator(events, count)
     try:
         events = paginator.page(page)
@@ -132,7 +132,7 @@ def browse_events(request):
             'active': False
         }
    ]
-    
+
     if not old_query:
         tab_dates[0]['active'] = True
     else:
@@ -168,13 +168,13 @@ def group_events (events):
             grouped_events[key] = []
             event_dates.append(key)
         grouped_events[key].append(group_event)
-        
+
     result_events = []
     for event_date in event_dates:
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
-        
+
     return result_events
-    
+
 
 def upcoming_events(request):
     today = date.today()
@@ -218,7 +218,7 @@ def show_event(request, event_slug):
             'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
-        
+
     context = {
         'event': ev,
         'url': request.build_absolute_uri(reverse('show-event', args=[ev.slug])),
@@ -238,17 +238,17 @@ def show_event(request, event_slug):
 
 
 def list_event_groups(request):
-            
+
     modified_request_parameters = request.GET.copy()
     if request.POST.get('seriesslug'):
         return redirect('show-event-group', request.POST.get('seriesslug'))
-        
+
     browse_series_form = BrowseSeriesForm(modified_request_parameters)
-    
+
     object_list = EventGroup.objects.all().order_by('title')
     context = {
         'object_list': object_list,
-        'browse_events_form': browse_series_form, 
+        'browse_events_form': browse_series_form,
     }
     return render(request, "events/event_group_list.html", context)
 
@@ -262,7 +262,7 @@ def show_event_group(request, event_group_slug):
         events = events.filter(start__gte=date.today())
 
     grouped_events = group_events(events)
-    
+
     context = {
         'event_group': group,
         'events': events,
@@ -315,11 +315,18 @@ def show_topic(request):
     topic_uri = request.GET.get('uri')
     api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
     events = Event.objects.filter(topics__uri=topic_uri)
+
+    #RB 3/5/16 get filtered by current talks in topic
+    show_all = request.GET.get('show_all', False)
+    if not show_all:
+        events = events.filter(start__gte=date.today())
+
     grouped_events = group_events(events)
     context = {
         'grouped_events': grouped_events,
         'topic': api_topic,
-        'events': events
+        'events': events,
+        'show_all': show_all#RB 3/5/16 get filtered by current talks in topic
     }
     if request.GET.get('format') == 'txt':
         return render(request, 'events/topic.txt.html', context)
@@ -329,18 +336,18 @@ def show_topic(request):
 def list_topics(request):
     topics = TopicItem.objects.distinct()
     topics_results = []
-    
+
     for topic in topics.all():
         events = Event.published.filter(topics__uri=topic.uri)
         if(len(events)>0):
             api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
             if api_topic not in topics_results:
                 topics_results.append(api_topic)
-    
+
     context = {
         'topics': topics_results,
     }
-    
+
     return render(request, 'events/topic_list.html', context)
 
 def show_department_organiser(request, org_id):
@@ -357,10 +364,10 @@ def show_department_organiser(request, org_id):
         'events': events,
         'department': org_id
     }
-    
+
     if request.tuser:
         context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
-    
+
     return render(request, 'events/department.html', context)
 
 
@@ -381,9 +388,9 @@ def show_department_descendant(request, org_id):
     show_all = request.GET.get('show_all', False)
     if not show_all:
         events = events.filter(start__gte=date.today())
-        
+
     grouped_events = group_events(events)
-    
+
     if org['_links'].has_key('parent'):
         parent_href = org['_links']['parent'][0]['href']
         parent_id = parent_href[parent_href.find("oxpoints"):]
@@ -401,11 +408,11 @@ def show_department_descendant(request, org_id):
         'todays_date': date.today().strftime("%Y-%m-%d"),
         'department': org_id
     }
-    
+
     if request.tuser:
         context['editable_collections'] = request.tuser.collections.filter(talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR]).distinct()
 
-    
+
     if request.GET.get('format') == 'txt':
         return render(request, 'events/department.txt.html', context)
     else:
