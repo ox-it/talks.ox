@@ -22,16 +22,29 @@
                                 <i class="second pull-right fa {% if collection|collection_contains_item:event_group %}fa-times{% endif %}"></i>
                             </a>
                         {% else %}
-                            <a class="js-toggle-collection-item {% if collection|collection_contains_item:event %}active-collection{% endif %}"
-                               href="#"
-                               title="{% if collection|collection_contains_item:event %}Remove from collection{% else %}Add to collection{% endif %}"
-                               data-collection="{{ collection.slug }}"
-                               data-event="{{ event.slug }}"
-                               data-action="{% if collection|collection_contains_item:event %}remove{% else %}add{% endif %}">
-                                <i class="first pull-left fa fa-check {% if not collection|collection_contains_item:event %}fade-check{% endif %}"></i>
-                                {{ collection.title }}
-                                <i class="second pull-right fa {% if collection|collection_contains_item:event %}fa-times{% endif %}"></i>
-                            </a>
+                            {% ifequal item_desc 'department' %}
+                                <a class="js-toggle-collection-item {% if collection|collection_contains_department:department %}active-collection{% endif %}"
+                                    href="#"
+                                    title="{% if collection|collection_contains_department:department %}Remove from collection{% else %}Add to collection{% endif %}"
+                                    data-collection="{{ collection.slug }}"
+                                    data-department="{{ department }}"
+                                    data-action="{% if collection|collection_contains_department:department %}remove{% else %}add{% endif %}">
+                                    <i class="first pull-left fa fa-check {% if not collection|collection_contains_department:department %}fade-check{% endif %}"></i>
+                                    {{ collection.title }}
+                                    <i class="second pull-right fa {% if collection|collection_contains_department:department %}fa-times{% endif %}"></i>
+                                </a>
+                            {% else %}
+                                <a class="js-toggle-collection-item {% if collection|collection_contains_item:event %}active-collection{% endif %}"
+                                   href="#"
+                                   title="{% if collection|collection_contains_item:event %}Remove from collection{% else %}Add to collection{% endif %}"
+                                   data-collection="{{ collection.slug }}"
+                                   data-event="{{ event.slug }}"
+                                   data-action="{% if collection|collection_contains_item:event %}remove{% else %}add{% endif %}">
+                                    <i class="first pull-left fa fa-check {% if not collection|collection_contains_item:event %}fade-check{% endif %}"></i>
+                                    {{ collection.title }}
+                                    <i class="second pull-right fa {% if collection|collection_contains_item:event %}fa-times{% endif %}"></i>
+                                </a>
+                            {% endifequal %}
                         {% endifequal %}
                     </li>
                 {% endfor %}

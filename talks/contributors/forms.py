@@ -1,12 +1,12 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
-from django.forms.widgets import Select
+from django.forms.widgets import Select, RadioSelect
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 
 from talks.events import models, typeahead, datasources
-from talks.events.models import EventGroup
+from talks.events.models import EventGroup, AUDIENCE_CHOICES, AUDIENCE_PUBLIC, AUDIENCE_OXFORD, AUDIENCE_OTHER
 from talks.users.authentication import GROUP_EDIT_EVENTS
 
 
@@ -24,10 +24,10 @@ class TopicsField(forms.MultipleChoiceField):
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None):
         html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs)
-        html = """<div class="input-group date js-datetimepicker" id='""" + name + """'>
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
+        html = """<div class='input-group date js-datetimepicker' id='""" + name + """'>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
         """ + html + "</div>"
 
         return mark_safe(html)
@@ -37,6 +37,7 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.request = kwargs.pop('request', None)
         super(EventForm, self).__init__(*args, **kwargs)
         # Customise the group selector so that:
         #  - It's only possible to pick talks which the user has edit permissions for
@@ -57,6 +58,19 @@ class EventForm(forms.ModelForm):
         # Amend help text if no groups to choose from
         if (not self.fields['group'].queryset) or self.fields['group'].queryset.count <= 0:
             self.fields['group'].empty_label = "-- There are no series which you can add this talk to --"
+            
+        # set preliminary values for audience_choices and audience_other
+        if self.instance.audience == AUDIENCE_PUBLIC:
+            self.fields['audience_choices'].initial = 'public'
+            
+        elif self.instance.audience == AUDIENCE_OXFORD:
+            self.fields['audience_choices'].initial = 'oxonly'
+            
+        else:
+            self.fields['audience_choices'].initial = 'other'
+            self.fields['audience_other'].initial = self.instance.audience
+            
+        
 
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
@@ -115,6 +129,23 @@ class EventForm(forms.ModelForm):
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
+    
+    audience = forms.CharField(
+        required=False
+    )
+    
+    audience_other = forms.CharField(
+        label="",
+        required=False,
+        help_text="If other, please specify"
+    )
+    
+    audience_choices = forms.ChoiceField(
+        label="Who can attend",
+        required=False,
+        choices=AUDIENCE_CHOICES,
+        widget=RadioSelect()
+    )
 
     class Meta:
         exclude = ('slug', 'embargo')
@@ -149,7 +180,34 @@ class EventForm(forms.ModelForm):
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
 
-        self._update_people('speakers', event, models.ROLES_SPEAKER)
+        #reorder the speakers to be in the order they arrived in the post data (after that point the ordering is lost)
+        speakers_posted = self.request.POST.copy().pop('event-speakers', [])
+        speakers_current = getattr(event, 'speakers')
+        speakers_cleaned = self.cleaned_data['speakers']
+        
+        #determine if the list of speakers has changed
+        should_replace_speakers = False
+        if speakers_current.count() != len(speakers_posted):
+            #definitely different if lists are different lengths
+            should_replace_speakers = True
+        else:
+            #compare item-by-item to see if lists contain the same elements
+            for idx, speaker in enumerate(speakers_current):
+                if int(speakers_posted[idx]) != speaker.id:
+                    # order is not the same
+                    should_replace_speakers = True
+                    break
+        
+        if should_replace_speakers:
+            #remove all speakers
+            for person in speakers_current:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
+                rel.delete()
+            #add new speakers in the order they were in the posted data
+            for speaker_id in speakers_posted:
+                person = models.Person.objects.get(id=speaker_id)
+                models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
+        
         self._update_people('organisers', event, models.ROLES_ORGANISER)
         self._update_people('hosts', event, models.ROLES_HOST)
 
@@ -179,6 +237,17 @@ class EventForm(forms.ModelForm):
                 #don't allow this user to clear the group
                 raise forms.ValidationError("You do not have permission to move this talk from its current series")
 
+        # fill in the 'audience' field used by the model, based on the form values filled in
+        if 'audience_choices' in self.cleaned_data and self.cleaned_data['audience_choices'] == 'other':
+            if not self.cleaned_data['audience_other'] or self.cleaned_data['audience_other'] == '':
+                raise forms.ValidationError("You must specify who can attend")
+            else:
+                print "setting to value of audience_other field"
+                self.cleaned_data['audience'] = self.cleaned_data['audience_other']
+        else:
+            if 'audience_choices' in self.cleaned_data and not self.cleaned_data['audience_choices'] == '':
+                self.cleaned_data['audience'] = self.cleaned_data['audience_choices']        
+        
         return self.cleaned_data
 
     def _update_people(self, field, event, role):

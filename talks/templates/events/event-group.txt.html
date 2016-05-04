@@ -19,11 +19,6 @@
 
 <br>{{ event_group.title }}
 <br>
-{% if editors %}
-    Editor{{ editors|pluralize }}: {% for editor in editors %}
-      {{ editor.username }}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-{% endif %}
 {% if event_group.description %}
     <br>{{ event_group.description_html | safe | striptags | linebreaksbr }}
 {% else %}
@@ -57,6 +52,11 @@
   {% else %}
       <br>No upcoming talks to display for this series.
   {% endif %}
+{% endif %}
+{% if editors %}
+    <br>Editor{{ editors|pluralize }}: {% for editor in editors %}
+      {{ editor.first_name }} {{ editor.last_name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
 {% endif %}
 
 <br>
