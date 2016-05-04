@@ -61,14 +61,14 @@
                         <div class="navbar-header">
                             <a id="navbar-oxford-brandmark" href="http://www.ox.ac.uk"><img src="{% static "images/ox_brand6_rev_rect.gif"%}"></a>
                             <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse" aria-expanded="false">
                                 <span class="sr-only">Toggle navigation</span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
                         </div>
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <div class="collapse navbar-collapse" id="main-navbar-collapse">
                             <ul class="nav navbar-nav">
                                 {% if perms.events.change_event %}
                                     <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}?date=future&editable=true">Dashboard</a></li>
