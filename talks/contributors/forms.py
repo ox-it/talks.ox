@@ -286,7 +286,23 @@ class EventGroupForm(forms.ModelForm):
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
+    
+    title = XMLFriendlyTextField(
+        max_length=250,
+        required=True
+    )
+    
+    description = XMLFriendlyTextField(
+        widget=forms.Textarea(attrs={'rows': 8}),
+        required=False,
+    )
 
+    occurence = XMLFriendlyTextField(
+        required=False,
+        label='Timing',
+        help_text='e.g.: Mondays at 10 or September 19th to 20th.'
+    )
+    
     def save(self):
         group = super(EventGroupForm, self).save(commit=False)
         group.save()
@@ -306,9 +322,6 @@ class EventGroupForm(forms.ModelForm):
     class Meta:
         exclude = ('slug',)
         model = models.EventGroup
-        widgets = {
-            'occurence': forms.TextInput(),
-        }
         labels = {
             'group_type': 'Series type'
         }
