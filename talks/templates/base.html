@@ -70,11 +70,10 @@
                         {% endif %}
                     </ul>
                     <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'haystack_search' %}">
-                        
-<input type="submit" class="btn btn-default" style="float: right" />
-<div style="overflow: hidden; padding-right: .5em;" class="form-group">
-   <input id="id_q" name="q" type="text" class="form-control" style="width: 100%;" placeholder="Search" value="{% block search_query %}{% endblock search_query %}"/>
-</div>​
+                      <input type="submit" class="btn btn-default" />
+                      <div style="overflow: hidden; padding-right: .5em;" class="form-group">
+                         <input id="id_q" name="q" type="text" class="form-control" style="width: 100%;" placeholder="Search" value="{% block search_query %}{% endblock search_query %}"/>
+                      </div>​
                     </form>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://talksox.readthedocs.org/en/latest" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> Help</a></li>

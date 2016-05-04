@@ -30,6 +30,14 @@
     color: #CCC;
 }
 
+.navbar-form .btn-default {
+  float: right;
+}
+
+.navbar-form #id_q {
+  width: 100%; 
+}
+
 /*These styles are used in the faceted navigation part of the dashboard pages*/
 .filter-selected {
     border-color: #b1cbe3;
