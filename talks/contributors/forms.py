@@ -138,11 +138,6 @@ class EventForm(forms.ModelForm):
         required=False
     )
     
-    audience_other = forms.CharField(
-        label="",
-        required=False,
-        help_text="If other, please specify"
-    )
     
     audience_choices = forms.ChoiceField(
         label="Who can attend",
@@ -151,23 +146,48 @@ class EventForm(forms.ModelForm):
         widget=RadioSelect()
     )
     
-    description = XMLFriendlyTextField()
+    title = XMLFriendlyTextField(
+        max_length=250,
+        required=False,
+    )
+
+    location_details = XMLFriendlyTextField(
+        required=False,
+        label='Venue details',
+        help_text='e.g.: room number or accessibility information'
+    )
+
+    description = XMLFriendlyTextField(
+        label="Abstract",
+        widget=forms.Textarea(attrs={'rows': 4}),
+        required=False,
+    )
+    
+    special_message = XMLFriendlyTextField(
+        required=False,
+        label="Special message",
+        help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue"
+    )
+
+    audience_other = XMLFriendlyTextField(
+        label="",
+        required=False,
+        help_text="If other, please specify"
+    )
+
+    cost = XMLFriendlyTextField(
+        required=False,
+    )
 
     class Meta:
         exclude = ('slug', 'embargo')
         model = models.Event
-        labels = {
-            'description': 'Abstract',
-        }
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True}),
             'booking_type': forms.RadioSelect,
-            'cost': forms.TextInput,
             'audience': forms.RadioSelect,
-            'location_details': forms.TextInput,
             'status': forms.RadioSelect,
-            'special_message': forms.Textarea(attrs={'rows': 2})
         }
         help_texts = {
             'organiser_email': 'Email address for more details',
@@ -287,8 +307,6 @@ class EventGroupForm(forms.ModelForm):
         exclude = ('slug',)
         model = models.EventGroup
         widgets = {
-            'title': forms.TextInput(),
-            'description': forms.Textarea(),
             'occurence': forms.TextInput(),
         }
         labels = {
