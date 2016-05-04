@@ -42,6 +42,7 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.request = kwargs.pop('request', None)
         super(EventForm, self).__init__(*args, **kwargs)
         # Customise the group selector so that:
         #  - It's only possible to pick talks which the user has edit permissions for
@@ -206,7 +207,34 @@ class EventForm(forms.ModelForm):
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
 
-        self._update_people('speakers', event, models.ROLES_SPEAKER)
+        #reorder the speakers to be in the order they arrived in the post data (after that point the ordering is lost)
+        speakers_posted = self.request.POST.copy().pop('event-speakers', [])
+        speakers_current = getattr(event, 'speakers')
+        speakers_cleaned = self.cleaned_data['speakers']
+        
+        #determine if the list of speakers has changed
+        should_replace_speakers = False
+        if speakers_current.count() != len(speakers_posted):
+            #definitely different if lists are different lengths
+            should_replace_speakers = True
+        else:
+            #compare item-by-item to see if lists contain the same elements
+            for idx, speaker in enumerate(speakers_current):
+                if int(speakers_posted[idx]) != speaker.id:
+                    # order is not the same
+                    should_replace_speakers = True
+                    break
+        
+        if should_replace_speakers:
+            #remove all speakers
+            for person in speakers_current:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
+                rel.delete()
+            #add new speakers in the order they were in the posted data
+            for speaker_id in speakers_posted:
+                person = models.Person.objects.get(id=speaker_id)
+                models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
+        
         self._update_people('organisers', event, models.ROLES_ORGANISER)
         self._update_people('hosts', event, models.ROLES_HOST)
 
