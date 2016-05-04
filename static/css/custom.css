@@ -129,6 +129,9 @@ a.formatting-link:hover {
 .nav-tabs.nav-justified a {
   white-space: nowrap;
 }
+.nav-tabs.nav-justified {
+  padding-bottom: 30px;
+}
 div.add-to-collections,
 div.manage-lists-buttons {
     display: inline-block;
