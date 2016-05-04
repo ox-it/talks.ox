@@ -89,10 +89,25 @@ span.filter-active {
     width: 90%;
 }
 
-.list-group-item.date-continued {
+.list-group-item.date-continued-previous {
+    border-top: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+.list-group-item.date-continued-next {
     border-bottom: 0px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+}
+.continued-next-page{
+  color: grey;
+  font-size: 12px;
+  text-align: center;
+}
+.continued-previous-page {
+  color: grey;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .formatting-link {

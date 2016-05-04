@@ -140,11 +140,17 @@ def browse_events(request):
             if tab['href'] == 'browse?' + old_query:
                 tab['active'] = True
                 
-    date_continued = False
+    date_continued_previous = False
+    if int(page) != 1:
+        # if the date of the first talk of the current page is the same with that of the last talk of the previous page
+        if list(events)[0].start.date()==list(paginator.page(int(page)-1))[-1].start.date():
+            date_continued_previous = True
+
+    date_continued_next = False
     if paginator.num_pages != int(page):
-    # if the date of the last talk of the current page is the same with that of the first talk of the next page
+        # if the date of the last talk of the current page is the same with that of the first talk of the next page
         if list(events)[-1].start.date()==list(paginator.page(int(page)+1))[0].start.date():
-            date_continued = True
+            date_continued_next = True
         
     context = {
         'events': events,
@@ -154,7 +160,8 @@ def browse_events(request):
         'start_date': modified_request_parameters.get('start_date'),
         'end_date': modified_request_parameters.get('to'),
         'tab_dates': tab_dates,
-        'date_continued': date_continued,
+        'date_continued_previous': date_continued_previous,
+        'date_continued_next': date_continued_next,
         }
     return render(request, 'events/browse.html', context)
 

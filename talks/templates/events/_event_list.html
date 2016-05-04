@@ -1,10 +1,20 @@
 {% for grouped_event in grouped_events %}
-  <h4 class="group-date">{{grouped_event.start_date}}</h4>
+  <h4 class="group-date">{{grouped_event.start_date}}
+        {% if forloop.first and date_continued_previous %}
+            <span class="continued-previous-page">, continued from previous page</span>
+        {% endif %}
+  </h4>
   <ul class="list-group">
     {% for event in grouped_event.gr_events %}
-      <li class="list-group-item {% if forloop.last and forloop.parentloop.last and date_continued %} date-continued{% endif %}">
+      <li class="list-group-item {% if forloop.first and forloop.parentloop.first and date_continued_previous %} date-continued-previous{% endif %}
+ {% if forloop.last and forloop.parentloop.last and date_continued_next %} date-continued-next{% endif %}">
         {% include 'events/event_teaser.html' %}
       </li>
+      {% if forloop.last and forloop.parentloop.last and date_continued_next %}
+        <div class="continued-next-page">
+          {{grouped_event.start_date}} continued on next page
+        </div>
+      {% endif %}
     {% endfor %}
   </ul>
 {% endfor %}
