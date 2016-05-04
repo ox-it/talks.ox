@@ -15,7 +15,7 @@
 
 .navbar-default .navbar-text {
      color: #AAA;
-}   
+}
 
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
     color: #FFF;
@@ -168,4 +168,32 @@ div.share-this-links span {
 
 .teaser-speaker {
   color:black;
+}
+
+.cancelled
+{
+  background-color: #b30000;
+  color: #fff;
+}
+
+.cancelled_teaser
+{
+  color: #b30000;
+}
+
+.in_preparation
+{
+  background-color: #f6d700;
+  color: #fff;
+}
+
+.in_preparation_teaser
+{
+
+  color: #f6d700;
+}
+
+.list-group-item
+{
+  background-color: #f5f5f5;
 }

@@ -45,7 +45,13 @@
 
 {% if perms.events.change_event %}
     <div class="container-fluid">
+    {% if event.get_status_display == 'Cancelled' %}
+    <div class="row bg-primary cancelled">
+    {% elif event.get_status_display == 'In preparation' %}
+    <div class="row bg-primary in_preparation">
+    {% else %}
     <div class="row bg-primary">
+    {% endif %}
       <div class="col-md-11"><h4>{{ event.get_status_display }}</h4></div>
       <div class="col-md-1">
         <strong>
@@ -92,7 +98,13 @@
             <div class="in-preparation">
               Status: This talk is in preparation - details may change
             </div>
-          {% endif %} 
+          {% endif %}
+          <!-- RB 4/5/16 added text to show when an event has been cancelled-->
+          {% if event.is_cancelled %}
+            <div class="cancelled">
+              Status: This talk has been cancelled
+            </div>
+          {% endif %}
         {% endif %}
 
 
@@ -138,7 +150,7 @@
             {% empty %}
                 <span>Speaker to be announced</span>
             {% endfor %}
-        
+
         {% endif %}
         {% endspaceless %}</li>
         {% if event.api_organisation %}

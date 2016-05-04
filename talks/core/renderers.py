@@ -26,14 +26,16 @@ class ICalRenderer(renderers.BaseRenderer):
     def _event_to_ics(e):
         event = Event()
         event.add('summary', e['title_display'])
-        
+
         if 'description' in e:
             print 'got a description'
-            desc_status = "" 
+            desc_status = ""
             if 'status' in e:
                 if e['status'] == 'preparation':
                     desc_status = '\nStatus: This talk is in preparation - details may change\n'
-            
+                if e['status'] == 'cancelled':
+                    desc_status = '\nStatus: This talk has been cancelled\n'
+
             desc_with_speakers = e['description']
             speakers_list = ""
             if 'various_speakers' in e and e['various_speakers'] is True:
@@ -41,8 +43,8 @@ class ICalRenderer(renderers.BaseRenderer):
             elif 'speakers' in e:
                 if len(e['speakers']):
                     speakers_list = "\nSpeakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
-            event.add('description', desc_status + desc_with_speakers + speakers_list)            
-            
+            event.add('description', desc_status + desc_with_speakers + speakers_list)
+
         if 'start' in e:
             event.add('dtstart', dt_string_to_object(e['start']))
         if 'end' in e:
