@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load staticfiles %}
+{% load users %}
+
+{% block content %}
+   <h2>
+    My talks
+   </h2>
+ {% if grouped_events %}
+  {% include 'events/_event_list.html' with show_event_time_only=True %}
+{% endif %}
+{% endblock %}
