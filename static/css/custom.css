@@ -22,8 +22,8 @@
     background-color: transparent;
 }
 
-.navbar-default .navbar-nav>li>a {
-    color: #AAA;
+.nav-list>li>a {
+    padding: 11px 0px;
 }
 
 .navbar-default .navbar-nav>li>a:hover {
