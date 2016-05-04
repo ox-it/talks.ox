@@ -1,6 +1,15 @@
+#header {
+    background-color: #002147;
+    margin-bottom: 1em;
+}
+.navbar {
+    margin-bottom: 0;
+    border: none;
+}
 .navbar .container-fluid {
     padding: 10px;
     background-color: #002147;
+   
 }
 
 #navbar-oxford-brandmark {
