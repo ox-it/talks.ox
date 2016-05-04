@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from talks.events import models, typeahead, datasources
 from talks.events.models import EventGroup, AUDIENCE_CHOICES, AUDIENCE_PUBLIC, AUDIENCE_OXFORD, AUDIENCE_OTHER
 from talks.users.authentication import GROUP_EDIT_EVENTS
-
+from talks.core.utils import clean_xml
 
 class OxPointField(forms.CharField):
     def __init__(self, source, *args, **kwargs):
@@ -20,6 +20,11 @@ class TopicsField(forms.MultipleChoiceField):
     def valid_value(self, value):
         return True
 
+class XMLFriendlyTextField(forms.CharField):
+    def clean(self, data):
+        super(XMLFriendlyTextField, self).clean(data)
+        return clean_xml(data)
+        
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None):
@@ -145,6 +150,8 @@ class EventForm(forms.ModelForm):
         choices=AUDIENCE_CHOICES,
         widget=RadioSelect()
     )
+    
+    description = XMLFriendlyTextField()
 
     class Meta:
         exclude = ('slug', 'embargo')
