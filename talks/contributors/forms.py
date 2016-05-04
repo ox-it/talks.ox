@@ -203,10 +203,8 @@ class EventForm(forms.ModelForm):
             for person in speakers_current:
                 rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
                 rel.delete()
-                print "Removed existing speakers"
             #add new speakers in the order they were in the posted data
             for speaker_id in speakers_posted:
-                print "Adding speaker:", speaker_id
                 person = models.Person.objects.get(id=speaker_id)
                 models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
         
