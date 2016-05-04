@@ -163,6 +163,7 @@ class HALEventSerializer(serializers.ModelSerializer):
     organiser_email = serializers.CharField(read_only=True)
     start = serializers.SerializerMethodField()
     end = serializers.SerializerMethodField()
+    timezone = serializers.SerializerMethodField()
     
     def get_links(self, obj):
         # Return a links serializer, but pass on the context
@@ -190,7 +191,6 @@ class HALEventSerializer(serializers.ModelSerializer):
         if obj.group:
             return { 'title': obj.group.title, 'slug': obj.group.slug }
         return None
-        
     def get_start(self, obj):
         tz = pytz.timezone(settings.TIME_ZONE)
         return obj.start.astimezone(tz)
@@ -198,10 +198,15 @@ class HALEventSerializer(serializers.ModelSerializer):
     def get_end(self, obj):
         tz = pytz.timezone(settings.TIME_ZONE)
         return obj.end.astimezone(tz)
+    
+    def get_timezone(self, obj):
+        tz = pytz.timezone(settings.TIME_ZONE)
+        return "GMT+" + str(obj.start.astimezone(tz).dst())
+        
         
     class Meta:
         model = Event
-        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'status', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
+        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'timezone', 'formatted_date', 'formatted_time', 'status', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
 
 
 
