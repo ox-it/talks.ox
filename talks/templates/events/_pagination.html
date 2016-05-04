@@ -1,15 +1,35 @@
-    <div class="col-sm-offset-5 col-lg-offset-5 col-sm-5 col-lg-5">
+    <div style="text-align:center;">
         <span class="step-links">
+  
+          <ul class="pagination pagination-sm">
             {% if page.has_previous %}
-                <a class="btn btn-default" href="?{{ fragment }}&page={{ page.previous_page_number }}">previous</a>
+                <li><a class="btn btn-default" href="?{{ fragment }}&page={{ page.previous_page_number }}">previous</a></li>
+                <li><a style="visibility:hidden"> </a></li>
+                <li class="hidden-lg"><a style="border:0px;">Page {{ page.number }} of {{ page.paginator.num_pages }}</a></li>
             {% endif %}
 
-            <span class="current">
-                Page {{ page.number }} of {{ page.paginator.num_pages }}.
-            </span>
+            {% if page.paginator.num_pages <= 1 %}
+              <li class="active"><a>Page 1</a></li>
+            {% else %}
+                {% for p in page.paginator.page_range %}
+                  {% if p == 1  or p == page.paginator.num_pages or p <= page.number|add:2 and p >= page.number|add:-2 %}
+                    <li class="visible-lg-inline{% if p == page.number %} active{% endif %}">
+                      <a href="?{{ fragment }}&page={{ p }}">
+                        {{ p }}
+                      </a>
+                    </li>
+                  {% else %}
+                    {% if p == 2  or p == page.paginator.num_pages|add:-1 %}
+                      <li class="visible-lg-inline"><a style="border-top:0px; border-bottom:0px;">...</a></li>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+            {% endif %}
 
             {% if page.has_next %}
-                <a class="btn btn-default" href="?{{ fragment }}&page={{ page.next_page_number }}">next</a>
+                <li><a style="visibility:hidden"> </a></li>
+                <li><a class="btn btn-default" href="?{{ fragment }}&page={{ page.next_page_number }}">next</a></li>
             {% endif %}
+          </ul>
         </span>
     </div>
