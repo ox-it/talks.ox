@@ -2,11 +2,8 @@
 <!-- Display a single event teaser -->
 <div class="event-teaser-wrapper">
   <div class="event-teaser-text-wrapper">
-      
+
         <div class="pull-right">
-          <span style="padding-right: 20px">
-            {% if not is_search and not event.is_published %}<strong>Status</strong>: This talk is in preparation - details may change{% endif %}
-          </span>
           {% if not is_search and perms.events.change_event %}
             {% if request.user|can_edit_event:event %}
               <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
@@ -30,10 +27,15 @@
         </strong>
 
         <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading teaser-talk-title">
-           - <b>{{ event.title_display }}</b>
+           - <b>{% if event.title_display %}{{ event.title_display }}{% else %}{{ event.title }}{% endif %}</b>
         </a>
         {% if event.special_message %}
           <br><span class="teaser-special-message">{{ event.special_message }}</span>
+        {% endif %}
+        {% if not event.is_published and not event.is_cancelled %}
+          <br /><span class='in_preparation_teaser'><strong>Status</strong>: This talk is in preparation - details may change</span>
+        {% elif event.is_cancelled %}
+          <br /><span class='cancelled_teaser'><strong>Status</strong>: This talk has been cancelled</span><!-- RB 4/5/16 added text to show when an event has been cancelled-->
         {% endif %}
         <br>
         {% if event.various_speakers %}
@@ -53,7 +55,7 @@
         {% if event.group_slug %}
             <!-- Search Results -->
             <br>
-            Part of: <a href="{% url 'show-event-group' event.group_slug %}">event.group</a>
+            Part of: <a href="{% url 'show-event-group' event.group_slug %}">{{event.group}}</a>
         {% else %}
             {% if event.group %}
             <br><a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>

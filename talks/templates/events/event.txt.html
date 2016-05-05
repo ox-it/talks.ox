@@ -19,7 +19,12 @@
 {{ event.title_display }}
 {% if not event.is_published %}
     <br>Status: This talk is in preparation - details may change
-{% endif %} 
+{% endif %}
+
+<!-- RB 4/5/16 added text to show when an event has been cancelled-->
+{% if event.is_cancelled %}
+    <br>Status: This talk has been cancelled
+{% endif %}
 
 {% if event.special_message %}
     <br>{{ event.special_message }}
@@ -31,7 +36,7 @@
     <br>Abstract not yet added
 {% endif %}
 
-<br>Date: 
+<br>Date:
 {{ event.formatted_date}} ({{ event.oxford_date.formatted_nocal }})
 
 <br>Venue:
@@ -60,55 +65,55 @@
 {% endif %}
 
 {% if event.organisers %}
-    <br>Organiser{{ organisers|pluralize }}: 
+    <br>Organiser{{ organisers|pluralize }}:
     {% for organiser in organisers %}
         {{ organiser.name }}{% if organiser.bio %} ({{ organiser.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
-    {% endfor %}   
+    {% endfor %}
 {% endif %}
 
-{% if event.organiser_email %} 
-    <br>Organiser contact email address: 
+{% if event.organiser_email %}
+    <br>Organiser contact email address:
     {{event.organiser_email}}
 {% endif %}
 
 {% if event.hosts %}
-    <br>Host{{ hosts|pluralize }}: 
+    <br>Host{{ hosts|pluralize }}:
     {% for host in hosts %}
         {{ host.name }}{% if host.bio %} ({{ host.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
     {% endfor %}
 {% endif %}
 
 {% if event.group %}
-    <br>Part of: 
+    <br>Part of:
     {{ event.group.title }}
 {% endif %}
 
 {% if event.topics.count %}
-    <br>Topics: 
+    <br>Topics:
     {% for topic in event.api_topics %}
         {{ topic.prefLabel }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
 {% endif %}
 
-<br>Booking required?: 
+<br>Booking required?:
 {{ event.get_booking_type_display }}
 
 {% if event.booking_url %}
-    <br>Booking url: 
+    <br>Booking url:
     {{ event.booking_url }}
 {% endif %}
 
 {% if event.booking_email %}
-    <br>Booking email: 
+    <br>Booking email:
     {{ event.booking_email }}
 {% endif %}
 
 {% if event.cost %}
-    <br>Cost: 
+    <br>Cost:
     {{ event.cost }}
 {% endif %}
 
-<br>Audience: 
+<br>Audience:
 {{ event.get_audience_display }}
 
 {% if editors %}
