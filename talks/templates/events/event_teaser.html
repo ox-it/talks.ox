@@ -16,13 +16,12 @@
         <strong>
             {% if show_event_time_only %}
                 {{ event.display_time }}
+            {% elif show_oxford_date_time %}
+                {{ event.oxford_date_time }}
+            {% elif event.formatted_date %}
+                {{ event.formatted_date }}
             {% else %}
-                {% if event.formatted_date %}
-                    {{ event.formatted_date }}
-                {% else %}
-                    <!-- from search results -->
-                    {{ event.start | date:"D, d M y" }}
-                {% endif %}
+                {{ event.start | date:"D, d M y" }}
             {% endif %}
         </strong>
 

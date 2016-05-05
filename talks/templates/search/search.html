@@ -25,7 +25,7 @@
             <ul class="list-group">
                 {% for event in top_results %}
                 <li class="list-group-item">
-                    {% include "events/event_teaser.html" %}                    
+                    {% include "events/event_teaser.html" with show_oxford_date_time=True %}                    
                 </li>
                 {% endfor %}
             </ul>
@@ -33,7 +33,7 @@
 
         <h3>Upcoming</h3>
         <h5><a href="{% url 'haystack_search_past' %}?q={{query}}">Show past results</a></h5>
-        {% include "events/_event_list.html" with grouped_events=grouped_future_results %}
+        {% include "events/_event_list.html" with grouped_events=grouped_future_results show_event_time_only=True %}
     
     </div>
 
