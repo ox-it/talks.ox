@@ -144,7 +144,7 @@
         {% endspaceless %}</li>
         <li class="list-group-item">{% spaceless %}
         {% if event.various_speakers %}
-        <strong>Speaker</strong>: Various</li>
+        <strong>Speaker</strong>: Various Speakers</li>
         {% else %}
         <strong>Speaker{{ speakers|pluralize }}</strong>: {% for speaker in speakers %}<a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
             {% empty %}
