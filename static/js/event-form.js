@@ -1,6 +1,10 @@
 var animationTime = 200; // ms
 
 $(function() {
+    
+    var today_eleven_am = new Date();
+    today_eleven_am.setHours(11);
+    
     // Register event to show event group forms
     $('#id_event-group-enabled').on('change', function(ev) {
         if (ev.target.checked) {
@@ -12,27 +16,28 @@ $(function() {
         }
     });
 
-    var today_eleven_am = new Date();
-    today_eleven_am.setHours(11);
     // Initialise datetimepicker's
+   
     $('.js-datetimepicker').datetimepicker({
-        format: 'dd/mm/yyyy hh:ii',
-        autoclose: true,
-        initialDate: today_eleven_am
+        format: 'DD/MM/YYYY HH:mm',
+        sideBySide : true,
+        allowInputToggle : true,
+        stepping : 5
+    }).each(function(i,v){
+        $(v).data("DateTimePicker").ignoreReadonly(true);
+        if (typeof $('input', v).attr('value') !== 'undefined') {
+			$(v).data("DateTimePicker").defaultDate(moment($('input', v).attr('value')));
+		}
+		else {
+			
+		}
     });
 
-    $('#event-start.js-datetimepicker').on('changeDate', function(ev) {
-        //correct for daylight savings - the widget assumes we're picking in GMT
-        var date = new Date(ev.date);
-        var gmt_offset = date.getTimezoneOffset();
-        date.setMinutes( date.getMinutes() + gmt_offset );
-        var picker = $(ev.target).data('datetimepicker');
-        picker.setDate(date);
-
-        //set the end time to 1 hour later
-        var end_date = new Date(date);
-        date.setHours(date.getHours()+1, date.getMinutes());
-        $('#event-end.js-datetimepicker').data('datetimepicker').setDate(date);
+    $('#event-start.js-datetimepicker').on("dp.change", function(e) { 
+        var date = new Date(e.date);
+        var endDate = date.setHours(date.getHours()+1, date.getMinutes());
+		
+        $('#event-end.js-datetimepicker').data('DateTimePicker').minDate(e.date).date(moment(endDate));
     });
 
     //prepend a message div to the given element, containing the given text.

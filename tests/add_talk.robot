@@ -15,13 +15,9 @@ Scenario: Add the simplest talk
     type "something" into ${title field}
     type "something else" into ${abstract field}
     click on ${start field}
-    ${datetimepicker[0]} should appear
-    Select current date and time for ${datetimepicker[0]}
-    ${datetimepicker[0]} should disappear
+    Select current date and time for ${datetimepicker}
     click on ${end field}
-    ${datetimepicker[1]} should appear
-    Select current date and time for ${datetimepicker[1]}
-    ${datetimepicker[1]} should disappear
+    Select current date and time for ${datetimepicker}
     click on ${button done}
     current page should be ${talk page}
     ${success message} should be displayed
@@ -41,13 +37,9 @@ Scenario: Add talk to existing group of talks
     Select from list  ${group field.locator}  foo
     page should appear text "Chemical Biology"
     click on ${start field}
-    ${datetimepicker[0]} should appear
-    Select current date and time for ${datetimepicker[0]}
-    ${datetimepicker[0]} should disappear
+    Select current date and time for ${datetimepicker}
     click on ${end field}
-    ${datetimepicker[1]} should appear
-    Select current date and time for ${datetimepicker[1]}
-    ${datetimepicker[1]} should disappear
+    Select current date and time for ${datetimepicker}
     click on ${button done}
     ${success message} should appear
     ${success message} should contain text "New talk has been created"
@@ -197,13 +189,9 @@ Scenario: Save and add another
     go to ${add talk page}
     type "something" into ${title field}
     click on ${start field}
-    ${datetimepicker[0]} should appear
-    Select current date and time for ${datetimepicker[0]}
-    ${datetimepicker[0]} should disappear
+    Select current date and time for ${datetimepicker}
     click on ${end field}
-    ${datetimepicker[1]} should appear
-    Select current date and time for ${datetimepicker[1]}
-    ${datetimepicker[1]} should disappear
+    Select current date and time for ${datetimepicker}
     click on ${button save add another}
     current page should be ${add talk page}
     ${success message} should be displayed
@@ -267,8 +255,6 @@ Scenario: Preserve form data after validation
 Fill in required fields
     type "${TEST_NAME}" into ${field('Title')}
     click on ${start field}
-    ${datetimepicker[0]} should appear
-    Select current date and time for ${datetimepicker[0]}
+    Select current date and time for ${datetimepicker}
     click on ${end field}
-    ${datetimepicker[1]} should appear
-    Select current date and time for ${datetimepicker[1]}
+    Select current date and time for ${datetimepicker}

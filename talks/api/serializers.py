@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
+from django.conf import settings
 from rest_framework import serializers, pagination
 from rest_framework.fields import Field
+import pytz
 
 from talks.events.models import Event, Person, EventGroup
-from talks.users.models import CollectionItem, TalksUserCollection, Collection
+from talks.users.models import CollectionItem, TalksUserCollection, Collection, CollectedDepartment
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -71,9 +73,9 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('slug', 'url', 'title_display', 'start', 'end', 'description',
+        fields = ('slug', 'url', 'title_display', 'start', 'end', 'description', 'status',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email')
+                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
 
 
 class HALURICharField(Field):
@@ -147,7 +149,7 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics')
+        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics', 'various_speakers')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
@@ -159,7 +161,10 @@ class HALEventSerializer(serializers.ModelSerializer):
     booking_required = serializers.SerializerMethodField()
     series = serializers.SerializerMethodField()
     organiser_email = serializers.CharField(read_only=True)
-
+    start = serializers.SerializerMethodField()
+    end = serializers.SerializerMethodField()
+    timezone = serializers.SerializerMethodField()
+    
     def get_links(self, obj):
         # Return a links serializer, but pass on the context
         serializer = EventLinksSerializer(obj, read_only=True, context=self.context)
@@ -186,10 +191,23 @@ class HALEventSerializer(serializers.ModelSerializer):
         if obj.group:
             return { 'title': obj.group.title, 'slug': obj.group.slug }
         return None
-
+    def get_start(self, obj):
+        tz = pytz.timezone(settings.TIME_ZONE)
+        return obj.start.astimezone(tz)
+        
+    def get_end(self, obj):
+        tz = pytz.timezone(settings.TIME_ZONE)
+        return obj.end.astimezone(tz)
+    
+    def get_timezone(self, obj):
+        tz = pytz.timezone(settings.TIME_ZONE)
+        return "GMT+" + str(obj.start.astimezone(tz).dst())
+        
+        
     class Meta:
         model = Event
-        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'formatted_date', 'formatted_time', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
+        fields = ('_links', 'title_display', 'slug', 'start', 'end', 'timezone', 'formatted_date', 'formatted_time', 'status', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
+
 
 
 class SearchResultEmbedsSerializer(serializers.Serializer):
@@ -335,6 +353,11 @@ class EventGroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'slug', 'url', 'title', 'description', 'class_name', 'organisers', 'department_organiser')
 
 
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CollectedDepartment
+        fields = ('department', )
+
 class EventGroupWithEventsSerializer(serializers.ModelSerializer):
     """
     Serialize an event group and include info on all constitutent events
@@ -357,6 +380,8 @@ def get_item_serializer(item):
         return EventSerializer(item)
     elif isinstance(item, EventGroup):
         return EventGroupSerializer(item)
+    elif isinstance(item, CollectedDepartment):
+        return DepartmentSerializer(item)
     else:
         raise Exception('Unexpected type of tagged object')
 

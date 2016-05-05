@@ -1,6 +1,15 @@
+#header {
+    background-color: #002147;
+}
+
+.navbar {
+    margin-bottom: 0;
+    border: none;
+    background-color: transparent;
+}
 .navbar .container-fluid {
     padding: 10px;
-    background-color: #002147;
+    background-color: transparent;   
 }
 
 #navbar-oxford-brandmark {
@@ -11,6 +20,9 @@
 .navbar-header a.navbar-brand {
     color: #FFF;
     font-size: 24px;
+}
+.navbar-header a.navbar-brand:hover {
+    color: #CCC;
 }
 
 .navbar-default .navbar-text {
@@ -28,6 +40,27 @@
 
 .navbar-default .navbar-nav>li>a:hover {
     color: #CCC;
+}
+
+.search-form {
+    padding: 0;
+}
+
+.navbar-secondary .navbar-text {
+     color: #666;
+}   
+
+.navbar-secondary .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+    color: #333;
+    background-color: transparent;
+}
+
+.navbar-secondary .navbar-nav>li>a {
+    color: #666;
+}
+
+.navbar-secondary .navbar-nav>li>a:hover {
+    color: #333;
 }
 
 /*These styles are used in the faceted navigation part of the dashboard pages*/
@@ -126,6 +159,9 @@ a.formatting-link:hover {
 .nav-tabs {
     border-bottom: 0;
 }
+.nav-tabs.nav-justified a {
+  white-space: nowrap;
+}
 div.add-to-collections,
 div.manage-lists-buttons {
     display: inline-block;
@@ -157,4 +193,30 @@ div.share-this-links span {
 }
 .active-collection {
     background-color: #E4F0FC;
+}
+
+.teaser-special-message {
+  color: red;
+}
+
+.teaser-speaker {
+  color:black;
+}
+
+@media (max-width: 767px) {
+    #navbar-oxford-brandmark {
+        margin-right: 5px;
+    }
+    .navbar-toggle {    
+        margin-right: 0;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .navbar-brand {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .navbar-header a.navbar-brand {
+        font-size: 20px;
+    }
 }

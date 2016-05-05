@@ -17,11 +17,9 @@
 {% block content %}
 
 {{ event.title_display }}
-{% if editors %}
-    <br>Editor{{ editors|pluralize }}: {% for editor in editors %}
-      {{ editor.username }}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-{% endif %}
+{% if not event.is_published %}
+    <br>Status: This talk is in preparation - details may change
+{% endif %} 
 
 {% if event.special_message %}
     <br>{{ event.special_message }}
@@ -113,4 +111,9 @@
 <br>Audience: 
 {{ event.get_audience_display }}
 
+{% if editors %}
+    <br>Editor{{ editors|pluralize }}: {% for editor in editors %}
+      {{ editor.first_name }} {{ editor.last_name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+{% endif %}
 {% endblock %}

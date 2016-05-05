@@ -18,7 +18,7 @@
 
         <strong>
             {% if show_event_time_only %}
-                {{ event.formatted_time }}
+                {{ event.display_time }}
             {% else %}
                 {% if event.formatted_date %}
                     {{ event.formatted_date }}
@@ -29,23 +29,25 @@
             {% endif %}
         </strong>
 
-        <b><u><a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
-          {% if event.title %}
-            {{ event.title }}
-          {% else %}
-            Untitled talk
-          {% endif %}
-        </a></u></b>
-        {% if event.speakers %}
-            <br>
-            Speaker{{ event.speakers|pluralize }}:
+        <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
+           - <u>{{ event.title_display }}</u>
+        </a>
+        {% if event.special_message %}
+          <br><span class="teaser-special-message">{{ event.special_message }}</span>
+        {% endif %}
+        <br>
+        {% if event.various_speakers %}
+         Various Speakers
+        {% else %}
+             Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
                 {% if speaker.slug %}
-                <b><u><a href="{% url 'show-person' speaker.slug %}">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></u></b>{% if not forloop.last %}, {% endif %}
+                <b><a href="{% url 'show-person' speaker.slug %}" class="teaser-speaker">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></b>{% if not forloop.last %}, {% endif %}
                 {% else %}
                 <!-- Search result -->
                 <b>{{ speaker}}</b>{% if not forloop.last %}, {% endif %}
                 {% endif %}
+            {% empty %} TBA
             {% endfor %}
         {% endif %}
         {% if not is_group_view %}
@@ -55,8 +57,7 @@
             Part of: <a href="{% url 'show-event-group' event.group_slug %}">event.group</a>
         {% else %}
             {% if event.group %}
-              <br>
-              Part of: <a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
+            <br><a href="{{ event.group.get_absolute_url }}"><u>{{ event.group.title }}</u></a>
             {% endif %}
           {% endif %}
         {% endif %}

@@ -1,7 +1,17 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}{{ org.name }}{% endblock %}
 
+{% block extrahead %}
+    <script src="{% static "js/user-collections.js"%}"></script>
+    <script>
+        document.collectionConfig = {
+            saveItemDefault: "{% url "save-item" %}",
+            removeItemDefault: "{% url "remove-item" %}"
+        };
+    </script>
+{% endblock %}
 
 {% block content %}
 
@@ -19,6 +29,11 @@
                 {% include "events/department_plain_text_link.html" %}
                 {% include "events/department_ics_link.html" %}
 
+                {% if editable_collections %}
+                    <div class="add-to-collections">
+                        {% include "users/add_to_collections_widget.html"  with collections=editable_collections item_desc='department' %}
+                    </div>
+                {% endif %}
             </div>
         </h3>
     </div>

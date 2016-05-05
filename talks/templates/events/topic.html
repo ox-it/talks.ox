@@ -7,7 +7,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Topic: 
+        <h3 class="panel-title">Topic:
             {{ topic.prefLabel }}
             <div class="formatting-links pull-right">
                 {% include "events/topic_plain_text_link.html" %}             </div>
@@ -20,7 +20,16 @@
       <i>Sorry, there are currently no talks scheduled for this topic.</i>
     {% endif %}
 
+<div class="panel-footer">
+    {% if show_all %}
+      <strong>Showing all talks in this topic  </strong><a class="btn btn-default navbar-btn" href="{% url 'show-topic' %}?uri={{ topic.uri }}">Show upcoming talks in this topic only</a>
+    {% else %}
+      <strong>Only showing upcoming talks in this topic   </strong><a class="btn btn-default navbar-btn" href="{% url 'show-topic' %}?uri={{ topic.uri }}&show_all=true">Show all talks in this topic</a>
+    {% endif %}
+   </div>
 
 </div>
 
 {% endblock %}
+
+
