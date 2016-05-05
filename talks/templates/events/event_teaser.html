@@ -5,9 +5,9 @@
       
         <div class="pull-right">
           <span style="padding-right: 20px">
-            {% if not event.is_published %}<strong>Status</strong>: This talk is in preparation - details may change{% endif %}
+            {% if not is_search and not event.is_published %}<strong>Status</strong>: This talk is in preparation - details may change{% endif %}
           </span>
-          {% if perms.events.change_event %}
+          {% if not is_search and perms.events.change_event %}
             {% if request.user|can_edit_event:event %}
               <a class="btn btn-default navbar-btn" href="{% url 'edit-event' event.slug %}">Edit</a>
             {% else %}
@@ -20,11 +20,16 @@
             {% if show_event_time_only %}
                 {{ event.display_time }}
             {% else %}
-                {{ event.formatted_date }}
+                {% if event.formatted_date %}
+                    {{ event.formatted_date }}
+                {% else %}
+                    <!-- from search results -->
+                    {{ event.start | date:"D, d M y" }}
+                {% endif %}
             {% endif %}
         </strong>
 
-        <a href="{{ event.get_absolute_url }}" class="list-group-item-heading">
+        <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
            - <u>{{ event.title_display }}</u>
         </a>
         {% if event.special_message %}
@@ -36,13 +41,24 @@
         {% else %}
              Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
+                {% if speaker.slug %}
                 <b><a href="{% url 'show-person' speaker.slug %}" class="teaser-speaker">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></b>{% if not forloop.last %}, {% endif %}
+                {% else %}
+                <!-- Search result -->
+                <b>{{ speaker}}</b>{% if not forloop.last %}, {% endif %}
+                {% endif %}
             {% empty %} TBA
             {% endfor %}
         {% endif %}
         {% if not is_group_view %}
-          {% if event.group %}
+        {% if event.group_slug %}
+            <!-- Search Results -->
+            <br>
+            Part of: <a href="{% url 'show-event-group' event.group_slug %}">event.group</a>
+        {% else %}
+            {% if event.group %}
             <br><a href="{{ event.group.get_absolute_url }}"><u>{{ event.group.title }}</u></a>
+            {% endif %}
           {% endif %}
         {% endif %}
     </div>
