@@ -80,37 +80,25 @@ class EventSerializer(serializers.ModelSerializer):
 
 class HALURICharField(Field):
     def to_representation(self, instance):
-        return {'href': instance}
+        if 'request' in self.context:
+            req = self.context.get('request')
+            url = req.build_absolute_uri(instance)
+        else:
+            url = instance
+        return {'href': url}
 
     def to_internal_value(self, data):
         return None
 
 
 class EventLinksSerializer(serializers.ModelSerializer):
-    self = serializers.SerializerMethodField()
-    talks_page = serializers.SerializerMethodField()
-
-    def get_self(self, obj):
-        if 'request' in self.context:
-            req = self.context.get('request')
-            url = req.build_absolute_uri(obj.get_api_url())
-        else:
-            url = obj.get_api_url()
-        field = HALURICharField()
-        return field.to_representation(url)
-
-    def get_talks_page(self, obj):
-        if 'request' in self.context:
-            req = self.context.get('request')
-            url = req.build_absolute_uri(obj.get_absolute_url())
-        else:
-            url = obj.get_absolute_url()
-        field = HALURICharField()
-        return field.to_representation(url)
-
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    ics = HALURICharField(source='get_ics_url', read_only=True)
+    
     class Meta:
         model = Event
-        fields = ('self', 'talks_page')
+        fields = ('self', 'talks_page', 'ics')
 
 
 class EmbeddedSpeakerSerializer(serializers.ModelSerializer):
@@ -143,13 +131,14 @@ class EmbeddedTopicSerializer(serializers.Serializer):
 class EventEmbedsSerializer(serializers.ModelSerializer):
     speakers = EmbeddedSpeakerSerializer(many=True, read_only=True)
     organisers = EmbeddedSpeakerSerializer(many=True, read_only=True)
+    hosts = EmbeddedSpeakerSerializer(many=True, read_only=True)
     venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
     organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
     topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
 
     class Meta:
         model = Event
-        fields = ('speakers', 'organisers', 'venue', 'organising_department', 'topics', 'various_speakers')
+        fields = ('speakers', 'organisers', 'hosts', 'venue', 'organising_department', 'topics', 'various_speakers')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
@@ -259,10 +248,11 @@ class HALSearchResultSerializer(serializers.Serializer):
 class EventGroupLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
     talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    ics = HALURICharField(source='get_ics_url', read_only=True)
 
     class Meta:
         model = EventGroup
-        fields = ('self', 'talks_page')
+        fields = ('self', 'talks_page', 'ics')
 
 
 class EventGroupEmbedsSerializer(serializers.ModelSerializer):
@@ -276,7 +266,7 @@ class EventGroupEmbedsSerializer(serializers.ModelSerializer):
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date'])
                 
-        serializer = HALEventSerializer(events, many=True, read_only=True)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
         
     class Meta:
@@ -296,10 +286,11 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
 class CollectionLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
     talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    ics = HALURICharField(source='get_ics_url', read_only=True)
 
     class Meta:
         model = Collection
-        fields = ('self', 'talks_page')
+        fields = ('self', 'talks_page', 'ics')
 
 
 class CollectionEmbedsSerializer(serializers.ModelSerializer):
@@ -313,7 +304,7 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date'])
 
-        serializer = HALEventSerializer(events, many=True, read_only=True)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
 
     class Meta:
@@ -322,7 +313,7 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
 
 
 class HALCollectionSerializer(serializers.ModelSerializer):
-    _links = CollectionLinksSerializer(source='*', read_only=True)
+    _links = CollectionLinksSerializer(source='*', read_only=True,)
     _embedded = CollectionEmbedsSerializer(source='*', read_only=True)
 
     class Meta:

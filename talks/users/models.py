@@ -57,6 +57,13 @@ class Collection(models.Model):
 
     def get_absolute_url(self):
         return reverse('view-list', args=[str(self.slug)])
+        
+    def get_api_url(self):
+        return reverse('api-collection', args=[str(self.slug)])
+
+    def get_ics_url(self):
+        return reverse('api-collection-ics', args=[str(self.slug)])
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
