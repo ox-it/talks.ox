@@ -205,6 +205,18 @@ a.formatting-link:hover {
 .nav-tabs.nav-justified {
   padding-bottom: 30px;
 }
+@media (max-width: 767px) {
+  .nav-tabs.nav-justified li {
+    display:table-cell;
+    font-size: 0.9em;
+  }
+  .nav-tabs.nav-justified li a{
+    padding: 5px;
+  }
+  ul.nav-tabs.nav-justified{
+    text-align: -webkit-center;
+  }
+}
 div.add-to-collections,
 div.manage-lists-buttons {
     display: inline-block;

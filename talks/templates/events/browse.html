@@ -61,29 +61,18 @@
               <!--  make the h3s buttons -->
             <div class="visible-xs">
                 <a data-toggle="collapse" href="#collapse-browse" class="btn btn-primary">Browse</a>
+                <!-- these lines make filters and date range tabs expand separately-->
                 <!-- <a data-toggle="collapse" href="#collapse-filters"><h3>Filters</h3></a> -->
-                <!-- this expands both filters and date range tabs -->
-                <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filters</a>
-                <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a>
-            <!-- 
-                <ul class="nav nav-tabs">
-                  <li role="presentation">
-                    <a data-toggle="collapse" href="#collapse-browse" class="btn btn-primary">Browse</a>
-                  </li>
-                  <li role="presentation">
-                    <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filters</a>
-                  </li>
-                  <li role="presentation">
-                    <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a>
-                  </li>
-                </ul>
- -->
+                <!-- <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a> -->
+                <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filter</a>
             </div>
             
             {% include 'events/navigation_for_listing.html' %}
 
 
             <div class="panel-group" data-parent="collapse-menu-group">
+              <h3 class="hidden-xs">Filters</h3>
+
                 <div id="collapse-filters" class="panel-collapse collapse" data-parent="collapse-menu-group">
                   <ul class="nav nav-list well">
                     <form action="{% url 'browse_events' %}" method="get">
@@ -143,11 +132,11 @@
     <div id="collapse-date-range-tabs" class="panel-collapse collapse">
         <ul class="nav nav-tabs nav-justified">
           {% for tab in tab_dates %}
-            <li role="presentation" {% if tab.active %}class="active"{% endif %}>
-              <a href="{{tab.href}}">
-                {{tab.label}}
-              </a>
-            </li>
+              <li role="presentation" {% if tab.active %}class="active"{% endif %}>
+                <a href="{{tab.href}}">
+                  {{tab.label}}
+                </a>
+              </li>
           {% endfor %}
         </ul>
     </div>
