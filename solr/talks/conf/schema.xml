@@ -154,8 +154,6 @@
 
     <field name="topics" type="text_en" indexed="true" stored="true" multiValued="true"  />
 
-    <field name="published" type="boolean" indexed="true" stored="true" multiValued="false"  />
-
     <field name="suggestions" type="textSpell" indexed="true" stored="false" multiValued="true" omitTermFreqAndPositions="true" />
 
     <field name="lists" type="text_en" indexed="true" stored="true" multiValued="true"  />
@@ -165,6 +163,8 @@
     <field name="topics_exact" type="string" indexed="true" stored="true" multiValued="true"  />
 
     <field name="group_exact" type="string" indexed="true" stored="true" multiValued="false"  />
+
+    <field name="is_cancelled" type="boolean" indexed="true" stored="true" multiValued="false"  />
 
     <field name="lists_exact" type="string" indexed="true" stored="true" multiValued="true"  />
 
@@ -188,7 +188,10 @@
 
     <field name="department" type="text_en" indexed="true" stored="true" multiValued="false"  />
 
+    <field name="is_published" type="boolean" indexed="true" stored="true" multiValued="false"  />
+
 
   <!-- field to use to determine and enforce document uniqueness. -->
   <uniqueKey>id</uniqueKey>
 </schema>
+
