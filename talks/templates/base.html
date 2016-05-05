@@ -104,7 +104,8 @@
                            <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li {% if '/user/lists' in request.path  %} class="active" {% endif %}><a href="{{ manage_lists }}"><span class="glyphicon glyphicon-list-alt"></span> Manage Collections</a></li>
-                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                                <li {% if '/user/mytalks' in request.path  %} class="active" {% endif %}><a href="{% url 'my-talks' %}"><span class="glyphicon glyphicon-list-alt"></span> My Talks</a></li>
+                                <li><a href="{% url 'logout' %}">Logout</a></li>
                             </ul>
                         </li>
                          {% else %}
