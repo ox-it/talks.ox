@@ -34,6 +34,10 @@
     background-color: transparent;
 }
 
+.navbar-default .navbar-nav>li>a {
+    color: #AAA;
+}
+
 .navbar-form {
   border-top: 0px;
 }
