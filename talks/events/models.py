@@ -118,6 +118,9 @@ class EventGroup(models.Model):
     def get_api_url(self):
         return reverse('api-event-group', args=[self.slug])
 
+    def get_ics_url(self):
+        return reverse('api-event-group-ics', args=[self.slug])
+
     @property
     def description_html(self):
         return textile_restricted(self.description, auto_link=True, lite=False)
@@ -359,6 +362,9 @@ class Event(models.Model):
 
     def get_api_url(self):
         return reverse('event-detail', args=[str(self.slug)])
+
+    def get_ics_url(self):
+        return reverse('event-detail-ics', args=[str(self.slug)])
 
     def formatted_date(self):
         if self.start:

@@ -3,6 +3,9 @@ Custom search view, includes our custom dynamic faceting
 """
 
 from haystack.views import FacetedSearchView
+from datetime import datetime
+
+from talks.events.views import group_events
 
 
 class StartDateFacetItem(object):
@@ -56,4 +59,30 @@ class SearchView(FacetedSearchView):
 
             extra['facet_date'] = ordered_dates
 
+
+        return extra
+
+class SearchUpcomingView(SearchView):
+    
+    def extra_context(self):
+        extra = super(SearchUpcomingView, self).extra_context()
+        
+        extra['top_results'] = self.get_results()[:5]
+        now = datetime.now()
+        extra['future_results'] = self.get_results().filter(start__gte=now).order_by('start')
+
+        # return all top results and future_results. These will be displayed on a single page.
+        
+        extra['grouped_future_results'] = group_events(extra['future_results'])
+        
+        return extra
+        
+class SearchPastView(SearchView):
+
+    def extra_context(self):
+        extra = super(SearchPastView, self).extra_context()
+        
+        # pass all past events, grouped by date
+        extra['grouped_past_results'] = group_events(self.get_results())
+        
         return extra
