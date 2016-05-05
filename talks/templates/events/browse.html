@@ -18,7 +18,29 @@
 <link href="{% static "css/typeahead.css"%}" rel="stylesheet">
 
 <script src="{% static "js/form-controls.js"%}"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.panel-collapse').on('hide.bs.collapse', function (ev) {
+      if ($(window).width() > 767) {
+        ev.preventDefault();
+      }
+    })
+    toggleCollapsible();
+  });
 
+  $(window).resize(function(){
+    toggleCollapsible();
+  });
+  
+  function toggleCollapsible(){
+    if ($(window).width() >= 767){  
+      $('.panel-collapse').addClass('in');
+    }
+    if ($(window).width() <= 767){  
+      $('.panel-collapse').removeClass('in');
+    }
+  }
+</script>
 {% endblock %}
 
 
@@ -36,46 +58,55 @@
             {% include 'events/navigation_for_listing.html' %}
 
 
-      <h3>Filters</h3>
-      <ul class="nav nav-list well">
-        <form action="{% url 'browse_events' %}" method="get">
-            {{ browse_events_form.start_date | bootstrap }}
-            <a id="clear-datepicker" class="pull-right" href="#">clear</a>
-            {{ browse_events_form.to | bootstrap }}
-            {{ browse_events_form.organising_department | bootstrap }}
-            {{ browse_events_form.include_subdepartments | bootstrap }}
-            {{ browse_events_form.seriesid | bootstrap }}
-            {{ browse_events_form.venue | bootstrap }}
+            <div class="panel-group">
+                  <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse1"><h3>Filters</h3></a>
+                  </h4>
+                <div id="collapse1" class="panel-collapse collapse">
+                  <ul class="nav nav-list well">
+                    <form action="{% url 'browse_events' %}" method="get">
+                        {{ browse_events_form.start_date | bootstrap }}
+                        <a id="clear-datepicker" class="pull-right" href="#">clear</a>
+                        {{ browse_events_form.to | bootstrap }}
+                        {{ browse_events_form.organising_department | bootstrap }}
+                        {{ browse_events_form.include_subdepartments | bootstrap }}
+                        {{ browse_events_form.seriesid | bootstrap }}
+                        {{ browse_events_form.venue | bootstrap }}
 
-            <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
-            <button type="submit" class="btn btn-primary pull-right">Submit</button>
-        </form>
+                        <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
+                        <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                    </form>
 
-        <script type="text/javascript">
-          
-          
-          
-          $(document).ready(function(){
-            
-            $('#clear-datepicker').click(function(e){
-              $('#to').data("DateTimePicker").clear();  
-            });
-            
-            $('.js-datetimepicker').datetimepicker({
-              format : 'YYYY-MM-DD',
-              allowInputToggle : true
-            }).each(function(i,v){
-              $(v).data("DateTimePicker").ignoreReadonly(true);  
-            });
-            
-            $('#start_date').on('dp.change', function(e){
-              $('#to').data('DateTimePicker').minDate(e.date);
-            });
-            
-          });
-        </script>
+                    <script type="text/javascript">
+                      $(document).ready(function(){
+                        
+                        $('#clear-datepicker').click(function(e){
+                          $('#to').data("DateTimePicker").clear();  
+                        });
+                        
+                        $('.js-datetimepicker').datetimepicker({
+                          format : 'YYYY-MM-DD',
+                          allowInputToggle : true
+                        }).each(function(i,v){
+                          $(v).data("DateTimePicker").ignoreReadonly(true);  
+                        });
+                        
+                        $('#start_date').on('dp.change', function(e){
+                          $('#to').data('DateTimePicker').minDate(e.date);
+                        });
+                        
+                      });
+                    </script>
 
-      </ul>
+                  </ul>
+                </div>
+              </div>
+
+
+      
+
+
+
     </div>
 
   </div>
