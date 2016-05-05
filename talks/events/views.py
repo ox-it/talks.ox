@@ -175,9 +175,12 @@ def group_events (events):
             minutes = ""
         ampm = datetime.strftime(group_event.start, '%p')
         group_event.display_time = str(int(hours))+minutes+ampm.lower()
-        comps = group_event.oxford_date.components
-        key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
-        key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
+        if group_event.oxford_date:
+            comps = group_event.oxford_date.components
+            key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
+            key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
+        else:
+            key = datetime.strftime(group_event.start, '%I %M %p')
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
