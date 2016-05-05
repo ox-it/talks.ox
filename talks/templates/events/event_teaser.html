@@ -32,7 +32,7 @@
         {% if event.special_message %}
           <br><span class="teaser-special-message">{{ event.special_message }}</span>
         {% endif %}
-        {% if event.status and not event.is_published and not event.is_cancelled %}
+        {% if not event.is_published and not event.is_cancelled %}
           <br /><span class='in_preparation_teaser'><strong>Status</strong>: This talk is in preparation - details may change</span>
         {% elif event.is_cancelled %}
           <br /><span class='cancelled_teaser'><strong>Status</strong>: This talk has been cancelled</span><!-- RB 4/5/16 added text to show when an event has been cancelled-->

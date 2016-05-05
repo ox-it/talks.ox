@@ -180,7 +180,7 @@ def group_events (events):
             key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
             key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
         else:
-            key = datetime.strftime(group_event.start, '%I %M %p')
+            key = datetime.strftime(group_event.start, '%A, %d %B %Y')
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
