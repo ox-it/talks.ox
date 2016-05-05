@@ -34,6 +34,14 @@
     background-color: transparent;
 }
 
+.navbar-form .btn-default {
+  float: right;
+}
+
+.navbar-form #id_q {
+  width: 100%; 
+}
+
 .nav-list>li>a {
     padding: 11px 0px;
 }
