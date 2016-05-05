@@ -79,8 +79,8 @@
                             </ul>
                             <form class="navbar-form navbar-right search-form" role="search" method="get" action="{% url 'haystack_search' %}">
                               <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                              <div style="overflow: hidden; padding-right: .5em;" class="form-group">
-                                 <input id="id_q" name="q" type="text" class="form-control" style="width: 100%;" placeholder="Search" value="{% block search_query %}{% endblock search_query %}"/>
+                              <div class="form-group">
+                                 <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" value="{% block search_query %}{% endblock search_query %}"/>
                               </div>​
 
                             </form>

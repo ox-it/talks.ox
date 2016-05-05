@@ -34,12 +34,22 @@
     background-color: transparent;
 }
 
+.navbar-form {
+  border-top: 0px;
+}
+
+
 .navbar-form .btn-default {
   float: right;
 }
 
 .navbar-form #id_q {
   width: 100%; 
+}
+
+.navbar-form .form-group {
+  overflow: hidden;
+  padding-right: .2em;
 }
 
 .nav-list>li>a {
