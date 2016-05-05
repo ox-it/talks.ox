@@ -25,14 +25,18 @@
         ev.preventDefault();
       }
     })
-    toggleCollapsible();
+    $('.panel-collapse').on('show.bs.collapse', function (ev) {
+      $('.panel-collapse').removeClass('in');
+    })
+
+    showCollapsible();
   });
 
   $(window).resize(function(){
-    toggleCollapsible();
+    showCollapsible();
   });
   
-  function toggleCollapsible(){
+  function showCollapsible(){
     if ($(window).width() >= 767){  
       $('.panel-collapse').addClass('in');
     }
@@ -54,15 +58,33 @@
   <div class="row">
     <div class="col-sm-3 col-xs-12">
             
+              <!--  make the h3s buttons -->
+            <div class="visible-xs">
+                <a data-toggle="collapse" href="#collapse-browse" class="btn btn-primary">Browse</a>
+                <!-- <a data-toggle="collapse" href="#collapse-filters"><h3>Filters</h3></a> -->
+                <!-- this expands both filters and date range tabs -->
+                <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filters</a>
+                <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a>
+            <!-- 
+                <ul class="nav nav-tabs">
+                  <li role="presentation">
+                    <a data-toggle="collapse" href="#collapse-browse" class="btn btn-primary">Browse</a>
+                  </li>
+                  <li role="presentation">
+                    <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filters</a>
+                  </li>
+                  <li role="presentation">
+                    <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a>
+                  </li>
+                </ul>
+ -->
+            </div>
             
             {% include 'events/navigation_for_listing.html' %}
 
 
-            <div class="panel-group">
-                  <h4 class="panel-title">
-                    <a data-toggle="collapse" href="#collapse1"><h3>Filters</h3></a>
-                  </h4>
-                <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-group" data-parent="collapse-menu-group">
+                <div id="collapse-filters" class="panel-collapse collapse" data-parent="collapse-menu-group">
                   <ul class="nav nav-list well">
                     <form action="{% url 'browse_events' %}" method="get">
                         {{ browse_events_form.start_date | bootstrap }}
@@ -117,16 +139,19 @@
 
 {% block main %}
 
-
-<ul class="nav nav-tabs nav-justified">
-  {% for tab in tab_dates %}
-    <li role="presentation" {% if tab.active %}class="active"{% endif %}>
-      <a href="{{tab.href}}">
-        {{tab.label}}
-      </a>
-    </li>
-  {% endfor %}
-</ul>
+<div class="panel-group">
+    <div id="collapse-date-range-tabs" class="panel-collapse collapse">
+        <ul class="nav nav-tabs nav-justified">
+          {% for tab in tab_dates %}
+            <li role="presentation" {% if tab.active %}class="active"{% endif %}>
+              <a href="{{tab.href}}">
+                {{tab.label}}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
 
 <div class="js-upcoming-events">
     {% if grouped_events %}
