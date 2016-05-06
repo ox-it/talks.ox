@@ -204,7 +204,7 @@ class Person(models.Model):
 
     @property
     def speaker_events(self):
-        events = Event.published.filter(personevent__role=ROLES_SPEAKER,
+        events = Event.objects.filter(personevent__role=ROLES_SPEAKER,
                                         personevent__person__slug=self.slug)
         return events
 
@@ -258,7 +258,7 @@ class Event(models.Model):
     cost = models.TextField(blank=True, default='', verbose_name="Cost", help_text="If applicable")
     status = models.TextField(verbose_name="Status",
                               choices=EVENT_STATUS_CHOICES,
-                              default=EVENT_IN_PREPARATION)
+                              default=EVENT_PUBLISHED)
     # embargo: used by administrators to block a talk from being published
     embargo = models.BooleanField(default=False,
                                   verbose_name="Embargo")
