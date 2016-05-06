@@ -197,6 +197,12 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
 
+    def get_api_url(self):
+        return reverse('api-person', args=[str(self.slug)])
+
+    def get_ics_url(self):
+        return reverse('api-person-ics', args=[str(self.slug)])
+        
     # @property
     # def surname(self):
     #     # Attempt to extract the surname as the last word of the name. This will be used for sorting on
@@ -208,6 +214,17 @@ class Person(models.Model):
                                         personevent__person__slug=self.slug)
         return events
 
+    @property
+    def hosting_events(self):
+        events = Event.objects.filter(personevent__role=ROLES_HOST,
+                                        personevent__person__slug=self.slug)
+        return events
+    
+    @property
+    def organising_events(self):
+        events = Event.objects.filter(personevent__role=ROLES_ORGANISER,
+                                        personevent__person__slug=self.slug)    
+        return events
 
 class TopicItem(models.Model):
 
