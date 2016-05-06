@@ -24,7 +24,7 @@ def homepage(request):
 
     today = date.today()
     tomorrow = today + timedelta(days=1)
-    events = Event.published.filter(start__gte=today,
+    events = Event.objects.filter(start__gte=today,
                                     start__lt=tomorrow).order_by('start')
     event_groups = EventGroup.objects.for_events(events)
     conferences = filter(lambda eg: eg.group_type == EventGroup.CONFERENCE,
@@ -209,23 +209,23 @@ def date_to_oxford_date(date_str):
 
 def upcoming_events(request):
     today = date.today()
-    events = Event.published.filter(start__gte=today).order_by('start')
+    events = Event.objects.filter(start__gte=today).order_by('start')
     return _events_list(request, events)
 
 
 def events_for_year(request, year):
-    events = Event.published.filter(start__year=year)
+    events = Event.objects.filter(start__year=year)
     return _events_list(request, events)
 
 
 def events_for_month(request, year, month):
-    events = Event.published.filter(start__year=year,
+    events = Event.objects.filter(start__year=year,
                                     start__month=month)
     return _events_list(request, events)
 
 
 def events_for_day(request, year, month, day):
-    events = Event.published.filter(start__year=year,
+    events = Event.objects.filter(start__year=year,
                                     start__month=month,
                                     start__day=day)
     return _events_list(request, events)
@@ -314,10 +314,7 @@ def show_event_group(request, event_group_slug):
 def show_person(request, person_slug):
     person = get_object_or_404(Person, slug=person_slug)
 
-    if request.user.has_perm('events.change_person'):
-        events = Event.objects.order_by('start')
-    else:
-        events = Event.published.order_by('start')
+    events = Event.objects.order_by('start')
 
     host_events = events.filter(personevent__role=ROLES_HOST, personevent__person__slug=person.slug)
     speaker_events = events.filter(personevent__role=ROLES_SPEAKER, personevent__person__slug=person.slug)
@@ -368,7 +365,7 @@ def list_topics(request):
     topics_results = []
 
     for topic in topics.all():
-        events = Event.published.filter(topics__uri=topic.uri)
+        events = Event.objects.filter(topics__uri=topic.uri)
         if(len(events)>0):
             api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
             if api_topic not in topics_results:
@@ -382,7 +379,7 @@ def list_topics(request):
 
 def show_department_organiser(request, org_id):
     org = DEPARTMENT_DATA_SOURCE.get_object_by_id(org_id)
-    events = Event.published.filter(department_organiser=org_id).order_by('start')
+    events = Event.objects.filter(department_organiser=org_id).order_by('start')
 
     show_all = request.GET.get('show_all', False)
     if not show_all:
