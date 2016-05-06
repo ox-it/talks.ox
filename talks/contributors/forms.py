@@ -167,6 +167,7 @@ class EventForm(forms.ModelForm):
     special_message = XMLFriendlyTextField(
         required=False,
         label="Special message",
+        widget=forms.Textarea(attrs={'rows': 2}),
         help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue"
     )
 
