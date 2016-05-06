@@ -146,6 +146,16 @@ class TestAPI(TestCase):
         )
         ti.save()
         future_event.save()
+        
+        collectedItemCt = ContentType.objects.get_for_model(models.CollectedDepartment)
+        collectedDep = factories.CollectedDepartmentFactory.create(
+            department=self.department1
+        )
+        collectionItem = factories.CollectionItemFactory.create(
+            collection=collection1,
+            content_type=collectedItemCt,
+            object_id=collectedDep.id
+        )
         self.req_factory = APIRequestFactory()
         self.client = APIClient()
 
@@ -183,6 +193,9 @@ class TestAPI(TestCase):
         self.assertContains(response, "IT talks collection")
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
+        # should return a talk organised by department 1
+        self.assertContains(response, "A future event")
+        self.assertNotContains(response, "A past event")
 
     def test_retrieve_collection_invalid(self):
         response = self.client.get('/api/collections/id/foo')
