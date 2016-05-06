@@ -266,7 +266,7 @@ class EventGroupEmbedsSerializer(serializers.ModelSerializer):
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
-                events = events.filter(end__lte=self.context['to-date'])
+                events = events.filter(end__lte=self.context['to-date']+timedelta(1))
                 
         serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
