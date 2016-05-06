@@ -19,7 +19,8 @@ from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
 from talks.users.models import Collection, TalksUserCollection, CollectedDepartment, COLLECTION_ROLES_READER
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
                                    CollectionItemSerializer, TalksUserCollectionSerializer, get_item_serializer, HALEventSerializer,
-                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer)
+                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer,
+                                   HALPersonSerializer)
 from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
 from talks.core.utils import parse_date
@@ -33,6 +34,7 @@ class IsSuperuserOrContributor(permissions.BasePermission):
     """
     def has_permission(self, request, view):
         return user_in_group_or_super(request.user)
+
 
 
 # These views are typically used by ajax
@@ -296,6 +298,24 @@ def unsubscribe_from_list(request):
         return Response({'error': "Failed to unsubscribe from collection"},
                         status=status.HTTP_404_NOT_FOUND)
 
+
+@api_view(["GET"])
+def api_person(request, person_slug):
+    """Get events associated with a person
+    """
+    from_date = parse_date(request.GET.get('from', ''))
+    to_date = parse_date(request.GET.get('to', ''))
+    try:
+        person = Person.objects.get(slug=person_slug)
+        if from_date or to_date:
+            serializer = HALPersonSerializer(person, context={'request': request, 'from-date': from_date, 'to-date': to_date})
+        else:
+            serializer = HALPersonSerializer(person, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except ObjectDoesNotExist:
+        return Response({'error': "Person not found"},
+                        status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["GET"])
 @renderer_classes((ICalRenderer,))

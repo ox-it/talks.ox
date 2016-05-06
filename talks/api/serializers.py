@@ -284,6 +284,43 @@ class HALEventGroupSerializer(serializers.ModelSerializer):
         model = EventGroup
         fields = ('_links', 'id', 'title', 'description', 'occurence', '_embedded')
 
+class PersonLinksSerializer(serializers.ModelSerializer):
+    self = HALURICharField(source='get_api_url', read_only=True)
+    talks_page = HALURICharField(source='get_absolute_url', read_only=True)
+    ics = HALURICharField(source='get_ics_url', read_only=True)
+    
+    class Meta:
+        model = Person
+        field = ('self', 'talks_page', 'ics')
+
+
+class PersonEmbedsSerializer(serializers.ModelSerializer):
+    speaker_talks = serializers.SerializerMethodField()
+    
+    def get_speaker_talks(self, obj):
+        events = obj.speaker_events
+        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+            if self.context['from-date']:
+                events = events.filter(start__gte=self.context['from-date'])
+            if self.context['to-date']:
+                events = events.filter(end__lte=self.context['to-date']+timedelta(1))
+        
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
+        return serializer.data
+    
+    class Meta:
+        model = Person
+        fields = ('speaker_talks',)
+
+
+class HALPersonSerializer(serializers.ModelSerializer):
+    _links = PersonLinksSerializer(source='*', read_only=True)
+    _embedded = PersonEmbedsSerializer(source='*', read_only=True)
+    
+    class Meta:
+        model = Person
+        fields = ('_links', 'slug', 'name', 'bio', 'email_address', 'web_address', '_embedded')
+
 
 class CollectionLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)

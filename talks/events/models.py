@@ -197,6 +197,12 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('show-person', args=[self.slug])
 
+    def get_api_url(self):
+        return reverse('api-person', args=[str(self.slug)])
+
+    # def get_ics_url(self):
+    #     return reverse('event-detail-ics', args=[str(self.slug)])
+        
     # @property
     # def surname(self):
     #     # Attempt to extract the surname as the last word of the name. This will be used for sorting on

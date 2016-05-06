@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from .views import (api_event_search_hal, api_event_search_ics, api_event_get, api_event_get_ics,
                     api_event_group, get_event_group, suggest_event_group, api_event_group_ics,
-                    suggest_user, suggest_user_by_complete_email_address, suggest_person, api_create_person,
+                    suggest_user, suggest_user_by_complete_email_address, api_person, suggest_person, api_create_person,
                     save_item, remove_item, subscribe_to_list, unsubscribe_from_list, api_collection, api_collection_ics)
 
 
@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^user/suggest/exact$', suggest_user_by_complete_email_address, name='api-user-suggest-exact'),
     url(r'^persons/new$', api_create_person, name='api-person-create'),
     url(r'^persons/suggest$', suggest_person, name='api-person-suggest'),
+    url(r'^person/(?P<person_slug>[^/]+)', api_person, name='api-person'),
     url(r'^collections/add-item$', save_item, name="save-item"),
     url(r'^collections/remove-item$', remove_item, name="remove-item"),
     url(r'^collections/subscribe$', subscribe_to_list, name="subscribe-to-list"),
@@ -26,4 +27,3 @@ urlpatterns = patterns('',
     url(r'^collections/id/(?P<collection_slug>[^/]+).ics', api_collection_ics, name='api-collection-ics'),
     url(r'^collections/id/(?P<collection_slug>[^/]+)', api_collection, name='api-collection'),
 )
-
