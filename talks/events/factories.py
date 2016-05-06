@@ -3,11 +3,16 @@ from datetime import datetime
 import factory
 
 from . import models
+from talks.users.models import Collection
 
 
 class EventGroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.EventGroup
+
+class EventCollectionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Collection
 
 
 class EventFactory(factory.django.DjangoModelFactory):

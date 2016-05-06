@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test.testcases import TestCase
 from rest_framework.test import APIRequestFactory, APIClient
 from talks.events import factories, models
+from talks.users import models
 from talks.events.models import EVENT_PUBLISHED, PersonEvent, ROLES_SPEAKER
 from django.conf import settings
 
@@ -48,12 +49,14 @@ class TestAPI(TestCase):
     def setUp(self):
         self.event1_slug = "future-event"
         self.group1_slug = "talks-conference"
+        self.collection1_slug = "it-collection"
         self.speaker1_slug = "james-bond"
         self.location1 = "oxpoints:40002001"
+        self.location_details1 = "First floor"
         self.department1 = "oxpoints:23232503"  # Chemical Biology
         self.super_department = "oxpoints:23232546"  # Department of Chemistry
         self.topic1_uri = "http://id.worldcat.org/fast/1429860"
-        # create some sample events and series
+        # create some sample events, series and collections
         person1 = factories.PersonFactory.create(
             name="James Bond",
             bio="Secret Agent",
@@ -75,6 +78,17 @@ class TestAPI(TestCase):
             description="a seminar",
             group_type='Seminar Series'
         )
+        collection1 = factories.EventCollectionFactory.create(
+            title="IT talks collection",
+            slug=self.collection1_slug,
+            description="a collection of IT talks",
+            public=True,
+        )
+        collection2 = factories.EventCollectionFactory.create(
+            title="My second collection",
+            slug="my-second-collection",
+            description="second collection",
+        )
         future_event = factories.EventFactory.create(
             title="A future event",
             slug=self.event1_slug,
@@ -83,6 +97,7 @@ class TestAPI(TestCase):
             end=FUTURE_DATE_STRING,
             status=EVENT_PUBLISHED,
             location=self.location1,
+            location_details=self.location_details1,
             department_organiser=self.department1,
             group=group1,
         )
@@ -123,6 +138,8 @@ class TestAPI(TestCase):
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
         self.assertContains(response, "A future event")
+        self.assertContains(response, "James Bond")
+        self.assertContains(response, "First floor")
 
     def test_retrieve_event_404(self):
         response = self.client.get('/api/talks/foo')
@@ -139,6 +156,18 @@ class TestAPI(TestCase):
 
     def test_retrieve_series_invalid(self):
         response = self.client.get('/api/series/foo/')
+        self.assertEquals(response.status_code, 404)
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_retrieve_collection_happy(self, requests_get):
+        response = self.client.get('/api/collections/id/' + self.collection1_slug)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "IT talks collection")
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+
+    def test_retrieve_collection_invalid(self):
+        response = self.client.get('/api/collections/id/foo')
         self.assertEquals(response.status_code, 404)
 
     def test_search_no_results(self):
