@@ -26,8 +26,8 @@
             {% endif %}
         </strong>
 
-        <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading">
-           - <u>{% if event.title_display %}{{ event.title_display }}{% else %}{{ event.title }}{% endif %}</u>
+        <a href="{% url 'show-event' event.slug %}" class="list-group-item-heading teaser-talk-title">
+           - <b>{% if event.title_display %}{{ event.title_display }}{% else %}{{ event.title }}{% endif %}</b>
         </a>
         {% if event.special_message %}
           <br><span class="teaser-special-message">{{ event.special_message }}</span>
@@ -41,10 +41,9 @@
         {% if event.various_speakers %}
          Various Speakers
         {% else %}
-             Speaker{{ event.speakers|pluralize }}:
             {% for speaker in event.speakers %}
                 {% if speaker.slug %}
-                <b><a href="{% url 'show-person' speaker.slug %}" class="teaser-speaker">{{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a></b>{% if not forloop.last %}, {% endif %}
+                <a href="{% url 'show-person' speaker.slug %}" class="teaser-speaker"><b>{{ speaker.name}}</b>{% if speaker.bio %} ({{ speaker.bio }}){% endif %}</a>{% if not forloop.last %}, {% endif %}
                 {% else %}
                 <!-- Search result -->
                 <b>{{ speaker}}</b>{% if not forloop.last %}, {% endif %}
@@ -59,7 +58,7 @@
             Part of: <a href="{% url 'show-event-group' event.group_slug %}">{{event.group}}</a>
         {% else %}
             {% if event.group %}
-            <br><a href="{{ event.group.get_absolute_url }}"><u>{{ event.group.title }}</u></a>
+            <br><a href="{{ event.group.get_absolute_url }}">{{ event.group.title }}</a>
             {% endif %}
           {% endif %}
         {% endif %}

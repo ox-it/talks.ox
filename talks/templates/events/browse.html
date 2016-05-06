@@ -18,7 +18,28 @@
 <link href="{% static "css/typeahead.css"%}" rel="stylesheet">
 
 <script src="{% static "js/form-controls.js"%}"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.panel-collapse').on('show.bs.collapse', function (ev) {
+      $('.panel-collapse').removeClass('in');
+    })
 
+    showCollapsible();
+  });
+
+  $(window).resize(function(){
+    showCollapsible();
+  });
+  
+  function showCollapsible(){
+    if ($(window).width() >= 767){  
+      $('.panel-collapse').addClass('in');
+    }
+    if ($(window).width() <= 767){  
+      $('.panel-collapse').removeClass('in');
+    }
+  }
+</script>
 {% endblock %}
 
 
@@ -32,50 +53,65 @@
   <div class="row">
     <div class="col-sm-3 col-xs-12">
             
+            <div class="visible-xs">
+                <a data-toggle="collapse" href="#collapse-browse" class="btn btn-primary">Browse</a>
+                <!-- these lines make filters and date range tabs expand separately-->
+                <!-- <a data-toggle="collapse" href="#collapse-filters"><h3>Filters</h3></a> -->
+                <!-- <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a> -->
+                <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filter</a>
+            </div>
             
             {% include 'events/navigation_for_listing.html' %}
 
 
-      <h3>Filters</h3>
-      <ul class="nav nav-list well">
-        <form action="{% url 'browse_events' %}" method="get">
-            {{ browse_events_form.start_date | bootstrap }}
-            <a id="clear-datepicker" class="pull-right" href="#">clear</a>
-            {{ browse_events_form.to | bootstrap }}
-            {{ browse_events_form.organising_department | bootstrap }}
-            {{ browse_events_form.include_subdepartments | bootstrap }}
-            {{ browse_events_form.seriesid | bootstrap }}
-            {{ browse_events_form.venue | bootstrap }}
+            <div class="panel-group" data-parent="collapse-menu-group">
+              <h3 class="hidden-xs">Filters</h3>
 
-            <a href="{% url 'browse_events' %}" class="btn btn-default pull-left">Reset Filters</a>
-            <button type="submit" class="btn btn-primary pull-right">Submit</button>
-        </form>
+                <div id="collapse-filters" class="panel-collapse collapse" data-parent="collapse-menu-group">
+                  <ul class="nav nav-list well">
+                    <form action="{% url 'browse_events' %}" method="get">
+                        {{ browse_events_form.start_date | bootstrap }}
+                        <a id="clear-datepicker" class="pull-right" href="#">clear</a>
+                        {{ browse_events_form.to | bootstrap }}
+                        {{ browse_events_form.organising_department | bootstrap }}
+                        {{ browse_events_form.include_subdepartments | bootstrap }}
+                        {{ browse_events_form.seriesid | bootstrap }}
+                        {{ browse_events_form.venue | bootstrap }}
 
-        <script type="text/javascript">
-          
-          
-          
-          $(document).ready(function(){
-            
-            $('#clear-datepicker').click(function(e){
-              $('#to').data("DateTimePicker").clear();  
-            });
-            
-            $('.js-datetimepicker').datetimepicker({
-              format : 'YYYY-MM-DD',
-              allowInputToggle : true
-            }).each(function(i,v){
-              $(v).data("DateTimePicker").ignoreReadonly(true);  
-            });
-            
-            $('#start_date').on('dp.change', function(e){
-              $('#to').data('DateTimePicker').minDate(e.date);
-            });
-            
-          });
-        </script>
+                        <a href="{% url 'browse_events' %}" class="btn btn-default pull-left resp-width">Reset Filters</a>
+                        <button type="submit" class="btn btn-primary pull-right resp-width">Submit</button>
+                    </form>
 
-      </ul>
+                    <script type="text/javascript">
+                      $(document).ready(function(){
+                        
+                        $('#clear-datepicker').click(function(e){
+                          $('#to').data("DateTimePicker").clear();  
+                        });
+                        
+                        $('.js-datetimepicker').datetimepicker({
+                          format : 'YYYY-MM-DD',
+                          allowInputToggle : true
+                        }).each(function(i,v){
+                          $(v).data("DateTimePicker").ignoreReadonly(true);  
+                        });
+                        
+                        $('#start_date').on('dp.change', function(e){
+                          $('#to').data('DateTimePicker').minDate(e.date);
+                        });
+                        
+                      });
+                    </script>
+
+                  </ul>
+                </div>
+              </div>
+
+
+      
+
+
+
     </div>
 
   </div>
@@ -86,16 +122,19 @@
 
 {% block main %}
 
-
-<ul class="nav nav-tabs nav-justified">
-  {% for tab in tab_dates %}
-    <li role="presentation" {% if tab.active %}class="active"{% endif %}>
-      <a href="{{tab.href}}">
-        {{tab.label}}
-      </a>
-    </li>
-  {% endfor %}
-</ul>
+<div class="panel-group">
+    <div id="collapse-date-range-tabs" class="panel-collapse collapse">
+        <ul class="nav nav-tabs nav-justified">
+          {% for tab in tab_dates %}
+              <li role="presentation" {% if tab.active %}class="active"{% endif %}>
+                <a href="{{tab.href}}">
+                  {{tab.label}}
+                </a>
+              </li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
 
 <div class="js-upcoming-events">
     {% if grouped_events %}
