@@ -296,21 +296,35 @@ class PersonLinksSerializer(serializers.ModelSerializer):
 
 class PersonEmbedsSerializer(serializers.ModelSerializer):
     speaker_talks = serializers.SerializerMethodField()
+    hosting_talks = serializers.SerializerMethodField()
+    organising_talks = serializers.SerializerMethodField()
     
     def get_speaker_talks(self, obj):
-        events = obj.speaker_events
+        events = self.filterEvents(obj.speaker_events)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
+        return serializer.data
+    
+    def get_hosting_talks(self, obj):
+        events = self.filterEvents(obj.hosting_events)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
+        return serializer.data
+    
+    def get_organising_talks(self, obj):
+        events = self.filterEvents(obj.organising_events)
+        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
+        return serializer.data
+
+    def filterEvents(self, events):
         if self.context.has_key('from-date') or self.context.has_key('to-date'):
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date']+timedelta(1))
-        
-        serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
-        return serializer.data
+        return events
     
     class Meta:
         model = Person
-        fields = ('speaker_talks',)
+        fields = ('speaker_talks', 'hosting_talks', 'organising_talks')
 
 
 class HALPersonSerializer(serializers.ModelSerializer):

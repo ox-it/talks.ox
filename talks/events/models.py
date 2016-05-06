@@ -210,10 +210,21 @@ class Person(models.Model):
 
     @property
     def speaker_events(self):
-        events = Event.published.filter(personevent__role=ROLES_SPEAKER,
+        events = Event.objects.filter(personevent__role=ROLES_SPEAKER,
                                         personevent__person__slug=self.slug)
         return events
 
+    @property
+    def hosting_events(self):
+        events = Event.objects.filter(personevent__role=ROLES_HOST,
+                                        personevent__person__slug=self.slug)
+        return events
+    
+    @property
+    def organising_events(self):
+        events = Event.objects.filter(personevent__role=ROLES_ORGANISER,
+                                        personevent__person__slug=self.slug)    
+        return events
 
 class TopicItem(models.Model):
 
