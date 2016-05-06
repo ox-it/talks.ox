@@ -24,7 +24,7 @@ def parse_date(date_param):
             from_date = datetime.strptime(date_param, "%d/%m/%y")
         except Exception as e:
             try:
-                from_date = datetime.strptime(date_param, "%d/%m/%y")
+                from_date = datetime.strptime(date_param, "%d/%m/%Y")
             except Exception as e:
                 try:
                     from_date = datetime.strptime(date_param, "%Y-%m-%d")

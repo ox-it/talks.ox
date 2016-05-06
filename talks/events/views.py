@@ -60,7 +60,7 @@ def browse_events(request):
     modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
-        modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
+        modified_request_parameters['start_date'] = today.strftime("%d/%m/%Y")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
