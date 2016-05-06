@@ -128,12 +128,18 @@ class Collection(models.Model):
                                              ).values_list('object_id')
         collectedDepartmentIDs = self.collectionitem_set.filter(content_type=ContentType.objects.get_for_model(CollectedDepartment)
                                              ).values_list('object_id')
+
         events = Event.objects.filter(id__in=itertools.chain.from_iterable(eventIDs))
+                
         eventsInEventGroups = Event.objects.filter(group=eventGroupIDs)
                 
-        departments = CollectedDepartment.objects.filter(id__in=itertools.chain.from_iterable(collectedDepartmentIDs)).values('department')
+        # get all department ids
+        from talks.api.services import get_all_department_ids
 
-        departmentEvents = Event.objects.filter(department_organiser__in=departments)
+        departments = CollectedDepartment.objects.filter(id__in=itertools.chain.from_iterable(collectedDepartmentIDs)).values('department')
+        departmentIDs = [dep['department'] for dep in departments]
+        allDepartmentIDs = get_all_department_ids(departmentIDs, True)        
+        departmentEvents = Event.objects.filter(department_organiser__in=allDepartmentIDs)
         
         allEvents = events | eventsInEventGroups | departmentEvents
 
