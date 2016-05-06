@@ -20,21 +20,11 @@
 
 
     <div class="col-md-9 col-md-push-3">
-        {% if top_results %}
-            <h3>Top results</h3>
-            <ul class="list-group">
-                {% for event in top_results %}
-                <li class="list-group-item">
-                    {% include "events/event_teaser.html" with show_oxford_date_time=True %}                    
-                </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+	    <h3>Past results</h3>
+	    <h5><a href="{% url 'haystack_search' %}?q={{query}}">Show upcoming results</a></h5>
 
-        <h3>Upcoming</h3>
-        <h5><a href="{% url 'haystack_search_past' %}?q={{query}}">Show past results</a></h5>
-        {% include "events/_event_list.html" with grouped_events=grouped_future_results show_event_time_only=True %}
-    
+        {% include "events/_event_list.html" with grouped_events=grouped_past_results show_event_time_only=True %}
+
     </div>
 
     {% if page.object_list %}
@@ -100,6 +90,6 @@
     {% endif %}
 
     </div>
-{% endwith %}
+    {% endwith %}
 {% endif %}
 {% endblock %}

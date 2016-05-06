@@ -1,4 +1,5 @@
 import logging
+import functools
 from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
@@ -12,6 +13,7 @@ from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE,
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 from .forms import BrowseEventsForm, BrowseSeriesForm
 from talks.api.services import events_search
+from talks.api_ox.api import OxfordDateResource
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +62,7 @@ def browse_events(request):
     modified_request_parameters['subdepartments'] = "false"
     if (len(request.GET) == 0) or (len(request.GET) == 1) and request.GET.get('limit_to_collections'):
         today = date.today()
-        modified_request_parameters['start_date'] = today.strftime("%Y-%m-%d")
+        modified_request_parameters['start_date'] = today.strftime("%d/%m/%Y")
         modified_request_parameters['include_subdepartments'] = True
         modified_request_parameters['subdepartments'] = 'true'
     elif request.GET.get('include_subdepartments'):
@@ -139,7 +141,19 @@ def browse_events(request):
         for tab in tab_dates:
             if tab['href'] == 'browse?' + old_query:
                 tab['active'] = True
+                
+    date_continued_previous = False
+    if int(page) != 1:
+        # if the date of the first talk of the current page is the same with that of the last talk of the previous page
+        if list(events)[0].start.date()==list(paginator.page(int(page)-1))[-1].start.date():
+            date_continued_previous = True
 
+    date_continued_next = False
+    if paginator.num_pages != int(page):
+        # if the date of the last talk of the current page is the same with that of the first talk of the next page
+        if list(events)[-1].start.date()==list(paginator.page(int(page)+1))[0].start.date():
+            date_continued_next = True
+        
     context = {
         'events': events,
         'grouped_events': grouped_events,
@@ -148,6 +162,8 @@ def browse_events(request):
         'start_date': modified_request_parameters.get('start_date'),
         'end_date': modified_request_parameters.get('to'),
         'tab_dates': tab_dates,
+        'date_continued_previous': date_continued_previous,
+        'date_continued_next': date_continued_next,
         }
     return render(request, 'events/browse.html', context)
 
@@ -161,9 +177,15 @@ def group_events (events):
             minutes = ""
         ampm = datetime.strftime(group_event.start, '%p')
         group_event.display_time = str(int(hours))+minutes+ampm.lower()
+        # if there is no oxford_date field, events are search results
+        # we need to call date_to_oxford_date to create the oxford date
+        if not group_event.oxford_date:
+            group_event.oxford_date = date_to_oxford_date(group_event.start)
+
         comps = group_event.oxford_date.components
         key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
         key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
+        
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
@@ -174,6 +196,15 @@ def group_events (events):
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
 
     return result_events
+
+def date_to_oxford_date(date_str):
+    func = functools.partial(OxfordDateResource.from_date, date_str)
+    try:
+        res = func()
+        return res
+    except ApiException:
+        logger.warn('Unable to reach API', exc_info=True)
+        return None
 
 
 def upcoming_events(request):
@@ -279,7 +310,6 @@ def show_event_group(request, event_group_slug):
         return render(request, 'events/event-group.txt.html', context)
     else:
         return render(request, 'events/event-group.html', context)
-
 
 def show_person(request, person_slug):
     person = get_object_or_404(Person, slug=person_slug)

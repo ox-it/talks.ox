@@ -54,9 +54,11 @@ AUDIENCE_CHOICES = (
 
 EVENT_PUBLISHED = 'published'
 EVENT_IN_PREPARATION = 'preparation'
+EVENT_CANCELLED = 'cancelled'
 EVENT_STATUS_CHOICES = (
     (EVENT_IN_PREPARATION, 'In preparation'),
     (EVENT_PUBLISHED, 'Published'),
+    (EVENT_CANCELLED, 'Cancelled'), #RB 4/5/16 added cancelled state
 )
 
 class EventGroupManager(models.Manager):
@@ -108,7 +110,7 @@ class EventGroup(models.Model):
 
     def get_absolute_url(self):
         return reverse('show-event-group', args=[self.slug])
-    
+
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
             # Newly created object, so set slug
@@ -117,6 +119,9 @@ class EventGroup(models.Model):
 
     def get_api_url(self):
         return reverse('api-event-group', args=[self.slug])
+
+    def get_ics_url(self):
+        return reverse('api-event-group-ics', args=[self.slug])
 
     @property
     def description_html(self):
@@ -360,6 +365,9 @@ class Event(models.Model):
     def get_api_url(self):
         return reverse('event-detail', args=[str(self.slug)])
 
+    def get_ics_url(self):
+        return reverse('event-detail-ics', args=[str(self.slug)])
+
     def formatted_date(self):
         if self.start:
             return date_filter(timezone.localtime(self.start), settings.EVENT_DATETIME_FORMAT)
@@ -402,8 +410,26 @@ class Event(models.Model):
             return False
         elif self.status == EVENT_IN_PREPARATION:
             return False
+        elif self.status == EVENT_CANCELLED:
+            return False
         elif self.status == EVENT_PUBLISHED:
             return True
+        else:
+            return False
+
+    @property
+    def is_cancelled(self):
+        """Check if the event has been cancelled (i.e. not embargo)
+        :return: True if the Event is cancelled else False
+        """
+        if self.embargo:
+            return False
+        elif self.status == EVENT_IN_PREPARATION:
+            return False
+        elif self.status == EVENT_CANCELLED:
+            return True
+        elif self.status == EVENT_PUBLISHED:
+            return False
         else:
             return False
 
@@ -452,14 +478,14 @@ class Event(models.Model):
 
     def get_audience_display(self):
         # look up if it is one of the standard choices, else use the field value verbatim
-        
+
         audience_choices = dict(AUDIENCE_CHOICES)
-        
+
         try:
             audience = audience_choices[self.audience]
         except KeyError:
             audience = self.audience
-                    
+
         return audience
 
 reversion.register(Event)

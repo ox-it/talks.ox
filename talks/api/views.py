@@ -105,9 +105,9 @@ def api_event_group(request, event_group_slug):
     to_date = parse_date(request.GET.get('to',''))
     
     if from_date or to_date:
-        serializer = HALEventGroupSerializer(eg, context={'from-date': from_date, 'to-date': to_date})
+        serializer = HALEventGroupSerializer(eg, context={'request': request, 'from-date': from_date, 'to-date': to_date})
     else:
-        serializer = HALEventGroupSerializer(eg)
+        serializer = HALEventGroupSerializer(eg, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -328,9 +328,9 @@ def api_collection(request, collection_slug):
         collection = Collection.objects.get(slug=collection_slug)
         if collection.public:
             if from_date or to_date:
-                serializer = HALCollectionSerializer(collection, context={'from-date': from_date, 'to-date': to_date})
+                serializer = HALCollectionSerializer(collection, context={'request': request, 'from-date': from_date, 'to-date': to_date})
             else:
-                serializer = HALCollectionSerializer(collection)
+                serializer = HALCollectionSerializer(collection, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': "Collection is not public"},

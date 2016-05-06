@@ -16,7 +16,8 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     department = indexes.CharField(faceted=True, null=True)
     location = indexes.CharField(faceted=True, null=True)
     topics = indexes.MultiValueField(faceted=True, null=True)
-    published = indexes.BooleanField(null=False)
+    is_published = indexes.BooleanField(null=False)
+    is_cancelled = indexes.BooleanField(null=False)
     group = indexes.CharField(faceted=True, null=True)
     group_slug = indexes.CharField(null=True)
     lists = indexes.MultiValueField(faceted=True, null=True)
@@ -72,8 +73,9 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
             self.prepared_data[self.topics.index_fieldname] = topics_pref_labels
 
         # Published status
-        self.prepared_data[self.published.index_fieldname] = obj.is_published
-
+        self.prepared_data[self.is_published.index_fieldname] = obj.is_published
+        self.prepared_data[self.is_cancelled.index_fieldname] = obj.is_cancelled
+        
         # Series name
         if obj.group:
             self.prepared_data[self.group.index_fieldname] = obj.group.title
