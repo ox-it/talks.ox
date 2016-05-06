@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from talks.events import models, typeahead, datasources
 from talks.events.models import EventGroup, AUDIENCE_CHOICES, AUDIENCE_PUBLIC, AUDIENCE_OXFORD, AUDIENCE_OTHER
 from talks.users.authentication import GROUP_EDIT_EVENTS
-
+from talks.core.utils import clean_xml
 
 class OxPointField(forms.CharField):
     def __init__(self, source, *args, **kwargs):
@@ -20,6 +20,11 @@ class TopicsField(forms.MultipleChoiceField):
     def valid_value(self, value):
         return True
 
+class XMLFriendlyTextField(forms.CharField):
+    def clean(self, data):
+        super(XMLFriendlyTextField, self).clean(data)
+        return clean_xml(data)
+        
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None):
@@ -37,6 +42,7 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.request = kwargs.pop('request', None)
         super(EventForm, self).__init__(*args, **kwargs)
         # Customise the group selector so that:
         #  - It's only possible to pick talks which the user has edit permissions for
@@ -133,11 +139,6 @@ class EventForm(forms.ModelForm):
         required=False
     )
     
-    audience_other = forms.CharField(
-        label="",
-        required=False,
-        help_text="If other, please specify"
-    )
     
     audience_choices = forms.ChoiceField(
         label="Who can attend",
@@ -145,22 +146,50 @@ class EventForm(forms.ModelForm):
         choices=AUDIENCE_CHOICES,
         widget=RadioSelect()
     )
+    
+    title = XMLFriendlyTextField(
+        max_length=250,
+        required=False,
+    )
+
+    location_details = XMLFriendlyTextField(
+        required=False,
+        label='Venue details',
+        help_text='e.g.: room number or accessibility information'
+    )
+
+    description = XMLFriendlyTextField(
+        label="Abstract",
+        widget=forms.Textarea(attrs={'rows': 4}),
+        required=False,
+    )
+    
+    special_message = XMLFriendlyTextField(
+        required=False,
+        label="Special message",
+        widget=forms.Textarea(attrs={'rows': 2}),
+        help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue"
+    )
+
+    audience_other = XMLFriendlyTextField(
+        label="",
+        required=False,
+        help_text="If other, please specify"
+    )
+
+    cost = XMLFriendlyTextField(
+        required=False,
+    )
 
     class Meta:
         exclude = ('slug', 'embargo')
         model = models.Event
-        labels = {
-            'description': 'Abstract',
-        }
         widgets = {
             'start': BootstrappedDateTimeWidget(attrs={'readonly': True}),
             'end': BootstrappedDateTimeWidget(attrs={'readonly': True}),
             'booking_type': forms.RadioSelect,
-            'cost': forms.TextInput,
             'audience': forms.RadioSelect,
-            'location_details': forms.TextInput,
             'status': forms.RadioSelect,
-            'special_message': forms.Textarea(attrs={'rows': 2})
         }
         help_texts = {
             'organiser_email': 'Email address for more details',
@@ -179,7 +208,34 @@ class EventForm(forms.ModelForm):
         for user in self.cleaned_data['editor_set']:
             event.editor_set.add(user)
 
-        self._update_people('speakers', event, models.ROLES_SPEAKER)
+        #reorder the speakers to be in the order they arrived in the post data (after that point the ordering is lost)
+        speakers_posted = self.request.POST.copy().pop('event-speakers', [])
+        speakers_current = getattr(event, 'speakers')
+        speakers_cleaned = self.cleaned_data['speakers']
+        
+        #determine if the list of speakers has changed
+        should_replace_speakers = False
+        if speakers_current.count() != len(speakers_posted):
+            #definitely different if lists are different lengths
+            should_replace_speakers = True
+        else:
+            #compare item-by-item to see if lists contain the same elements
+            for idx, speaker in enumerate(speakers_current):
+                if int(speakers_posted[idx]) != speaker.id:
+                    # order is not the same
+                    should_replace_speakers = True
+                    break
+        
+        if should_replace_speakers:
+            #remove all speakers
+            for person in speakers_current:
+                rel = models.PersonEvent.objects.get(person=person, event=event, role=models.ROLES_SPEAKER)
+                rel.delete()
+            #add new speakers in the order they were in the posted data
+            for speaker_id in speakers_posted:
+                person = models.Person.objects.get(id=speaker_id)
+                models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
+        
         self._update_people('organisers', event, models.ROLES_ORGANISER)
         self._update_people('hosts', event, models.ROLES_HOST)
 
@@ -259,7 +315,23 @@ class EventGroupForm(forms.ModelForm):
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
+    
+    title = XMLFriendlyTextField(
+        max_length=250,
+        required=True
+    )
+    
+    description = XMLFriendlyTextField(
+        widget=forms.Textarea(attrs={'rows': 8}),
+        required=False,
+    )
 
+    occurence = XMLFriendlyTextField(
+        required=False,
+        label='Timing',
+        help_text='e.g.: Mondays at 10 or September 19th to 20th.'
+    )
+    
     def save(self):
         group = super(EventGroupForm, self).save(commit=False)
         group.save()
@@ -279,11 +351,6 @@ class EventGroupForm(forms.ModelForm):
     class Meta:
         exclude = ('slug',)
         model = models.EventGroup
-        widgets = {
-            'title': forms.TextInput(),
-            'description': forms.Textarea(),
-            'occurence': forms.TextInput(),
-        }
         labels = {
             'group_type': 'Series type'
         }

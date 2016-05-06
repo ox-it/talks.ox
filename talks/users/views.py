@@ -63,10 +63,10 @@ def view_collection(request, collection_slug):
         allEvents = allEvents.filter(start__gte=date.today())
 
     grouped_events = group_events(allEvents)
-    
+
     series = collection.get_event_groups().order_by('title')
-    
-    collectedDeps = collection.get_departments()    
+
+    collectedDeps = collection.get_departments()
     departments = map(lambda cdep:DEPARTMENT_DATA_SOURCE.get_object_by_id(cdep.department), collectedDeps)
 
     collectionContributors = None
@@ -87,6 +87,31 @@ def view_collection(request, collection_slug):
         return render(request, 'users/collection_view.txt.html', context)
     else:
         return render(request, 'users/collection_view.html', context)
+
+
+
+
+def my_talks(request):
+    grouped_events = None
+    collections = request.tuser.collections.all()
+    if collections:
+            user_events = collections[0].get_all_events()
+            for collection in collections[1:]:
+                user_events = user_events | collection.get_all_events()
+            #context['collections'] = collections
+            user_events = user_events.filter(start__gte=date.today())
+            grouped_events = group_events(user_events)
+
+    context = {
+        'grouped_events': grouped_events
+    }
+
+    if request.GET.get('format') == 'txt':
+        return render(request, 'users/my_talks.txt.html', context)
+    else:
+        return render(request, 'users/my_talks.html', context)
+
+
 
 @login_required
 def add_collection(request):

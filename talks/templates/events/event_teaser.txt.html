@@ -1,6 +1,7 @@
 <!-- Display a single event teaser -->
 <br>{{ event.title_display }}
 {% if not event.is_published %}<br>Status: This talk is in preparation - details may change{% endif %}
+{% if event.is_cancelled %}<br>Status: This talk has been cancelled{% endif %}<!-- RB 4/5/16 added text to show when an event has been cancelled-->
 <br>Date: {{ event.formatted_date }} - {{ event.formatted_endtime }} ({{ event.oxford_date.formatted_nocal }})
 
 <br>Speaker{% if event.various_speakers %}

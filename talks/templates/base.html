@@ -49,48 +49,74 @@
         {% endblock extrahead %}
     </head>
     <body>
-        <div class="container">
-            <!-- Static navbar -->
-            <div class="navbar navbar-default" role="navigation">
-                <div class="container-fluid">
-                    {% url 'homepage' as home %}
-                    {% url 'create-event' as create_event %}
-                    {% url 'contributors-events' as contributors_homepage %}
-                    {% url 'manage-lists' as manage_lists %}
-                    <div class="navbar-header">
-                        <a id="navbar-oxford-brandmark" href="http://www.ox.ac.uk"><img src="{% static "images/ox_brand6_rev_rect.gif"%}"></a>
-                        <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
-                    </div>
-                    <ul class="nav navbar-nav">
-                        {% if perms.events.change_event %}
-                            <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}?date=future&editable=true">Dashboard</a></li>
-                        {% endif %}
-                        {% if perms.events.add_event %}
-                            <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
-                        {% endif %}
-                    </ul>
-                    <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'haystack_search' %}">
-                        <div class="form-group">
-                            <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" value="{% block search_query %}{% endblock search_query %}" />
+        <div id="header">
+            <div class="container">
+                <!-- Static navbar -->
+                <div class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                        {% url 'homepage' as home %}
+                        {% url 'create-event' as create_event %}
+                        {% url 'contributors-events' as contributors_homepage %}
+                        {% url 'manage-lists' as manage_lists %}
+                        <div class="navbar-header">
+                            <a id="navbar-oxford-brandmark" href="http://www.ox.ac.uk"><img src="{% static "images/ox_brand6_rev_rect.gif"%}"></a>
+                            <a class="navbar-brand" href="{{ home }}">Oxford Talks</a>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse" aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
                         </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
+                        <div class="collapse navbar-collapse" id="main-navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                {% if perms.events.change_event %}
+                                    <li {% ifequal request.path contributors_homepage %} class="active"{% endifequal %}><a href="{{ contributors_homepage }}?date=future&editable=true">Dashboard</a></li>
+                                {% endif %}
+                                {% if perms.events.add_event %}
+                                    <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
+                                {% endif %}                          
+                            </ul>
+                            <form class="navbar-form navbar-right search-form" role="search" method="get" action="{% url 'haystack_search' %}">
+                              <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
+                              <div class="form-group">
+                                 <input id="id_q" name="q" type="text" class="form-control" placeholder="Search" value="{% block search_query %}{% endblock search_query %}"/>
+                              </div>​
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="navbar navbar-secondary" role="navigation">
+                <div class="container-fluid">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="http://talksox.readthedocs.org/en/latest" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> Help</a></li>
+                        <li><a href="http://talksox.readthedocs.org/en/latest" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> Help</a></li> 
                         {% if user.is_authenticated %}
-                            {% if user.first_name and user.last_name %}
-                                <li><p class="navbar-text"><i class="glyphicon glyphicon-user"></i> {{ user.first_name }} {{ user.last_name }}</p></li>
-                            {% elif user.email %}
-                                <li><p class="navbar-text"><i class="glyphicon glyphicon-user"></i> {{ user.email }}</p></li>
-                            {% endif %}
-                            <li {% if '/user/lists' in request.path  %} class="active" {% endif %}><a href="{{ manage_lists }}"><span class="glyphicon glyphicon-list-alt"></span> Manage Collections</a></li>
-                            <li><a href="{% url 'logout' %}">Logout</a></li>
-                        {% else %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                {% if user.first_name and user.last_name %}
+                                    <i class="glyphicon glyphicon-user"></i> {{ user.first_name }} {{ user.last_name }}
+                                {% elif user.email %}
+                                    <i class="glyphicon glyphicon-user"></i> {{ user.email }}
+                                {% endif %}
+                           <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li {% if '/user/lists' in request.path  %} class="active" {% endif %}><a href="{{ manage_lists }}"><span class="glyphicon glyphicon-list-alt"></span> Manage Collections</a></li>
+                                <li {% if '/user/mytalks' in request.path  %} class="active" {% endif %}><a href="{% url 'my-talks' %}"><span class="glyphicon glyphicon-list-alt"></span> My Talks</a></li>
+                                <li><a href="http://talksox.readthedocs.io/en/latest/user/talk-editors/sign-up.html" target="blank"><span class="glyphicon glyphicon-list-alt"></span> Become an Editor</a></li>
+                                <li><a href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                         {% else %}
                         <li><a href="{% url 'login' %}">Login</a></li>
                         {% endif %}
                     </ul>
                 </div><!--/.container-fluid -->
             </div>
+
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>

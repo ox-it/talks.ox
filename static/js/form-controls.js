@@ -38,7 +38,15 @@ $(function() {
         var valueKey = $(mainInput).data('valueKey');
         var labelKey = $(mainInput).data('labelKey');
         //use the supplied value, else retrieve from document data, else fetch from bloodhound storage
-        suggestion = suggestion || $(input).data('suggestion') || getSuggestionById(mainInput, $(input).prop('value'), valueKey);
+        var value = $(input).prop('value');
+        suggestion = suggestion || $(input).data('suggestion') || getSuggestionById(mainInput, value, valueKey);
+        if(!suggestion) {
+            //couldn't retrieve. Perhaps an error in the search endpoint. Just show the id
+            console.error("Couldn't retrieve value for typeahead. ID was ", value);
+            suggestion = {};  
+            suggestion[valueKey] = value;
+            suggestion[labelKey] = "(" + value + ")";
+        }
         var t = _.template('<div data-id="<%= ' + valueKey + ' %>" class="list-group-item list-group-item-info fade in"><a href="#"><span class="glyphicon glyphicon-remove"></span></a><%= ' + labelKey + ' %></div>');
         var item = $(t(suggestion)).insertAfter(input);
         $('a', item).click(removeItem).click(function() { $(mainInput).show().focus().val('') });
