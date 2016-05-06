@@ -7,9 +7,16 @@ from talks.events import factories, models
 from talks.users import models
 from talks.events.models import EVENT_PUBLISHED, PersonEvent, ROLES_SPEAKER
 from django.conf import settings
+import datetime 
 
 FUTURE_DATE_STRING = "2018-01-01 19:00"
+FUTURE_STRING = datetime.datetime.strptime(FUTURE_DATE_STRING, "%Y-%m-%d %H:%M").strftime("%Y-%m-%d")
+
 PAST_DATE_STRING = "2011-01-01 20:00"
+PAST_STRING = datetime.datetime.strptime(PAST_DATE_STRING, "%Y-%m-%d %H:%M").strftime("%Y-%m-%d")
+
+TODAY_DATE_STRING = datetime.date.today().strftime("%Y-%m-%d %I:%M")
+TODAY_STRING = datetime.date.today().strftime("%Y-%m-%d")
 
 TOPIC_1429860_MOCK_RESPONSE = {"_links":{"self":{"href":"/search?uri=http://id.worldcat.org/fast/1429860"}},"_embedded":{"concepts":[{"uri":"http://id.worldcat.org/fast/1429860","prefLabel":"Biodiversity","altLabels":["Biotic diversity","Diversification, Biological","Diversity, Biotic","Biological diversity","Diversity, Biological","Biological diversification"],"related":[{"label":"Biology","uri":"http://id.worldcat.org/fast/832383"},{"label":"Ecological heterogeneity","uri":"http://id.worldcat.org/fast/901453"}]}]}}
 LOC_40002001_MOCK_RESPONSE = {"_embedded": {"pois": [{"_embedded": {"files": [{"location": "oxpoints/40002001/depiction/original/primary.jpg","primary": True,"type": "depiction","url": "//mox-static-files.oucs.ox.ac.uk/oxpoints/40002001/depiction/original/primary.jpg"},{"location": "oxpoints/40002001/depiction/original/primary.jpg","type": "depiction","url": "//mox-static-files.oucs.ox.ac.uk/oxpoints/40002001/depiction/original/primary.jpg"}]},"_links": {"child": [{"href": "/places/oxpoints:23233603"},{"href": "/places/oxpoints:23233671","title": "11-13 Banbury Road","type": ["/university/building"],"type_name": ["Building"]},{"href": "/places/oxpoints:23233670","title": "7-9 Banbury Road","type": ["/university/building"],"type_name": ["Building"]},{"href": "/places/oxpoints:23233669","title": "15-19 Banbury Road","type": ["/university/building"],"type_name": ["Building"]}],"parent": {"href": "/places/oxpoints:31337175","title": "IT Services","type": ["/university/department"],"type_name": ["Department"]},"self": {"href": "/places/oxpoints:40002001"}},"address": "7-19 Banbury Road OX2 6NN","alternative_names": ["IT Services, Banbury Road"],"distance": 0,"id": "oxpoints:40002001","identifiers": ["osm:99933769-way","oxpoints:40002001"],"lat": "51.76001","lon": "-1.26035","name": "7-19 Banbury Road","name_sort": "7-19 Banbury Road","shape": "POLYGON ((-1.2604547 51.7597247,-1.2604524 51.759703600000002,-1.2606225 51.759693400000003,-1.2606263 51.759717899999998,-1.2606718 51.759715200000002,-1.2606742 51.759729900000004,-1.260875 51.759717299999998,-1.2609002 51.759870900000003,-1.2609514 51.7598677,-1.2609628 51.759937299999997,-1.2609819 51.759936099999997,-1.2610376 51.760275399999998,-1.2606854 51.760297899999998,-1.260475 51.760310799999999,-1.2604334 51.7600865,-1.2605216 51.760081800000002,-1.2605182 51.760061299999997,-1.2605157 51.760043799999998,-1.2604056 51.760051799999999,-1.2603867 51.759929399999997,-1.2604979 51.759923100000002,-1.2604921 51.7598805,-1.2604867 51.759852799999997,-1.2603628 51.759858199999996,-1.2603454 51.759729800000002,-1.2604547 51.7597247))","type": ["/university/site"],"type_name": ["Site"]}]},"_links": {"self": {"href": "/places/oxpoints:40002001%2C"}},"count": 1}
@@ -110,6 +117,17 @@ class TestAPI(TestCase):
             status=EVENT_PUBLISHED,
             group=group1,
         )
+    
+        today_event = factories.EventFactory.create(
+            title="A today event",
+            slug="today-event",
+            description="a today event event",
+            start=TODAY_DATE_STRING,
+            end=TODAY_DATE_STRING,
+            status=EVENT_PUBLISHED,
+            group=group1,
+        )
+
         factories.PersonEventFactory.create(
             person=person1,
             event=future_event,
@@ -177,6 +195,30 @@ class TestAPI(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_search_from_today(self, requests_get):
+        #test the from=today search
+        #expect only the future search
+        response = self.client.get('/api/talks/search?from='+ TODAY_STRING)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, "A future event")
+        self.assertContains(response, "A today event")
+        self.assertNotContains(response, "A past event")
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_search_edge_dates(self, requests_get):
+        #test the from past_event_date,  to future_event_date search
+        #expect all the events in the results
+        response = self.client.get('/api/talks/search?from='+ PAST_STRING +'&to=' + FUTURE_STRING)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, "_links")
+        self.assertContains(response, "_embedded")
+        self.assertContains(response, "A future event")
+        self.assertContains(response, "A today event")
+        self.assertContains(response, "A past event")
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_search_from_to(self, requests_get):
