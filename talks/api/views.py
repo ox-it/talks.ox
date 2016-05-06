@@ -298,6 +298,22 @@ def unsubscribe_from_list(request):
         return Response({'error': "Failed to unsubscribe from collection"},
                         status=status.HTTP_404_NOT_FOUND)
 
+@api_view(["GET"])
+@renderer_classes((ICalRenderer,))
+def api_person_ics(request, person_slug):
+    """Get events for a person to be displayed as an ical feed
+    """
+    try:
+        person = Person.objects.get(slug=person_slug)
+        today = date.today()
+        events = Event.objects.filter(personevent__person__slug=person_slug)
+        
+        serializer = EventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except ObjectDoesNotExist:
+        return Response({'error': "Person not found"},
+                        status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["GET"])
 def api_person(request, person_slug):

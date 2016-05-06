@@ -200,8 +200,8 @@ class Person(models.Model):
     def get_api_url(self):
         return reverse('api-person', args=[str(self.slug)])
 
-    # def get_ics_url(self):
-    #     return reverse('event-detail-ics', args=[str(self.slug)])
+    def get_ics_url(self):
+        return reverse('api-person-ics', args=[str(self.slug)])
         
     # @property
     # def surname(self):
