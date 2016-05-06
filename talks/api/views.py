@@ -104,7 +104,7 @@ def api_event_group(request, event_group_slug):
         return Response({'error': "Item not found"},
                         status=status.HTTP_404_NOT_FOUND)
     from_date = parse_date(request.GET.get('from', ''))
-    to_date = parse_date(request.GET.get('to',''))
+    to_date = parse_date(request.GET.get('to',''), from_date)
     
     if from_date or to_date:
         serializer = HALEventGroupSerializer(eg, context={'request': request, 'from-date': from_date, 'to-date': to_date})
@@ -318,7 +318,7 @@ def api_person(request, person_slug):
     """Get events associated with a person
     """
     from_date = parse_date(request.GET.get('from', ''))
-    to_date = parse_date(request.GET.get('to', ''))
+    to_date = parse_date(request.GET.get('to', ''), from_date)
     try:
         person = Person.objects.get(slug=person_slug)
         if from_date or to_date:
@@ -359,7 +359,7 @@ def api_collection(request, collection_slug):
 
     # If from and to dates have been passed as request parameters, filter the events by those dates.
     from_date = parse_date(request.GET.get('from', ''))
-    to_date = parse_date(request.GET.get('to', ''))
+    to_date = parse_date(request.GET.get('to', ''), from_date)
     try:
         collection = Collection.objects.get(slug=collection_slug)
         if collection.public:

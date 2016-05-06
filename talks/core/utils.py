@@ -28,36 +28,51 @@ def clean_xml(dirty):
     clean = _illegal_xml_chars_RE.sub('', str(dirty))
     return clean
 
-def parse_date(date_param):
+def parse_date(date_param, from_date=None):
     """
     Parse the date string parameter
     :param date_param:
         Either a keyword:
             'today', 'tomorrow'
         or a string in the format 'dd/mm/yy'
+        or a time delta, i.e. +7
+    :from_date:
+        In 
     :return:
         datetime object
     """
+
     if not date_param:
         return None
     elif date_param == "today":
-        from_date = datetime.today().date()
+        date = datetime.today().date()
     elif date_param == "tomorrow":
-        from_date = datetime.today().date() + timedelta(1)
-    else:
+        date = datetime.today().date() + timedelta(1)
+    elif date_param[0:4] == "plus":
+        if not from_date:
+            raise ParseError("Cannot use time delta without a from date")
         try:
-            from_date = datetime.strptime(date_param, "%d/%m/%y")
+            delta = int(date_param[4:])
+            date = from_date+timedelta(delta)
+        except Exception as e:
+            raise ParseError(e.message)
+            date = from_d
+    else:
+        print "date_param=",date_param
+        print date_param[0:4]
+        try:
+            date = datetime.strptime(date_param, "%d/%m/%y")
         except Exception as e:
             try:
-                from_date = datetime.strptime(date_param, "%d/%m/%Y")
+                date = datetime.strptime(date_param, "%d/%m/%Y")
             except Exception as e:
                 try:
-                    from_date = datetime.strptime(date_param, "%Y-%m-%d")
+                    date = datetime.strptime(date_param, "%Y-%m-%d")
                 except Exception as e:
                     # catch the exception and raise an API exception instead, which the user will see
                     raise ParseError(e.message)
                     # TODO should raised a more specialised error than rest framework.
-    return from_date
+    return date
 
 
 def read_yaml_param(fname, key):
