@@ -1,6 +1,5 @@
 import logging
 from datetime import date
-
 from django.contrib.auth.models import User
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -179,7 +178,6 @@ def api_event_get(request, slug):
         raise Http404
     serializer = HALEventSerializer(event, read_only=True, context={'request': request})
     return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 @api_view(["GET"])
 @renderer_classes((ICalRenderer,))
