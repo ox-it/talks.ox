@@ -23,7 +23,7 @@
 	    <h3>Past results</h3>
 	    <h5><a href="{% url 'haystack_search' %}?q={{query}}">Show upcoming results</a></h5>
 
-        {% include "events/_event_list.html" with grouped_events=grouped_past_results %}
+        {% include "events/_event_list.html" with grouped_events=grouped_past_results show_event_time_only=True %}
 
     </div>
 

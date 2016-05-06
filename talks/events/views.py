@@ -1,4 +1,5 @@
 import logging
+import functools
 from datetime import date, timedelta, datetime
 
 from django.core.urlresolvers import reverse
@@ -12,6 +13,7 @@ from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE,
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 from .forms import BrowseEventsForm, BrowseSeriesForm
 from talks.api.services import events_search
+from talks.api_ox.api import OxfordDateResource
 
 logger = logging.getLogger(__name__)
 
@@ -175,12 +177,15 @@ def group_events (events):
             minutes = ""
         ampm = datetime.strftime(group_event.start, '%p')
         group_event.display_time = str(int(hours))+minutes+ampm.lower()
-        if group_event.oxford_date:
-            comps = group_event.oxford_date.components
-            key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
-            key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
-        else:
-            key = datetime.strftime(group_event.start, '%A, %d %B %Y')
+        # if there is no oxford_date field, events are search results
+        # we need to call date_to_oxford_date to create the oxford date
+        if not group_event.oxford_date:
+            group_event.oxford_date = date_to_oxford_date(group_event.start)
+
+        comps = group_event.oxford_date.components
+        key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
+        key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
+        
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
@@ -191,6 +196,15 @@ def group_events (events):
         result_events.append({"start_date":event_date, "gr_events":grouped_events[event_date]})
 
     return result_events
+
+def date_to_oxford_date(date_str):
+    func = functools.partial(OxfordDateResource.from_date, date_str)
+    try:
+        res = func()
+        return res
+    except ApiException:
+        logger.warn('Unable to reach API', exc_info=True)
+        return None
 
 
 def upcoming_events(request):
