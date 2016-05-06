@@ -62,7 +62,7 @@
             });
             
             $('.js-datetimepicker').datetimepicker({
-              format : 'YYYY-MM-DD',
+              format : 'DD/MM/YYYY',
               allowInputToggle : true
             }).each(function(i,v){
               $(v).data("DateTimePicker").ignoreReadonly(true);  
@@ -71,7 +71,7 @@
             $('#start_date').on('dp.change', function(e){
               $('#to').data('DateTimePicker').minDate(e.date);
             });
-            
+
           });
         </script>
 
