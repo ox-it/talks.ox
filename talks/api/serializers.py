@@ -3,6 +3,8 @@ from django.conf import settings
 from rest_framework import serializers, pagination
 from rest_framework.fields import Field
 import pytz
+from datetime import datetime, timedelta
+
 
 from talks.events.models import Event, Person, EventGroup
 from talks.users.models import CollectionItem, TalksUserCollection, Collection, CollectedDepartment
@@ -302,7 +304,8 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
-                events = events.filter(end__lte=self.context['to-date'])
+                # add a day to the 'to' date
+                events = events.filter(end__lte=self.context['to-date']+timedelta(1))
 
         serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
