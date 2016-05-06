@@ -3,11 +3,16 @@ from datetime import datetime
 import factory
 
 from . import models
+from talks.users.models import Collection, CollectionItem, CollectedDepartment
 
 
 class EventGroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.EventGroup
+
+class EventCollectionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Collection
 
 
 class EventFactory(factory.django.DjangoModelFactory):
@@ -42,3 +47,11 @@ class TopicItemFactory(factory.django.DjangoModelFactory):
 class TopicItemFactory_noSubFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.TopicItem
+
+class CollectedDepartmentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CollectedDepartment
+        
+class CollectionItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CollectionItem

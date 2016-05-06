@@ -24,7 +24,7 @@ def events_search(parameters):
     else:
         queries.append(Q(start__gt=from_date))
 
-    to_date = parse_date(parameters.get("to"))
+    to_date = parse_date(parameters.get("to"), from_date)
     if to_date:
         queries.append(Q(start__lt=to_date+timedelta(1)))
 
