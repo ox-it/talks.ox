@@ -4,9 +4,19 @@ from django.db.models.query_utils import Q
 
 from talks.events import typeahead, datasources
 from talks.users.models import Collection, TalksUser, TalksUserCollection, DEFAULT_COLLECTION_NAME, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER, COLLECTION_ROLES_OWNER
+from talks.contributors.forms import XMLFriendlyTextField
 
 class CollectionForm(forms.ModelForm):
-
+    title = XMLFriendlyTextField(
+        max_length=250,
+        required=True
+    )
+    
+    description = XMLFriendlyTextField(
+        widget=forms.Textarea(attrs={'rows': 8}),
+        required=False,
+    )
+    
     editor_set = forms.ModelMultipleChoiceField(
         queryset=TalksUser.objects.filter().distinct(),
         label="Other Editors",
