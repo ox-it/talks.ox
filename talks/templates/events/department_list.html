@@ -1,0 +1,142 @@
+{% extends "layouts/2-column.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Departments{% endblock %}
+
+{% block extrahead %}
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.panel-collapse').on('show.bs.collapse', function (ev) {
+      $('.panel-collapse').removeClass('in');
+    })
+
+    showCollapsible();
+  });
+
+  $(window).resize(function(){
+    showCollapsible();
+  });
+  
+  function showCollapsible(){
+    if ($(window).width() >= 767){  
+      $('.panel-collapse').addClass('in');
+    }
+    if ($(window).width() <= 767){  
+      $('.panel-collapse').removeClass('in');
+    }
+  }
+</script>
+{% endblock %}
+
+
+{% block side %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3 col-xs-12">
+
+    {% include 'events/navigation_for_listing.html' %}
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}
+
+{% block main %}
+
+<h1>Departments</h1>
+
+<h3><a href="/talks/department/id/oxpoints:23233551">Humanities Division</a></h3>
+
+<ul class="list-group">
+
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232699">Rothermere American Institute</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232702">Ruskin School of Art</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233577">Faculty of Classics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233578">Faculty of English Language and Literature</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233579">Faculty of History</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232527">Department of the History of Art</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233584">Faculty of Medieval and Modern Languages</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232619">Faculty of Linguistics, Philology and Phonetics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233586">Faculty of Music</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233587">Faculty of Oriental Studies</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:52580404">The Oxford Research Centre in the Humanities</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233589">Faculty of Philosophy</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232723">Faculty of Theology and Religion</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232728">Voltaire Foundation</a></li>
+
+</ul>
+
+<h3><a href="/talks/department/id/oxpoints:23232639">Mathematical, Physical and Life Sciences Division</a></h3>
+
+<ul class="list-group">
+
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:52345520">Begbroke Science Park</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232546">Department of Chemistry</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232561">Department of Computer Science</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:59485199">Life Sciences Interface Doctoral Training Centre</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232577">Department of Earth Sciences</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232584">Department of Engineering Science</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232647">Oxford e-Research Centre</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232625">Department of Materials</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232627">Mathematical Institute</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232673">Department of Physics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232677">Department of Plant Sciences</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232720">Department of Statistics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232729">Department of Zoology</a></li>
+
+</ul>
+
+<h3><a href="/talks/department/id/oxpoints:23233560">Medical Sciences Division</a></h3>
+
+<ul class="list-group">
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232534">Department of Biochemistry</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232740">Nuffield Department of Clinical Medicine</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:51292900">Nuffield Department of Clinical Neurosciences</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232594">Department of Experimental Psychology</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:50535138">Radcliffe Department of Medicine</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232645">Nuffield Department of Obstetrics and Gynaecology</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:53802000">Department of Oncology</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232657">Nuffield Department of Orthopaedics, Rheumatology and Musculoskeletal Sciences</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232663">Department of Paediatrics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232665">Sir William Dunn School of Pathology</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232670">Department of Pharmacology</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232575">Department of Physiology, Anatomy and Genetics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232742">Nuffield Department of Population Health</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232741">Nuffield Department of Primary Care Health Sciences</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232685">Department of Psychiatry</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232722">Nuffield Department of Surgical Sciences</a></li>
+</ul>
+
+
+<h3><a href="/talks/department/id/oxpoints:23232714">Social Sciences Division</a></h3>
+
+<ul class="list-group">
+
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:50349853">School of Anthropology and Museum Ethnography</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:59531121">School of Archaeology</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232621">Saïd Business School</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232579">Department of Economics</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232580">Department of Education</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232596">School of Geography and the Environment</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232738">Blavatnik School of Government</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232525">School of Interdisciplinary Area Studies</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23233678">Oxford Department of International Development</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232608">Oxford Internet Institute</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232617">Faculty of Law</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232612">Oxford Martin School</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232682">Department of Politics and International Relations (DPIR)</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232662">Oxford-Man Institute of Quantitative Finance</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232519">Department of Social Policy and Intervention</a></li>
+<li class="list-group-item"><a href="/talks/department/id/oxpoints:23232712">Department of Sociology</a></li>
+
+</ul>
+
+{% endblock %}
+
+
