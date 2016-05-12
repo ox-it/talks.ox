@@ -341,7 +341,7 @@ def show_person(request, person_slug):
 def show_topic(request):
     topic_uri = request.GET.get('uri')
     api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
-    events = Event.objects.filter(topics__uri=topic_uri)
+    events = Event.objects.filter(topics__uri=topic_uri).order_by('start')
 
     #RB 3/5/16 get filtered by current talks in topic
     show_all = request.GET.get('show_all', False)
