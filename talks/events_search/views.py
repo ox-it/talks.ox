@@ -67,7 +67,10 @@ class SearchUpcomingView(SearchView):
     def extra_context(self):
         extra = super(SearchUpcomingView, self).extra_context()
         
-        extra['top_results'] = self.get_results()[:5]
+        # Removing top results for now, as possibly unhelpful to users. Can reinstate later if desired by uncommenting this line.
+        # extra['top_results'] = self.get_results()[:5]
+        
+        
         for top_event in extra['top_results']:
             ox_date = date_to_oxford_date(top_event.start)
             comps = ox_date.components
