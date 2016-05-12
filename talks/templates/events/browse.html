@@ -18,28 +18,8 @@
 <link href="{% static "css/typeahead.css"%}" rel="stylesheet">
 
 <script src="{% static "js/form-controls.js"%}"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('.panel-collapse').on('show.bs.collapse', function (ev) {
-      $('.panel-collapse').removeClass('in');
-    })
+<script src="{% static "js/collapse-panel.js"%}"></script>
 
-    showCollapsible();
-  });
-
-  $(window).resize(function(){
-    showCollapsible();
-  });
-  
-  function showCollapsible(){
-    if ($(window).width() >= 767){  
-      $('.panel-collapse').addClass('in');
-    }
-    if ($(window).width() <= 767){  
-      $('.panel-collapse').removeClass('in');
-    }
-  }
-</script>
 {% endblock %}
 
 
