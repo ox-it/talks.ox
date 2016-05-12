@@ -444,3 +444,9 @@ def show_department_descendant(request, org_id):
         return render(request, 'events/department.txt.html', context)
     else:
         return render(request, 'events/department.html', context)
+        
+def list_departments(request):
+    
+    context = {}
+
+    return render(request, 'events/department_list.html', context)

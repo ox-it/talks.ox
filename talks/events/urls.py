@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from talks.events.views import (upcoming_events, show_person, show_event, events_for_day, show_department_organiser,
                                 events_for_month, events_for_year, list_event_groups,show_event_group, show_topic, list_topics,
-                                show_department_descendant)
+                                show_department_descendant, list_departments)
 from talks.contributors.views import (create_person, edit_person, edit_event, create_event, create_event_group,
                                       edit_event_group, delete_event, delete_event_group)
 
@@ -27,5 +27,6 @@ urlpatterns = patterns('',
     url(r'^series/id/(?P<event_group_slug>[^/]+)/delete', delete_event_group, name='delete-event-group'),
     url(r'^topics/id/$', show_topic, name="show-topic"),
 	url(r'^topics$', list_topics, name='browse-topics'),
+    url(r'^department$', list_departments, name='browse-departments'),
     url(r'^department/id/(?P<org_id>[^/]+)$', show_department_descendant, name="show-department"),
 )
