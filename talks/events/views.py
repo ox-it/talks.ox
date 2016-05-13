@@ -371,6 +371,8 @@ def list_topics(request):
             if api_topic not in topics_results:
                 topics_results.append(api_topic)
 
+    topics_results.sort(key=lambda topic:topic['prefLabel'])
+
     context = {
         'topics': topics_results,
     }
