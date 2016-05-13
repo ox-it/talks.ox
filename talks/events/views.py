@@ -240,12 +240,13 @@ def show_event(request, event_slug):
     try:
         # TODO depending if user is admin or not,
         # we should use Event.published here...
-        
         ev = Event.objects.select_related(
+            'speakers',
+            'hosts',
+            'organisers',
+            'location',
             'group',
-            ).prefetch_related(
-            'person_set',
-            ).get(slug=event_slug)
+            'department_organiser').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
 
