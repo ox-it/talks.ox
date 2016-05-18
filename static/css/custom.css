@@ -322,3 +322,7 @@ div.share-this-links span {
         font-size: 20px;
     }
 }
+
+.panel>h4 {
+    padding-left: 10px;
+}

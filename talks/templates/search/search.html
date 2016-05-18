@@ -31,8 +31,8 @@
             </ul>
         {% endif %}
 
-        <h3>Upcoming</h3>
-        <h5><a href="{% url 'haystack_search_past' %}?q={{query}}">Show past results</a></h5>
+        <h3>Upcoming Talks</h3>
+        <h5><a href="{% url 'haystack_search_past' %}?q={{query}}">Show past talks</a></h5>
         {% include "events/_event_list.html" with grouped_events=grouped_future_results show_event_time_only=True %}
     
     </div>

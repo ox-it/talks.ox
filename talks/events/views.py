@@ -341,7 +341,7 @@ def show_person(request, person_slug):
 def show_topic(request):
     topic_uri = request.GET.get('uri')
     api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic_uri)
-    events = Event.objects.filter(topics__uri=topic_uri)
+    events = Event.objects.filter(topics__uri=topic_uri).order_by('start')
 
     #RB 3/5/16 get filtered by current talks in topic
     show_all = request.GET.get('show_all', False)
@@ -370,6 +370,8 @@ def list_topics(request):
             api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
             if api_topic not in topics_results:
                 topics_results.append(api_topic)
+
+    topics_results.sort(key=lambda topic:topic['prefLabel'])
 
     context = {
         'topics': topics_results,
@@ -444,3 +446,9 @@ def show_department_descendant(request, org_id):
         return render(request, 'events/department.txt.html', context)
     else:
         return render(request, 'events/department.html', context)
+        
+def list_departments(request):
+    
+    context = {}
+
+    return render(request, 'events/department_list.html', context)

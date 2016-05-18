@@ -67,18 +67,21 @@ class SearchUpcomingView(SearchView):
     def extra_context(self):
         extra = super(SearchUpcomingView, self).extra_context()
         
-        extra['top_results'] = self.get_results()[:5]
-        for top_event in extra['top_results']:
-            ox_date = date_to_oxford_date(top_event.start)
-            comps = ox_date.components
-            date_str = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
-            date_str+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
-            hours = datetime.strftime(top_event.start, '%I')
-            minutes = datetime.strftime(top_event.start, ':%M')
-            if minutes==":00":
-                minutes = ""
-            ampm = datetime.strftime(top_event.start, '%p')
-            top_event.oxford_date_time = date_str +" "+ str(int(hours))+minutes+ampm.lower()
+        # Removing top results for now, as possibly unhelpful to users. Can reinstate later if desired by uncommenting these lines.
+        # extra['top_results'] = self.get_results()[:5]
+        
+        
+        # for top_event in extra['top_results']:
+        #     ox_date = date_to_oxford_date(top_event.start)
+        #     comps = ox_date.components
+        #     date_str = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
+        #     date_str+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
+        #     hours = datetime.strftime(top_event.start, '%I')
+        #     minutes = datetime.strftime(top_event.start, ':%M')
+        #     if minutes==":00":
+        #         minutes = ""
+        #     ampm = datetime.strftime(top_event.start, '%p')
+        #     top_event.oxford_date_time = date_str +" "+ str(int(hours))+minutes+ampm.lower()
 
         now = datetime.now()
         extra['future_results'] = self.get_results().filter(start__gte=now).order_by('start')
