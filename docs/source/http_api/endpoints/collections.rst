@@ -1,15 +1,15 @@
-**********************
-Retrieve List via ID
-**********************
+**************************
+Retrieve Collection via ID
+**************************
 
-Endpoint to retrieve information about all talks collected together in a Public List
+Endpoint to retrieve information about all talks collected together in a Public Collection
 
 All the responses conform to the `HAL specification <http://stateless.co/hal_specification.html>`_.
 
 
 .. http:get:: /collections/id/(string:id)
 
-    Retrieve list by unique slug identifier, including all talks
+    Retrieve collection by unique slug identifier, including all talks
 
     **Example request**:
 
@@ -66,8 +66,8 @@ All the responses conform to the `HAL specification <http://stateless.co/hal_spe
 
     The response can be either in XML or JSON dependent on the 'accept' header in the request.
 
-    :statuscode 200: List found
-    :statuscode 404: List not found
+    :statuscode 200: Collection found
+    :statuscode 404: Collection not found
     :statuscode 503: Service not available
 
 
@@ -75,7 +75,7 @@ All the responses conform to the `HAL specification <http://stateless.co/hal_spe
 Parameters Reference
 ====================
 
-id : list slug as string
+id : collection slug as string
       * Format :code:`f8ecded3-d2af-4585-bd3b-5cd7440795b9`
 
 from : date string (`'yyyy-mm-dd'`), optional
@@ -85,4 +85,5 @@ from : date string (`'yyyy-mm-dd'`), optional
 to : date string (`'yyyy-mm-dd'`), optional
     * End date for the list of talks.
     * Format :code:`yyyy-mm-dd`
-    * Note that the end time is currently assumed to be 00:00 not 23:59 (see `#394 <https://github.com/ox-it/talks.ox/issues/394>`_ for progress on this issue)
+    * Or use :code:`plus[n]` for the next [n] days (e.g.: plus7)
+    * Note that the issue with the end time (assumed to be 00:00 not 23:59) has now been resolved
