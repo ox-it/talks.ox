@@ -176,7 +176,7 @@ def group_events (events):
         if minutes==":00":
             minutes = ""
         ampm = datetime.strftime(group_event.start, '%p')
-        group_event.display_time = str(int(hours))+minutes+ampm.lower()
+        group_event.display_time = group_event.formatted_time
         # if there is no oxford_date field, events are search results
         # we need to call date_to_oxford_date to create the oxford date
         if not group_event.oxford_date:
