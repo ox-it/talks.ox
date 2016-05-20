@@ -50,6 +50,7 @@ master_doc = 'index'
 
 rst_epilog = """
 .. |upcoming| replace:: New Feature!
+.. |changes| replace:: There have been changes to this part of Oxford Talks in the latest release (May 2016)
 """
 
 
