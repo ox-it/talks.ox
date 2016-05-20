@@ -1,4 +1,4 @@
-.. Note:: |upcoming| 
+
 
 
 Copy talks to your own calendar
@@ -13,16 +13,16 @@ Find the Add to Calendar link
 
 .. image:: images/add-to-your-calendar/find-the-add-to-calendar-link.png
    :alt: Find the Add to Calendar link
-   :height: 222px
-   :width: 593px
+   :height: 303px
+   :width: 610px
    :align: center
 
 
 * For a single talk, click on the **calendar icon** next to any talk
 
-.. image:: images/add-to-your-calendar/306f6c30-18aa-46b9-b32c-a4a1703b6d55.png
-   :alt:
-   :height: 195px
+.. image:: images/add-to-your-calendar/536c841c-c8cd-463d-9a97-9600c5ecadf7.png
+   :alt: 
+   :height: 158px
    :width: 614px
    :align: center
 
@@ -45,7 +45,7 @@ Using Internet Explorer and Outlook (PC)
 * Click **Open**
 
 .. image:: images/add-to-your-calendar/a76b304c-99bd-41f3-a3a6-8e8196a54840.png
-   :alt:
+   :alt: 
    :height: 379px
    :width: 600px
    :align: center
@@ -69,7 +69,7 @@ Using Safari and Calendar (Mac)
 * If you choose to add the talk to your Nexus calendar, you may get this message
 
 .. image:: images/add-to-your-calendar/dbfadfa7-5d03-4c94-b499-59a1d773259c.png
-   :alt:
+   :alt: 
    :height: 290px
    :width: 567px
    :align: center
@@ -94,7 +94,7 @@ Using Chrome and Google Calendar
 * In Google Calendar, choose **Import calendar** from the options for **Other calendars**
 
 .. image:: images/add-to-your-calendar/09b5c8b5-2f97-4050-99c4-93004870fab0.png
-   :alt:
+   :alt: 
    :height: 378px
    :width: 614px
    :align: center
@@ -105,7 +105,7 @@ Using Chrome and Google Calendar
 #. Click import to add your talk(s) to your chosen calendar
 
 .. image:: images/add-to-your-calendar/b36986a4-a369-4e8b-a1a7-0f065b34c676.png
-   :alt:
+   :alt: 
    :height: 328px
    :width: 588px
    :align: center
