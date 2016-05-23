@@ -7,17 +7,17 @@
 Oxford Talks
 ############
 
-.. Note:: Some new features have just been released!
+.. Note:: Some small changes have been made in the latest release of the software!
 
 .. toctree::
    :maxdepth: 1
    :caption: User Guide
 
-   Explore Oxford Talks (new) <user/talk-users/explore-talks>
-   Collect talks you are interested in (new) <user/talk-users/make-a-list>
-   Copy talks to your own calendar (new) <user/talk-users/add-to-your-calendar>
-   Get an up-to-date feed in your calendar (new) <user/talk-users/feed-in-your-calendar>
-   Set up email reminders (new) <user/talk-users/email-reminders>
+   Explore Oxford Talks <user/talk-users/explore-talks>
+   Collect talks you are interested in <user/talk-users/make-a-list>
+   Copy talks to your own calendar <user/talk-users/add-to-your-calendar>
+   Get an up-to-date feed in your calendar <user/talk-users/feed-in-your-calendar>
+   Set up email reminders <user/talk-users/email-reminders>
 
 .. toctree::
     :maxdepth: 1
@@ -27,7 +27,6 @@ Oxford Talks
     user/general/log-in
     user/general/terms
     user/general/organisers
-    user/general/differences
 
 .. toctree::
     :maxdepth: 1
