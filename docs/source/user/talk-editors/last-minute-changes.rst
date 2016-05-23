@@ -1,3 +1,6 @@
+
+
+
 Last minute changes
 ===================
 
@@ -22,3 +25,15 @@ The **Special message** field is intended just for this purpose. Messages here w
    :align: center
 
 
+
+
+Cancellations
+-------------
+
+Rather than delete a cancelled talk, you have the option to change the **Status** to *Cancelled*. The talk will appear in listings with the Cancelled status flagged in red. 
+
+.. image:: images/last-minute-changes/cancellations.png
+   :alt: Cancellations
+   :height: 110px
+   :width: 339px
+   :align: center

@@ -1,3 +1,6 @@
+
+
+
 Create a talk
 =============
 
@@ -8,8 +11,8 @@ The New Talk form
 
 .. image:: images/create-a-talk/the-new-talk-form.png
    :alt: The New Talk form
-   :height: 162px
-   :width: 737px
+   :height: 168px
+   :width: 775px
    :align: center
 
 
@@ -47,7 +50,7 @@ Start and End
    :align: center
 
 
-Clicking anywhere in the **Start** field will make the calendar picker appear. Select the month and day and the picker will automatically switch to time options.
+Clicking anywhere in the **Start** field will make the calendar picker appear. 
 
 Once you have finished selecting the **Start** date and time, the **End** field will automatically be set to an hour later. You can change this by clicking in the End field.
 

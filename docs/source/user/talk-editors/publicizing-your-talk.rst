@@ -70,12 +70,12 @@ Adding an abstract
 
 Keywords in the talk abstract will be used for searching, so please add the abstract if you have it. 
 
-Public lists
-------------
+Public Collections
+------------------
 
-.. Note:: |upcoming|
+.. Note:: |changes|
 
-As well as topic and department listings, there may be some more *ad hoc* listings you would like your talk to be included in.  You can set up a Public List to collect together talks relevant to a particular theme, enterprise or project within the University - Athena Swan is a good example. 
+As well as topic and department listings, there may be some more *ad hoc* listings you would like your talk to be included in.  You can set up a Public Collection to collect together talks relevant to a particular theme, enterprise or project within the University - Athena Swan is a good example. 
 
 * Follow the instructions in the User Guide - :doc:`Collect talks you are interested in <../talk-users/make-a-list>` - to create and publish a list
 * You can also allow other Talks Editors to add talks to your list - see the :doc:`Sharing Editing <share-editing>` section for more details
