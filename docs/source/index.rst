@@ -27,6 +27,7 @@ Oxford Talks
     user/general/log-in
     user/general/terms
     user/general/organisers
+    user/general/release-notes-2016-5
 
 .. toctree::
     :maxdepth: 1
