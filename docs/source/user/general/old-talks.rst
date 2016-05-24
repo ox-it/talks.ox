@@ -21,4 +21,4 @@ or, for a table (but not quite so much information)
 
      http://old.talks.ox.ac.uk/show/table/[ID number]?layout=empty&start_time=0
 
-4. You can copy and paste this into Notepad or a similar plain text app.
+4. You can copy and paste the information on the resulting web page into Notepad or a similar plain text app.
