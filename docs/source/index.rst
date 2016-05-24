@@ -28,6 +28,7 @@ Oxford Talks
     user/general/terms
     user/general/organisers
     user/general/release-notes-2016-5
+    user/general/old-talks
 
 .. toctree::
     :maxdepth: 1
