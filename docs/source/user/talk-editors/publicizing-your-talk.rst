@@ -22,6 +22,8 @@ Go to the **Topics** field on the Add talk form. Start typing and you will be of
 
 Please start with broader topics first e.g.: 'Neuroscience' or 'Ancient History', and then add narrower topics in the specialist area of the talk e.g.: 'Molecular Neurobiology' or 'Naval Warfare'.
 
+There are some further hints in the :doc:`Identifying suitable topics <identifying-topic>` section of this guide
+
 
 
 Viewing topic listings
@@ -31,11 +33,11 @@ To see a listing of talks for a specific topic, type the topic name into the sit
 
 The talks site will create a listing for any topic if you provide the FAST Topic URI e.g.:
 
-`https://new.talks.ox.ac.uk/talks/topics/id/?uri=http://id.worldcat.org/fast/1120819 <https://new.talks.ox.ac.uk/talks/topics/id/?uri=http://id.worldcat.org/fast/1120819>`_ 
+`https://talks.ox.ac.uk/talks/topics/id/?uri=http://id.worldcat.org/fast/1120819 <https://new.talks.ox.ac.uk/talks/topics/id/?uri=http://id.worldcat.org/fast/1120819>`_ 
 
 You can search for the FAST Topic URI here:
 
-`https://new.talks.ox.ac.uk/topics/search?q=sleep <https://new.talks.ox.ac.uk/topics/search?q=sleep>`_ 
+`https://talks.ox.ac.uk/topics/search?q=sleep <https://new.talks.ox.ac.uk/topics/search?q=sleep>`_ 
 
 look for a phrase like this in the results:
 

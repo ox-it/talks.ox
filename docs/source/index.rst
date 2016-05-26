@@ -44,6 +44,7 @@ Oxford Talks
     user/talk-editors/last-minute-changes
     user/talk-editors/share-editing
     user/talk-editors/people-details
+    user/talk-editors/identifying-topic
 
 
 
