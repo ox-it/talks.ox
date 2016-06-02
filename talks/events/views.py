@@ -361,15 +361,24 @@ def show_topic(request):
         return render(request, 'events/topic.html', context)
 
 def list_topics(request):
-    topics = TopicItem.objects.distinct()
+    
+    topics = TopicItem.objects.distinct('uri')
+    
     topics_results = []
-
+    
     for topic in topics.all():
-        events = Event.objects.filter(topics__uri=topic.uri)
-        if(len(events)>0):
-            api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
-            if api_topic not in topics_results:
-                topics_results.append(api_topic)
+        api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
+        topics_results.append(api_topic)
+    
+    # topics = TopicItem.objects.distinct()
+    # topics_results = []
+    # 
+    # for topic in topics.all():
+    #     events = Event.objects.filter(topics__uri=topic.uri)
+    #     if(len(events)>0):
+    #         api_topic = TOPICS_DATA_SOURCE.get_object_by_id(topic.uri)
+    #         if api_topic not in topics_results:
+    #             topics_results.append(api_topic)
 
     topics_results.sort(key=lambda topic:topic['prefLabel'])
 
