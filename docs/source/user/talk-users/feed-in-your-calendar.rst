@@ -1,4 +1,4 @@
-.. Note:: |upcoming| 
+
 
 
 Get an up-to-date feed in your own calendar
@@ -12,7 +12,7 @@ Get the feed URL
 ----------------
 
 * Find the series you would like to subscribe to
-* Right click on the **add to your calendar** button to copy the feed to URL to your clipboard (the **Copy Shortcut** or **Copy Link Address** option)
+* Right click on the **add to your calendar** button to copy the feed to URL to your clipboard (the **Copy Shortcut** or **Copy Link Address** option) 
 
 .. image:: images/feed-in-your-calendar/get-the-feed-url.png
    :alt: Get the feed URL
@@ -35,21 +35,21 @@ Outlook
    :align: center
 
 
-* Paste the URL into the **New Internet Calendar Subscription** box
+* Paste the URL into the **New Internet Calendar Subscription** box 
 * Click **OK**
 
 .. image:: images/feed-in-your-calendar/259b158e-511c-4d98-a0d9-aa04f7f2a2bc.png
-   :alt:
+   :alt: 
    :height: 206px
    :width: 440px
    :align: center
 
 
-* The calendar takes the last part of the web address as its name (for example: aed697e6-1a92-473d-a686-f77487689e0b.ics)
+* The calendar takes the last part of the web address as its name (for example: aed697e6-1a92-473d-a686-f77487689e0b.ics) 
 * To change the name click **Advanced ...**
 
 .. image:: images/feed-in-your-calendar/05c12bfe-f11a-4fed-ac29-69a32b196c1b.png
-   :alt:
+   :alt: 
    :height: 245px
    :width: 452px
    :align: center
@@ -59,7 +59,7 @@ Outlook
 #. Click **OK**
 
 .. image:: images/feed-in-your-calendar/2ff94965-ef90-4a28-9727-4fc7c5c024d1.png
-   :alt:
+   :alt: 
    :height: 387px
    :width: 600px
    :align: center
@@ -69,7 +69,7 @@ Outlook
 * The calendar will open as a new calendar in Outlook
 
 .. image:: images/feed-in-your-calendar/bace9430-3270-44c4-b3e5-fb1f5b5422f5.png
-   :alt:
+   :alt: 
    :height: 227px
    :width: 425px
    :align: center
@@ -94,7 +94,7 @@ Calendar (Mac)
 * Click **Subscribe**
 
 .. image:: images/feed-in-your-calendar/6c7df1e8-27fb-43f8-977a-bb481c49e3ca.png
-   :alt:
+   :alt: 
    :height: 194px
    :width: 594px
    :align: center
@@ -109,7 +109,7 @@ You will be asked to confirm the settings:
 
 
 .. image:: images/feed-in-your-calendar/18e90ec9-3a2d-4f0a-b12a-6c55535cc4cf.png
-   :alt:
+   :alt: 
    :height: 371px
    :width: 586px
    :align: center
@@ -119,7 +119,7 @@ You will be asked to confirm the settings:
 * The little wireless symbol reminds you that it is a subscription to a calendar feed
 
 .. image:: images/feed-in-your-calendar/7a0d4fa3-d429-4a44-a059-b61a512c7e74.png
-   :alt:
+   :alt: 
    :height: 239px
    :width: 362px
    :align: center
@@ -139,11 +139,11 @@ Google Calendar
    :align: center
 
 
-* Paste the feed URL into the **URL** box
+* Paste the feed URL into the **URL** box 
 * Click **Add Calendar**
 
 .. image:: images/feed-in-your-calendar/654d4252-95f3-4336-b485-b3266858bed5.png
-   :alt:
+   :alt: 
    :height: 272px
    :width: 593px
    :align: center
@@ -153,7 +153,7 @@ Google Calendar
 #. Click the calendar's drop-down list and select **Calendar settings** to change the name of the calendar to something more readable
 
 .. image:: images/feed-in-your-calendar/d1a25472-216a-4056-bf0d-c2c1fac769cd.png
-   :alt:
+   :alt: 
    :height: 318px
    :width: 517px
    :align: center

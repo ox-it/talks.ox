@@ -4,7 +4,7 @@
 Sharing editing
 ===============
 
-You can share the editing of a series or an individual talk or a list with another Talks Editor
+You can share the editing of a series or an individual talk or a collection with another Talks Editor
 
 Series of Talks
 ---------------
@@ -29,15 +29,13 @@ If you share editing of a Series with a Talks Editor, then they will have the ri
 
 You can adjust this in the **Other Editors** field of the individual talk.
 
-Lists
------
+Collections
+-----------
 
-.. Note:: |upcoming|
+Once you have signed an editor up to your collection they will see it on their **Manage Collections** page and will find the collection available in the dropdown box on each talk, series and department or unit page.
 
-Once you have signed an editor up to your list they will see it on their **Manage Lists** page and will find the list available in the dropdown box on each talk and series page.
-
-.. image:: images/share-editing/lists.png
-   :alt: Lists
-   :height: 300px
-   :width: 493px
+.. image:: images/share-editing/collections.png
+   :alt: Collections
+   :height: 334px
+   :width: 614px
    :align: center

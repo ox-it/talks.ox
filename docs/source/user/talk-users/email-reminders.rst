@@ -1,10 +1,10 @@
-.. Note:: |upcoming| 
+
 
 
 Set up email reminders
 ======================
 
-Reminders and notifications by email are scheduled for the next phase of development. Meanwhile, there are a few limited options to set up email reminders using your own calendar.
+Reminders and notifications by email are not yet available. Meanwhile, there are a few limited options to set up email reminders using your own calendar.
 
 Google Calendar
 ---------------

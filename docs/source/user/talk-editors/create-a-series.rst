@@ -1,3 +1,6 @@
+
+
+
 Create a series of talks
 ========================
 
@@ -8,8 +11,8 @@ via Add Talk
 
 .. image:: images/create-a-series/via-add-talk.png
    :alt: via Add Talk
-   :height: 307px
-   :width: 741px
+   :height: 377px
+   :width: 791px
    :align: center
 
 
@@ -24,8 +27,8 @@ via the Dashboard
 
 .. image:: images/create-a-series/via-the-dashboard.png
    :alt: via the Dashboard
-   :height: 256px
-   :width: 590px
+   :height: 310px
+   :width: 681px
    :align: center
 
 
