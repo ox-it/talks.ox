@@ -105,32 +105,58 @@ def browse_events(request):
     old_query = request.META['QUERY_STRING']
     dates_start = old_query.find("start_date=")
     dates_end = dates_start + 35
+    
     today = date.today()
     offset_Sunday = (6 - today.weekday()) % 7 # weekday(): Monday=0 .... Sunday=6
+    
+    query_params_all = request.GET.copy()
+    query_params_all['start_date']=str(today)
+    query_params_all.pop('to', None)
+    
+    query_params_today = request.GET.copy()
+    query_params_today['start_date']=str(today)
+    query_params_today['to']=str(today)
+    
+    query_params_tomorrow = request.GET.copy()
+    query_params_tomorrow['start_date']=str(today+timedelta(days=1))
+    query_params_tomorrow['to']=str(today+timedelta(days=2))
+    
+    query_params_this_week = request.GET.copy()
+    query_params_this_week['start_date']=str(today)
+    query_params_this_week['to']=str(today+timedelta(days=offset_Sunday))
+    
+    query_params_next_week = request.GET.copy()
+    query_params_next_week['start_date']=str(today+timedelta(days=offset_Sunday+1))
+    query_params_next_week['to']=str(today+timedelta(days=offset_Sunday+7))
+    
+    query_params_next_30days = request.GET.copy()
+    query_params_next_30days['start_date']=str(today)
+    query_params_next_30days['to']=str(today+timedelta(days=30))
+    
     tab_dates = [
         {
             'label': 'All',
-            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + old_query[dates_end:],
+            'href': 'browse?' + query_params_all.urlencode(),
             'active': False
         }, {
             'label': 'Today',
-            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today) + old_query[dates_end:],
+            'href': 'browse?' + query_params_today.urlencode(),
             'active': False
         }, {
             'label': 'Tomorrow',
-            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=1)) + '&to=' + str(today+timedelta(days=1)) + old_query[dates_end:],
+            'href': 'browse?' + query_params_tomorrow.urlencode(),
             'active': False
         }, {
             'label': 'This week',
-            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=offset_Sunday)) + old_query[dates_end:],
+            'href': 'browse?' + query_params_this_week.urlencode(),
             'active': False
         }, {
             'label': 'Next week',
-            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today+timedelta(days=offset_Sunday+1)) + '&to=' + str(today+timedelta(days=offset_Sunday+7)) + old_query[dates_end:],
+            'href': 'browse?' + query_params_next_week.urlencode(),
             'active': False
         }, {
             'label': 'Next 30 days',
-            'href': 'browse?' + old_query[:dates_start] + 'start_date='+ str(today) + '&to=' + str(today+timedelta(days=30)) + old_query[dates_end:],
+            'href': 'browse?' + query_params_next_30days.urlencode(),
             'active': False
         }
    ]
