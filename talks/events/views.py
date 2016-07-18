@@ -13,7 +13,7 @@ from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE,
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 from .forms import BrowseEventsForm, BrowseSeriesForm
 from talks.api.services import events_search
-from talks.api_ox.api import ApiException, OxfordDateResource
+from talks.api_ox.api import OxfordDateResource
 
 logger = logging.getLogger(__name__)
 
@@ -205,16 +205,12 @@ def group_events (events):
         group_event.display_time = group_event.formatted_time
         # if there is no oxford_date field, events are search results
         # we need to call date_to_oxford_date to create the oxford date
-        # print group_event.oxford_date
         if not group_event.oxford_date:
-            try:
-                group_event.oxford_date = date_to_oxford_date(group_event.start)
-                comps = group_event.oxford_date.components
-                key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
-                key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
-            except Exception:
-                key = group_event.start.strftime("%A %d %B %Y")
+            group_event.oxford_date = date_to_oxford_date(group_event.start)
 
+        comps = group_event.oxford_date.components
+        key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
+        key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
         
         if key not in grouped_events:
             grouped_events[key] = []
