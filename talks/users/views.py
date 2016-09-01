@@ -90,7 +90,7 @@ def view_collection(request, collection_slug):
 
 
 
-
+@login_required
 def my_talks(request):
     grouped_events = None
     collections = request.tuser.collections.all()
