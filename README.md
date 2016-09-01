@@ -102,3 +102,11 @@ Run all tests:
 ## Using Solr
 
 See `solr/README.md`
+
+## Deployment
+
+SSH key needs to be on the server for the talks user (talks@talks-prod.oucs.ox.ac.uk)
+
+```
+fab production deploy:master
+```
