@@ -8,6 +8,9 @@ from django.core.cache import caches as django_caches
 
 log = logging.getLogger(__name__)
 
+# timeout (in seconds) for external requests
+FETCH_EXTERNAL_API_TIMEOUT = 2
+
 
 class Typeahead(forms.TextInput):
     """
@@ -140,7 +143,7 @@ class DataSource(object):
         if missing:
             url = self.get_prefetch_url(missing)
             log.debug("prefetch_url: %s", url)
-            response = requests.get(url)
+            response = requests.get(url, timeout=FETCH_EXTERNAL_API_TIMEOUT)
             response.raise_for_status()
             fetched = get_objects_from_response(response, self.prefetch_response_expression, self.as_list)
             log.debug("fetched from response: %s", fetched)
