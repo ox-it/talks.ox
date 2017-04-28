@@ -457,3 +457,9 @@ class TalksUserCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('user', 'collection', 'role')
         model = TalksUserCollection
+
+class TalksUserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        fields = ('id', 'user')
+        model = TalksUser

@@ -51,6 +51,12 @@ USERS_EMAIL_EXACT_DATA_SOURCE = typeahead.DjangoModelDataSource(
     display_key='email',
     serializer=serializers.UserSerializer
 )
+TALKSUSERS_EMAIL_EXACT_DATA_SOURCE = typeahead.DjangoModelDataSource(
+    'talksusers',
+    url='/api/talksuser/suggest/exact?q=%QUERY',
+    display_key='email',
+    serializer=serializers.TalksUserSerializer
+)
 SERIES_DATA_SOURCE_BY_SLUG = typeahead.DjangoModelDataSource(
     'series',
     url='/api/series/suggest?q=%QUERY',

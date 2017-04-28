@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.query_utils import Q
 
 from talks.events import typeahead, datasources
+from django.contrib.auth.models import User
 from talks.users.models import Collection, TalksUser, TalksUserCollection, DEFAULT_COLLECTION_NAME, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER, COLLECTION_ROLES_OWNER
 from talks.contributors.forms import XMLFriendlyTextField
 
@@ -22,7 +23,7 @@ class CollectionForm(forms.ModelForm):
         label="Other Editors",
         help_text="Share editing with another Talks Editor by typing in their full email address",
         required=False,
-        widget=typeahead.MultipleTypeahead(datasources.USERS_EMAIL_EXACT_DATA_SOURCE),
+        widget=typeahead.MultipleTypeahead(datasources.TALKSUSERS_EMAIL_EXACT_DATA_SOURCE),
     )
     class Meta:
         model = Collection
