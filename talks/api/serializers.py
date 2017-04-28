@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 
 from talks.events.models import Event, Person, EventGroup
-from talks.users.models import CollectionItem, TalksUserCollection, Collection, CollectedDepartment
+from talks.users.models import CollectionItem, TalksUserCollection, Collection, CollectedDepartment, TalksUser
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -459,7 +459,11 @@ class TalksUserCollectionSerializer(serializers.ModelSerializer):
         model = TalksUserCollection
 
 class TalksUserSerializer(serializers.ModelSerializer):
-    
+    email = serializers.SerializerMethodField()
+
+    def get_email(self,obj):
+        return obj.user.email
+            
     class Meta:
-        fields = ('id', 'user')
+        fields = ('id', 'user', 'email')
         model = TalksUser
