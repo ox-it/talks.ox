@@ -82,7 +82,7 @@ def suggest_user_by_complete_email_address(request):
 def suggest_talksuser_by_complete_email_address(request):
     query = request.GET.get('q', '')
     talksusers = TalksUser.objects.filter(user__email=query)
-    serializer = TalksUserSerializer(users, many=True)
+    serializer = TalksUserSerializer(talksusers, many=True)
     return Response(serializer.data)
 
 
