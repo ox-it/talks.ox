@@ -15,11 +15,11 @@ from rest_framework.response import Response
 
 from talks.events.models import Event, EventGroup, Person
 from talks.users.authentication import GROUP_EDIT_EVENTS, user_in_group_or_super
-from talks.users.models import Collection, TalksUserCollection, CollectedDepartment, COLLECTION_ROLES_READER
+from talks.users.models import Collection, TalksUser, TalksUserCollection, CollectedDepartment, COLLECTION_ROLES_READER
 from talks.api.serializers import (PersonSerializer, EventGroupSerializer, UserSerializer,
-                                   CollectionItemSerializer, TalksUserCollectionSerializer, get_item_serializer, HALEventSerializer,
-                                   HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer, HALCollectionSerializer,
-                                   HALPersonSerializer)
+                                    CollectionItemSerializer, TalksUserSerializer, TalksUserCollectionSerializer, get_item_serializer,
+                                    HALEventSerializer, HALEventGroupSerializer, HALSearchResultSerializer, EventSerializer,
+                                    HALCollectionSerializer, HALPersonSerializer)
 from talks.api.services import events_search, get_event_by_slug, get_eventgroup_by_slug
 from talks.core.renderers import ICalRenderer
 from talks.core.utils import parse_date
@@ -74,6 +74,15 @@ def suggest_user_by_complete_email_address(request):
     query = request.GET.get('q', '')
     users = User.objects.filter(email=query)
     serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+@api_view(["GET"])
+@authentication_classes((SessionAuthentication,))
+@permission_classes((IsAuthenticated, IsSuperuserOrContributor,))
+def suggest_talksuser_by_complete_email_address(request):
+    query = request.GET.get('q', '')
+    talksusers = TalksUser.objects.filter(user__email=query)
+    serializer = TalksUserSerializer(talksusers, many=True)
     return Response(serializer.data)
 
 

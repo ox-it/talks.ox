@@ -3,7 +3,8 @@ from django.conf.urls import patterns, url
 from .views import (api_event_search_hal, api_event_search_ics, api_event_get, api_event_get_ics,
                     api_event_group, get_event_group, suggest_event_group, api_event_group_ics,
                     suggest_user, suggest_user_by_complete_email_address, api_person, api_person_ics, suggest_person, api_create_person,
-                    save_item, remove_item, subscribe_to_list, unsubscribe_from_list, api_collection, api_collection_ics)
+                    save_item, remove_item, subscribe_to_list, unsubscribe_from_list, api_collection, api_collection_ics,
+                    suggest_talksuser_by_complete_email_address)
 
 
 urlpatterns = patterns('',
@@ -17,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^talks/(?P<slug>[^/]+)', api_event_get, name='event-detail'),
     url(r'^user/suggest$', suggest_user, name='api-user-suggest'),
     url(r'^user/suggest/exact$', suggest_user_by_complete_email_address, name='api-user-suggest-exact'),
+    url(r'^talksuser/suggest/exact$', suggest_talksuser_by_complete_email_address, name='api-talksuser-suggest-exact'),
     url(r'^persons/new$', api_create_person, name='api-person-create'),
     url(r'^persons/suggest$', suggest_person, name='api-person-suggest'),
     url(r'^person/(?P<person_slug>[^/]+).ics', api_person_ics, name='api-person-ics'),
