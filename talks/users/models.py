@@ -194,10 +194,10 @@ class Collection(models.Model):
         return textile_restricted(self.description, auto_link=True, lite=False)
 
     def user_can_edit(self, user):
-        return self.editor_set.filter(id=user.id, talksusercollection__role=COLLECTION_ROLES_OWNER).exists()
+        return self.editor_set.filter(user_id=user.id, talksusercollection__role=COLLECTION_ROLES_OWNER).exists()
 
     def user_can_view(self, user):
-        return self.editor_set.filter(id=user.id, talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER]).exists()
+        return self.editor_set.filter(user_id=user.id, talksusercollection__role__in=[COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER]).exists()
 
     def get_number_of_readers(self):
         """
