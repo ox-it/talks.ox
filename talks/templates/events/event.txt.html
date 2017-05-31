@@ -52,11 +52,14 @@
   Venue to be announced
 {% endif %}
 
-<br>Speaker{{ speakers|pluralize }}:
+{% if event.various_speakers %}
+  <br>Speaker: Various Speakers
+{% else %}
+  <br>Speaker{{ speakers|pluralize }}:
 {% for speaker in speakers %}
-    {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+  {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
 {% empty %}
-    Speaker to be announced
+  Speaker to be announced
 {% endfor %}
 
 {% if event.api_organisation %}
