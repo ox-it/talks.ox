@@ -56,11 +56,12 @@
   <br>Speaker: Various Speakers
 {% else %}
   <br>Speaker{{ speakers|pluralize }}:
-{% for speaker in speakers %}
-  {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
-{% empty %}
-  Speaker to be announced
-{% endfor %}
+  {% for speaker in speakers %}
+    {{ speaker.name}}{% if speaker.bio %} ({{ speaker.bio }}){% endif %}{% if not forloop.last %}, {% endif %}
+  {% empty %}
+    Speaker to be announced
+  {% endfor %}
+{% endif %}
 
 {% if event.api_organisation %}
     <br>Organising department:
