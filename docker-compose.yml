@@ -2,10 +2,14 @@ solr:
     build: solr
     ports:
         - "8983:8983"
-db:
+postgres:
     image: postgres
     ports:
         - "5432:5432"
+postgres2:
+    image: postgres
+    ports:
+      - 5433:5432
 web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000 --settings=talks.settings_docker
@@ -14,6 +18,18 @@ web:
     ports:
         - "8000:8000"
     links:
-        - db
+        - postgres
         - solr
-
+phpPgAdmin:
+    container_name: phppgadmin
+    image: fizix/docker-pgadmin:php-fpm-environment
+    environment:
+        - POSTGRESQL_HOST=postgres
+        - POSTGRESQL_PORT=5432
+        - POSTGRESQL_DEFAULT_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+    ports:
+        - 80:80
+    links:
+        - postgres
