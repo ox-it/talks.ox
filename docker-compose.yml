@@ -6,7 +6,7 @@ postgres:
     image: postgres
     ports:
         - "5432:5432"
-postres2:
+postgres2:
     image: postgres
     ports:
       - 5433:5432
