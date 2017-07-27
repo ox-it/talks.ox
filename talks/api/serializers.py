@@ -68,7 +68,7 @@ class EventSerializer(serializers.ModelSerializer):
                 if location.get('address'):
                     location_string += ", " + location.get('address')
                 return location_string
-        elif event.location_details:
+        if event.location_details:
             name = event.location_details
             return name
         else:
