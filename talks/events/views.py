@@ -11,9 +11,13 @@ from .models import Event, EventGroup, Person, TopicItem
 from talks.events.models import ROLES_SPEAKER, ROLES_HOST, ROLES_ORGANISER
 from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE, DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
-from .forms import BrowseEventsForm, BrowseSeriesForm
+from talks.users.models import Collection
+from .forms import BrowseEventsForm, BrowseSeriesForm, CreateDigestForm
 from talks.api.services import events_search
 from talks.api_ox.api import OxfordDateResource
+
+from talks.core.utils import parse_date
+
 
 logger = logging.getLogger(__name__)
 
@@ -478,3 +482,50 @@ def list_departments(request):
     context = {}
 
     return render(request, 'events/department_list.html', context)
+    
+def create_digest(request):
+    modified_request_parameters = request.GET.copy()
+    modified_request_parameters['subdepartments'] = "false"
+    if (len(request.GET) == 0):
+        today = date.today()
+        modified_request_parameters['start_date'] = today.strftime("%d/%m/%Y")
+        modified_request_parameters['include_subdepartments'] = True
+        modified_request_parameters['subdepartments'] = 'true'
+    elif request.GET.get('include_subdepartments'):
+        modified_request_parameters['include_subdepartments'] = True
+        modified_request_parameters['subdepartments'] = 'true'
+    else:
+        modified_request_parameters['include_subdepartments'] = False
+        modified_request_parameters['subdepartments'] = 'false'
+
+    create_digest_form = CreateDigestForm(modified_request_parameters)
+    
+    start_date = parse_date(modified_request_parameters.get('start_date'))
+    end_date = parse_date(modified_request_parameters.get('to'))
+    to_date = end_date+timedelta(1)
+    
+    if 'collectionid' in modified_request_parameters:
+        collection = Collection.objects.get(slug=modified_request_parameters.get('collectionid'))
+        events = collection.get_all_events().filter(start__gte=start_date,
+                                                    start__lt=to_date)
+        
+    else:
+        events = events_search(modified_request_parameters)
+
+
+    grouped_events_oxford = group_events(events)
+    
+    grouped_events = []
+    for grouped_event in grouped_events_oxford:
+        grouped_events.append({"start_date":grouped_event['start_date'].partition('(')[0].strip()[:-5], 
+                               "gr_events":grouped_event["gr_events"]})
+        
+
+    context = {
+        'events': events,
+        'grouped_events': grouped_events,
+        'create_digest_form': create_digest_form,
+        'start_date': start_date,
+        'end_date': end_date,
+        }
+    return render(request, 'events/digest.html', context)

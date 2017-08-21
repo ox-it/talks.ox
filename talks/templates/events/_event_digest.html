@@ -1,0 +1,50 @@
+{% for grouped_event in grouped_events %}
+
+    <p style="font-family: Arial,sans-serif; font-size: 16px; color: #1e429d; display: block; margin-top: 12px; padding-bottom: 0px; border-bottom: 2px solid #5a82ad;">{{grouped_event.start_date}}</p>
+
+    {% for event in grouped_event.gr_events %}
+         <p style="font-family: Arial,sans-serif; font-size: 12px; font-weight: normal; line-height:18px; color: #303030; margin-top: 10px;">
+        <span style="font-size: 14px;">{{ event.start|date:"fA" }}
+         <a href="{{ event.get_absolute_url }}" title="{{ event.title_display }}">{{ event.title_display }}</a></span> <br />
+         {% if event.various_speakers %}
+         <span style="font-weight: bold;">Various Speakers</span><br />
+         {% elif event.speakers %}
+         		{% for speaker in event.speakers %}
+            <span style="font-weight: bold;"> {{ speaker.name}}{% if not forloop.last %}, {% endif %}</span>
+         	    {% endfor %}<br />
+         {% endif %}
+         
+
+        
+         {% if event.is_cancelled %}         
+         <span>Please note this talk has been cancelled</span>         
+         {% endif %}
+         
+         {% if not event.is_cancelled %}
+         
+         {% if event.special_message %}
+           <span style="font-style: italic;">{{ event.special_message }}</span><br />
+         {% endif %}
+        
+         {% if event.group %}            
+         <a href="{{ event.group.get_absolute_url }}">{{event.group}}</a><br />
+         {% endif %}
+         
+         {% if event.location %}
+         <span>{{ event.api_location.name}}, {{ event.api_location.address }}
+         {% if event.location_details %} {{event.location_details}}
+         {% endif %}
+         </span><br />
+         {% endif %}
+         
+        <a href="{{ event.get_ics_url }}">Download to your calendar</a> | <a href="{{ event.get_absolute_url}}" >Oxford Talks</a>
+        
+        {% if event.booking_url %} | <a href="{{ event.booking_url }}">Book</a>
+        
+        {% endif %}
+                  
+         {% endif %}
+     </p>
+    {% endfor %}
+
+{% endfor %}

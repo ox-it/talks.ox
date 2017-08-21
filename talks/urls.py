@@ -4,7 +4,7 @@ from django.contrib import admin
 from django_webauth.views import LoginView
 from django.views.generic.base import RedirectView
 
-from talks.events.views import (homepage, browse_events)
+from talks.events.views import (homepage, browse_events, create_digest)
 from talks.events_search.forms import DateFacetedSearchForm
 from talks.events_search.views import SearchPastView, SearchUpcomingView
 from talks.events_search.conf import sqs, sqs_past
@@ -30,6 +30,7 @@ urlpatterns = patterns('',
         name='haystack_search_past'),
     url(r'^$', browse_events, name='homepage'),
     url(r'^browse$', browse_events, name='browse_events'),
+    url(r'^digest$', create_digest, name='create_digest'),
     url(r'^talks/', include(events_urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^audit/', include(audit_urls, namespace='audit')),

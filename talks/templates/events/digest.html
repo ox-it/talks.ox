@@ -1,0 +1,164 @@
+{% extends "layouts/2-column.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Events{% endblock %}
+
+{% block extrahead %}
+
+<!-- Date picker -->
+<link href="{% static "css/bootstrap-datetimepicker.css"%}" rel="stylesheet">
+<script src="{% static "js/moment-with-locales.min.js"%}"></script>
+<script src="{% static "js/bootstrap-datetimepicker.js"%}"></script>
+
+<!-- Typeahead.js -->
+<script src="{% static "js/typeahead.bundle.js"%}"></script>
+
+<!-- our Typeahead styling -->
+<link href="{% static "css/typeahead.css"%}" rel="stylesheet">
+
+<script src="{% static "js/form-controls.js"%}"></script>
+<script src="{% static "js/collapse-panel.js"%}"></script>
+
+{% endblock %}
+
+
+{% block topcontent %}
+
+{% endblock %}
+
+{% block side %}
+
+
+
+{% endblock %}
+
+
+{% block main %}
+
+
+    {% if grouped_events %}
+    
+<table width="98%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+
+  <tr>
+    <td>
+<table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+<tr>
+<td>
+<table border="0">
+          <tr>
+            <td width="595" valign="bottom"><p style="font-family: Arial,sans-serif; font-size: 18px; color: #051354;">Medical Sciences Division What's On</p></td>
+            <td width="105" rowspan="3"><img src="http://www.medsci.ox.ac.uk/newsletters/june-2013/images/university-logo" width="105" height="105" style="display:block;" alt="University of Oxford logo &nbsp;" longdesc="http://www.ox.ac.uk"></td>
+          </tr>
+          <tr>
+        <td width="595" height="40" valign="bottom">
+
+                <p style="font-family: Arial,sans-serif; font-size: 30px; color: #051354;">
+        Events and Seminars
+    </p>
+
+              </td>
+          </tr>
+          <tr>
+            <td>
+            <p style="font-family: Arial,sans-serif; font-size: 18px; line-height:18px; color: #051354;">
+                <span>Monday 18 August 2014</span> - <span>Sunday 24 August 2014</span></p>
+            </td>
+            </tr>
+
+             <tr>
+
+<td valign="bottom" height="30">
+
+<p style="font-family: Arial,sans-serif; font-size: 14px; line-height:18px; color: #303030; padding: 0px 7px 0px 0px;">
+
+Check the up-to-date list on <a href="http://talks.ox.ac.uk">Oxford Talks</a>
+
+</p>
+
+</td>
+</tr>
+</table>
+        
+</td>
+</tr>
+<tr>
+<td>
+
+        {% include 'events/_event_digest.html' %}      
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>        
+        
+    
+    {% else %}
+     <div>
+            
+             <div class="visible-xs">
+                 <a data-toggle="collapse" href="#collapse-browse" class="btn btn-primary">Browse</a>
+                 <!-- these lines make filters and date range tabs expand separately-->
+                 <!-- <a data-toggle="collapse" href="#collapse-filters"><h3>Filters</h3></a> -->
+                 <!-- <a data-toggle="collapse" href="#collapse-date-range-tabs" class="btn btn-primary">Date range tabs</a> -->
+                 <a data-toggle="collapse" href="#" data-target="#collapse-date-range-tabs,#collapse-filters" class="btn btn-primary">Filter</a>
+             </div>
+            
+
+
+             <div class="panel-group" data-parent="collapse-menu-group">
+               <h3 class="hidden-xs">Digest Creator</h3>
+
+                 <div id="collapse-filters" class="panel-collapse collapse" data-parent="collapse-menu-group">
+                   <ul class="nav nav-list well">
+                     <form action="{% url 'create_digest' %}" method="get">
+                         {{ create_digest_form.digest_title | bootstrap }}
+                         {{ create_digest_form.start_date | bootstrap }}
+                         <a id="clear-datepicker" class="pull-right" href="#">clear</a>
+                         {{ create_digest_form.to | bootstrap }}
+                         {{ create_digest_form.organising_department | bootstrap }}
+                         {{ create_digest_form.include_subdepartments | bootstrap }}
+                         {{ create_digest_form.seriesid | bootstrap }}
+                         {{ create_digest_form.collectionid | bootstrap }}
+                        
+
+                         <a href="{% url 'create_digest' %}" class="btn btn-default pull-left resp-width">Reset Filters</a>
+                         <button type="submit" class="btn btn-primary pull-right resp-width">Submit</button>
+                     </form>
+
+                     <script type="text/javascript">
+                       $(document).ready(function(){
+                        
+                         $('#clear-datepicker').click(function(e){
+                           $('#to').data("DateTimePicker").clear();  
+                         });
+                        
+                         $('.js-datetimepicker').datetimepicker({
+               format : 'DD/MM/YYYY',
+                           allowInputToggle : true
+                         }).each(function(i,v){
+                           $(v).data("DateTimePicker").ignoreReadonly(true);  
+                         });
+                        
+                         $('#start_date').on('dp.change', function(e){
+                           $('#to').data('DateTimePicker').minDate(e.date);
+                         });
+
+                       });
+                     </script>
+
+                   </ul>
+                 </div>
+               </div>
+
+
+      
+
+
+
+     </div> 
+    {% endif %}
+
+{% endblock %}

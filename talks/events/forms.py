@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 
 from talks.events import typeahead, datasources
+from talks.users.models import Collection
 
 from talks.contributors.forms import BootstrappedDateTimeWidget, OxPointField
 
@@ -35,7 +36,8 @@ class BrowseEventsForm(forms.Form):
                                          label="Series",
                                          required=False,
                                          help_text="Type series name and select from the list.")
-
+    
+    
     def clean(self):
         cleaned_data = self.cleaned_data
         start_date = cleaned_data.get('start_date')
@@ -47,3 +49,46 @@ class BrowseEventsForm(forms.Form):
         # Ensure end date is after start date
         if end_date and (end_date < start_date):
             raise ValidationError({'to': 'End date must be after start date'})
+            
+            
+class CreateDigestForm(forms.Form):
+    digest_title = forms.CharField(label="Digest Title",
+                                   required=True,
+                                   initial="Type your digest title here"
+                                   )
+    start_date = forms.DateTimeField(label="Start Date",
+                                     required=True,
+                                     widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
+    to = forms.DateTimeField(label="End date",
+                             required=False,
+                             widget=BootstrappedDateTimeWidget(attrs={'readonly': True}))
+
+    organising_department = OxPointField(datasources.DEPARTMENT_DATA_SOURCE,
+                                         label="Department",
+                                         required=False,
+                                         help_text="Type department name and select from the list.")
+    include_subdepartments = forms.BooleanField(label="Include sub-departments?",
+                                        initial=True,
+                                        required=False)
+    seriesid = OxPointField(datasources.SERIES_DATA_SOURCE,
+                                         label="Series",
+                                         required=False,
+                                         help_text="Type series name and select from the list.")
+    collectionid = forms.ChoiceField(label="Collection",
+                                     required=False,
+                                     help_text="Choose a collection",
+                                     choices=[(x.slug, x.title) for x in Collection.objects.filter(public=True).order_by('title')])
+    
+        
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('to')
+
+        if not start_date:
+            raise ValidationError({'start_date': 'Start date is required'})
+
+        # Ensure end date is after start date
+        if end_date and (end_date < start_date):
+            raise ValidationError({'to': 'End date must be after start date'})
+
