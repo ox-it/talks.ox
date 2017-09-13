@@ -32,6 +32,7 @@ class TalksUserCollectionAdmin(admin.ModelAdmin):
             'fields' : ('collection', 'user')
         })
     , )
+    raw_id_fields = ('user',)
     
     def get_queryset(self, request):
         # only show owner relationships for public talks

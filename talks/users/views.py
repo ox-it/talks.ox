@@ -73,6 +73,10 @@ def view_collection(request, collection_slug):
     if request.tuser:
         collectionContributors = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_EDITOR)
 
+    collectionOwner = None
+    if request.tuser:
+        collectionOwner = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_OWNER)
+    
     context = {
         'collection' : collection,
         'show_all' : show_all,
@@ -80,7 +84,8 @@ def view_collection(request, collection_slug):
         'grouped_events': grouped_events,
         'event_groups' : series,
         'contributors' : collectionContributors,
-        'departments' : departments
+        'departments' : departments,
+        'owner': collectionOwner
     }
 
     if request.GET.get('format') == 'txt':
