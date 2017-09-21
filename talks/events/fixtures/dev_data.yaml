@@ -1,4 +1,18 @@
 - fields:
+    title: A conference
+    description: A conference featuring a diverse array of groups
+    group_type: CO
+    slug: a_conference
+  model: events.eventgroup
+  pk: 1
+- fields:
+    title: A seminar
+    description: A series of talks on something
+    group_type: SE
+    slug: a_seminar
+  model: events.eventgroup
+  pk: 2
+- fields:
     bio: JB
     email_address: 'email@email.com'
     name: James Bond
@@ -72,7 +86,7 @@
     end: 2015-12-10 14:00:00
     group: null
     location: 'oxpoints:23233672'
-    slug: deformation-and-melts-litosphere-astenosphere-boundary
+    slug: deformation-and-melts
     start: 2015-12-10 12:00:00
     title: Feedbacks between deformation and melts in the lithosphere-asthenosphere
       boundary
@@ -418,17 +432,3 @@
     permissions: [55, 56, 57, 43, 44, 45, 46, 47, 48, 52, 53, 54, 49, 50, 51]
   model: auth.group
   pk: 1
-- fields:
-    title: A conference
-    description: A conference featuring a diverse array of groups
-    group_type: CO
-    slug: a_conference
-  model: events.eventgroup
-  pk: 1
-- fields:
-    title: A seminar
-    description: A series of talks on something
-    group_type: SE
-    slug: a_seminar
-  model: events.eventgroup
-  pk: 2
