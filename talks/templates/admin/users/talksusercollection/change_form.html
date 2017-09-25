@@ -1,0 +1,28 @@
+{% extends "admin/change_form.html" %}
+{% load staticfiles %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media }}
+<script src='{% static "js/jquery-1.11.1.min.js" %}'></script>
+<script src='{% static "js/select2.min.js" %}'></script>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link href='{% static "css/select2.css" %}' rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+
+<script type="text/javascript">
+	
+	    $('#id_user').select2();
+
+	
+    
+</script>
+	
+{% endblock %}
+
