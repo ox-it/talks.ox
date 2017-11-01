@@ -25,7 +25,7 @@ class ICalRenderer(renderers.BaseRenderer):
     @staticmethod
     def _event_to_ics(e):
         event = Event()
-        event.add('summary', e['title_display'])
+        event.add('summary', e['ics_feed_title'])
 
         if 'description' in e:
             print 'got a description'
@@ -42,7 +42,7 @@ class ICalRenderer(renderers.BaseRenderer):
                 speakers_list = "\nSpeakers:\n Various Speakers"
             elif 'speakers' in e:
                 if len(e['speakers']):
-                    speakers_list = "\nSpeakers:\n" + ", ".join(get_speaker_name(speaker) for speaker in e['speakers'])
+                    speakers_list = "\nSpeakers:\n" + ", ".join(speaker['get_name_with_bio'] for speaker in e['speakers'])
             event.add('description', desc_status + desc_with_speakers + speakers_list)
 
         if 'start' in e:
@@ -58,17 +58,10 @@ class ICalRenderer(renderers.BaseRenderer):
         alarm = Alarm()
         alarm.add('action', 'display')
         alarm.add('trigger', timedelta(hours=-1))
-        alarm.add('description', "Talk:" + e['title_display'])
+        alarm.add('description', "Talk:" + e['ics_feed_title'])
         event.add_component(alarm)
 
         return event
-
-
-def get_speaker_name(speaker):
-    name = speaker['name']
-    if(speaker['bio']):
-        name += " (" + speaker['bio'] + ")"
-    return name
 
 def dt_string_to_object(string):
     """Transforms a string date into a datetime object
