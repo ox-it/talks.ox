@@ -7,10 +7,10 @@ requests==2.3.0
 pysolr==3.2.0
 git+https://github.com/ox-it/django-haystack.git#egg=django_haystack
 django-bootstrap-form==3.1
-psycopg2==2.5.3
+psycopg2==2.7.1
 raven==5.0.0
 git+https://github.com/ox-it/django-webauth.git@0.4#egg=django-webauth
 python-ldap==2.4.15
 django-reversion==1.8.5
-textile==2.2.1
+textile==2.3.11
 django-cors-headers==1.0.0
