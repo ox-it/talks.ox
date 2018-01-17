@@ -7,9 +7,9 @@ from talks.events import factories, models
 from talks.users import models
 from talks.events.models import EVENT_PUBLISHED, PersonEvent, ROLES_SPEAKER
 from django.conf import settings
-import datetime 
+import datetime
 
-FUTURE_DATE_STRING = "2018-01-01 19:00"
+FUTURE_DATE_STRING = (datetime.datetime.today() + datetime.timedelta(days=30)).strftime("%Y-%m-%d %I:%M")
 FUTURE_STRING = datetime.datetime.strptime(FUTURE_DATE_STRING, "%Y-%m-%d %H:%M").strftime("%Y-%m-%d")
 
 PAST_DATE_STRING = "2011-01-01 20:00"
@@ -117,7 +117,7 @@ class TestAPI(TestCase):
             status=EVENT_PUBLISHED,
             group=group1,
         )
-    
+
         today_event = factories.EventFactory.create(
             title="A today event",
             slug="today-event",
@@ -146,7 +146,7 @@ class TestAPI(TestCase):
         )
         ti.save()
         future_event.save()
-        
+
         collectedItemCt = ContentType.objects.get_for_model(models.CollectedDepartment)
         collectedDep = factories.CollectedDepartmentFactory.create(
             department=self.department1
@@ -237,7 +237,7 @@ class TestAPI(TestCase):
     def test_search_from_to(self, requests_get):
         #test the from and to search fields
         #expect only the future search
-        response = self.client.get('/api/talks/search?from=01/01/15&to=01/01/20')
+        response = self.client.get('/api/talks/search?from=01/01/15&to=01/01/30')
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, "_links")
         self.assertContains(response, "_embedded")
