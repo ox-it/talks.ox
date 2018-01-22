@@ -1,3 +1,4 @@
+from django.db import models
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -23,15 +24,19 @@ class UserAdmin(UserAdmin):
     is_contributor.boolean = True
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined', is_contributor)
     
+
+
+
 class TalksUserCollectionAdmin(admin.ModelAdmin):
     # allow changing of list owner for public lists
     list_display = ('collection', 'user')
     readonly_fields = ('collection', )
     fieldsets = (
-        ( 'Collection Onwer', {
+        ( 'Collection Owner', {
             'fields' : ('collection', 'user')
         })
     , )
+
     
     def get_queryset(self, request):
         # only show owner relationships for public talks

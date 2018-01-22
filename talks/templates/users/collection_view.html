@@ -73,6 +73,16 @@
 
 </div>
 
+{% if owner %}
+        <p>
+            <strong>The owner of this collection is:</strong></p>
+        <ul>
+            {% for item in owner %}
+                <li>{{ item.user.first_name }} {{ item.user.last_name }}</li>
+            {% endfor %}
+        </ul>
+{% endif %}
+
 {% if contributors %}
         <p>
             <strong>The following Talks editors are curating this collection:</strong></p>
