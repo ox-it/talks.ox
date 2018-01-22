@@ -202,7 +202,7 @@ class Person(models.Model):
 
     def get_ics_url(self):
         return reverse('api-person-ics', args=[str(self.slug)])
-        
+
     # @property
     # def surname(self):
     #     # Attempt to extract the surname as the last word of the name. This will be used for sorting on
@@ -219,12 +219,19 @@ class Person(models.Model):
         events = Event.objects.filter(personevent__role=ROLES_HOST,
                                         personevent__person__slug=self.slug)
         return events
-    
+
     @property
     def organising_events(self):
         events = Event.objects.filter(personevent__role=ROLES_ORGANISER,
-                                        personevent__person__slug=self.slug)    
+                                        personevent__person__slug=self.slug)
         return events
+
+    @property
+    def get_name_with_bio(self):
+        name = self.name
+        if(self.bio):
+            name += " (" + self.bio + ")"
+        return name
 
 class TopicItem(models.Model):
 
@@ -466,6 +473,24 @@ class Event(models.Model):
             return self.title
         else:
             return "Title TBC"
+
+    @property
+    def ics_feed_title(self):
+        """Informative title for use in exported
+        calendar events
+        :return: combination of title, speaker and affiliation
+        or only the title
+        or a default string
+        """
+        if (self.title):
+            ics_title = self.title
+            if (self.speakers):
+                ics_title += " - "
+                ics_title += ", ".join(speaker.get_name_with_bio for speaker in self.speakers)
+        else:
+            ics_title = "Title TBC"
+        return ics_title
+
 
     def user_can_edit(self, user):
         """

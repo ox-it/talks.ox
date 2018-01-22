@@ -22,7 +22,7 @@ class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = ('id', 'name', 'bio', 'title', 'web_address')
+        fields = ('id', 'name', 'bio', 'title', 'web_address', 'get_name_with_bio')
 
 
 class ClassNameField(serializers.Field):
@@ -76,7 +76,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('slug', 'url', 'title_display', 'start', 'end', 'description', 'status',
+        fields = ('slug', 'url', 'ics_feed_title', 'start', 'end', 'description', 'status',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
                   'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
 
@@ -98,7 +98,7 @@ class EventLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
     talks_page = HALURICharField(source='get_absolute_url', read_only=True)
     ics = HALURICharField(source='get_ics_url', read_only=True)
-    
+
     class Meta:
         model = Event
         fields = ('self', 'talks_page', 'ics')
@@ -156,7 +156,7 @@ class HALEventSerializer(serializers.ModelSerializer):
     start = serializers.SerializerMethodField()
     end = serializers.SerializerMethodField()
     timezone = serializers.SerializerMethodField()
-    
+
     def get_links(self, obj):
         # Return a links serializer, but pass on the context
         serializer = EventLinksSerializer(obj, read_only=True, context=self.context)
@@ -175,7 +175,7 @@ class HALEventSerializer(serializers.ModelSerializer):
 
     def get_audience(self, obj):
         return obj.get_audience_display();
-        
+
     def get_booking_required(self, obj):
         return obj.get_booking_type_display();
 
@@ -186,16 +186,16 @@ class HALEventSerializer(serializers.ModelSerializer):
     def get_start(self, obj):
         tz = pytz.timezone(settings.TIME_ZONE)
         return obj.start.astimezone(tz)
-        
+
     def get_end(self, obj):
         tz = pytz.timezone(settings.TIME_ZONE)
         return obj.end.astimezone(tz)
-    
+
     def get_timezone(self, obj):
         tz = pytz.timezone(settings.TIME_ZONE)
         return "GMT+" + str(obj.start.astimezone(tz).dst())
-        
-        
+
+
     class Meta:
         model = Event
         fields = ('_links', 'title_display', 'slug', 'start', 'end', 'timezone', 'formatted_date', 'formatted_time', 'status', 'description', 'audience', 'booking_required', 'booking_url', 'booking_email', 'cost', 'location_details', 'location_summary', 'series', 'organiser_email', 'special_message', '_embedded')
@@ -268,10 +268,10 @@ class EventGroupEmbedsSerializer(serializers.ModelSerializer):
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date']+timedelta(1))
-                
+
         serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
-        
+
     class Meta:
         model = EventGroup
         fields = ('talks',)
@@ -289,7 +289,7 @@ class PersonLinksSerializer(serializers.ModelSerializer):
     self = HALURICharField(source='get_api_url', read_only=True)
     talks_page = HALURICharField(source='get_absolute_url', read_only=True)
     ics = HALURICharField(source='get_ics_url', read_only=True)
-    
+
     class Meta:
         model = Person
         field = ('self', 'talks_page', 'ics')
@@ -299,17 +299,17 @@ class PersonEmbedsSerializer(serializers.ModelSerializer):
     speaker_talks = serializers.SerializerMethodField()
     hosting_talks = serializers.SerializerMethodField()
     organising_talks = serializers.SerializerMethodField()
-    
+
     def get_speaker_talks(self, obj):
         events = self.filterEvents(obj.speaker_events)
         serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
-    
+
     def get_hosting_talks(self, obj):
         events = self.filterEvents(obj.hosting_events)
         serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
         return serializer.data
-    
+
     def get_organising_talks(self, obj):
         events = self.filterEvents(obj.organising_events)
         serializer = HALEventSerializer(events, many=True, read_only=True, context=self.context)
@@ -322,7 +322,7 @@ class PersonEmbedsSerializer(serializers.ModelSerializer):
             if self.context['to-date']:
                 events = events.filter(end__lte=self.context['to-date']+timedelta(1))
         return events
-    
+
     class Meta:
         model = Person
         fields = ('speaker_talks', 'hosting_talks', 'organising_talks')
@@ -331,7 +331,7 @@ class PersonEmbedsSerializer(serializers.ModelSerializer):
 class HALPersonSerializer(serializers.ModelSerializer):
     _links = PersonLinksSerializer(source='*', read_only=True)
     _embedded = PersonEmbedsSerializer(source='*', read_only=True)
-    
+
     class Meta:
         model = Person
         fields = ('_links', 'slug', 'name', 'bio', 'email_address', 'web_address', '_embedded')
@@ -464,7 +464,7 @@ class TalksUserSerializer(serializers.ModelSerializer):
 
     def get_email(self,obj):
         return obj.user.email
-            
+
     class Meta:
         fields = ('id', 'user', 'email')
         model = TalksUser
