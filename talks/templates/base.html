@@ -38,7 +38,7 @@
           ga('send', 'pageview');
 
         </script>
-        
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -75,7 +75,7 @@
                                 {% endif %}
                                 {% if perms.events.add_event %}
                                     <li {% ifequal request.path create_event %} class="active" {% endifequal %}><a href="{{ create_event }}">New Talk</a></li>
-                                {% endif %}                          
+                                {% endif %}
                             </ul>
                             <form class="navbar-form navbar-right search-form" role="search" method="get" action="{% url 'haystack_search' %}">
                               <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -93,7 +93,7 @@
             <div class="navbar navbar-secondary" role="navigation">
                 <div class="container-fluid">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="http://talksox.readthedocs.org/en/latest" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> Help</a></li> 
+                        <li><a href="http://talksox.readthedocs.org/en/latest" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> Help</a></li>
                         {% if user.is_authenticated %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -111,7 +111,7 @@
                             </ul>
                         </li>
                          {% else %}
-                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'login' %}?next={{request.path}}">Login</a></li>
                         {% endif %}
                     </ul>
                 </div><!--/.container-fluid -->
