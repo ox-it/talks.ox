@@ -15,8 +15,8 @@ from talks.users.authentication import user_in_group_or_super
 from talks.events.datasources import DEPARTMENT_DATA_SOURCE
 from .forms import CollectionForm
 
-def webauth_logout(request):
-    context = {'was_webauth': True}
+def shibboleth_logout(request):
+    context = {'was_shibboleth': True}
     logout(request)
     return render_to_response('auth/logged_out.html', context)
 
@@ -76,7 +76,7 @@ def view_collection(request, collection_slug):
     collectionOwner = None
     if request.tuser:
         collectionOwner = TalksUser.objects.filter(talksusercollection__collection=collection, talksusercollection__role=COLLECTION_ROLES_OWNER)
-    
+
     context = {
         'collection' : collection,
         'show_all' : show_all,

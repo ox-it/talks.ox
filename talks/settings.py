@@ -76,8 +76,6 @@ INSTALLED_APPS = (
     'reversion',
     'corsheaders',
 
-    # WebAuth
-    'django_webauth',
 
     # Oxford Talks
     'talks.users',
@@ -92,6 +90,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.PersistentRemoteUserMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -107,7 +106,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django_webauth.backends.WebauthLDAP',
+    'djoxshib.backends.ShibbolethBackend',
     'django.contrib.auth.backends.ModelBackend'
 )
 
