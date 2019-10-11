@@ -5,7 +5,7 @@ djangorestframework==3.0.3
 icalendar==3.6.2
 requests==2.3.0
 pysolr==3.2.0
-git+https://github.com/ox-it/django-haystack.git@django-1.9-compatibility#egg=django_haystack
+git+https://github.com/ox-it/django-haystack.git@django-1.9-compatibility#egg=django_haystack-django-1.9-compatibility
 django-bootstrap-form==3.1
 psycopg2==2.7.1
 raven==5.0.0
