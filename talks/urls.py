@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 
 from django.contrib.auth.views import LoginView
@@ -20,7 +20,7 @@ from talks.old_talks.views import old_talks_mappings, old_series_mappings
 
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^login/$', LoginView.as_view(redirect_authenticated_user=True), name='login'),
     url(r'^logout/$', shibboleth_logout, name='logout'),
 
@@ -44,5 +44,4 @@ urlpatterns = patterns('',
     url(r'^(feeds|show|list)/(table|minimalist|detailed|bulletin|simplewithlogo|oneday|xml|rss|ics|json|index|archive|text)/(?P<index_id>[^/]+)$', old_series_mappings, name='old-series-mappings'),
     url(r'^dates', RedirectView.as_view(pattern_name='browse_events')),
     url(r'^index', RedirectView.as_view(pattern_name='browse_events')),
-
-)
+]

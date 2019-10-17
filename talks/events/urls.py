@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from talks.events.views import (upcoming_events, show_person, show_event, events_for_day, show_department_organiser,
                                 events_for_month, events_for_year, list_event_groups,show_event_group, show_topic, list_topics,
@@ -7,7 +7,7 @@ from talks.contributors.views import (create_person, edit_person, edit_event, cr
                                       edit_event_group, delete_event, delete_event_group)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', upcoming_events, name='upcoming_events'),
     url(r'^persons/new$', create_person, name='create-person'),
     url(r'^persons/id/(?P<person_slug>[^/]+)$', show_person, name='show-person'),
@@ -29,4 +29,4 @@ urlpatterns = patterns('',
 	url(r'^topics$', list_topics, name='browse-topics'),
     url(r'^department$', list_departments, name='browse-departments'),
     url(r'^department/id/(?P<org_id>[^/]+)$', show_department_descendant, name="show-department"),
-)
+]
