@@ -101,7 +101,8 @@ def prepare(venv):
 
 def install(install_dir):
     with cd(os.path.dirname(install_dir)):
-        run('python manage.py syncdb --settings=%s' % env.settings_module)
+        run('python manage.py makemigrations --settings=%s' % env.settings_module)
+        run('python manage.py migrate --settings=%s' % env.settings_module)
         run('python manage.py collectstatic --noinput --settings=%s' % env.settings_module)
 
 @task
