@@ -70,11 +70,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # 3rd Party
-    #'bootstrapform',
-    #'haystack',
-    #'raven.contrib.django.raven_compat',
-    #'reversion',
-    #'corsheaders',
+    'bootstrapform',
+    'haystack',
+    'raven.contrib.django.raven_compat',
+    'reversion',
+    'corsheaders',
 
 
     # Oxford Talks

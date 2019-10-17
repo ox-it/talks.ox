@@ -1,4 +1,4 @@
-Django>=1.9, <1.10
+Django==1.11.26
 pytz
 pyaml
 djangorestframework==3.0.3
@@ -8,9 +8,9 @@ pysolr==3.2.0
 git+https://github.com/ox-it/django-haystack.git@django-1.9-compatibility#egg=django_haystack-django-1.9-compatibility
 django-bootstrap-form==3.1
 psycopg2==2.7.1
-raven==5.6.0
+raven==6.10.0
 git+https://github.com/ox-it/oxford-django-shibboleth.git#egg=django-shibboleth
 python-ldap==2.4.15
 django-reversion==2.0.13
 textile==2.2.1
-django-cors-headers==1.2.0
+django-cors-headers==2.5.0
