@@ -22,8 +22,6 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
     group_slug = indexes.CharField(null=True)
     lists = indexes.MultiValueField(faceted=True, null=True)
 
-    # suggestions: used for spellchecking
-    suggestions = indexes.SuggestionField()
 
     def get_model(self):
         return Event
@@ -75,7 +73,7 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         # Published status
         self.prepared_data[self.is_published.index_fieldname] = obj.is_published
         self.prepared_data[self.is_cancelled.index_fieldname] = obj.is_cancelled
-        
+
         # Series name
         if obj.group:
             self.prepared_data[self.group.index_fieldname] = obj.group.title
@@ -85,7 +83,6 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         lists_names = [list.title for list in obj.public_collections_containing_this_event.all()]
         self.prepared_data[self.lists.index_fieldname] = lists_names
 
-        suggest_content = []        # used when providing suggestions
         full_text_content = []      # used when searching full text
 
         if obj.title:
@@ -104,11 +101,10 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
 
         suggest_content.extend(speakers_names)
         full_text_content.extend(speakers_names)
-        
+
         suggest_content.extend(lists_names)
         full_text_content.extend(lists_names)
 
-        self.prepared_data[self.suggestions.index_fieldname] = suggest_content
         self.prepared_data[self.text.index_fieldname] = full_text_content
 
         return self.prepared_data
