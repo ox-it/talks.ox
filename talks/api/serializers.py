@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.conf import settings
-from rest_framework import serializers, pagination
+from rest_framework import serializers
 from rest_framework.fields import Field
 import pytz
 from datetime import datetime, timedelta
@@ -206,26 +206,8 @@ class SearchResultEmbedsSerializer(serializers.Serializer):
     talks = HALEventSerializer(source='*', many=True, read_only=True)
 
 
-class HALPreviousPageField(pagination.PreviousPageField):
-
-    def to_representation(self, value):
-        if value.has_previous():
-            return {'href': super(HALPreviousPageField, self).to_representation(value)}
-        return None
-
-
-class HALNextPageField(pagination.NextPageField):
-
-    def to_representation(self, value):
-        if value.has_next():
-            return {'href': super(HALNextPageField, self).to_representation(value)}
-        return None
-
-
 class SearchResultLinksSerializer(serializers.Serializer):
     self = serializers.SerializerMethodField()
-    next = HALNextPageField(source='*')
-    prev = HALPreviousPageField(source='*')
     results = None
 
     def get_self(self, obj):
