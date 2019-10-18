@@ -12,7 +12,6 @@ from secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from talks.core.utils import read_yaml_param
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -75,6 +74,7 @@ INSTALLED_APPS = (
     'raven.contrib.django.raven_compat',
     'reversion',
     'corsheaders',
+    'rest_framework',
 
 
     # Oxford Talks
@@ -185,7 +185,6 @@ REST_FRAMEWORK = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        # 'URL': read_yaml_param('/srv/talks/talks-configuration', 'solrLocation'),
         'URL': 'http://127.0.0.1:8983/solr/talks',
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False
