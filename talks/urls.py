@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import login
 from django.views.generic.base import RedirectView
 
 from talks.events.views import (homepage, browse_events)
@@ -21,7 +21,7 @@ from talks.old_talks.views import old_talks_mappings, old_series_mappings
 
 
 urlpatterns = patterns('',
-    url(r'^login/$', LoginView.as_view(redirect_authenticated_user=True), name='login'),
+    url(r'^login/$', login(redirect_authenticated_user=True), name='login'),
     url(r'^logout/$', shibboleth_logout, name='logout'),
 
     url(r'^search/', SearchUpcomingView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False),
