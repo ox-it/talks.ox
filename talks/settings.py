@@ -165,7 +165,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 # Added by us
-                "django.core.context_processors.request"
+                "django.template.context_processors.request"
             )
         }
     }
