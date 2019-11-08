@@ -15,7 +15,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 EVENT_DATETIME_FORMAT = "j F Y, G:i"
 EVENT_TIME_FORMAT = "H:i"
 
@@ -151,10 +150,14 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/srv/talks/static/'
 
-
-TEMPLATE_DIRS = (
-    (os.path.join(BASE_DIR, 'talks', 'templates')),
-)
+TEMPLATES = [
+    {
+	'BACKEND': 'django.template.backends.django.DjangoTemplates',
+	'DIRS': [(os.path.join(BASE_DIR, 'talks', 'templates'))],
+	'APP_DIRS': True,
+	'OPTIONS': {}
+    }
+]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
