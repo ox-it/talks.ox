@@ -28,7 +28,6 @@ class ICalRenderer(renderers.BaseRenderer):
         event.add('summary', e['ics_feed_title'])
 
         if 'description' in e:
-            print 'got a description'
             desc_status = ""
             if 'status' in e:
                 if e['status'] == 'preparation':
