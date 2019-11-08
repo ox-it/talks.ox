@@ -2,6 +2,8 @@ Django==1.11.25
 pytz
 pyaml
 djangorestframework==3.9.4
+djangorestframework-xml
+djangorestframework-jsonp
 icalendar==3.6.2
 requests==2.3.0
 pysolr==3.2.0

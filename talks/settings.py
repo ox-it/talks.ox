@@ -174,8 +174,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.JSONPRenderer',
-        'rest_framework.renderers.XMLRenderer',
+        'rest_framework_jsonp.renderers.JSONPRenderer',
+        'rest_framework_xml.renderers.XMLRenderer',
         'talks.core.renderers.ICalRenderer'
     )
 }
