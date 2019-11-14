@@ -57,7 +57,7 @@ class Collection(models.Model):
 
     def get_absolute_url(self):
         return reverse('view-list', args=[str(self.slug)])
-        
+
     def get_api_url(self):
         return reverse('api-collection', args=[str(self.slug)])
 
@@ -114,7 +114,7 @@ class Collection(models.Model):
 
     def get_event_groups(self):
         return self._get_items_by_model(EventGroup)
-        
+
     def get_departments(self):
         return self._get_items_by_model(CollectedDepartment)
 
@@ -130,17 +130,17 @@ class Collection(models.Model):
                                              ).values_list('object_id')
 
         events = Event.objects.filter(id__in=itertools.chain.from_iterable(eventIDs))
-                
+
         eventsInEventGroups = Event.objects.filter(group=eventGroupIDs)
-                
+
         # get all department ids
         from talks.api.services import get_all_department_ids
 
         departments = CollectedDepartment.objects.filter(id__in=itertools.chain.from_iterable(collectedDepartmentIDs)).values('department')
         departmentIDs = [dep['department'] for dep in departments]
-        allDepartmentIDs = get_all_department_ids(departmentIDs, True)        
+        allDepartmentIDs = get_all_department_ids(departmentIDs, True)
         departmentEvents = Event.objects.filter(department_organiser__in=allDepartmentIDs)
-        
+
         allEvents = events | eventsInEventGroups | departmentEvents
 
         return allEvents.distinct().order_by('start')
@@ -167,10 +167,10 @@ class Collection(models.Model):
         except CollectedDepartment.DoesNotExist:
             # This department hasn't been collected at all, so cannot be in any collection
             return False
-                
+
         result = self.contains_item(collectedDepartment)
         return result
-            
+
 
     def user_collection_permission(self, user):
         """
@@ -178,7 +178,7 @@ class Collection(models.Model):
         :return: The role that user has on that collection (if any)
             ie.  owner, editor, reader or None.
         """
-        roles = self.talksusercollection_set.filter(user=user).values_list('role', flat=True)
+        roles = self.talksusercollection_set.filter(user=user.talksuser).values_list('role', flat=True)
         role = None
         if COLLECTION_ROLES_OWNER.encode('utf-8') in roles:
             role = COLLECTION_ROLES_OWNER
