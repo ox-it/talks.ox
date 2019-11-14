@@ -167,10 +167,8 @@ class Collection(models.Model):
         except CollectedDepartment.DoesNotExist:
             # This department hasn't been collected at all, so cannot be in any collection
             return False
-
         result = self.contains_item(collectedDepartment)
         return result
-
 
     def user_collection_permission(self, user):
         """
@@ -178,7 +176,8 @@ class Collection(models.Model):
         :return: The role that user has on that collection (if any)
             ie.  owner, editor, reader or None.
         """
-        roles = self.talksusercollection_set.filter(user=user.talksuser).values_list('role', flat=True)
+        talksuser = user if isinstance(user, TalksUser) else user.talksuser
+        roles = self.talksusercollection_set.filter(user=talksuser).values_list('role', flat=True)
         role = None
         if COLLECTION_ROLES_OWNER.encode('utf-8') in roles:
             role = COLLECTION_ROLES_OWNER
