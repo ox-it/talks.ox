@@ -25,7 +25,8 @@ class ICalRenderer(renderers.BaseRenderer):
     @staticmethod
     def _event_to_ics(e):
         event = Event()
-        event.add('summary', e['ics_feed_title'])
+	if 'ics_feed_title' in e:
+            event.add('summary', e['ics_feed_title'])
 
         if 'description' in e:
             desc_status = ""
@@ -57,7 +58,8 @@ class ICalRenderer(renderers.BaseRenderer):
         alarm = Alarm()
         alarm.add('action', 'display')
         alarm.add('trigger', timedelta(hours=-1))
-        alarm.add('description', "Talk:" + e['ics_feed_title'])
+        if 'ics_feed_title' in e:
+            alarm.add('description', "Talk:" + e['ics_feed_title'])
         event.add_component(alarm)
 
         return event
