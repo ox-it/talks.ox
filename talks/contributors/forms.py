@@ -367,6 +367,11 @@ class PersonForm(forms.ModelForm):
 
 
 class PersonQuickAdd(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PersonQuickAdd, self).__init__(*args, **kwargs)
+
+        self.fields['name'].required = False
+
     class Meta:
         fields = ('name', 'bio', 'web_address')
         model = models.Person
