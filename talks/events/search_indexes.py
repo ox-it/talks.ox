@@ -86,23 +86,18 @@ class EventIndex(indexes.SearchIndex, indexes.Indexable):
         full_text_content = []      # used when searching full text
 
         if obj.title:
-            suggest_content.append(obj.title)
             full_text_content.append(obj.title)
         if obj.description:
-            suggest_content.append(obj.description)
             full_text_content.append(obj.description)
         if topics_pref_labels:
             full_text_content.extend(topics_pref_labels)
-            suggest_content.extend(topics_pref_labels)
         if topic_alt_labels:
             full_text_content.extend(topic_alt_labels)
         if obj.group:
             full_text_content.append(obj.group.title)
 
-        suggest_content.extend(speakers_names)
         full_text_content.extend(speakers_names)
 
-        suggest_content.extend(lists_names)
         full_text_content.extend(lists_names)
 
         self.prepared_data[self.text.index_fieldname] = full_text_content
