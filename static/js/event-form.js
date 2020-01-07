@@ -25,7 +25,7 @@ $(function() {
         stepping : 5
     }).each(function(i,v){
         $(v).data("DateTimePicker").ignoreReadonly(true);
-        if (typeof $('input', v).attr('value') !== 'undefined') {
+        if ((typeof $('input', v).attr('value') !== 'undefined') && ($('input', v).attr('value') !== '')) {
 			$(v).data("DateTimePicker").defaultDate(moment($('input', v).attr('value')));
 		}
 		else {
