@@ -131,7 +131,7 @@ class Collection(models.Model):
 
         events = Event.objects.filter(id__in=itertools.chain.from_iterable(eventIDs))
 
-        eventsInEventGroups = Event.objects.filter(group=eventGroupIDs)
+        eventsInEventGroups = Event.objects.filter(group__in=eventGroupIDs)
 
         # get all department ids
         from talks.api.services import get_all_department_ids
