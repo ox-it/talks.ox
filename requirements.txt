@@ -1,4 +1,4 @@
-Django==1.11.25
+Django==1.11.27
 pytz
 pyaml
 djangorestframework==3.9.4
