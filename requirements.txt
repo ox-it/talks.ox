@@ -5,7 +5,8 @@ djangorestframework==3.9.4
 djangorestframework-xml
 djangorestframework-jsonp
 icalendar==3.6.2
-requests==2.3.0
+setuptools==18.5
+requests[security]==2.3.0
 pysolr==3.2.0
 django-haystack==2.6.0
 django-bootstrap-form==3.4
