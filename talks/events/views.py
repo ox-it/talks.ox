@@ -13,7 +13,7 @@ from talks.events.datasources import TOPICS_DATA_SOURCE, DEPARTMENT_DATA_SOURCE,
 from talks.users.models import COLLECTION_ROLES_OWNER, COLLECTION_ROLES_EDITOR, COLLECTION_ROLES_READER
 from .forms import BrowseEventsForm, BrowseSeriesForm
 from talks.api.services import events_search
-from talks.api_ox.api import OxfordDateResource
+from talks.api_ox.api import ApiException, OxfordDateResource
 
 logger = logging.getLogger(__name__)
 
