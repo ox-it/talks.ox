@@ -1,7 +1,7 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 
-from django_webauth.views import LoginView
+from django.contrib.auth.views import LoginView
 from django.views.generic.base import RedirectView
 
 from talks.events.views import (homepage, browse_events)
@@ -14,15 +14,15 @@ from talks.contributors.urls import urlpatterns  as contributors_urls
 from talks.audit_trail.urls import urlpatterns as audit_urls
 from talks.events.urls import urlpatterns as events_urls
 from talks.users.urls import urlpatterns as users_urls
-from talks.users.views import webauth_logout
+from talks.users.views import shibboleth_logout
 from talks.core.healthchecks import healthcheck
 from talks.old_talks.views import old_talks_mappings, old_series_mappings
 
 
 
-urlpatterns = patterns('',
-    url(r'^login/$', LoginView.as_view(), name='login'),
-    url(r'^logout/$', webauth_logout, name='logout'),
+urlpatterns = [
+    url(r'^login/$', LoginView.as_view(redirect_authenticated_user=True), name='login'),
+    url(r'^logout/$', shibboleth_logout, name='logout'),
 
     url(r'^search/', SearchUpcomingView(form_class=DateFacetedSearchForm, searchqueryset=sqs, load_all=False),
         name='haystack_search'),
@@ -44,5 +44,4 @@ urlpatterns = patterns('',
     url(r'^(feeds|show|list)/(table|minimalist|detailed|bulletin|simplewithlogo|oneday|xml|rss|ics|json|index|archive|text)/(?P<index_id>[^/]+)$', old_series_mappings, name='old-series-mappings'),
     url(r'^dates', RedirectView.as_view(pattern_name='browse_events')),
     url(r'^index', RedirectView.as_view(pattern_name='browse_events')),
-
-)
+]

@@ -105,34 +105,34 @@ def browse_events(request):
     old_query = request.META['QUERY_STRING']
     dates_start = old_query.find("start_date=")
     dates_end = dates_start + 35
-    
+
     today = date.today()
     offset_Sunday = (6 - today.weekday()) % 7 # weekday(): Monday=0 .... Sunday=6
-    
+
     query_params_all = request.GET.copy()
     query_params_all['start_date']=str(today)
     query_params_all.pop('to', None)
-    
+
     query_params_today = request.GET.copy()
     query_params_today['start_date']=str(today)
     query_params_today['to']=str(today)
-    
+
     query_params_tomorrow = request.GET.copy()
     query_params_tomorrow['start_date']=str(today+timedelta(days=1))
     query_params_tomorrow['to']=str(today+timedelta(days=2))
-    
+
     query_params_this_week = request.GET.copy()
     query_params_this_week['start_date']=str(today)
     query_params_this_week['to']=str(today+timedelta(days=offset_Sunday))
-    
+
     query_params_next_week = request.GET.copy()
     query_params_next_week['start_date']=str(today+timedelta(days=offset_Sunday+1))
     query_params_next_week['to']=str(today+timedelta(days=offset_Sunday+7))
-    
+
     query_params_next_30days = request.GET.copy()
     query_params_next_30days['start_date']=str(today)
     query_params_next_30days['to']=str(today+timedelta(days=30))
-    
+
     tab_dates = [
         {
             'label': 'All',
@@ -167,7 +167,7 @@ def browse_events(request):
         for tab in tab_dates:
             if tab['href'] == 'browse?' + old_query:
                 tab['active'] = True
-                
+
     date_continued_previous = False
     if int(page) != 1:
         # if the date of the first talk of the current page is the same with that of the last talk of the previous page
@@ -179,7 +179,7 @@ def browse_events(request):
         # if the date of the last talk of the current page is the same with that of the first talk of the next page
         if list(events)[-1].start.date()==list(paginator.page(int(page)+1))[0].start.date():
             date_continued_next = True
-        
+
     context = {
         'events': events,
         'grouped_events': grouped_events,
@@ -211,7 +211,7 @@ def group_events (events):
         comps = group_event.oxford_date.components
         key = comps['day_name']+ " " +str(comps['day_number'])+ " " +comps['month_long']+ " "
         key+= str(comps['year'])+ " ("+ str(comps['week']) + comps['ordinal']+ " Week, " +comps['term_long']+ " Term)"
-        
+
         if key not in grouped_events:
             grouped_events[key] = []
             event_dates.append(key)
@@ -266,13 +266,7 @@ def show_event(request, event_slug):
     try:
         # TODO depending if user is admin or not,
         # we should use Event.published here...
-        ev = Event.objects.select_related(
-            'speakers',
-            'hosts',
-            'organisers',
-            'location',
-            'group',
-            'department_organiser').get(slug=event_slug)
+        ev = Event.objects.select_related('group').get(slug=event_slug)
     except Event.DoesNotExist:
         raise Http404
 
@@ -472,9 +466,9 @@ def show_department_descendant(request, org_id):
         return render(request, 'events/department.txt.html', context)
     else:
         return render(request, 'events/department.html', context)
-        
+
 def list_departments(request):
-    
+
     context = {}
 
     return render(request, 'events/department_list.html', context)

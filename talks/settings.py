@@ -12,10 +12,8 @@ from secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from talks.core.utils import read_yaml_param
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
 
 EVENT_DATETIME_FORMAT = "j F Y, G:i"
 EVENT_TIME_FORMAT = "H:i"
@@ -75,9 +73,8 @@ INSTALLED_APPS = (
     'raven.contrib.django.raven_compat',
     'reversion',
     'corsheaders',
+    'rest_framework',
 
-    # WebAuth
-    'django_webauth',
 
     # Oxford Talks
     'talks.users',
@@ -92,6 +89,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.PersistentRemoteUserMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -107,7 +105,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django_webauth.backends.WebauthLDAP',
+    'djoxshib.backends.ShibbolethBackend',
     'django.contrib.auth.backends.ModelBackend'
 )
 
@@ -152,30 +150,35 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/srv/talks/static/'
 
-
-TEMPLATE_DIRS = (
-    (os.path.join(BASE_DIR, 'talks', 'templates')),
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    # Added by us
-    "django.core.context_processors.request"
-)
+TEMPLATES = [
+    {
+    	'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    	'DIRS': [(os.path.join(BASE_DIR, 'talks', 'templates'))],
+    	'APP_DIRS': True,
+    	'OPTIONS': {
+            'context_processors': (
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
+                # Added by us
+                "django.template.context_processors.request"
+            )
+        }
+    }
+]
 
 
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 10,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.JSONPRenderer',
-        'rest_framework.renderers.XMLRenderer',
+        'rest_framework_jsonp.renderers.JSONPRenderer',
+        'rest_framework_xml.renderers.XMLRenderer',
         'talks.core.renderers.ICalRenderer'
     )
 }
@@ -186,7 +189,6 @@ REST_FRAMEWORK = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        # 'URL': read_yaml_param('/srv/talks/talks-configuration', 'solrLocation'),
         'URL': 'http://127.0.0.1:8983/solr/talks',
         'INCLUDE_SPELLING': True,
         'SILENTLY_FAIL': False

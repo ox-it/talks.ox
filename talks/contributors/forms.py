@@ -63,19 +63,19 @@ class EventForm(forms.ModelForm):
         # Amend help text if no groups to choose from
         if (not self.fields['group'].queryset) or self.fields['group'].queryset.count <= 0:
             self.fields['group'].empty_label = "-- There are no series which you can add this talk to --"
-            
+
         # set preliminary values for audience_choices and audience_other
         if self.instance.audience == AUDIENCE_PUBLIC:
             self.fields['audience_choices'].initial = 'public'
-            
+
         elif self.instance.audience == AUDIENCE_OXFORD:
             self.fields['audience_choices'].initial = 'oxonly'
-            
+
         else:
             self.fields['audience_choices'].initial = 'other'
             self.fields['audience_other'].initial = self.instance.audience
-            
-        
+
+
 
     speakers = forms.ModelMultipleChoiceField(
         queryset=models.Person.objects.all(),
@@ -134,19 +134,19 @@ class EventForm(forms.ModelForm):
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
-    
+
     audience = forms.CharField(
         required=False
     )
-    
-    
+
+
     audience_choices = forms.ChoiceField(
         label="Who can attend",
         required=False,
         choices=AUDIENCE_CHOICES,
         widget=RadioSelect()
     )
-    
+
     title = XMLFriendlyTextField(
         max_length=250,
         required=False,
@@ -163,7 +163,7 @@ class EventForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'rows': 4}),
         required=False,
     )
-    
+
     special_message = XMLFriendlyTextField(
         required=False,
         label="Special message",
@@ -201,6 +201,9 @@ class EventForm(forms.ModelForm):
         event = super(EventForm, self).save(commit=False)
         # saved with commit=False because of the ManyToMany relations
         # in the model
+
+        # explicitly set audience to the value from cleaned data otherwise it doesn't get set
+        event.audience = self.cleaned_data['audience']
         event.save()
 
         # clear the list of editors and repopulate with the contents of the form
@@ -212,7 +215,7 @@ class EventForm(forms.ModelForm):
         speakers_posted = self.request.POST.copy().pop('event-speakers', [])
         speakers_current = getattr(event, 'speakers')
         speakers_cleaned = self.cleaned_data['speakers']
-        
+
         #determine if the list of speakers has changed
         should_replace_speakers = False
         if speakers_current.count() != len(speakers_posted):
@@ -225,7 +228,7 @@ class EventForm(forms.ModelForm):
                     # order is not the same
                     should_replace_speakers = True
                     break
-        
+
         if should_replace_speakers:
             #remove all speakers
             for person in speakers_current:
@@ -235,7 +238,7 @@ class EventForm(forms.ModelForm):
             for speaker_id in speakers_posted:
                 person = models.Person.objects.get(id=speaker_id)
                 models.PersonEvent.objects.create(person=person, event=event, role=models.ROLES_SPEAKER)
-        
+
         self._update_people('organisers', event, models.ROLES_ORGANISER)
         self._update_people('hosts', event, models.ROLES_HOST)
 
@@ -274,8 +277,8 @@ class EventForm(forms.ModelForm):
                 self.cleaned_data['audience'] = self.cleaned_data['audience_other']
         else:
             if 'audience_choices' in self.cleaned_data and not self.cleaned_data['audience_choices'] == '':
-                self.cleaned_data['audience'] = self.cleaned_data['audience_choices']        
-        
+                self.cleaned_data['audience'] = self.cleaned_data['audience_choices']
+
         return self.cleaned_data
 
     def _update_people(self, field, event, role):
@@ -315,12 +318,12 @@ class EventGroupForm(forms.ModelForm):
         required=False,
         widget=typeahead.MultipleTypeahead(datasources.USERS_DATA_SOURCE),
     )
-    
+
     title = XMLFriendlyTextField(
         max_length=250,
         required=True
     )
-    
+
     description = XMLFriendlyTextField(
         widget=forms.Textarea(attrs={'rows': 8}),
         required=False,
@@ -331,7 +334,7 @@ class EventGroupForm(forms.ModelForm):
         label='Timing',
         help_text='e.g.: Mondays at 10 or September 19th to 20th.'
     )
-    
+
     def save(self):
         group = super(EventGroupForm, self).save(commit=False)
         group.save()
@@ -367,6 +370,11 @@ class PersonForm(forms.ModelForm):
 
 
 class PersonQuickAdd(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PersonQuickAdd, self).__init__(*args, **kwargs)
+
+        self.fields['name'].required = False
+
     class Meta:
         fields = ('name', 'bio', 'web_address')
         model = models.Person

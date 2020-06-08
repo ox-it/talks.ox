@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from .views import (api_event_search_hal, api_event_search_ics, api_event_get, api_event_get_ics,
                     api_event_group, get_event_group, suggest_event_group, api_event_group_ics,
@@ -7,7 +7,7 @@ from .views import (api_event_search_hal, api_event_search_ics, api_event_get, a
                     suggest_talksuser_by_complete_email_address)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^series/id/(?P<event_group_id>\d+)', get_event_group, name='get-event-group'),
     url(r'^series/suggest$', suggest_event_group, name='api-event-group-suggest'),
     url(r'^series/(?P<event_group_slug>[^/]+).ics', api_event_group_ics, name='api-event-group-ics'),
@@ -29,4 +29,4 @@ urlpatterns = patterns('',
     url(r'^collections/unsubscribe$', unsubscribe_from_list, name="unsubscribe-from-list"),
     url(r'^collections/id/(?P<collection_slug>[^/]+).ics', api_collection_ics, name='api-collection-ics'),
     url(r'^collections/id/(?P<collection_slug>[^/]+)', api_collection, name='api-collection'),
-)
+]
