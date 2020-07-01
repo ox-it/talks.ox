@@ -2,7 +2,7 @@ Django==1.11.29
 pytz
 pyaml
 djangorestframework==3.9.4
-djangorestframework-xml
+djangorestframework-xml==1.4.0
 djangorestframework-jsonp
 icalendar==3.6.2
 setuptools==18.5
