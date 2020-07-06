@@ -10,7 +10,7 @@ requests[security]
 pysolr==3.2.0
 django-haystack==2.6.0
 django-bootstrap-form==3.4
-psycopg2==2.7.1
+psycopg2
 raven==6.10.0
 git+https://github.com/birniefoxford/oxford-django-shibboleth.git@patch-1#egg=django-shibboleth
 python-ldap==2.4.15
