@@ -94,7 +94,6 @@ def prepare(venv):
     run('cp -r %s %s' % (os.path.join(env.remote_git_checkout, 'static'), static_dir))
     run('cp -r %s %s' % (os.path.join(env.remote_git_checkout, 'talks'), install_dir))
     run('cp -r %s %s' % (os.path.join(env.remote_git_checkout, 'manage.py'), venv))
-    run('pip install setuptools==18.5 %s' % PIP_OPTIONS)
     for req in env.requirements:
         run('pip install -r %s %s' % (os.path.join(env.remote_git_checkout, req), PIP_OPTIONS))
     return install_dir
@@ -117,7 +116,7 @@ Private methods
 
 
 def createvirtualenv(path):
-    run('virtualenv --no-site-packages %s' % path)
+    run('virtualenv --system-site-packages %s' % path)
 
 def git_check_existing_repo():
     """
