@@ -1,7 +1,7 @@
 import django
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.template.context import RequestContext
 from reversion.models import Revision
 import reversion
@@ -52,7 +52,7 @@ def database_usage(request):
         'pagination_count': count,
         'form': form
     })
-    return render_to_response('audit_trail/database_usage.html', context)
+    return render('audit_trail/database_usage.html', context)
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -69,7 +69,7 @@ def revision_details(request, revision_id):
         'revision': revision,
         'diffs': diffs,
     })
-    return render_to_response('audit_trail/view_revision.html', context)
+    return render('audit_trail/view_revision.html', context)
 
 
 def _get_version_diff(version):

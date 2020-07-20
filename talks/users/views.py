@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import permission_required, login_required
 from django.urls.resolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, render, get_object_or_404, redirect
+from django.shortcuts import render, render, get_object_or_404, redirect
 
 from datetime import date
 
@@ -18,7 +18,7 @@ from .forms import CollectionForm
 def shibboleth_logout(request):
     context = {'was_shibboleth': True}
     logout(request)
-    return render_to_response('auth/logged_out.html', context)
+    return render('auth/logged_out.html', context)
 
 
 @login_required
