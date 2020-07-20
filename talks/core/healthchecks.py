@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 
 from django.http.response import HttpResponse
@@ -79,7 +81,7 @@ def _test_events_search():
     from haystack.query import SearchQuerySet
     try:
         count = SearchQuerySet().filter(content='*:*').count()
-        print count
+        print(count)
         return True, "OK"
     except Exception as e:
         return False, e.message

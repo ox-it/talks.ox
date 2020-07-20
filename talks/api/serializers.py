@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.contrib.auth.models import User
 from django.conf import settings
 from rest_framework import serializers
@@ -245,7 +246,7 @@ class EventGroupEmbedsSerializer(serializers.ModelSerializer):
 
     def get_talks(self,obj):
         events = obj.events
-        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+        if 'from-date' in self.context or 'to-date' in self.context:
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
@@ -298,7 +299,7 @@ class PersonEmbedsSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def filterEvents(self, events):
-        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+        if 'from-date' in self.context or 'to-date' in self.context:
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
@@ -334,7 +335,7 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
 
     def get_talks(self,obj):
         events = obj.get_all_events()
-        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+        if 'from-date' in self.context or 'to-date' in self.context:
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:

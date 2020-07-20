@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.conf.urls import url
 
 from talks.users.views import (manage_collections, list_public_collections, browse_public_collections, view_collection, add_collection, edit_collection, delete_collection, my_talks)

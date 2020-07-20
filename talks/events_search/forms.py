@@ -2,6 +2,7 @@
 Custom search form to include the dynamic date faceting
 """
 
+from __future__ import absolute_import
 from haystack.forms import FacetedSearchForm
 
 

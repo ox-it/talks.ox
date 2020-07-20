@@ -2,6 +2,7 @@
 Custom search view, includes our custom dynamic faceting
 """
 
+from __future__ import absolute_import
 from haystack.views import FacetedSearchView
 from datetime import datetime
 

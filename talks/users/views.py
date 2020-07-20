@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth import logout

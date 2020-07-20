@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from datetime import datetime, timedelta
 from re import sub, compile
 from sys import maxunicode
@@ -81,10 +83,10 @@ def read_yaml_param(fname, key):
         stream.close()
         value = doc[key]
     except IOError:
-        print "Failed to load file:", fullname
+        print("Failed to load file:", fullname)
         return ""
     except KeyError:
-        print "Failed to find key", key, "in file", fullname
+        print("Failed to find key", key, "in file", fullname)
         value = ""
 
     return value

@@ -8,7 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
-from secrets import *
+from __future__ import absolute_import
+from .secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os

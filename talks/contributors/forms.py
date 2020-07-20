@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -273,7 +275,7 @@ class EventForm(forms.ModelForm):
             if not self.cleaned_data['audience_other'] or self.cleaned_data['audience_other'] == '':
                 raise forms.ValidationError("You must specify who can attend")
             else:
-                print "setting to value of audience_other field"
+                print("setting to value of audience_other field")
                 self.cleaned_data['audience'] = self.cleaned_data['audience_other']
         else:
             if 'audience_choices' in self.cleaned_data and not self.cleaned_data['audience_choices'] == '':

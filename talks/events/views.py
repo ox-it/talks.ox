@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import functools
 from datetime import date, timedelta, datetime
@@ -430,7 +432,7 @@ def show_department_descendant(request, org_id):
         ids.append(results['id'])  # Include self
         events = Event.objects.filter(department_organiser__in=ids).order_by('start')
     except Exception:
-        print "Error retrieving sub-departments, only showing department"
+        print("Error retrieving sub-departments, only showing department")
         events = Event.objects.filter(department_organiser=org).order_by('start')
         sub_orgs = []
 
@@ -440,7 +442,7 @@ def show_department_descendant(request, org_id):
 
     grouped_events = group_events(events)
 
-    if org['_links'].has_key('parent'):
+    if 'parent' in org['_links']:
         parent_href = org['_links']['parent'][0]['href']
         parent_id = parent_href[parent_href.find("oxpoints"):]
         parent = DEPARTMENT_DATA_SOURCE.get_object_by_id(parent_id)

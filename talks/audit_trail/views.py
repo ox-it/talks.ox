@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import django
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -21,9 +22,9 @@ def database_usage(request):
     # removing pagination arguments from the form
     # they need to be processed separately as the form might be empty
     form_args = request.GET.copy()
-    if form_args.has_key('page'):
+    if 'page' in form_args:
         del form_args['page']
-    if form_args.has_key('count'):
+    if 'count' in form_args:
         del form_args['count']
 
     form = RevisionsFilteringForm(form_args)

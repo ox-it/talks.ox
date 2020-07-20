@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from django.db.models.query_utils import Q
 import operator
 from rest_framework.exceptions import ParseError
@@ -5,6 +7,7 @@ from talks.core.utils import parse_date
 from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 from datetime import datetime, timedelta
+from functools import reduce
 
 
 
@@ -62,7 +65,7 @@ def get_all_department_ids(departments, include_suborgs):
     try:
         descendants_response = DEPARTMENT_DESCENDANT_DATA_SOURCE.get_object_list(departments)
     except Exception:
-        print "Error retrieving sub-departments, returning departments only"
+        print("Error retrieving sub-departments, returning departments only")
         return departments
 
     all_ids = []

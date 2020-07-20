@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 
 from robot.libraries.BuiltIn import BuiltIn

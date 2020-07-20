@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.core.exceptions import ObjectDoesNotExist
 
 IGNORE_FIELDS = ['password', 'id']

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from talks.settings import *
 
 INSTALLED_APPS += ('django_nose',)
