@@ -2,7 +2,7 @@ import logging
 import functools
 from datetime import date, timedelta, datetime
 
-from django.core.urlresolvers import reverse
+from django.urls.resolvers import reverse
 from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger

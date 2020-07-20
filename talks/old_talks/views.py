@@ -3,7 +3,7 @@ import logging
 import requests
 from django.conf import settings
 
-from django.core.urlresolvers import reverse
+from django.urls.resolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import render
 from talks.old_talks.models import OldTalk, OldSeries
