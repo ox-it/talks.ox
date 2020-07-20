@@ -236,7 +236,7 @@ class Person(models.Model):
 class TopicItem(models.Model):
 
     uri = models.URLField(db_index=True)
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
 
@@ -245,8 +245,8 @@ class TopicItem(models.Model):
 
 
 class PersonEvent(models.Model):
-    person = models.ForeignKey(Person)
-    event = models.ForeignKey("Event")
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    event = models.ForeignKey("Event", on_delete=models.CASCADE)
     affiliation = models.TextField(blank=True)
     role = models.TextField(choices=ROLES, default=ROLES_SPEAKER)
     url = models.URLField(blank=True)
@@ -292,7 +292,7 @@ class Event(models.Model):
         verbose_name="Special message",
         help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue"
     )
-    group = models.ForeignKey(EventGroup, null=True, blank=True,
+    group = models.ForeignKey(EventGroup, on_delete=models.CASCADE, null=True, blank=True,
                               related_name='events')
     location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
