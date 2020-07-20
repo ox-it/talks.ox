@@ -116,7 +116,7 @@ Private methods
 
 
 def createvirtualenv(path):
-    run('virtualenv --system-site-packages %s' % path)
+    run('python3 -m venv --system-site-packages %s' % path)
 
 def git_check_existing_repo():
     """
