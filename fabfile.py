@@ -95,7 +95,7 @@ def prepare(venv):
     run('cp -r %s %s' % (os.path.join(env.remote_git_checkout, 'talks'), install_dir))
     run('cp -r %s %s' % (os.path.join(env.remote_git_checkout, 'manage.py'), venv))
     for req in env.requirements:
-        run('pip install -r %s %s' % (os.path.join(env.remote_git_checkout, req), PIP_OPTIONS))
+        run('pip install --upgrade -r %s %s' % (os.path.join(env.remote_git_checkout, req), PIP_OPTIONS))
     return install_dir
 
 
