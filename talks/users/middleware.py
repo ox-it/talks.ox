@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class TalksUserMiddleware(object):
 
     def process_request(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             try:
                 request.tuser = request.user.talksuser
             except TalksUser.DoesNotExist:
