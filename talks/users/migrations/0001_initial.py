@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('is_owner', models.BooleanField(default=False)),
                 ('is_main', models.BooleanField(default=False)),
-                ('collection', models.ForeignKey(to='users.Collection')),
+                ('collection', models.ForeignKey(to='users.Collection', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -42,8 +42,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('collection', models.ForeignKey(to='users.Collection')),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+                ('collection', models.ForeignKey(to='users.Collection', on_delete=models.CASCADE)),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
             name='TalksUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='collectionfollow',
             name='user',
-            field=models.ForeignKey(to='users.TalksUser'),
+            field=models.ForeignKey(to='users.TalksUser', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

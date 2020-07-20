@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('old_talk_id', models.CharField(max_length=20)),
-                ('event', models.ForeignKey(to='events.Event')),
+                ('event', models.ForeignKey(to='events.Event', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('old_series_id', models.CharField(max_length=20)),
-                ('group', models.ForeignKey(to='events.EventGroup')),
+                ('group', models.ForeignKey(to='events.EventGroup', on_delete=models.CASCADE)),
             ],
             options={
             },

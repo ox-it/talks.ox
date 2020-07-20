@@ -17,8 +17,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('role', models.TextField(default=b'owner', choices=[(b'owner', b'Owner'), (b'editor', b'Collaborator'), (b'reader', b'Viewer')])),
-                ('collection', models.ForeignKey(to='users.Collection')),
-                ('user', models.ForeignKey(to='users.TalksUser')),
+                ('collection', models.ForeignKey(to='users.Collection', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to='users.TalksUser', on_delete=models.CASCADE)),
             ],
             options={
             },

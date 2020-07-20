@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=250)),
                 ('slug', models.SlugField()),
                 ('description', models.TextField()),
-                ('group', models.ForeignKey(to_field='id', blank=True, to='events.EventGroup', null=True)),
+                ('group', models.ForeignKey(to_field='id', blank=True, to='events.EventGroup', null=True, on_delete=models.CASCADE)),
                 ('location', models.TextField(default=b'', blank=True)),
                 ('department_organiser', models.TextField(default=b'', blank=True)),
             ],
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
                 ('affiliation', models.TextField(blank=True)),
                 ('role', models.TextField(default=b'speaker', choices=[(b'speaker', b'Speaker'), (b'host', b'Host'), (b'organizer', b'Organizer')])),
                 ('url', models.URLField(blank=True)),
-                ('event', models.ForeignKey(to='events.Event')),
+                ('event', models.ForeignKey(to='events.Event', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='personevent',
             name='person',
-            field=models.ForeignKey(to='events.Person'),
+            field=models.ForeignKey(to='events.Person', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='group',
-            field=models.ForeignKey(related_name=b'events', blank=True, to='events.EventGroup', null=True),
+            field=models.ForeignKey(related_name=b'events', blank=True, to='events.EventGroup', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -161,7 +161,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='group',
-            field=models.ForeignKey(related_name=b'events', blank=True, to='events.EventGroup', null=True),
+            field=models.ForeignKey(related_name=b'events', blank=True, to='events.EventGroup', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
