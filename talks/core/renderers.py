@@ -26,7 +26,7 @@ class ICalRenderer(renderers.BaseRenderer):
     @staticmethod
     def _event_to_ics(e):
         event = Event()
-	if 'ics_feed_title' in e:
+        if 'ics_feed_title' in e:
             event.add('summary', e['ics_feed_title'])
 
         if 'description' in e:
