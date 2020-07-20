@@ -18,6 +18,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 EVENT_DATETIME_FORMAT = "j F Y, G:i"
 EVENT_TIME_FORMAT = "H:i"
 
+API_OX_DATES_URL = 'https://api.m.ox.ac.uk/dates/'
+
 DATETIME_INPUT_FORMATS = (
     '%Y-%m-%d %H:%M:%S',     # '2006-10-25 14:30:59'
     '%Y-%m-%d %H:%M:%S.%f',  # '2006-10-25 14:30:59.000200'
