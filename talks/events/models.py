@@ -16,7 +16,7 @@ from django.db import models
 from django.template.defaultfilters import date as date_filter
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.urls.resolvers import reverse
+from django.urls import reverse
 
 from talks.api_ox.api import ApiException, OxfordDateResource
 from talks.core.utils import iso8601_duration

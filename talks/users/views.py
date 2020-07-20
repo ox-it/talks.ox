@@ -2,7 +2,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import permission_required, login_required
-from django.urls.resolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render, get_object_or_404, redirect
 
