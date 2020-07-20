@@ -11,17 +11,17 @@ def compare_dicts(new, old):
     :return dict containing tuples (new value, old value, bool changed)
     """
     diff = {}
-    for k, v in new.iteritems():
+    for k, v in new.items():
         if k not in IGNORE_FIELDS:
             diff[k] = v
     if old:
-        for k, v in old.iteritems():
+        for k, v in old.items():
             if k not in IGNORE_FIELDS:
                 new_value = diff.get(k)
                 changed = new_value != v
                 diff[k] = (new_value, v, changed)
     else:
-        for k, v in diff.iteritems():
+        for k, v in diff.items():
             diff[k] = (v, None, False)
     return diff
 

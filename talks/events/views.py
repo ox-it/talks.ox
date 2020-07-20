@@ -102,7 +102,7 @@ def browse_events(request):
 
     grouped_events = group_events(events)
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.items()])
 
     old_query = request.META['QUERY_STRING']
     dates_start = old_query.find("start_date=")

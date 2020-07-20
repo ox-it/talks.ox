@@ -312,7 +312,7 @@ def contributors_events(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-events')
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.items()])
 
     context = {
         'events': events,
@@ -346,7 +346,7 @@ def contributors_eventgroups(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-eventgroups')
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.items()])
 
     context = {
         'groups': eventgroups,
@@ -390,7 +390,7 @@ def contributors_persons(request):
 
     letters = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z'.split(',')
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.items()])
 
     context = {
         'persons': persons,

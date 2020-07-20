@@ -20,7 +20,7 @@ def healthcheck(request):
               'Events search': _test_events_search}
     response = HttpResponse()
     overall_ok = True
-    for name, service in checks.iteritems():
+    for name, service in checks.items():
         try:
             # run the healthcheck function
             ok, message = service()

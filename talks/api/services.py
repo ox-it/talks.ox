@@ -46,7 +46,7 @@ def events_search(parameters):
         'seriesid': lambda seriesid: Q(group__id__in=seriesid)
     }
 
-    for url_query_parameter, orm_mapping in list_parameters.iteritems():
+    for url_query_parameter, orm_mapping in list_parameters.items():
         value = parameters.getlist(url_query_parameter)
         if value:
             queries.append(orm_mapping(value))
