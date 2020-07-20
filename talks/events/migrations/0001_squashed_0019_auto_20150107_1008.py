@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='person_set',
-            field=models.ManyToManyField(to=b'events.Person', through='events.PersonEvent', blank=True),
+            field=models.ManyToManyField(to='events.Person', through='events.PersonEvent', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -261,7 +261,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eventgroup',
             name='organisers',
-            field=models.ManyToManyField(to=b'events.Person', null=True, blank=True),
+            field=models.ManyToManyField(to='events.Person', null=True, blank=True),
             preserve_default=True,
         ),
     ]
