@@ -1,7 +1,10 @@
 var animationTime = 200; // ms
 
 $(function() {
-    
+
+    // FB 21/07/20 - Java 11 has broken SKOS suggester, so hide Topics field
+    $('#id_event-topics').parents('.form-group').hide();
+
     var today_eleven_am = new Date();
     today_eleven_am.setHours(11);
     
@@ -176,4 +179,6 @@ $(function() {
         });
 
     })
+
+    
 });
