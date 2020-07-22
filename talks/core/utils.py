@@ -24,7 +24,7 @@ def clean_xml(dirty):
                                      (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF),
                                      (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)])
 
-    _illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
+    _illegal_ranges = ["%s-%s" % (chr(low), chr(high))
                        for (low, high) in _illegal_unichrs]
     _illegal_xml_chars_RE = compile(u'[%s]' % u''.join(_illegal_ranges))
     clean = _illegal_xml_chars_RE.sub('', dirty)
