@@ -205,7 +205,7 @@ class Collection(models.Model):
         """
         return TalksUserCollection.objects.filter(collection=self, role=COLLECTION_ROLES_READER).count()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
@@ -219,7 +219,7 @@ class TalksUserCollection(models.Model):
         verbose_name = "Public Collection Ownership"
         verbose_name_plural = "Public Collection Ownerships"
 
-    def __unicode__(self):
+    def __str__(self):
         return unicode(self.user)
 
 
@@ -238,7 +238,7 @@ class TalksUser(models.Model):
                                             role=COLLECTION_ROLES_OWNER,
                                             is_main=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return unicode(self.user)
 
 

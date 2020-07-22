@@ -106,7 +106,7 @@ class EventGroup(models.Model):
 
     objects = EventGroupManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
@@ -192,7 +192,7 @@ class Person(models.Model):
 
         super(Person, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -381,7 +381,7 @@ class Event(models.Model):
     def description_html(self):
         return textile_restricted(self.description, auto_link=True, lite=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):
