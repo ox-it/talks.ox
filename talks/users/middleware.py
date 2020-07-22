@@ -24,5 +24,5 @@ class TalksUserMiddleware(object):
                 request.tuser = None
         else:
             request.tuser = None
-        # Have to return None so other middlewares are called
-        return None
+        response = self.get_response(request)
+        return response
