@@ -442,11 +442,14 @@ def show_department_descendant(request, org_id):
 
     grouped_events = group_events(events)
 
-    if '_links' in org:
-        if 'parent' in org['_links']:
-            parent_href = org['_links']['parent'][0]['href']
-            parent_id = parent_href[parent_href.find("oxpoints"):]
-            parent = DEPARTMENT_DATA_SOURCE.get_object_by_id(parent_id)
+    if org:
+        if '_links' in org:
+            if 'parent' in org['_links']:
+                parent_href = org['_links']['parent'][0]['href']
+                parent_id = parent_href[parent_href.find("oxpoints"):]
+                parent = DEPARTMENT_DATA_SOURCE.get_object_by_id(parent_id)
+            else:
+                parent = None
         else:
             parent = None
     else:
