@@ -9,8 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class TalksUserMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    def process_request(self, request):
+    def __call__(self, request):
         if request.user.is_authenticated:
             try:
                 request.tuser = request.user.talksuser
