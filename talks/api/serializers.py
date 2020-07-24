@@ -79,7 +79,7 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('slug', 'url', 'ics_feed_title', 'start', 'end', 'description', 'status',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
+                  'api_organisation', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
 
 
 class HALURICharField(Field):
@@ -138,11 +138,10 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
     hosts = EmbeddedSpeakerSerializer(many=True, read_only=True)
     venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
     organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
-    topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
 
     class Meta:
         model = Event
-        fields = ('speakers', 'organisers', 'hosts', 'venue', 'organising_department', 'topics', 'various_speakers')
+        fields = ('speakers', 'organisers', 'hosts', 'venue', 'organising_department', 'various_speakers')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
