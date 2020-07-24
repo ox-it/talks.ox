@@ -43,7 +43,7 @@ class Typeahead(forms.TextInput):
                 hidden = forms.HiddenInput()
                 a = None
                 if self.source.is_local:
-                    a = {'data-suggestion': json.dumps(self.source.get_object_by_id(v))}
+                    a = {'data-suggestion': json.dumps(list(self.source.get_object_by_id(v)))}
                 html += hidden.render(name, v, a)
             if not self.source.is_local:
                 attrs['data-prefetch-url'] = self.source.get_prefetch_url(value)
