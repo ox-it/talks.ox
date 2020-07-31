@@ -34,7 +34,7 @@ class Typeahead(forms.TextInput):
         attrs['data-source'] = source.typeahead_json()
         super(Typeahead, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         html = ""
         if value:
             if not self.is_multiple:
