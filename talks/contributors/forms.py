@@ -30,7 +30,7 @@ class XMLFriendlyTextField(forms.CharField):
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
     def render(self, name, value, attrs=None, renderer=None):
-        html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs)
+        html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs, renderer)
         html = """<div class='input-group date js-datetimepicker' id='""" + name + """'>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
