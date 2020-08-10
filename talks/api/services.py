@@ -71,7 +71,7 @@ def get_all_department_ids(departments, include_suborgs):
     all_ids = []
     for result in descendants_response:
         # For each of the orgs being queried, extract the list of suborg ids, and add the original id too
-        result_ids = map((lambda descendant: descendant['id']), result['descendants'])
+        result_ids = list(map((lambda descendant: descendant['id']), result['descendants']))
         result_ids.append(result['id'])
         all_ids.extend(result_ids)
     return all_ids
