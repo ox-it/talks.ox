@@ -220,7 +220,7 @@ class TalksUserCollection(models.Model):
         verbose_name_plural = "Public Collection Ownerships"
 
     def __str__(self):
-        return unicode(self.user)
+        return str(self.user)
 
 
 class TalksUser(models.Model):
@@ -239,7 +239,7 @@ class TalksUser(models.Model):
                                             is_main=True)
 
     def __str__(self):
-        return unicode(self.user)
+        return str(self.user)
 
 
 class CollectionItem(models.Model):
