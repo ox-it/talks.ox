@@ -29,7 +29,7 @@ class ApiOxResource(object):
 
     _json = {}
 
-    def __init__(self, base_url, timeout=1):
+    def __init__(self, base_url, timeout=10):
         self.base_url = base_url
         self.timeout = timeout
 
