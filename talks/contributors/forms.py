@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -27,8 +29,8 @@ class XMLFriendlyTextField(forms.CharField):
         
 
 class BootstrappedDateTimeWidget(forms.DateTimeInput):
-    def render(self, name, value, attrs=None):
-        html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs)
+    def render(self, name, value, attrs=None, renderer=None):
+        html = super(BootstrappedDateTimeWidget, self).render(name, value, attrs, renderer)
         html = """<div class='input-group date js-datetimepicker' id='""" + name + """'>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
@@ -61,7 +63,7 @@ class EventForm(forms.ModelForm):
             self.fields['group'].widget.attrs['readonly'] = True
 
         # Amend help text if no groups to choose from
-        if (not self.fields['group'].queryset) or self.fields['group'].queryset.count <= 0:
+        if (not self.fields['group'].queryset) or self.fields['group'].queryset.count() <= 0:
             self.fields['group'].empty_label = "-- There are no series which you can add this talk to --"
 
         # set preliminary values for audience_choices and audience_other
@@ -273,7 +275,7 @@ class EventForm(forms.ModelForm):
             if not self.cleaned_data['audience_other'] or self.cleaned_data['audience_other'] == '':
                 raise forms.ValidationError("You must specify who can attend")
             else:
-                print "setting to value of audience_other field"
+                print("setting to value of audience_other field")
                 self.cleaned_data['audience'] = self.cleaned_data['audience_other']
         else:
             if 'audience_choices' in self.cleaned_data and not self.cleaned_data['audience_choices'] == '':

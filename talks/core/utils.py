@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from datetime import datetime, timedelta
 from re import sub, compile
 from sys import maxunicode
@@ -22,7 +24,7 @@ def clean_xml(dirty):
                                      (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF),
                                      (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)])
 
-    _illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
+    _illegal_ranges = ["%s-%s" % (chr(low), chr(high))
                        for (low, high) in _illegal_unichrs]
     _illegal_xml_chars_RE = compile(u'[%s]' % u''.join(_illegal_ranges))
     clean = _illegal_xml_chars_RE.sub('', dirty)
@@ -81,10 +83,10 @@ def read_yaml_param(fname, key):
         stream.close()
         value = doc[key]
     except IOError:
-        print "Failed to load file:", fullname
+        print("Failed to load file:", fullname)
         return ""
     except KeyError:
-        print "Failed to find key", key, "in file", fullname
+        print("Failed to find key", key, "in file", fullname)
         value = ""
 
     return value

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.contrib.auth.models import User
 from django.conf import settings
 from rest_framework import serializers
@@ -78,7 +79,7 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('slug', 'url', 'ics_feed_title', 'start', 'end', 'description', 'status',
                   'formatted_date', 'formatted_time', 'speakers', 'organisers', 'hosts', 'happening_today', 'audience', 'api_location',
-                  'api_organisation', 'api_topics', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
+                  'api_organisation', 'class_name', 'full_url', 'location', 'organiser_email', 'various_speakers')
 
 
 class HALURICharField(Field):
@@ -137,11 +138,10 @@ class EventEmbedsSerializer(serializers.ModelSerializer):
     hosts = EmbeddedSpeakerSerializer(many=True, read_only=True)
     venue = EmbeddedOxpointsSerializer(source='api_location', read_only=True)
     organising_department = EmbeddedOxpointsSerializer(source='api_organisation', read_only=True)
-    topics = EmbeddedTopicSerializer(source='api_topics', many=True, read_only=True)
 
     class Meta:
         model = Event
-        fields = ('speakers', 'organisers', 'hosts', 'venue', 'organising_department', 'topics', 'various_speakers')
+        fields = ('speakers', 'organisers', 'hosts', 'venue', 'organising_department', 'various_speakers')
 
 
 class HALEventSerializer(serializers.ModelSerializer):
@@ -245,7 +245,7 @@ class EventGroupEmbedsSerializer(serializers.ModelSerializer):
 
     def get_talks(self,obj):
         events = obj.events
-        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+        if 'from-date' in self.context or 'to-date' in self.context:
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
@@ -298,7 +298,7 @@ class PersonEmbedsSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def filterEvents(self, events):
-        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+        if 'from-date' in self.context or 'to-date' in self.context:
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:
@@ -334,7 +334,7 @@ class CollectionEmbedsSerializer(serializers.ModelSerializer):
 
     def get_talks(self,obj):
         events = obj.get_all_events()
-        if self.context.has_key('from-date') or self.context.has_key('to-date'):
+        if 'from-date' in self.context or 'to-date' in self.context:
             if self.context['from-date']:
                 events = events.filter(start__gte=self.context['from-date'])
             if self.context['to-date']:

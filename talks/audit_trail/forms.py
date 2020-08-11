@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import urllib
 
 from django import forms
@@ -17,4 +18,4 @@ class RevisionsFilteringForm(forms.Form):
                                        input_time_formats=DEFAULT_TIME_FORMATS)
 
     def as_url_args(self):
-        return urllib.urlencode(self.data)
+        return urllib.parse.urlencode(self.data)

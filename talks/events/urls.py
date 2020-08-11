@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.conf.urls import url
 
 from talks.events.views import (upcoming_events, show_person, show_event, events_for_day, show_department_organiser,

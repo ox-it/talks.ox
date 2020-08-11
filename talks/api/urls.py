@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.conf.urls import url
 
 from .views import (api_event_search_hal, api_event_search_ics, api_event_get, api_event_get_ics,

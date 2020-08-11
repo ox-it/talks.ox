@@ -2,6 +2,7 @@
 Custom search view, includes our custom dynamic faceting
 """
 
+from __future__ import absolute_import
 from haystack.views import FacetedSearchView
 from datetime import datetime
 
@@ -46,14 +47,14 @@ class SearchView(FacetedSearchView):
             queries = extra['facets']['queries']
             facet_date = {}
 
-            for key, count in queries.iteritems():
+            for key, count in queries.items():
                 _, _, prep_key = key.partition('start_exact:')
                 if prep_key in SOLR_TO_NAME:
                     facet_date[SOLR_TO_NAME[prep_key]] = count
 
             # need custom ordering
             ordered_dates = list()
-            for key, values in FACET_START_DATE.iteritems():
+            for key, values in FACET_START_DATE.items():
                 if key in facet_date:
                     ordered_dates.append(StartDateFacetItem(key, values['url_param'], facet_date[key]))
 

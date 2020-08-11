@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import mock
 
 from django.contrib.contenttypes.models import ContentType

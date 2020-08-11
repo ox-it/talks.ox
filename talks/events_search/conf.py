@@ -3,6 +3,7 @@ Configuration for our query set
 Very specific to Solr unfortunately
 """
 
+from __future__ import absolute_import
 from collections import OrderedDict
 
 from haystack.query import SearchQuerySet
@@ -17,10 +18,10 @@ FACET_START_DATE['Future talks'] = {'solr_query': '[NOW TO *]', 'url_param': 'fu
 FACET_START_DATE['Past talks'] = {'solr_query': '[* TO NOW]', 'url_param': 'past'}
 
 # map an URL param to a solr query, used when a search is done
-URL_TO_SOLR = {d['url_param']: d['solr_query'] for d in FACET_START_DATE.itervalues()}
+URL_TO_SOLR = {d['url_param']: d['solr_query'] for d in FACET_START_DATE.values()}
 
 # solr query to "user-friendly" name
-SOLR_TO_NAME = {d['solr_query']: key for key, d in FACET_START_DATE.iteritems()}
+SOLR_TO_NAME = {d['solr_query']: key for key, d in FACET_START_DATE.items()}
 
 today = datetime.today()
 
@@ -32,5 +33,5 @@ sqs_past = (SearchQuerySet()
             .facet('speakers', mincount=1).facet('location', mincount=1).facet('topics', mincount=1)).facet('group', mincount=1).facet('lists', mincount=1)
 
 # add all the facet start date queries to the queryset
-for v in FACET_START_DATE.itervalues():
+for v in FACET_START_DATE.values():
     sqs = sqs.query_facet('start', v['solr_query'])

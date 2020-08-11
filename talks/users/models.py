@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import itertools
 import uuid
 
@@ -5,7 +6,7 @@ from textile import textile_restricted
 
 from django.db import models
 from django.dispatch import receiver
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -204,13 +205,13 @@ class Collection(models.Model):
         """
         return TalksUserCollection.objects.filter(collection=self, role=COLLECTION_ROLES_READER).count()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
 class TalksUserCollection(models.Model):
-    user = models.ForeignKey("TalksUser")
-    collection = models.ForeignKey(Collection)
+    user = models.ForeignKey("TalksUser", on_delete=models.CASCADE)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     role = models.TextField(choices=COLLECTION_ROLES, default=COLLECTION_ROLES_OWNER)
     is_main = models.BooleanField(default=False)
     class Meta:
@@ -218,13 +219,13 @@ class TalksUserCollection(models.Model):
         verbose_name = "Public Collection Ownership"
         verbose_name_plural = "Public Collection Ownerships"
 
-    def __unicode__(self):
+    def __str__(self):
         return unicode(self.user)
 
 
 class TalksUser(models.Model):
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     collections = models.ManyToManyField(Collection, through=TalksUserCollection, blank=True)
 
     def save(self, *args, **kwargs):
@@ -237,14 +238,14 @@ class TalksUser(models.Model):
                                             role=COLLECTION_ROLES_OWNER,
                                             is_main=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return unicode(self.user)
 
 
 class CollectionItem(models.Model):
 
-    collection = models.ForeignKey(Collection)
-    content_type = models.ForeignKey(ContentType)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     # Currently item can be an Event or EventGroup, or a DepartmentCollection
     item = GenericForeignKey('content_type', 'object_id')

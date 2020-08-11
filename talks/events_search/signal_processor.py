@@ -2,6 +2,8 @@
 # If an event is saved, upate it in the default way.
 # If a list is saved, update affected events
 
+from __future__ import absolute_import
+from __future__ import print_function
 from talks.events.models import Event
 from talks.users.models import Collection, CollectionItem
 from django.db import models
@@ -44,7 +46,7 @@ class EventUpdateSignalProcessor(signals.BaseSignalProcessor):
 					index.update_object(event, using=using)
 				except Exception:
 					# TODO: Maybe log it or let the exception bubble?
-					print "NOT HANDLED"
+					print("NOT HANDLED")
 					pass
 	
 	def handle_change_collectionItem(self, sender, instance, **kwargs):
@@ -59,5 +61,5 @@ class EventUpdateSignalProcessor(signals.BaseSignalProcessor):
 				index = self.connections[using].get_unified_index().get_index(item.__class__)
 				index.update_object(item, using=using)
 			except Exception:
-				print "NOT HANDLED"
+				print("NOT HANDLED")
 				pass

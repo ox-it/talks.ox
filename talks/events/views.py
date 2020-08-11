@@ -1,8 +1,10 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import functools
 from datetime import date, timedelta, datetime
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http.response import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -100,7 +102,7 @@ def browse_events(request):
 
     grouped_events = group_events(events)
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.items()])
 
     old_query = request.META['QUERY_STRING']
     dates_start = old_query.find("start_date=")
@@ -430,7 +432,7 @@ def show_department_descendant(request, org_id):
         ids.append(results['id'])  # Include self
         events = Event.objects.filter(department_organiser__in=ids).order_by('start')
     except Exception:
-        print "Error retrieving sub-departments, only showing department"
+        print("Error retrieving sub-departments, only showing department")
         events = Event.objects.filter(department_organiser=org).order_by('start')
         sub_orgs = []
 
@@ -440,10 +442,16 @@ def show_department_descendant(request, org_id):
 
     grouped_events = group_events(events)
 
-    if org['_links'].has_key('parent'):
-        parent_href = org['_links']['parent'][0]['href']
-        parent_id = parent_href[parent_href.find("oxpoints"):]
-        parent = DEPARTMENT_DATA_SOURCE.get_object_by_id(parent_id)
+    if org:
+        if '_links' in org:
+            if 'parent' in org['_links']:
+                parent_href = org['_links']['parent'][0]['href']
+                parent_id = parent_href[parent_href.find("oxpoints"):]
+                parent = DEPARTMENT_DATA_SOURCE.get_object_by_id(parent_id)
+            else:
+                parent = None
+        else:
+            parent = None
     else:
         parent = None
 

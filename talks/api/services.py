@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from django.db.models.query_utils import Q
 import operator
 from rest_framework.exceptions import ParseError
@@ -5,6 +7,7 @@ from talks.core.utils import parse_date
 from talks.events.datasources import DEPARTMENT_DESCENDANT_DATA_SOURCE
 from talks.events.models import ROLES_SPEAKER, Event, EventGroup
 from datetime import datetime, timedelta
+from functools import reduce
 
 
 
@@ -43,7 +46,7 @@ def events_search(parameters):
         'seriesid': lambda seriesid: Q(group__id__in=seriesid)
     }
 
-    for url_query_parameter, orm_mapping in list_parameters.iteritems():
+    for url_query_parameter, orm_mapping in list_parameters.items():
         value = parameters.getlist(url_query_parameter)
         if value:
             queries.append(orm_mapping(value))
@@ -62,13 +65,13 @@ def get_all_department_ids(departments, include_suborgs):
     try:
         descendants_response = DEPARTMENT_DESCENDANT_DATA_SOURCE.get_object_list(departments)
     except Exception:
-        print "Error retrieving sub-departments, returning departments only"
+        print("Error retrieving sub-departments, returning departments only")
         return departments
 
     all_ids = []
     for result in descendants_response:
         # For each of the orgs being queried, extract the list of suborg ids, and add the original id too
-        result_ids = map((lambda descendant: descendant['id']), result['descendants'])
+        result_ids = list(map((lambda descendant: descendant['id']), result['descendants']))
         result_ids.append(result['id'])
         all_ids.extend(result_ids)
     return all_ids

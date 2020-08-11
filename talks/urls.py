@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.conf.urls import include, url
 from django.contrib import admin
 
@@ -31,8 +32,8 @@ urlpatterns = [
     url(r'^$', browse_events, name='homepage'),
     url(r'^browse$', browse_events, name='browse_events'),
     url(r'^talks/', include(events_urls)),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^audit/', include(audit_urls, namespace='audit')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^audit/', include(audit_urls)),
     url(r'^api/', include(api_urls)),
     url(r'^contributors/', include(contributors_urls)),
     url(r'^user/', include(users_urls)),

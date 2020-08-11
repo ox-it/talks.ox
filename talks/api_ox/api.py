@@ -3,6 +3,7 @@ be moved to typeahead.Datasource, but the API should support the
 query of multiple dates at once to keep the use consistent
 """
 
+from __future__ import absolute_import
 import logging
 
 import requests

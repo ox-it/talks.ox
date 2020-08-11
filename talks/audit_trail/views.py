@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 import django
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.template.context import RequestContext
 from reversion.models import Revision
 import reversion
@@ -21,9 +22,9 @@ def database_usage(request):
     # removing pagination arguments from the form
     # they need to be processed separately as the form might be empty
     form_args = request.GET.copy()
-    if form_args.has_key('page'):
+    if 'page' in form_args:
         del form_args['page']
-    if form_args.has_key('count'):
+    if 'count' in form_args:
         del form_args['count']
 
     form = RevisionsFilteringForm(form_args)
@@ -52,7 +53,7 @@ def database_usage(request):
         'pagination_count': count,
         'form': form
     })
-    return render_to_response('audit_trail/database_usage.html', context)
+    return render('audit_trail/database_usage.html', context)
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -69,7 +70,7 @@ def revision_details(request, revision_id):
         'revision': revision,
         'diffs': diffs,
     })
-    return render_to_response('audit_trail/view_revision.html', context)
+    return render('audit_trail/view_revision.html', context)
 
 
 def _get_version_diff(version):

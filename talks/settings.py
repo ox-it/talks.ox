@@ -8,7 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
-from secrets import *
+from __future__ import absolute_import
+from .secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -17,6 +18,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 EVENT_DATETIME_FORMAT = "j F Y, G:i"
 EVENT_TIME_FORMAT = "H:i"
+
+# default values for HTTP API calls
+API_OX_PLACES_URL = 'https://api.m.ox.ac.uk/places/'
+API_OX_DATES_URL = 'https://api.m.ox.ac.uk/dates/'
+TOPICS_URL = 'https://talks-dev.oucs.ox.ac.uk/topics/'
 
 DATETIME_INPUT_FORMATS = (
     '%Y-%m-%d %H:%M:%S',     # '2006-10-25 14:30:59'
@@ -84,13 +90,12 @@ INSTALLED_APPS = (
     'talks.old_talks'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.PersistentRemoteUserMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 

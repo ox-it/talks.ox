@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 from xml.etree import ElementTree
 
@@ -11,12 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class OldTalk(models.Model):
-    event = models.ForeignKey(Event, null=False)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=False)
     old_talk_id = models.CharField(max_length=20, null=False, blank=False)
 
 
 class OldSeries(models.Model):
-    group = models.ForeignKey(EventGroup, null=False)
+    group = models.ForeignKey(EventGroup, on_delete=models.CASCADE, null=False)
     old_series_id = models.CharField(max_length=20, null=False, blank=False)
 
 

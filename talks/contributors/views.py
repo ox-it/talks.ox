@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 import json
 from datetime import date
@@ -5,7 +6,7 @@ from functools import partial
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required, login_required
@@ -311,7 +312,7 @@ def contributors_events(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-events')
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k, v in args.items()])
 
     context = {
         'events': events,
@@ -345,7 +346,7 @@ def contributors_eventgroups(request):
     except (PageNotAnInteger, EmptyPage):
         return redirect('contributors-eventgroups')
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.items()])
 
     context = {
         'groups': eventgroups,
@@ -389,7 +390,7 @@ def contributors_persons(request):
 
     letters = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z'.split(',')
 
-    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.iteritems()])
+    fragment = '&'.join(["{k}={v}".format(k=k, v=v) for k,v in args.items()])
 
     context = {
         'persons': persons,

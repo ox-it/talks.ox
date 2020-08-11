@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import functools
 import itertools
 import logging
@@ -16,7 +17,7 @@ from django.db import models
 from django.template.defaultfilters import date as date_filter
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from talks.api_ox.api import ApiException, OxfordDateResource
 from talks.core.utils import iso8601_duration
@@ -105,7 +106,7 @@ class EventGroup(models.Model):
 
     objects = EventGroupManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
@@ -191,7 +192,7 @@ class Person(models.Model):
 
         super(Person, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -236,7 +237,7 @@ class Person(models.Model):
 class TopicItem(models.Model):
 
     uri = models.URLField(db_index=True)
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')   # atm: Event, EventGroup
 
@@ -245,8 +246,8 @@ class TopicItem(models.Model):
 
 
 class PersonEvent(models.Model):
-    person = models.ForeignKey(Person)
-    event = models.ForeignKey("Event")
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    event = models.ForeignKey("Event", on_delete=models.CASCADE)
     affiliation = models.TextField(blank=True)
     role = models.TextField(choices=ROLES, default=ROLES_SPEAKER)
     url = models.URLField(blank=True)
@@ -292,7 +293,7 @@ class Event(models.Model):
         verbose_name="Special message",
         help_text="Use this for important notices - e.g.: cancellation or a last minute change of venue"
     )
-    group = models.ForeignKey(EventGroup, null=True, blank=True,
+    group = models.ForeignKey(EventGroup, on_delete=models.CASCADE, null=True, blank=True,
                               related_name='events')
     location = models.TextField(blank=True)
     location_details = models.TextField(blank=True,
@@ -380,7 +381,7 @@ class Event(models.Model):
     def description_html(self):
         return textile_restricted(self.description, auto_link=True, lite=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"Event: {title} ({start})".format(title=self.title, start=self.start)
 
     def get_absolute_url(self):

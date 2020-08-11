@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import logging
 import mock
@@ -33,7 +34,7 @@ def intercept_requests_to_statics(url, *a, **k):
                     logging.info("response: %s", r.content)
             else:
                 r.status_code = 404
-        except Exception, e:
+        except Exception as e:
             r.status_code = 500
             r.reason = e.message
             import traceback

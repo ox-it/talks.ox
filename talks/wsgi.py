@@ -7,6 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
 """
 
+from __future__ import absolute_import
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "talks.settings")
 

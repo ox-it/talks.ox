@@ -1,4 +1,5 @@
-from urllib import urlencode
+from __future__ import absolute_import
+from urllib.parse import urlencode
 
 from django.conf import settings
 

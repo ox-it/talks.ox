@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import django
 from django.contrib.auth.models import User, Group
 from robot.libraries.BuiltIn import BuiltIn

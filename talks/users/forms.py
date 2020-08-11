@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models.query_utils import Q
@@ -43,7 +44,7 @@ class CollectionForm(forms.ModelForm):
 
         # clear the list of editors and repopulate with the contents of the form
         collection.editor_set.through.objects.filter(role=COLLECTION_ROLES_EDITOR, collection=collection).delete()
-        if self.cleaned_data.has_key('editor_set'):
+        if 'editor_set' in self.cleaned_data:
             for user in self.cleaned_data['editor_set']:
                 if collection.user_collection_permission(user) == 'owner':
                     pass

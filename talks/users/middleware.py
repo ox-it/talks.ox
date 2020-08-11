@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.contrib import auth
@@ -8,9 +9,11 @@ logger = logging.getLogger(__name__)
 
 
 class TalksUserMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    def process_request(self, request):
-        if request.user.is_authenticated():
+    def __call__(self, request):
+        if request.user.is_authenticated:
             try:
                 request.tuser = request.user.talksuser
             except TalksUser.DoesNotExist:
@@ -21,5 +24,5 @@ class TalksUserMiddleware(object):
                 request.tuser = None
         else:
             request.tuser = None
-        # Have to return None so other middlewares are called
-        return None
+        response = self.get_response(request)
+        return response

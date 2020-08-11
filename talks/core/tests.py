@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from datetime import date, datetime, timedelta
 
 from django.test import TestCase
@@ -20,7 +22,7 @@ class ICalSerializerTest(TestCase):
                    'description': ''}]
         data = renderer.render(events)
         cal = Calendar.from_ical(data)
-        print cal.subcomponents[1]
+        print(cal.subcomponents[1])
         self.assertEquals(len(cal.subcomponents), 2)
         self.assertEquals(cal.subcomponents[0]['SUMMARY'], 'Talk 1')
         self.assertEquals(cal.subcomponents[0]['DESCRIPTION'], 'Description')
