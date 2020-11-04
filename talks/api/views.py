@@ -115,7 +115,7 @@ def api_event_group(request, event_group_slug):
                         status=status.HTTP_404_NOT_FOUND)
     from_date = parse_date(request.GET.get('from', ''))
     to_date = parse_date(request.GET.get('to',''), from_date)
-    
+
     if from_date or to_date:
         serializer = HALEventGroupSerializer(eg, context={'request': request, 'from-date': from_date, 'to-date': to_date})
     else:
@@ -167,7 +167,10 @@ def api_event_search_hal(request):
         page = paginator.page(paginator.num_pages)
 
     serializer = HALSearchResultSerializer(page, read_only=True, context={'request': request})
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    data = serializer.data
+    data['total'] = paginator.count
+
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -315,10 +318,10 @@ def api_person_ics(request, person_slug):
         person = Person.objects.get(slug=person_slug)
         today = date.today()
         events = Event.objects.filter(personevent__person__slug=person_slug)
-        
+
         serializer = EventSerializer(events, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     except ObjectDoesNotExist:
         return Response({'error': "Person not found"},
                         status=status.HTTP_404_NOT_FOUND)
@@ -336,7 +339,7 @@ def api_person(request, person_slug):
         else:
             serializer = HALPersonSerializer(person, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     except ObjectDoesNotExist:
         return Response({'error': "Person not found"},
                         status=status.HTTP_404_NOT_FOUND)
