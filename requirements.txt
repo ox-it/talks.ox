@@ -1,7 +1,7 @@
 Django==2.2.14
 pytz
 pyaml
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 djangorestframework-xml
 djangorestframework-jsonp
 icalendar==3.6.2
