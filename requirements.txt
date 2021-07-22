@@ -11,7 +11,9 @@ requests[security]
 pysolr==3.2.0
 django-haystack
 django-bootstrap-form==3.4
-psycopg2
+# There is an issue in psycopg2 2.9 that causes "AssertionError: database connection isn't set to UTC"
+# https://github.com/psycopg/psycopg2/issues/1293
+psycopg2>=2.8,<2.9
 raven==6.10.0
 git+https://github.com/birniefoxford/oxford-django-shibboleth.git@patch-1#egg=django-shibboleth
 python-ldap
