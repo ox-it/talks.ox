@@ -6,6 +6,7 @@ from rest_framework import renderers
 from icalendar import Calendar, Event
 from dateutil import parser
 
+import pytz
 
 class ICalRenderer(renderers.BaseRenderer):
     media_type = 'text/calendar'
@@ -70,4 +71,6 @@ def dt_string_to_object(string):
     :param string: string representing a date/time
     :return: python datetime object
     """
-    return parser.parse(string)
+    oxfordtime = pytz.timezone('Europe/London')
+    timeobj = parser.parse(string).astimezone(oxfordtime)
+    return timeobj
