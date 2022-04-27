@@ -24,15 +24,15 @@ class ICalRenderer(renderers.BaseRenderer):
         gmt.add('tzid', 'Europe/London')
 
         gmt_s = TimezoneStandard()
-        gmt_s.add('dtstart', datetime.datetime(1601, 1, 1, 2, 0, 0))
-        gmt_s.add('TZOFFSETFROM', datetime.timedelta(hours=1))
-        gmt_s.add('TZOFFSETTO', datetime.timedelta(hours=0))
+        gmt_s.add('dtstart', datetime(1601, 1, 1, 2, 0, 0))
+        gmt_s.add('TZOFFSETFROM', timedelta(hours=1))
+        gmt_s.add('TZOFFSETTO', timedelta(hours=0))
         gmt_s.add('rrule', {'freq': 'yearly', 'interval': 1, 'byday': '-1SU', 'bymonth': 10})
 
         gmt_d = TimezoneDaylight()
-        gmt_d.add('dtstart', datetime.datetime(1601, 1, 1, 1, 0, 0))
-        gmt_d.add('TZOFFSETFROM', datetime.timedelta(hours=0))
-        gmt_d.add('TZOFFSETTO', datetime.timedelta(hours=1))
+        gmt_d.add('dtstart', datetime(1601, 1, 1, 1, 0, 0))
+        gmt_d.add('TZOFFSETFROM', timedelta(hours=0))
+        gmt_d.add('TZOFFSETTO', timedelta(hours=1))
         gmt_d.add('rrule', {'freq': 'yearly', 'interval': 1, 'byday': '-1SU', 'bymonth': 3})
 
         gmt.add_component(gmt_s)
