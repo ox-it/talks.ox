@@ -4,7 +4,7 @@ pyaml
 djangorestframework==3.11.2
 djangorestframework-xml
 djangorestframework-jsonp
-icalendar==3.6.2
+icalendar==4.0.9
 setuptools==18.5
 cryptography==3.3.2
 requests[security]
