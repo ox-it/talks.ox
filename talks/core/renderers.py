@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from icalendar.cal import Alarm
 
 from rest_framework import renderers
-from icalendar import Calendar, Event, Timezone, TimezoneStandard, TimezoneDayLight
+from icalendar import Calendar, Event, Timezone, TimezoneStandard, TimezoneDaylight
 from dateutil import parser
 
 import pytz
@@ -29,7 +29,7 @@ class ICalRenderer(renderers.BaseRenderer):
         gmt_s.add('TZOFFSETTO', datetime.timedelta(hours=0))
         gmt_s.add('rrule', {'freq': 'yearly', 'interval': 1, 'byday': '-1SU', 'bymonth': 10})
 
-        gmt_d = TimezoneDayLight()
+        gmt_d = TimezoneDaylight()
         gmt_d.add('dtstart', datetime.datetime(1601, 1, 1, 1, 0, 0))
         gmt_d.add('TZOFFSETFROM', datetime.timedelta(hours=0))
         gmt_d.add('TZOFFSETTO', datetime.timedelta(hours=1))
