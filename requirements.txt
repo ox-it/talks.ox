@@ -9,7 +9,7 @@ setuptools==18.5
 cryptography==3.3.2
 requests[security]
 pysolr==3.2.0
-django-haystack
+django-haystack==3.1.1
 django-bootstrap-form==3.4
 # There is an issue in psycopg2 2.9 that causes "AssertionError: database connection isn't set to UTC"
 # https://github.com/psycopg/psycopg2/issues/1293
