@@ -63,6 +63,7 @@ class ICalRenderer(renderers.BaseRenderer):
         if 'ics_feed_title' in e:
             alarm.add('description', "Talk:" + e['ics_feed_title'])
         event.add_component(alarm)
+        event.add('tzid', 'Europe/London')
 
         return event
 
@@ -70,7 +71,10 @@ def dt_string_to_object(string):
     """Transforms a string date into a datetime object
     :param string: string representing a date/time
     :return: python datetime object
+    This was not working in BST on Windows so have added tzid directly to the event above
+    Will need checking again when the clocks go back to GMT 
     """
+    return parser.parse(string)
     oxfordtime = pytz.timezone('Europe/London')
     timeobj = parser.parse(string).astimezone(oxfordtime)
     return timeobj
