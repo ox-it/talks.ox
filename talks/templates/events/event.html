@@ -128,13 +128,13 @@
         <li class="list-group-item"><strong>Venue</strong>: {% spaceless %}
             {% if location and event.location_details %}
                 <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
-                <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
+                <a href="https://www.maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
                 <br><br>
                 <strong>Details</strong>:
                 {{ event.location_details }}
             {% elif location %}
                 <address>{{ location.name }}{% if location.address %}<br>{{ location.address }}{% endif %}</address>
-                <a href="//maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
+                <a href="https://www.maps.ox.ac.uk/#/places/{{ location.id }}" target="_blank">See location on maps.ox</a>
             {% elif event.location_details %}
                 {{ event.location_details }}
             {% else %}
