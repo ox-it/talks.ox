@@ -67,7 +67,7 @@ def view_collection(request, collection_slug):
 
     series = collection.get_event_groups().order_by('title')
 
-    collectedDeps = collection.get_departments()
+    collectedDeps = collection.get_departments().exclude(department='oxpoints:23232729').exclude(department='oxpoints:23232677')
     departments = map(lambda cdep:DEPARTMENT_DATA_SOURCE.get_object_by_id(cdep.department), collectedDeps)
 
     collectionContributors = None
