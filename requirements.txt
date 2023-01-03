@@ -5,7 +5,7 @@ djangorestframework==3.11.2
 djangorestframework-xml
 djangorestframework-jsonp
 icalendar==3.6.2
-setuptools==18.5
+setuptools==65.5.1
 cryptography==3.3.2
 requests[security]
 pysolr==3.2.0
