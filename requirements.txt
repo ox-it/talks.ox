@@ -15,7 +15,7 @@ django-bootstrap-form==3.4
 # https://github.com/psycopg/psycopg2/issues/1293
 psycopg2>=2.8,<2.9
 raven==6.10.0
-git+https://github.com/birniefoxford/oxford-django-shibboleth.git@patch-1#egg=django-shibboleth
+git+https://github.com/ox-it/oxford-django-shibboleth.git#egg=django-shibboleth
 python-ldap
 django-reversion==2.0.13
 textile==2.2.1
