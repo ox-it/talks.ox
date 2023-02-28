@@ -4,6 +4,9 @@
 
 New version of Oxford Talks
 
+## Status of this README
+A lot of the content of this README relates to local development methods that may still be possible, but aren't typically done by our team in the present day, so there aren't guarantees that they still work as described.
+
 ## Start a local instance quickly on OS X
 
 ### Initial setup
