@@ -42,7 +42,11 @@ Go at the root of your project directory (probably `talks.ox`):
     docker-compose up
     
 After a few seconds (minutes if it is building the instance for the first time), you should be able to visit
-in your web browser: `http://<IP ADDRESS>:8000` and visualise Oxford Talks.
+in your web browser: `http://<IP ADDRESS>:8000` and visualise Oxford Talks. Note
+that the source tree is *copied* into the container. If you make a change to the
+source code, make sure to re-build the containers by adding ``--build`` to the
+``docker-compose up`` command or explicitly re-build the ``web`` container via
+``docker-compose build web``.
 
 If you have a user account (see below), the correct login page is `http://<IP ADDRESS>:8000/admin/login`,
 the `Login` link won't work.

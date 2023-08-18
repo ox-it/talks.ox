@@ -9,8 +9,6 @@ db:
 web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000 --settings=talks.settings_docker
-    volumes:
-        - .:/code
     ports:
         - "8000:8000"
     links:
