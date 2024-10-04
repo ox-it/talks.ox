@@ -58,7 +58,7 @@ rst_epilog = """
 
 # General information about the project.
 project = u'talks.ox'
-copyright = u'2015, Mobile Oxford Team, Software Solutions, IT Services, University of Oxford'
+copyright = u'2015, Software Solutions, IT Services, University of Oxford'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -248,7 +248,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'talksox', u'talks.ox Documentation',
-     [u'Mobile Oxford Team, Software Solutions, IT Services, University of Oxford'], 1)
+     [u'Software Solutions, IT Services, University of Oxford'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -262,7 +262,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'talksox', u'talks.ox Documentation',
-   u'Mobile Oxford Team, Software Solutions, IT Services, University of Oxford', 'talksox', 'One line description of project.',
+   u'Software Solutions, IT Services, University of Oxford', 'talksox', 'One line description of project.',
    'Miscellaneous'),
 ]
 
