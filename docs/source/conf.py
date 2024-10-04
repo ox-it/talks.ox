@@ -218,7 +218,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'talksox.tex', u'talks.ox Documentation',
-   u'Mobile Oxford Team, Software Solutions, IT Services, University of Oxford', 'manual'),
+   u'Software Solutions, IT Services, University of Oxford', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
